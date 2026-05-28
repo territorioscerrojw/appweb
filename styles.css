@@ -25,8 +25,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* Cambio de fuente general solicitado */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Cambio estricto a fuente premium Inter */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -118,10 +118,11 @@ body {
   font-weight: 500;
 }
 
+/* Rediseño de proporciones para números de contadores más grandes y visibles */
 .anillo-svg-wrapper {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
 }
 
 .anillo-circular {
@@ -147,13 +148,13 @@ body {
 .color-asignados .anillo-linea { stroke: var(--apple-rojo); }
 .color-completados .anillo-linea { stroke: var(--apple-verde); }
 
-/* CONTADORES GRANDES - Modificados a petición */
+/* Números más grandes destacados */
 .anillo-numero {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
 }
 
@@ -182,6 +183,35 @@ body {
 .tab.activa {
   background: #ffffff;
   color: #000000;
+}
+
+/* NUEVA BOTONERA FILTRO ORDENACIÓN EN PESTAÑA ASIGNADOS */
+.contenedor-sub-filtros {
+  display: none; /* Controlado dinámicamente por JS */
+  gap: 6px;
+  margin-bottom: 16px;
+  background: rgba(0,0,0,0.15);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-borde);
+}
+
+.btn-sub-filtro {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 6px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-sub-filtro.activa {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--texto-principal);
 }
 
 /* BUSCADOR */
@@ -306,7 +336,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.5;  /* Modificado a 0.5 de opacidad fija */
+  opacity: 0.4;  
   transition: opacity 0.2s ease;
 }
 
@@ -339,20 +369,21 @@ body {
 .txt-hermano-nombre { font-size: 13px; font-weight: 600; }
 .txt-hermano-estado { font-size: 11px; color: var(--texto-secundario); }
 
-/* PANEL FLOTANTE EN SU SITIO FIJO ESTRICTO */
+/* PANEL FLOTANTE - Ajustado perfectamente sobre la barra de progreso sin espacios */
 .panel-inferior-flotante {
   position: fixed;
-  bottom: 52px; 
+  bottom: 48px; /* Encajado exacto y continuo encima del footer de 48px */
   left: 50%;
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
-  background: rgba(18, 18, 22, 0.95);
+  background: rgba(18, 18, 22, 0.98);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   padding: 12px 16px;
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+  border-radius: 12px 12px 0 0;
 }
 
 .panel-inferior-flotante.visible {
@@ -413,10 +444,12 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 48px; /* Altura controlada exacta */
   background: #09090b;
   border-top: 1px solid var(--glass-borde);
-  padding: 10px 16px 14px 16px;
+  padding: 8px 16px 12px 16px;
   z-index: 100;
+  box-sizing: border-box;
 }
 
 .info-tiempo-texto {
