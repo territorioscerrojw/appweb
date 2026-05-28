@@ -2,7 +2,7 @@
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(22, 22, 26, 0.75);
+  --glass-fondo: rgba(22, 22, 26, 0.35); /* Cristal oscuro muy transparente */
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -10,17 +10,21 @@
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
-  --blur-filter: brightness(0.3) blur(35px);
+  
+  /* MODO OSCURO: Filtro agresivo para oscurecer el mapa blanco y darle un tono místico */
+  --blur-filter: brightness(0.12) contrast(1.2) blur(20px);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.75); /* Optimizado para mayor transparencia en claro */
+  --glass-fondo: rgba(255, 255, 255, 0.40); /* Cristal claro translúcido */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
-  --blur-filter: brightness(1.4) contrast(0.95) blur(35px);
+  
+  /* MODO CLARO: Mantiene el mapa brillante pero suave para no competir con el texto */
+  --blur-filter: brightness(0.95) contrast(0.9) blur(15px);
 }
 
 * {
@@ -40,19 +44,21 @@ body {
   letter-spacing: -0.2px;
 }
 
+/* FONDO CON TU NUEVA IMAGEN DE MAPA */
 .fondo-mapa-blur {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop');
+  /* Usa tu imagen local (puedes cambiar el nombre/ruta aquí si lo necesitas) */
+  background-image: url('mapa-fondo.png');
   background-size: cover;
   background-position: center;
   filter: var(--blur-filter);
   z-index: -2;
   pointer-events: none;
-  transition: filter 0.3s ease;
+  transition: filter 0.4s ease; /* Transición suave al cambiar de tema */
 }
 
 .contenedor-app {
@@ -211,7 +217,7 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-/* Estado activo del botón Ordenar Por (en azul Apple destacado) */
+/* Estado activo del botón Ordenar Por */
 .btn-sub-filtro.activo,
 .btn-sub-filtro.activa {
   background: var(--apple-azul) !important;
@@ -298,7 +304,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Contenedor lateral RECTANGULAR exacto */
+/* Contenedor lateral RECTANGULAR exact */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -414,7 +420,7 @@ body {
   font-weight: 700;
 }
 
-/* MENÚ FLOTANTE TRANSLÚCIDO COMPLETAMENTE DINÁMICO */
+/* MENÚ FLOTANTE TRANSLÚCIDO CON MÁXIMO BLUR */
 .panel-inferior-flotante {
   position: fixed;
   bottom: 48px; 
@@ -422,9 +428,9 @@ body {
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
-  background: var(--glass-fondo); /* Responde al tema claro u oscuro */
-  backdrop-filter: blur(25px) saturate(130%);
-  -webkit-backdrop-filter: blur(25px) saturate(130%);
+  background: var(--glass-fondo) !important; /* Forzado absoluto */
+  backdrop-filter: blur(30px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
   border-top: 1px solid var(--glass-borde);
   border-left: 1px solid var(--glass-borde);
   border-right: 1px solid var(--glass-borde);
@@ -432,7 +438,7 @@ body {
   padding: 14px 16px 20px 16px;
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
 }
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; }
@@ -457,11 +463,13 @@ body {
   border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
 }
 
-/* FOOTER BARRA DE TIEMPO */
+/* FOOTER BARRA DE TIEMPO TRANSLÚCIDA */
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--fondo-base);
+  background: var(--glass-fondo) !important; /* Ahora también es de cristal */
+  backdrop-filter: blur(25px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(140%) !important;
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
