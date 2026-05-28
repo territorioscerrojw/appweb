@@ -1,4 +1,4 @@
-// app.js - Versión Corregida y Optimizada Horizontal Premium
+// app.js - Versión Definitiva con Correcciones de Lógica de Hojas y Diseños Horizontales
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -8,7 +8,7 @@ let vistaActual = "disponibles";
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
-let criterioOrdenacionAsignados = "territorio"; 
+let criterioOrdenacionAsignados = "territorio"; // Criterio por defecto
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -46,7 +46,7 @@ function descargarDatosDesdeSheets() {
       if (baseDatosCompleta.length > 0) {
         procesarFechasYBarras(baseDatosCompleta[0].inicio, baseDatosCompleta[0].fin);
         
-        // CORRECCIÓN: Nombre de campaña ARRIBA, número de Grupo ABAJO
+        // CAMBIO: Nombre de campaña arriba (H1)
         const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
         if (document.getElementById("txt-campana-titulo")) {
           document.getElementById("txt-campana-titulo").innerText = campanaNombre;
@@ -54,6 +54,7 @@ function descargarDatosDesdeSheets() {
       }
       
       if (tipoUsuario === "encargado") {
+        // CAMBIO: Número de grupo abajo (H2)
         if (document.getElementById("txt-grupo-sub")) {
           document.getElementById("txt-grupo-sub").innerText = `Grupo ${grupoFiltro}`;
         }
@@ -77,12 +78,12 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-// CORRECCIÓN: Descarga los hermanos consultando la hoja exclusiva de HERMANOS, no la de mapas
+// CAMBIO CRÍTICO: Ahora sí llama a la hoja HERMANOS de manera inequívoca
 function descargarHermanosDesdeSheets() {
   return new Promise((resolve) => {
     const callbackHermanos = "callbackHermanos_" + new Date().getTime();
     
-    window[callbackHervanos] = function(datos) {
+    window[callbackHermanos] = function(datos) {
       if (datos && !datos.error) {
         listaHermanosPool = datos.sort((a, b) => a.localeCompare(b));
         inyectarSelectorHermanos();
@@ -160,6 +161,7 @@ function inyectarArcoProgreso(idPath, valor, total) {
   el.setAttribute("stroke-dasharray", `${porcentaje}, 100`);
 }
 
+// CAMBIO: Gestión de sub-filtros de ordenación activa
 function cambiarCriterioOrdenacion(criterio) {
   criterioOrdenacionAsignados = criterio;
   document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activa"));
@@ -174,7 +176,7 @@ function filtrarYRenderizar() {
   const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
   grid.innerHTML = "";
   
-  // Mostrar u ocultar el panel de ordenación según la pestaña activa
+  // Mostrar u ocultar barra de sub-filtros según la pestaña
   const menuOrdenacion = document.getElementById("menu-ordenacion-asignados");
   if (menuOrdenacion) {
     menuOrdenacion.style.display = vistaActual === "asignados" ? "flex" : "none";
@@ -191,7 +193,7 @@ function filtrarYRenderizar() {
     );
   }
   
-  // LÓGICA DE ORDENACIÓN
+  // CAMBIO: Lógica de Ordenación y Agrupación aplicada rigurosamente
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -215,7 +217,7 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
-      // DISEÑO DISPONIBLES: Vertical Clásico Apple
+      // DISEÑO DISPONIBLES: Vertical Clásico Inteligente
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
@@ -233,7 +235,7 @@ function filtrarYRenderizar() {
         </div>
         <div class="imagen-mapa-wrapper">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
@@ -242,10 +244,9 @@ function filtrarYRenderizar() {
         </div>
       `;
     } else {
-      // DISEÑO ASIGNADOS CORREGIDO: Tarjeta Estrecha Horizontal con Imagen Izquierda
+      // CAMBIO: DISEÑO ASIGNADOS SOLICITADO -> Tarjeta Estrecha Horizontal con Imagen Izquierda y Datos Derecha
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      // Formatear Fecha de Entrega Limpia
       let fechaFormateada = "Sin fecha";
       if (mapa.fechaEntrega) {
         const f = new Date(mapa.fechaEntrega);
@@ -257,7 +258,7 @@ function filtrarYRenderizar() {
       div.innerHTML = `
         <div class="img-lateral-wrapper">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-lateral-asset" onerror="this.src='https://placehold.co/150x150?text=Mapa'">
         </div>
@@ -267,8 +268,8 @@ function filtrarYRenderizar() {
             <span class="nombre-barrio-chico">${mapa.barriada}</span>
           </div>
           <div class="info-hermano-linea">
-            <p class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</p>
-            <p class="txt-horizontal-fecha">📅 ${fechaFormateada}</p>
+            <span class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</span>
+            <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
           </div>
           <div class="estado-badge-linea">
             <span class="badge-estado-pill ${mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
@@ -287,7 +288,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriesSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -304,13 +305,13 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   actualizarPanelAsignacionFlotante();
 }
 
+// CAMBIO CRÍTICO: El selector inferior "Seleccionar Hermano" SÓLO sale en la pestaña DISPONIBLES si hay selección
 function actualizarPanelAsignacionFlotante() {
   const panel = document.getElementById("panel-asignacion-unico");
   const textContador = document.getElementById("txt-contador-seleccionados");
   
   if (!panel) return;
   
-  // El panel selector de hermanos SOLO se muestra si hay elementos seleccionados y estamos en Disponibles
   if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
     if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
     panel.classList.add("visible");
@@ -348,7 +349,6 @@ async function procesarAsignacionMultiple() {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
   
-  // Enviar notificación limpia vía WhatsApp
   const listaNumeros = territoriosSeleccionados.map(id => parseInt(id)).join(", ");
   const msj = `¡Hola! Te he asignado los siguientes mapas: *${listaNumeros}*.\nPuedes verlos desde tu enlace personal de la app. ¡Muchas gracias!`;
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msj)}`, '_blank');
@@ -398,7 +398,7 @@ function filtrarYRenderizarHermano() {
       </div>
       <div class="imagen-mapa-wrapper">
         <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
@@ -442,7 +442,6 @@ function cambiarPestana(vista, btn) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
   btn.classList.add("activa");
   
-  // Resetear paneles flotantes de asignación al cambiar de vista
   actualizarPanelAsignacionFlotante();
   filtrarYRenderizar();
 }
