@@ -1,89 +1,95 @@
-/* ==========================================
-   ESTILOS PREMIUM REVISADOS (CIUDAD & CRISTAL)
-   ========================================== */
+/* ==========================================================================
+   ESTILOS GENERALES Y FUENTE MINIMALISTA
+   ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --apple-verde: #34c759;
   --apple-naranja: #ff9500;
+  --apple-rojo: #ff3b30;
+  
+  /* Valores Modo Oscuro */
+  --fondo-tarjeta: rgba(30, 30, 32, 0.7);
+  --borde-tarjeta: rgba(255, 255, 255, 0.08);
+  --texto-principal: #ffffff;
+  --texto-secundario: rgba(255, 255, 255, 0.6);
+  --fondo-panel-completo: rgba(20, 20, 22, 0.85);
+  --borde-panel: rgba(255, 255, 255, 0.1);
+  --fondo-input: rgba(255, 255, 255, 0.08);
+  --borde-input: rgba(255, 255, 255, 0.1);
 }
 
-/* Fuente Global */
-* {
-  font-family: var(--font-premium) !important;
+[data-theme="claro"] {
+  --fondo-tarjeta: rgba(255, 255, 255, 0.75);
+  --borde-tarjeta: rgba(0, 0, 0, 0.08);
+  --texto-principal: #1c1c1e;
+  --texto-secundario: rgba(0, 0, 0, 0.6);
+  --fondo-panel-completo: rgba(255, 255, 255, 0.85);
+  --borde-panel: rgba(0, 0, 0, 0.08);
+  --fondo-input: rgba(0, 0, 0, 0.05);
+  --borde-input: rgba(0, 0, 0, 0.08);
 }
 
-/* Fondo de pantalla: Ciudad abstracta y difuminada */
+/* Aplicación del fondo de ciudad difuminado inteligente */
 body {
-  background-image: linear-gradient(rgba(10, 10, 12, 0.65), rgba(10, 10, 12, 0.65)), 
-                    url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
+  font-family: var(--font-premium) !important;
+  background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
   background-size: cover !important;
   background-position: center !important;
   background-attachment: fixed !important;
-  margin: 0;
-  padding: 0;
+  color: var(--texto-principal) !important;
 }
 
 [data-theme="claro"] body {
-  background-image: linear-gradient(rgba(245, 245, 247, 0.82), rgba(245, 245, 247, 0.82)), 
-                    url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
+  background-image: linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
 }
 
-/* Despegar la barra de progreso de los números gigantes */
-.bloque-progreso-tiempo {
-  margin-top: 24px !important;
-  padding: 16px !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-radius: 12px !important;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-[data-theme="claro"] .bloque-progreso-tiempo {
-  background: rgba(0, 0, 0, 0.04) !important;
-}
-
-/* Números Gigantes en los Contadores */
+/* ==========================================================================
+   CONTADORES Y BARRA DE PROGRESO CORREGIDA
+   ========================================================================== */
 .widget-anillo span, [id^="w-"] {
-  font-size: 34px !important;
+  font-size: 32px !important;
   font-weight: 700 !important;
   display: block;
-  margin-bottom: 4px;
+  color: var(--texto-principal) !important;
 }
 
-/* Centrado del nombre de barriada en Disponibles */
-.nombre-barrio-centrado {
-  font-weight: 600;
-  font-size: 15px;
-  text-align: center;
-  flex-grow: 1;
+.widget-anillo p {
+  color: var(--texto-principal) !important;
+  opacity: 0.7;
 }
 
-/* ==========================================
-   NUEVA TARJETA HORIZONTAL (PESTAÑA ASIGNADOS)
-   ========================================== */
+/* Bloque contenedor de progreso separado para que no se pise */
+.bloque-progreso-tiempo {
+  margin: 20px 16px 10px 16px !important;
+  padding: 14px 16px !important;
+  background: var(--fondo-tarjeta) !important;
+  border: 1px solid var(--borde-tarjeta) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+}
+
+/* ==========================================================================
+   TARJETA HORIZONTAL COMPACTA (PESTAÑA ASIGNADOS)
+   ========================================================================== */
 .tarjeta-horizontal-premium {
   display: flex !important;
-  background: rgba(30, 30, 32, 0.65) !important;
+  background: var(--fondo-tarjeta) !important;
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 12px !important;
+  border: 1px solid var(--borde-tarjeta) !important;
+  border-radius: 14px !important;
   overflow: hidden;
-  height: 90px !important;
-  margin-bottom: 12px;
+  height: 88px !important;
+  margin: 0px 16px 12px 16px !important;
   box-sizing: border-box;
   align-items: center;
 }
 
-[data-theme="claro"] .tarjeta-horizontal-premium {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
 .borde-prioritario {
-  border: 1.5px solid #ff3b30 !important;
+  border: 1.5px solid var(--apple-rojo) !important;
 }
 
 .zona-izquierda-mapa {
@@ -97,7 +103,8 @@ body {
 .img-horizontal-asset {
   width: 100%;
   height: 100%;
-  object-fit: contain !important; /* Muestra el plano completo sin recortar */
+  object-fit: contain !important; /* Fuerza a ver la imagen entera */
+  cursor: pointer;
 }
 
 .badge-id-horizontal {
@@ -106,16 +113,16 @@ body {
   right: 4px;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 1px 5px;
+  padding: 2px 5px;
   border-radius: 4px;
 }
 
 .zona-derecha-contenido {
   display: flex;
   flex-direction: column;
-  padding: 10px 14px;
+  padding: 8px 14px;
   justify-content: space-between;
   height: 100%;
   flex-grow: 1;
@@ -135,9 +142,8 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  opacity: 0.85;
-  color: var(--texto-principal);
+  font-size: 12px;
+  color: var(--texto-secundario);
 }
 
 .fila-estado-tag {
@@ -152,94 +158,34 @@ body {
   border-radius: 50%;
   display: inline-block;
 }
-
 .color-calle { background-color: var(--apple-naranja); }
 .color-hecho { background-color: var(--apple-verde); }
 
 .texto-estado-lbl {
   font-size: 11px;
   font-weight: 600;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-/* ==========================================
-   PANEL ASIGNAR: TRANSLÚCIDO A ANCHO COMPLETO
-   ========================================== */
-#panel-asignacion-unico {
-  position: fixed !important;
-  bottom: 55px !important; /* Apoyado sobre el tab-bar inferior */
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  transform: none !important;
-  background: rgba(20, 20, 22, 0.82) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: none !important;
-  border-radius: 16px 16px 0 0 !important;
-  padding: 16px 20px !important;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.3) !important;
-  box-sizing: border-box !important;
-  gap: 12px;
-  z-index: 9999 !important;
-  display: none; /* Controlado dinámicamente por JS */
-  align-items: center;
-}
-
-[data-theme="claro"] #panel-asignacion-unico {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.06) !important;
-}
-
-#sel-hermano-unico {
-  flex-grow: 1 !important;
-  background: rgba(255,255,255,0.07) !important;
-  color: var(--texto-principal) !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  border-radius: 8px;
-  padding: 10px !important;
-  font-size: 14px;
-  height: 42px;
-}
-
-[data-theme="claro"] #sel-hermano-unico {
-  background: rgba(0,0,0,0.04) !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-}
-
-#btn-asignar-multiple {
-  height: 42px;
-  padding: 0 20px !important;
-  border-radius: 8px !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
-
-/* Menú de Ordenación Superior en Asignados */
+/* ==========================================================================
+   MENÚ DE ORDENACIÓN Y PANEL DE ASIGNACIÓN TRANSPARENTE TOTAL
+   ========================================================================== */
 .menu-agrupacion-premium {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 10px;
-  margin-bottom: 14px;
-}
-
-[data-theme="claro"] .menu-agrupacion-premium {
-  background: rgba(0,0,0,0.03);
+  padding: 10px 14px;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-tarjeta);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  margin: 0 16px 14px 16px;
 }
 
 .titulo-filtro-lbl {
   font-size: 12px;
   font-weight: 600;
-  opacity: 0.6;
-  margin-right: 4px;
+  color: var(--texto-secundario);
 }
 
 .btn-sub-filtro {
@@ -251,20 +197,58 @@ body {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
 .btn-sub-filtro.activo {
   background: var(--texto-principal);
-  color: var(--fondo-principal);
+  color: var(--fondo-tarjeta);
   font-weight: 600;
+}
+
+#panel-asignacion-unico {
+  position: fixed !important;
+  bottom: 54px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  background: var(--fondo-panel-completo) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border-top: 1px solid var(--borde-panel) !important;
+  border-radius: 16px 16px 0 0 !important;
+  padding: 14px 20px !important;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.25) !important;
+  box-sizing: border-box !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 99999 !important;
+}
+
+#sel-hermano-unico {
+  flex-grow: 1 !important;
+  background: var(--fondo-input) !important;
+  color: var(--texto-principal) !important;
+  border: 1px solid var(--borde-input) !important;
+  border-radius: 10px;
+  padding: 12px !important;
+  font-size: 14px;
+}
+
+.nombre-barrio-centrado {
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+  flex-grow: 1;
+  color: var(--texto-principal);
 }
 
 .tag-prioritario-abajo {
   background: rgba(255, 59, 48, 0.14) !important;
-  color: #ff3b30 !important;
-  font-size: 9px !important;
+  color: var(--apple-rojo) !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
-  padding: 2px 6px !important;
-  border-radius: 4px;
+  padding: 3px 8px !important;
+  border-radius: 5px;
 }
