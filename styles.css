@@ -1,302 +1,270 @@
 /* ==========================================
-   ESTILOS GENERALES Y FUENTE MODERNA
+   ESTILOS PREMIUM REVISADOS (CIUDAD & CRISTAL)
    ========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --apple-verde: #34c759;
-    --apple-naranja: #ff9500;
-    --apple-rojo: #ff3b30;
-    
-    /* Variables de Tema Oscuro (Por defecto) */
-    --fondo-capa: rgba(20, 20, 22, 0.65);
-    --fondo-tarjeta: rgba(30, 30, 32, 0.75);
-    --texto-principal: #ffffff;
-    --texto-secundario: rgba(255, 255, 255, 0.6);
-    --borde-sutil: rgba(255, 255, 255, 0.08);
+  --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --apple-verde: #34c759;
+  --apple-naranja: #ff9500;
 }
 
-[data-theme="claro"] {
-    /* Variables de Tema Claro */
-    --fondo-capa: rgba(255, 255, 255, 0.7);
-    --fondo-tarjeta: rgba(255, 255, 255, 0.8);
-    --texto-principal: #1c1c1e;
-    --texto-secundario: #68686e;
-    --borde-sutil: rgba(0, 0, 0, 0.08);
-}
-
+/* Fuente Global */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: var(--font-premium) !important;
+  font-family: var(--font-premium) !important;
 }
 
-/* Fondo Dinámico con Mapa de Ciudad Difuminado */
+/* Fondo de pantalla: Ciudad abstracta y difuminada */
 body {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    color: var(--texto-principal);
-    min-height: 100vh;
-    padding-bottom: 160px; /* Espacio para que nada quede tapado abajo */
+  background-image: linear-gradient(rgba(10, 10, 12, 0.65), rgba(10, 10, 12, 0.65)), 
+                    url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  margin: 0;
+  padding: 0;
 }
 
 [data-theme="claro"] body {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.65)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop') !important;
+  background-image: linear-gradient(rgba(245, 245, 247, 0.82), rgba(245, 245, 247, 0.82)), 
+                    url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
 }
 
-/* Contenedor de la App en modo Cristal */
-.contenedor-app {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 16px;
-}
-
-/* ==========================================
-   WIDGETS, CONTADORES Y BARRA DE PROGRESO
-   ========================================== */
-.bloque-estadisticas {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.widget-anillo {
-    background: var(--fondo-tarjeta);
-    border: 1px solid var(--borde-sutil);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: 12px 6px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* SVG del Anillo Ajustado */
-.widget-anillo svg {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 6px;
-}
-
-/* Corrección de números gigantes: ya no tapan los anillos */
-.widget-anillo text {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    fill: var(--texto-principal) !important;
-}
-
-.widget-anillo p {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--texto-secundario);
-    margin-top: 4px;
-}
-
-/* Bloque Progreso de Campaña Totalmente Separado */
+/* Despegar la barra de progreso de los números gigantes */
 .bloque-progreso-tiempo {
-    background: var(--fondo-tarjeta);
-    border: 1px solid var(--borde-sutil);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 20px;
+  margin-top: 24px !important;
+  padding: 16px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+[data-theme="claro"] .bloque-progreso-tiempo {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Números Gigantes en los Contadores */
+.widget-anillo span, [id^="w-"] {
+  font-size: 34px !important;
+  font-weight: 700 !important;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Centrado del nombre de barriada en Disponibles */
+.nombre-barrio-centrado {
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+  flex-grow: 1;
 }
 
 /* ==========================================
-   MENU ORDENACIÓN PESTAÑA ASIGNADOS
-   ========================================== */
-.menu-agrupacion-premium {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    background: var(--fondo-tarjeta);
-    border: 1px solid var(--borde-sutil);
-    border-radius: 12px;
-    margin-bottom: 14px;
-    backdrop-filter: blur(10px);
-}
-
-.titulo-filtro-lbl {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--texto-secundario);
-    text-transform: uppercase;
-}
-
-.btn-sub-filtro {
-    flex: 1;
-    background: rgba(120, 120, 128, 0.15);
-    border: none;
-    color: var(--texto-principal);
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* Estado activo real del botón al pulsar */
-.btn-sub-filtro.activo {
-    background: var(--texto-principal) !important;
-    color: var(--fondo-capa) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-/* ==========================================
-   TARJETAS HORIZONTALES (PESTAÑA ASIGNADOS)
+   NUEVA TARJETA HORIZONTAL (PESTAÑA ASIGNADOS)
    ========================================== */
 .tarjeta-horizontal-premium {
-    display: flex !important;
-    background: var(--fondo-tarjeta) !important;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    border: 1px solid var(--borde-sutil) !important;
-    border-radius: 14px !important;
-    overflow: hidden;
-    height: 85px !important;
-    margin-bottom: 10px;
-    align-items: center;
+  display: flex !important;
+  background: rgba(30, 30, 32, 0.65) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  height: 90px !important;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  align-items: center;
 }
 
-.tarjeta-horizontal-premium.borde-prioritario {
-    border: 1.5px solid var(--apple-rojo) !important;
+[data-theme="claro"] .tarjeta-horizontal-premium {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.borde-prioritario {
+  border: 1.5px solid #ff3b30 !important;
 }
 
 .zona-izquierda-mapa {
-    position: relative;
-    width: 85px;
-    height: 100%;
-    min-width: 85px;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  width: 95px;
+  height: 100%;
+  min-width: 95px;
+  background: #000;
 }
 
 .img-horizontal-asset {
-    width: 100%;
-    height: 100%;
-    object-fit: contain !important; /* Imagen completa a la izquierda */
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important; /* Muestra el plano completo sin recortar */
 }
 
 .badge-id-horizontal {
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
-    background: rgba(0, 0, 0, 0.75);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 4px;
-    border-radius: 4px;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
 .zona-derecha-contenido {
-    display: flex;
-    flex-direction: column;
-    padding: 8px 12px;
-    justify-content: space-between;
-    height: 100%;
-    flex-grow: 1;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  justify-content: space-between;
+  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .fila-superior-barrio {
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--texto-principal);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--texto-principal);
 }
 
 .fila-inferior-hermano {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--texto-secundario);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+  color: var(--texto-principal);
 }
 
 .fila-estado-tag {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .indicador-circulo {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
 }
-.indicador-circulo.color-calle { background-color: var(--apple-naranja); }
-.indicador-circulo.color-hecho { background-color: var(--apple-verde); }
+
+.color-calle { background-color: var(--apple-naranja); }
+.color-hecho { background-color: var(--apple-verde); }
 
 .texto-estado-lbl {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--texto-secundario);
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
 }
 
 /* ==========================================
-   PANEL ASIGNAR: ACOPLADO 100% SIN HUECOS
+   PANEL ASIGNAR: TRANSLÚCIDO A ANCHO COMPLETO
    ========================================== */
 #panel-asignacion-unico {
-    position: fixed !important;
-    bottom: 55px !important; /* Pegado milimétricamente arriba del menú de pestañas */
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    background: var(--fondo-tarjeta) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border-top: 1px solid var(--borde-sutil) !important;
-    border-bottom: none !important;
-    border-left: none !important;
-    border-right: none !important;
-    border-radius: 16px 16px 0 0 !important;
-    padding: 12px 16px !important;
-    box-shadow: 0 -8px 24px rgba(0,0,0,0.2) !important;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 9999 !important;
-    box-sizing: border-box !important;
+  position: fixed !important;
+  bottom: 55px !important; /* Apoyado sobre el tab-bar inferior */
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+  background: rgba(20, 20, 22, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-radius: 16px 16px 0 0 !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.3) !important;
+  box-sizing: border-box !important;
+  gap: 12px;
+  z-index: 9999 !important;
+  display: none; /* Controlado dinámicamente por JS */
+  align-items: center;
+}
+
+[data-theme="claro"] #panel-asignacion-unico {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.06) !important;
 }
 
 #sel-hermano-unico {
-    flex: 1 !important;
-    background: rgba(120, 120, 128, 0.15) !important;
-    color: var(--texto-principal) !important;
-    border: 1px solid var(--borde-sutil) !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
-    font-size: 13px !important;
-    outline: none;
-    -webkit-appearance: none;
+  flex-grow: 1 !important;
+  background: rgba(255,255,255,0.07) !important;
+  color: var(--texto-principal) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px;
+  padding: 10px !important;
+  font-size: 14px;
+  height: 42px;
 }
 
-/* Botones Apple Clásicos */
-.btn-apple-bloqueado {
-    background: rgba(120, 120, 128, 0.2) !important;
-    color: var(--texto-secundario) !important;
-    border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+[data-theme="claro"] #sel-hermano-unico {
+  background: rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
 }
-.btn-apple-verde-activo {
-    background: var(--apple-verde) !important;
-    color: white !important;
-    border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer;
+
+#btn-asignar-multiple {
+  height: 42px;
+  padding: 0 20px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+/* Menú de Ordenación Superior en Asignados */
+.menu-agrupacion-premium {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+[data-theme="claro"] .menu-agrupacion-premium {
+  background: rgba(0,0,0,0.03);
+}
+
+.titulo-filtro-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-right: 4px;
+}
+
+.btn-sub-filtro {
+  background: rgba(120, 120, 128, 0.15);
+  border: none;
+  color: var(--texto-principal);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sub-filtro.activo {
+  background: var(--texto-principal);
+  color: var(--fondo-principal);
+  font-weight: 600;
+}
+
+.tag-prioritario-abajo {
+  background: rgba(255, 59, 48, 0.14) !important;
+  color: #ff3b30 !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px;
 }
