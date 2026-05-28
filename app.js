@@ -1,4 +1,5 @@
 // app.js - Versión Premium Estabilizada con Corrección de Fechas, Temas y Estados Activos
+alert("¡El archivo app.js se está ejecutando correctamente!");
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
