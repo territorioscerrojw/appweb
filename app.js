@@ -1,13 +1,14 @@
-// app.js - Versión Corregida Estabilizada con Iconografía SVG y Proporciones Rectangulares
+// app.js - Versión Estabilizada con Selector Inteligente de Hermanos e Iconos SVG
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
-let territoriosSeleccionados = []; // CORREGIDO: Nombre de variable unificado para evitar bloqueos
+let territoriosSeleccionados = []; 
 let vistaActual = "disponibles"; 
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
+let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "territorio"; 
 
 async function inicializarPantalla(tipo) {
@@ -24,9 +25,6 @@ async function inicializarPantalla(tipo) {
   }
   
   await descargarDatosDesdeSheets();
-  if (tipoUsuario === "encargado") {
-    await descargarHermanosDesdeSheets();
-  }
 }
 
 function descargarDatosDesdeSheets() {
@@ -50,6 +48,10 @@ function descargarDatosDesdeSheets() {
         if (document.getElementById("txt-campana-titulo")) {
           document.getElementById("txt-campana-titulo").innerText = campanaNombre;
         }
+
+        // Recuperamos el diccionario inteligente de hermanos del código que sí funcionaba
+        diccionarioGruposHermanos = baseDatosCompleta[0].grupoRealHermano || {};
+        extraerNombresDeHermanos();
       }
       
       if (tipoUsuario === "encargado") {
@@ -76,30 +78,29 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-function descargarHermanosDesdeSheets() {
-  return new Promise((resolve) => {
-    const callbackHermanos = "callbackHermanos_" + new Date().getTime();
-    
-    window[callbackHermanos] = function(datos) {
-      if (datos && !datos.error) {
-        listaHermanosPool = datos.sort((a, b) => a.localeCompare(b));
-        inyectarSelectorHermanos();
+// Adaptación de la función del código original que cargaba los listados perfectamente
+function extraerNombresDeHermanos() {
+  let listado = Object.keys(diccionarioGruposHermanos);
+  
+  if (listado.length === 0) {
+    baseDatosCompleta.forEach(m => {
+      if (m.hermano && m.hermano.trim() !== "") {
+        const n = m.hermano.trim();
+        if (!listado.includes(n)) listado.push(n);
       }
-      const elScript = document.getElementById(callbackHermanos);
-      if (elScript) elScript.remove();
-      delete window[callbackHermanos];
-      resolve();
-    };
+    });
+  }
+  
+  listaHermanosPool = listado.sort((a, b) => {
+    const grupoA = diccionarioGruposHermanos[a] ? String(diccionarioGruposHermanos[a]).trim() : "";
+    const grupoB = diccionarioGruposHermanos[b] ? String(diccionarioGruposHermanos[b]).trim() : "";
+    const grupoActualStr = String(grupoFiltro).trim();
 
-    const script = document.createElement("script");
-    script.id = callbackHermanos;
-    script.src = `${URL_API_SHEETS}?accion=leerHermanos&callback=${callbackHermanos}`;
-    script.onerror = () => { resolve(); };
-    document.body.appendChild(script);
+    if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
+    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
+    return a.localeCompare(b);
   });
-}
-
-function inyectarSelectorHermanos() {
+  
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
@@ -107,7 +108,12 @@ function inyectarSelectorHermanos() {
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
-    opt.innerText = nombre;
+    
+    const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
+    const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
+    
+    // Muestra discretamente un puntito para priorizar los hermanos asignados a este grupo específico
+    opt.innerText = esDeEsteGrupo ? `● ${nombre} (G. ${grupoFiltro})` : nombre;
     selectorUnico.appendChild(opt);
   });
 }
@@ -158,11 +164,9 @@ function inyectarArcoProgreso(idPath, valor, total) {
   el.setAttribute("stroke-dasharray", `${porcentaje}, 100`);
 }
 
-function cambiarCriterioOrdenacion(criterio) {
+function cambiarCriterioAsignados(criterio) {
   criterioOrdenacionAsignados = criterio;
-  document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activa"));
-  const bActivo = document.getElementById(`btn-ord-${criterio}`);
-  if (bActivo) bActivo.classList.add("activa");
+  document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activo"));
   filtrarYRenderizar();
 }
 
@@ -172,9 +176,14 @@ function filtrarYRenderizar() {
   const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
   grid.innerHTML = "";
   
-  const menuOrdenacion = document.getElementById("menu-ordenacion-asignados");
-  if (menuOrdenacion) {
-    menuOrdenacion.style.display = vistaActual === "asignados" ? "flex" : "none";
+  const panelAsignacion = document.getElementById("panel-asignacion-unico");
+  
+  if (vistaActual === "disponibles") {
+    eliminarSelectorDeAgrupacionAsignados();
+    actualizarPanelAsignacionFlotante();
+  } else {
+    if (panelAsignacion) panelAsignacion.style.display = "none";
+    inyectarSelectorDeAgrupacionAsignados();
   }
   
   let dataset = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
@@ -183,12 +192,11 @@ function filtrarYRenderizar() {
   if (buscadorValue) {
     dataset = dataset.filter(m => 
       m.id.toString().includes(buscadorValue) || 
-      m.barriada.toLowerCase().includes(buscadorValue) ||
-      (m.hermano && m.hermano.toLowerCase().includes(buscadorValue))
+      m.barriada.toLowerCase().includes(buscadorValue)
     );
   }
   
-  // ORDENACIÓN EFECTIVA
+  // ORDENACIÓN Y AGRUPACIÓN EFECTIVA
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -201,7 +209,7 @@ function filtrarYRenderizar() {
     if (criterioOrdenacionAsignados === "territorio") {
       dataset.sort((a, b) => parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "hermano") {
-      dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || ""));
+      dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "fecha") {
       dataset.sort((a, b) => new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0));
     }
@@ -238,10 +246,9 @@ function filtrarYRenderizar() {
         </div>
       `;
     } else {
-      // DISEÑO HORIZONTAL CON IMAGEN RECTANGULAR E ICONOS SVG MINIMALISTAS MODERNOS
+      // DISEÑO HORIZONTAL CON IMAGEN RECTANGULAR E ICONOS SVG MINIMALISTAS
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      // Captura limpia de la fecha desde Columna N de Google Sheets
       let fechaFormateada = "Sin fecha";
       if (mapa.fechaEntrega) {
         const f = new Date(mapa.fechaEntrega);
@@ -286,6 +293,29 @@ function filtrarYRenderizar() {
   });
 }
 
+function inyectarSelectorDeAgrupacionAsignados() {
+  if (document.getElementById("contenedor-agrupador-asignados")) return;
+  const mainContenido = document.getElementById("contenedor-principal-grid");
+  if (!mainContenido) return;
+  
+  const navAgrupador = document.createElement("div");
+  navAgrupador.id = "contenedor-agrupador-asignados";
+  navAgrupador.className = "menu-agrupacion-premium";
+  navAgrupador.style = "display: flex; gap: 6px; padding: 10px 0; width: 100%; overflow-x: auto;";
+  navAgrupador.innerHTML = `
+    <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px;">Ordenar por:</span>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
+  `;
+  mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
+}
+
+function eliminarSelectorDeAgrupacionAsignados() {
+  const el = document.getElementById("contenedor-agrupador-asignados");
+  if (el) el.remove();
+}
+
 function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
@@ -315,10 +345,12 @@ function actualizarPanelAsignacionFlotante() {
   
   if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
     if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
+    panel.style.display = "flex";
     panel.classList.add("visible");
     evaluarEstadoBotonAsignar();
   } else {
     panel.classList.remove("visible");
+    panel.style.display = "none";
   }
 }
 
@@ -345,14 +377,24 @@ async function procesarAsignacionMultiple() {
   
   btn.disabled = true;
   btn.innerText = "Asignando...";
+
+  const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
+  let telefonoWhatsApp = "";
+  if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
+    telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+  }
   
   for (let id of territoriosSeleccionados) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
   
-  const listaNumeros = territoriosSeleccionados.map(id => parseInt(id)).join(", ");
-  const msj = `¡Hola! Te he asignado los siguientes mapas: *${listaNumeros}*.\nPuedes verlos desde tu enlace personal de la app. ¡Muchas gracias!`;
-  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msj)}`, '_blank');
+  if (telefonoWhatsApp && telefonoWhatsApp !== "") {
+    let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
+    let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu apoyo!`;
+    let enlaceWhatsAppFinal = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensajeCompleto}`;
+    
+    window.open(enlaceWhatsAppFinal, '_blank');
+  }
   
   await descargarDatosDesdeSheets();
 }
@@ -442,8 +484,6 @@ function cambiarPestana(vista, btn) {
   vistaActual = vista;
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
   btn.classList.add("activa");
-  
-  actualizarPanelAsignacionFlotante();
   filtrarYRenderizar();
 }
 
