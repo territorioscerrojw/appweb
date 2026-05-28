@@ -1,14 +1,14 @@
-// app.js - Versión Definitiva con Correcciones de Lógica de Hojas y Diseños Horizontales
+// app.js - Versión Corregida Estabilizada con Iconografía SVG y Proporciones Rectangulares
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
-let territoriosSeleccionados = [];
+let territoriosSeleccionados = []; // CORREGIDO: Nombre de variable unificado para evitar bloqueos
 let vistaActual = "disponibles"; 
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
-let criterioOrdenacionAsignados = "territorio"; // Criterio por defecto
+let criterioOrdenacionAsignados = "territorio"; 
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -46,7 +46,6 @@ function descargarDatosDesdeSheets() {
       if (baseDatosCompleta.length > 0) {
         procesarFechasYBarras(baseDatosCompleta[0].inicio, baseDatosCompleta[0].fin);
         
-        // CAMBIO: Nombre de campaña arriba (H1)
         const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
         if (document.getElementById("txt-campana-titulo")) {
           document.getElementById("txt-campana-titulo").innerText = campanaNombre;
@@ -54,7 +53,6 @@ function descargarDatosDesdeSheets() {
       }
       
       if (tipoUsuario === "encargado") {
-        // CAMBIO: Número de grupo abajo (H2)
         if (document.getElementById("txt-grupo-sub")) {
           document.getElementById("txt-grupo-sub").innerText = `Grupo ${grupoFiltro}`;
         }
@@ -78,7 +76,6 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-// CAMBIO CRÍTICO: Ahora sí llama a la hoja HERMANOS de manera inequívoca
 function descargarHermanosDesdeSheets() {
   return new Promise((resolve) => {
     const callbackHermanos = "callbackHermanos_" + new Date().getTime();
@@ -161,7 +158,6 @@ function inyectarArcoProgreso(idPath, valor, total) {
   el.setAttribute("stroke-dasharray", `${porcentaje}, 100`);
 }
 
-// CAMBIO: Gestión de sub-filtros de ordenación activa
 function cambiarCriterioOrdenacion(criterio) {
   criterioOrdenacionAsignados = criterio;
   document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activa"));
@@ -176,7 +172,6 @@ function filtrarYRenderizar() {
   const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
   grid.innerHTML = "";
   
-  // Mostrar u ocultar barra de sub-filtros según la pestaña
   const menuOrdenacion = document.getElementById("menu-ordenacion-asignados");
   if (menuOrdenacion) {
     menuOrdenacion.style.display = vistaActual === "asignados" ? "flex" : "none";
@@ -193,7 +188,7 @@ function filtrarYRenderizar() {
     );
   }
   
-  // CAMBIO: Lógica de Ordenación y Agrupación aplicada rigurosamente
+  // ORDENACIÓN EFECTIVA
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -217,7 +212,6 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
-      // DISEÑO DISPONIBLES: Vertical Clásico Inteligente
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
@@ -244,23 +238,24 @@ function filtrarYRenderizar() {
         </div>
       `;
     } else {
-      // CAMBIO: DISEÑO ASIGNADOS SOLICITADO -> Tarjeta Estrecha Horizontal con Imagen Izquierda y Datos Derecha
+      // DISEÑO HORIZONTAL CON IMAGEN RECTANGULAR E ICONOS SVG MINIMALISTAS MODERNOS
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
+      // Captura limpia de la fecha desde Columna N de Google Sheets
       let fechaFormateada = "Sin fecha";
       if (mapa.fechaEntrega) {
         const f = new Date(mapa.fechaEntrega);
         if (!isNaN(f.getTime())) {
-          fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit' });
+          fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: '2-digit' });
         }
       }
 
       div.innerHTML = `
-        <div class="img-lateral-wrapper">
+        <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
-          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset" onerror="this.src='https://placehold.co/150x150?text=Mapa'">
+          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
         </div>
         <div class="contenido-lateral-datos">
           <div class="cabecera-datos-linea">
@@ -268,12 +263,19 @@ function filtrarYRenderizar() {
             <span class="nombre-barrio-chico">${mapa.barriada}</span>
           </div>
           <div class="info-hermano-linea">
-            <span class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</span>
-            <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
+            <span class="txt-horizontal-hermano">
+              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              ${mapa.hermano || 'No asignado'}
+            </span>
+            <span class="txt-horizontal-fecha">
+              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              ${fechaFormateada}
+            </span>
           </div>
           <div class="estado-badge-linea">
             <span class="badge-estado-pill ${mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
-              ${mapa.trabajado ? "⏳ En la calle" : "✅ Hecho"}
+              <svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              ${mapa.trabajado ? "En la calle" : "Hecho"}
             </span>
             ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
@@ -288,7 +290,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -305,7 +307,6 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   actualizarPanelAsignacionFlotante();
 }
 
-// CAMBIO CRÍTICO: El selector inferior "Seleccionar Hermano" SÓLO sale en la pestaña DISPONIBLES si hay selección
 function actualizarPanelAsignacionFlotante() {
   const panel = document.getElementById("panel-asignacion-unico");
   const textContador = document.getElementById("txt-contador-seleccionados");
