@@ -14,8 +14,8 @@
   <div class="contenedor-app">
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
-        <h1 id="txt-campana-titulo">Campaña Activa</h1>
-        <h2 id="txt-grupo-sub">Grupo</h2>
+        <h1 id="txt-campana-titulo">Cargando Campaña...</h1>
+        <h2 id="txt-grupo-sub">Grupo...</h2>
       </div>
       <button id="btn-cambiar-tema" onclick="conmutarTema()">☀️</button>
     </header>
@@ -80,7 +80,7 @@
     <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
       <button class="btn-sub-filtro" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
       <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
-      <button class="btn-sub-filtro" id="btn-ord-fecha" class="btn-sub-filtro activa" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
+      <button class="btn-sub-filtro" id="btn-ord-fecha" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
     </div>
 
     <main id="contenedor-principal-grid" class="grid-territorios"></main>
