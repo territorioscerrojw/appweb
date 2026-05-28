@@ -1,4 +1,4 @@
-/* styles.css - Diseño Minimalista Liso y Corregido */
+/* styles.css - Diseño Minimalista Liso, Visible y Corregido */
 
 :root {
   --fondo-base: #09090b;
@@ -11,8 +11,12 @@
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
   
-  /* CORREGIDO: Línea de fondo vacía de los contadores visible en modo oscuro */
+  /* Línea de fondo vacía de los contadores visible en modo oscuro */
   --anillo-vacio: rgba(255, 255, 255, 0.12);
+  
+  /* CORREGIDO: Estilo visible para el botón de tema en modo oscuro */
+  --btn-tema-bg: rgba(255, 255, 255, 0.06);
+  --btn-tema-borde: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="claro"] {
@@ -23,8 +27,12 @@
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
   
-  /* CORREGIDO: Línea de fondo vacía de los contadores visible en modo claro */
+  /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
+  
+  /* CORREGIDO: Estilo visible para el botón de tema en modo claro */
+  --btn-tema-bg: rgba(0, 0, 0, 0.04);
+  --btn-tema-borde: rgba(0, 0, 0, 0.12);
 }
 
 * {
@@ -55,7 +63,7 @@ body {
   padding: 20px 14px 170px 14px;
 }
 
-/* CABECERA Y BOTÓN LUNA/SOL MINIMALISTA */
+/* CABECERA Y BOTÓN LUNA/SOL MINIMALISTA VISIBLE */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
@@ -74,23 +82,25 @@ body {
   margin-top: 2px;
 }
 #btn-cambiar-tema {
-  background: transparent !important; /* CORREGIDO: Totalmente transparente sin círculos de color */
-  border: none !important;
-  width: 38px;
-  height: 38px;
+  background: var(--btn-tema-bg) !important; /* CORREGIDO: Fondo sutil que se nota */
+  border: 1px solid var(--btn-tema-borde) !important; /* CORREGIDO: Borde delimitador visible */
+  width: 40px;
+  height: 40px;
+  border-radius: 10px; /* Bordes ligeramente redondeados estilo Apple */
   cursor: pointer;
-  color: var(--texto-principal); /* Hereda el color del texto actual */
+  color: var(--texto-principal);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 #btn-cambiar-tema:active {
-  opacity: 0.6;
+  transform: scale(0.95);
+  background: rgba(128, 128, 128, 0.2) !important;
 }
 #btn-cambiar-tema svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -132,7 +142,7 @@ body {
 }
 .anillo-fondo {
   fill: none;
-  stroke: var(--anillo-vacio); /* CORREGIDO: Ahora la zona vacía se ve claramente */
+  stroke: var(--anillo-vacio); /* Zona vacía de la barra perfectamente visible */
   stroke-width: 3.5;
 }
 .anillo-linea {
@@ -375,7 +385,6 @@ body {
   align-items: center;
   gap: 3px;
 }
-/* CAMBIADO: Términos actualizados a Asignados y Completados */
 .badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
 .badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
 
@@ -485,7 +494,7 @@ body {
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
-/* LIGHTBOX (VISOR DE PANTALLA COMPLETA CORREGIDO) */
+/* LIGHTBOX (VISOR DE PANTALLA COMPLETA) */
 .visor-pantalla-completa {
   display: none; 
   position: fixed; 
@@ -493,7 +502,7 @@ body {
   left: 0; 
   width: 100%; 
   height: 100%;
-  background-color: #000000; /* Fondo negro puro para el visor */
+  background-color: #000000;
   z-index: 2000; 
   flex-direction: column;
 }
@@ -502,12 +511,12 @@ body {
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-  background-color: rgba(20, 20, 25, 0.9); /* CORREGIDO: Fondo oscuro sólido para blindar las letras */
+  background-color: rgba(20, 20, 25, 0.9); /* Fondo oscuro semitransparente sólido */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff !important; /* CORREGIDO: Letras 100% blancas y legibles */
+  color: #ffffff !important; /* Letras 100% blancas */
 }
 .cabecera-visor-completo * {
-  color: #ffffff !important; /* Asegura que títulos e identificadores sean blancos */
+  color: #ffffff !important;
 }
 .btn-cerrar-visor { 
   background: rgba(255, 255, 255, 0.15); 
