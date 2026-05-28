@@ -467,3 +467,14 @@ body {
 .btn-cerrar-visor { background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; }
 .zona-scroll-zoom { flex: 1; display: flex; align-items: center; justify-content: center; }
 .zona-scroll-zoom img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+/* Forzar estilos del selector de hermanos en modo claro */
+[data-theme="claro"] .select-apple {
+  background-color: #ffffff !important;
+  color: #18181b !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="claro"] .select-apple option {
+  background-color: #ffffff !important;
+  color: #18181b !important;
+}
