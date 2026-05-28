@@ -1,4 +1,4 @@
-/* styles.css - Edición Premium Inter Completa */
+/* styles.css - Versión Corrección Completa Premium */
 
 :root {
   --fondo-base: #09090b;
@@ -13,6 +13,7 @@
   --blur-filter: brightness(0.3) blur(35px);
 }
 
+/* CAMBIO: Ahora el Modo Claro aclara drásticamente el fondo para que no se vea igual */
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
   --glass-fondo: rgba(255, 255, 255, 0.82);
@@ -20,7 +21,7 @@
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
-  --blur-filter: brightness(1.1) blur(35px); /* CORRECCIÓN: Fondo claro se aclara dinámicamente */
+  --blur-filter: brightness(1.4) contrast(0.95) blur(35px);
 }
 
 * {
@@ -91,7 +92,7 @@ body {
   color: inherit;
 }
 
-/* WIDGETS ANILLOS - CONTADORES GRANDES DESTACADOS */
+/* CAMBIO: CONTADORES GRANDES E IMPACTANTES */
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -103,7 +104,7 @@ body {
   border: 1px solid var(--glass-borde);
   backdrop-filter: blur(20px);
   border-radius: 14px;
-  padding: 14px 4px;
+  padding: 14px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -116,8 +117,8 @@ body {
 }
 .anillo-svg-wrapper {
   position: relative;
-  width: 46px; /* CORRECCIÓN: Tamaño expandido */
-  height: 46px;
+  width: 55px; /* Aumentado de tamaño */
+  height: 55px;
 }
 .anillo-circular {
   width: 100%;
@@ -144,7 +145,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px; /* CORRECCIÓN: Números grandes e impactantes */
+  font-size: 18px; /* Número considerablemente más grande */
   font-weight: 800;
 }
 
@@ -274,7 +275,7 @@ body {
 }
 .imagen-mapa-asset { width: 100%; height: 100%; object-fit: cover; }
 
-/* NUEVO DISEÑO: TARJETA ASIGNADOS HORIZONTAL ESTRECHA */
+/* CAMBIO: NUEVO DISEÑO ESTRICTO TARJETA ASIGNADOS HORIZONTAL ESTRECHA */
 .tarjeta-apple-horizontal {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -289,7 +290,7 @@ body {
 }
 .img-lateral-wrapper {
   position: relative;
-  width: 75px; /* Estrecha e ideal */
+  width: 75px; 
   height: 75px;
   border-radius: 8px;
   overflow: hidden;
@@ -334,7 +335,7 @@ body {
 .badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.15); color: var(--apple-rojo); }
 .badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.15); color: var(--apple-verde); }
 
-/* ICONOS ULTRA-MINIMALISTAS TRANSPARENTES ABAJO A LA DERECHA */
+/* CAMBIO: ICONOS ULTRA-MINIMALISTAS TRANSPARENTES SIN RELLENO SÓLIDO */
 .btn-lupa-flotante {
   position: absolute;
   bottom: 6px;
@@ -351,10 +352,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.5;
+  opacity: 0.7;
+}
+.ico-minimalista {
+  opacity: 0.9;
+  stroke: #ffffff;
 }
 
-/* MARCADORES TEXTOS CORREGIDOS */
+/* CAMBIO: SE QUITÓ LA PALABRA "MAPA", SÓLO PRIORITARIO */
 .tag-prioritario-abajo {
   display: inline-block;
   color: var(--apple-naranja);
@@ -368,21 +373,21 @@ body {
   font-weight: 700;
 }
 
-/* PANEL INFERIOR FIJO ADHERIDO PERFECTAMENTE - TRANSLÚCIDO APPLE */
+/* CAMBIO: VERDADERO TRANSLÚCIDO TRANSPARENTE EN EL MENÚ FLOTANTE */
 .panel-inferior-flotante {
   position: fixed;
-  bottom: 48px; /* Encaje hermético sobre el footer */
+  bottom: 48px; 
   left: 50%;
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
-  background: rgba(18, 18, 22, 0.72); /* CORRECCIÓN: Translúcido real */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(20, 20, 25, 0.65); /* Más transparente para que actúe de cristal real */
+  backdrop-filter: blur(25px) saturate(130%);
+  -webkit-backdrop-filter: blur(25px) saturate(130%);
   border-top: 1px solid var(--glass-borde);
   padding: 12px 16px;
   z-index: 99;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; }
