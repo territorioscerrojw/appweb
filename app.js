@@ -1,4 +1,4 @@
-// app.js - Versión Ultra-Premium Corregida (Fondo de Ciudad, Tarjetas Horizontales y Fijado de Errores)
+// app.js - Versión Corregida sin conflictos de estilos heredados
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -14,7 +14,7 @@ let criterioOrdenacionAsignados = "territorio";
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
-  inyectarEstilosEstructuralesPremium(); 
+  corregirEtiquetasContadoresFijas();
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -90,7 +90,7 @@ function extraerNombresDeHermanos() {
     const grupoActualStr = String(grupoFiltro).trim();
 
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
-    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
+    if (grupoA !== grupoActualStr && groupB === grupoActualStr) return 1;
     return a.localeCompare(b);
   });
   
@@ -162,11 +162,9 @@ function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
   
-  // Capturar buscador
   const barraBusquedaInput = document.getElementById("input-busqueda");
   const contenedorBuscadorEstilo = document.querySelector(".bloque-busqueda") || document.getElementById("input-busqueda")?.parentNode;
   
-  // Ocultar buscador e inyectar agrupadores según pestaña
   if (vistaActual === "disponibles") {
     eliminarSelectorDeAgrupacionAsignados();
     if (contenedorBuscadorEstilo) contenedorBuscadorEstilo.style.display = "block";
@@ -181,7 +179,6 @@ function filtrarYRenderizar() {
   let dataset = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   dataset = vistaActual === "disponibles" ? dataset.filter(m => m.entregado === false) : dataset.filter(m => m.entregado === true);
   
-  // Búsqueda estricta sólo por ID o Barriada en Disponibles
   if (buscadorValue && vistaActual === "disponibles") {
     dataset = dataset.filter(m => 
       m.id.toString().includes(buscadorValue) || 
@@ -189,7 +186,6 @@ function filtrarYRenderizar() {
     );
   }
   
-  // Ordenamiento correcto e inteligente sin errores
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -208,15 +204,13 @@ function filtrarYRenderizar() {
     }
   }
   
-  // Renderizado Condicional de Tarjetas (Normal o la nueva Horizontal de Asignados)
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
     
     if (vistaActual === "disponibles") {
-      // 📌 DISEÑO PESTAÑA DISPONIBLES (TARJETA VERTICAL TRADICIONAL)
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+      div.className = `tarjeta-apple ${esPrio ? 'prioritarios' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
@@ -245,7 +239,6 @@ function filtrarYRenderizar() {
         <div class="pie-tarjeta-firma">${subFirmaHTML}</div>
       `;
     } else {
-      // 📌 NUEVO DISEÑO SOLICITADO PARA ASIGNADOS (TARJETA COMPACTA HORIZONTAL)
       div.className = `tarjeta-horizontal-premium ${esPrio ? 'borde-prioritario' : ''}`;
       
       div.innerHTML = `
@@ -360,7 +353,6 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
   
-  // Buscar número telefónico mapeado desde HERMANOS
   let telefonoWhatsApp = "";
   baseDatosCompleta.forEach(m => {
     if (m.hermano && m.hermano.trim() === nombreH && m.whatsapp) {
@@ -368,12 +360,10 @@ async function procesarAsignacionMultiple() {
     }
   });
   
-  // Lanzar peticiones síncronas contra la hoja de cálculo
   for (let id of territoriosSeleccionados) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
   
-  // 🔥 REDIRECCIÓN CORRECTA Y PROBADA A WHATSAPP
   if (telefonoWhatsApp && telefonoWhatsApp !== "") {
     let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
     let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu labor!`;
@@ -492,258 +482,10 @@ function actualizarIconoTemaEstructural(tema) {
   }
 }
 
-// 🔥 INYECTOR TOTAL DE DISEÑO MINIMALISTA, ARREGLO DE BARRA, CONTADORES Y FONDO DE CIUDAD ABSTRACTA
-function inyectarEstilosEstructuralesPremium() {
-  if (document.getElementById("estilos-reestatales-premium")) return;
-  
-  // Cambiar etiquetas de texto fijas en los contadores directamente desde la raíz
+function corregirEtiquetasContadoresFijas() {
   const widgetsTextos = document.querySelectorAll(".widget-anillo");
   if (widgetsTextos.length >= 4) {
     widgetsTextos[2].querySelector("p").innerText = "Asignados";
     widgetsTextos[3].querySelector("p").innerText = "Completados";
   }
-
-  const style = document.createElement("style");
-  style.id = "estilos-reestatales-premium";
-  style.innerHTML = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    :root {
-      --font-premium: 'Inter', -apple-system, sans-serif;
-      --apple-verde: #34c759;
-    }
-    
-    /* Configuración del Fondo del Mapa de la Ciudad Difuminado */
-    body {
-      font-family: var(--font-premium) !important;
-      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
-      background-size: cover !important;
-      background-position: center !important;
-      background-attachment: fixed !important;
-    }
-    
-    [data-theme="claro"] body {
-      background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
-    }
-    
-    /* Separar Barra de Progreso de Contadores Gigantes */
-    .bloque-progreso-tiempo {
-      margin-top: 24px !important;
-      padding: 16px !important;
-      background: rgba(255,255,255,0.06) !important;
-      border-radius: 12px;
-    }
-    [data-theme="claro"] .bloque-progreso-tiempo {
-      background: rgba(0,0,0,0.04) !important;
-    }
-    
-    /* Números Gigantes de Contadores */
-    .widget-anillo span, [id^="w-"] {
-      font-size: 34px !important;
-      font-weight: 700 !important;
-    }
-    
-    /* Estilo Centrado de Barriada */
-    .nombre-barrio-centrado {
-      font-weight: 600;
-      font-size: 15px;
-      text-align: center;
-      flex-grow: 1;
-    }
-    
-    /* NUEVO DISEÑO: Tarjeta Horizontal Premium para Pestaña Asignados */
-    .tarjeta-horizontal-premium {
-      display: flex !important;
-      background: rgba(30, 30, 32, 0.7) !important;
-      backdrop-filter: blur(15px) !important;
-      -webkit-backdrop-filter: blur(15px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 12px !important;
-      overflow: hidden;
-      height: 90px !important;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-      align-items: center;
-    }
-    
-    [data-theme="claro"] .tarjeta-horizontal-premium {
-      background: rgba(255, 255, 255, 0.75) !important;
-      border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    }
-    
-    .borde-prioritario {
-      border: 1.5px solid #ff3b30 !important;
-    }
-    
-    .zona-izquierda-mapa {
-      position: relative;
-      width: 95px;
-      height: 100%;
-      min-width: 95px;
-      background: #000;
-    }
-    
-    .img-horizontal-asset {
-      width: 100%;
-      height: 100%;
-      object-fit: contain !important; /* Muestra el mapa completo sin cortes */
-    }
-    
-    .badge-id-horizontal {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
-    
-    .zona-derecha-contenido {
-      display: flex;
-      flex-direction: column;
-      padding: 10px 14px;
-      justify-content: space-between;
-      height: 100%;
-      flex-grow: 1;
-      overflow: hidden;
-    }
-    
-    .fila-superior-barrio {
-      font-weight: 600;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--texto-principal);
-    }
-    
-    .fila-inferior-hermano {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      opacity: 0.8;
-      color: var(--texto-principal);
-    }
-    
-    .fila-estado-tag {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .indicador-circulo {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .color-calle { background-color: #ff9500; }
-    .color-hecho { background-color: var(--apple-verde); }
-    
-    .texto-estado-lbl {
-      font-size: 11px;
-      font-weight: 600;
-      opacity: 0.7;
-    }
-    
-    /* DISEÑO TOTAL EN PANTALLA COMPLETA PARA PANEL DE ASIGNACIÓN (ABRAZA TODO EL ANCHO) */
-    #panel-asignacion-unico {
-      position: fixed !important;
-      bottom: 54px !important; /* Pegado justo arriba de la barra de control de pestañas inferior */
-      left: 0 !important;
-      right: 0 !important;
-      transform: none !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      background: rgba(20, 20, 22, 0.85) !important;
-      backdrop-filter: blur(25px) !important;
-      -webkit-backdrop-filter: blur(25px) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-left: none !important;
-      border-right: none !important;
-      border-bottom: none !important;
-      border-radius: 16px 16px 0 0 !important;
-      padding: 14px 20px !important;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.3) !important;
-      box-sizing: border-box !important;
-      gap: 12px;
-      z-index: 99999 !important;
-    }
-    
-    [data-theme="claro"] #panel-asignacion-unico {
-      background: rgba(255, 255, 255, 0.85) !important;
-      border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.05) !important;
-    }
-    
-    #sel-hermano-unico {
-      flex-grow: 1 !important;
-      background: rgba(255,255,255,0.08) !important;
-      color: var(--texto-principal) !important;
-      border: 1px solid rgba(255,255,255,0.1) !important;
-      border-radius: 8px;
-      padding: 10px !important;
-      font-size: 13px;
-    }
-    
-    [data-theme="claro"] #sel-hermano-unico {
-      background: rgba(0,0,0,0.05) !important;
-      border: 1px solid rgba(0,0,0,0.08) !important;
-    }
-    
-    #btn-asignar-multiple {
-      padding: 10px 18px !important;
-      white-space: nowrap !important;
-      border-radius: 8px !important;
-      font-size: 13px !important;
-      font-weight: 600 !important;
-    }
-    
-    /* Menú de Sub-Agrupación Superior Premium para Asignados */
-    .menu-agrupacion-premium {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      margin-bottom: 14px;
-    }
-    [data-theme="claro"] .menu-agrupacion-premium {
-      background: rgba(0,0,0,0.03);
-    }
-    .titulo-filtro-lbl {
-      font-size: 12px;
-      font-weight: 600;
-      opacity: 0.6;
-    }
-    .btn-sub-filtro {
-      background: rgba(120, 120, 128, 0.12);
-      border: none;
-      color: var(--texto-principal);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .btn-sub-filtro.activo {
-      background: var(--texto-principal);
-      color: var(--fondo-principal);
-      font-weight: 600;
-    }
-    .tag-prioritario-abajo {
-      background: rgba(255, 59, 48, 0.15) !important;
-      color: #ff3b30 !important;
-      font-size: 9px !important;
-      font-weight: 700 !important;
-      padding: 2px 6px !important;
-      border-radius: 4px;
-    }
-  `;
-  document.head.appendChild(style);
 }
