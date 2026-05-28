@@ -1,4 +1,4 @@
-// app.js - Versión Estabilizada con Selector Inteligente de Hermanos e Iconos SVG
+// app.js - Versión Estabilizada con Ajustes de Modo Claro, Estados y Filtros Dinámicos
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -49,7 +49,6 @@ function descargarDatosDesdeSheets() {
           document.getElementById("txt-campana-titulo").innerText = campanaNombre;
         }
 
-        // Recuperamos el diccionario inteligente de hermanos del código que sí funcionaba
         diccionarioGruposHermanos = baseDatosCompleta[0].grupoRealHermano || {};
         extraerNombresDeHermanos();
       }
@@ -78,7 +77,6 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-// Adaptación de la función del código original que cargaba los listados perfectamente
 function extraerNombresDeHermanos() {
   let listado = Object.keys(diccionarioGruposHermanos);
   
@@ -112,7 +110,6 @@ function extraerNombresDeHermanos() {
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
     const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
     
-    // Muestra discretamente un puntito para priorizar los hermanos asignados a este grupo específico
     opt.innerText = esDeEsteGrupo ? `● ${nombre} (G. ${grupoFiltro})` : nombre;
     selectorUnico.appendChild(opt);
   });
@@ -173,9 +170,18 @@ function cambiarCriterioAsignados(criterio) {
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
-  const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
-  grid.innerHTML = "";
   
+  // Ocultar o mostrar el buscador dependiendo de la pestaña de forma dinámica
+  const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
+  if (contenedorBusqueda) {
+    contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
+  }
+
+  const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda") 
+    ? document.getElementById("input-busqueda").value.toLowerCase() 
+    : "";
+    
+  grid.innerHTML = "";
   const panelAsignacion = document.getElementById("panel-asignacion-unico");
   
   if (vistaActual === "disponibles") {
@@ -196,7 +202,6 @@ function filtrarYRenderizar() {
     );
   }
   
-  // ORDENACIÓN Y AGRUPACIÓN EFECTIVA
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -246,9 +251,9 @@ function filtrarYRenderizar() {
         </div>
       `;
     } else {
-      // DISEÑO HORIZONTAL CON IMAGEN RECTANGULAR E ICONOS SVG MINIMALISTAS
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
+      // Captura y saneamiento estricto del valor de fecha de entrega
       let fechaFormateada = "Sin fecha";
       if (mapa.fechaEntrega) {
         const f = new Date(mapa.fechaEntrega);
@@ -282,7 +287,7 @@ function filtrarYRenderizar() {
           <div class="estado-badge-linea">
             <span class="badge-estado-pill ${mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
               <svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              ${mapa.trabajado ? "En la calle" : "Hecho"}
+              ${mapa.trabajado ? "Pendiente" : "Hecho"}
             </span>
             ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
@@ -300,7 +305,6 @@ function inyectarSelectorDeAgrupacionAsignados() {
   
   const navAgrupador = document.createElement("div");
   navAgrupador.id = "contenedor-agrupador-asignados";
-  navAgrupador.className = "menu-agrupacion-premium";
   navAgrupador.style = "display: flex; gap: 6px; padding: 10px 0; width: 100%; overflow-x: auto;";
   navAgrupador.innerHTML = `
     <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px;">Ordenar por:</span>
@@ -320,7 +324,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriesSeleccionados = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
