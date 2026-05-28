@@ -1,254 +1,483 @@
-/* ==========================================================================
-   ESTILOS GENERALES Y FUENTE MINIMALISTA
-   ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* styles.css - Edición Premium Inter & Lupa Transparente */
 
 :root {
-  --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --apple-verde: #34c759;
-  --apple-naranja: #ff9500;
-  --apple-rojo: #ff3b30;
-  
-  /* Valores Modo Oscuro */
-  --fondo-tarjeta: rgba(30, 30, 32, 0.7);
-  --borde-tarjeta: rgba(255, 255, 255, 0.08);
-  --texto-principal: #ffffff;
-  --texto-secundario: rgba(255, 255, 255, 0.6);
-  --fondo-panel-completo: rgba(20, 20, 22, 0.85);
-  --borde-panel: rgba(255, 255, 255, 0.1);
-  --fondo-input: rgba(255, 255, 255, 0.08);
-  --borde-input: rgba(255, 255, 255, 0.1);
+  --fondo-base: #09090b;
+  --glass-fondo: rgba(22, 22, 26, 0.7);
+  --glass-borde: rgba(255, 255, 255, 0.08);
+  --texto-principal: #f4f4f5;
+  --texto-secundario: #a1a1aa;
+  --apple-azul: #2f80ed;
+  --apple-verde: #27ae60;
+  --apple-naranja: #f2994a;
+  --apple-rojo: #eb5757;
 }
 
 [data-theme="claro"] {
-  --fondo-tarjeta: rgba(255, 255, 255, 0.75);
-  --borde-tarjeta: rgba(0, 0, 0, 0.08);
-  --texto-principal: #1c1c1e;
-  --texto-secundario: rgba(0, 0, 0, 0.6);
-  --fondo-panel-completo: rgba(255, 255, 255, 0.85);
-  --borde-panel: rgba(0, 0, 0, 0.08);
-  --fondo-input: rgba(0, 0, 0, 0.05);
-  --borde-input: rgba(0, 0, 0, 0.08);
+  --fondo-base: #f4f4f7;
+  --glass-fondo: rgba(255, 255, 255, 0.8);
+  --glass-borde: rgba(0, 0, 0, 0.07);
+  --texto-principal: #18181b;
+  --texto-secundario: #71717a;
+  --apple-azul: #007aff;
 }
 
-/* Aplicación del fondo de ciudad difuminado inteligente */
-body {
-  font-family: var(--font-premium) !important;
-  background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-  color: var(--texto-principal) !important;
-}
-
-[data-theme="claro"] body {
-  background-image: linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop') !important;
-}
-
-/* ==========================================================================
-   CONTADORES Y BARRA DE PROGRESO CORREGIDA
-   ========================================================================== */
-.widget-anillo span, [id^="w-"] {
-  font-size: 32px !important;
-  font-weight: 700 !important;
-  display: block;
-  color: var(--texto-principal) !important;
-}
-
-.widget-anillo p {
-  color: var(--texto-principal) !important;
-  opacity: 0.7;
-}
-
-/* Bloque contenedor de progreso separado para que no se pise */
-.bloque-progreso-tiempo {
-  margin: 20px 16px 10px 16px !important;
-  padding: 14px 16px !important;
-  background: var(--fondo-tarjeta) !important;
-  border: 1px solid var(--borde-tarjeta) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 14px;
-}
-
-/* ==========================================================================
-   TARJETA HORIZONTAL COMPACTA (PESTAÑA ASIGNADOS)
-   ========================================================================== */
-.tarjeta-horizontal-premium {
-  display: flex !important;
-  background: var(--fondo-tarjeta) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid var(--borde-tarjeta) !important;
-  border-radius: 14px !important;
-  overflow: hidden;
-  height: 88px !important;
-  margin: 0px 16px 12px 16px !important;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  align-items: center;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.borde-prioritario {
-  border: 1.5px solid var(--apple-rojo) !important;
+body {
+  background-color: var(--fondo-base);
+  color: var(--texto-principal);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  letter-spacing: -0.2px;
 }
 
-.zona-izquierda-mapa {
-  position: relative;
-  width: 95px;
-  height: 100%;
-  min-width: 95px;
-  background: #000;
-}
-
-.img-horizontal-asset {
+.fondo-mapa-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain !important; /* Fuerza a ver la imagen entera */
+  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.3) blur(35px);
+  z-index: -2;
+  pointer-events: none;
+}
+
+.contenedor-app {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 14px 170px 14px;
+}
+
+/* CABECERA */
+.cabecera-apple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.cabecera-titulos h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.cabecera-titulos h2 {
+  font-size: 14px;
+  color: var(--apple-azul);
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+#btn-cambiar-tema {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-borde);
+  backdrop-filter: blur(10px);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   cursor: pointer;
+  color: inherit;
 }
 
-.badge-id-horizontal {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 4px;
+/* WIDGETS ANILLOS */
+.seccion-anillos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
 }
 
-.zona-derecha-contenido {
+.tarjeta-anillo {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  backdrop-filter: blur(20px);
+  border-radius: 14px;
+  padding: 12px 4px;
   display: flex;
   flex-direction: column;
-  padding: 8px 14px;
-  justify-content: space-between;
-  height: 100%;
-  flex-grow: 1;
-  overflow: hidden;
-}
-
-.fila-superior-barrio {
-  font-weight: 600;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--texto-principal);
-}
-
-.fila-inferior-hermano {
-  display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+}
+
+.tarjeta-anillo span {
+  font-size: 10px;
   color: var(--texto-secundario);
-}
-
-.fila-estado-tag {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.indicador-circulo {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.color-calle { background-color: var(--apple-naranja); }
-.color-hecho { background-color: var(--apple-verde); }
-
-.texto-estado-lbl {
-  font-size: 11px;
-  font-weight: 600;
-  opacity: 0.8;
-}
-
-/* ==========================================================================
-   MENÚ DE ORDENACIÓN Y PANEL DE ASIGNACIÓN TRANSPARENTE TOTAL
-   ========================================================================== */
-.menu-agrupacion-premium {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: var(--fondo-tarjeta);
-  border: 1px solid var(--borde-tarjeta);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  margin: 0 16px 14px 16px;
-}
-
-.titulo-filtro-lbl {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--texto-secundario);
-}
-
-.btn-sub-filtro {
-  background: rgba(120, 120, 128, 0.15);
-  border: none;
-  color: var(--texto-principal);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  margin-top: 6px;
   font-weight: 500;
+}
+
+.anillo-svg-wrapper {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.anillo-circular {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.anillo-fondo {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 4;
+}
+
+.anillo-linea {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.color-totales .anillo-linea { stroke: var(--apple-azul); }
+.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
+.color-asignados .anillo-linea { stroke: var(--apple-rojo); }
+.color-completados .anillo-linea { stroke: var(--apple-verde); }
+
+.anillo-numero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* TABS */
+.control-segmentado {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border-radius: 12px;
+  display: flex;
+  margin-bottom: 14px;
+  border: 1px solid var(--glass-borde);
+}
+
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9px;
   cursor: pointer;
 }
 
-.btn-sub-filtro.activo {
-  background: var(--texto-principal);
-  color: var(--fondo-tarjeta);
-  font-weight: 600;
+.tab.activa {
+  background: #ffffff;
+  color: #000000;
 }
 
-#panel-asignacion-unico {
-  position: fixed !important;
-  bottom: 54px !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  background: var(--fondo-panel-completo) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  border-top: 1px solid var(--borde-panel) !important;
-  border-radius: 16px 16px 0 0 !important;
-  padding: 14px 20px !important;
-  box-shadow: 0 -8px 30px rgba(0,0,0,0.25) !important;
-  box-sizing: border-box !important;
+/* BUSCADOR */
+.contenedor-busqueda input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-principal);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+/* REJILLA Y TARJETAS RECTIFICADAS */
+.grid-territorios {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.tarjeta-apple {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  backdrop-filter: blur(20px);
+  border-radius: 18px;
+  padding: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.5);
+  background-color: rgba(39, 174, 96, 0.08);
+}
+
+.tarjeta-apple.prioritaria-row {
+  border-left: 4px solid var(--apple-naranja);
+}
+
+.cabecera-tarjeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.bloque-id {
   display: flex;
   align-items: center;
-  gap: 12px;
-  z-index: 99999 !important;
+  gap: 10px;
 }
 
-#sel-hermano-unico {
-  flex-grow: 1 !important;
-  background: var(--fondo-input) !important;
-  color: var(--texto-principal) !important;
-  border: 1px solid var(--borde-input) !important;
-  border-radius: 10px;
-  padding: 12px !important;
-  font-size: 14px;
+.num-mapa {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
-.nombre-barrio-centrado {
-  font-weight: 600;
+.nombre-barrio {
   font-size: 15px;
-  text-align: center;
-  flex-grow: 1;
-  color: var(--texto-principal);
+  font-weight: 600;
+}
+
+/* CHECKBOX */
+.check-apple-custom {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.2);
+  position: relative;
+}
+.check-apple-custom.checked {
+  background-color: var(--apple-verde);
+  border-color: var(--apple-verde);
+}
+.check-apple-custom.checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* IMAGEN CON LUPA ABAJO A LA DERECHA ULTRA MINIMALISTA */
+.imagen-mapa-wrapper {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+}
+
+.imagen-mapa-asset {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-lupa-flotante {
+  position: absolute;
+  bottom: 10px;  /* Cambiado a la esquina inferior */
+  right: 10px;   /* Cambiado a la esquina derecha */
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;  /* Mayor transparencia solicitada */
+  transition: opacity 0.2s ease;
+}
+
+.btn-lupa-flotante:hover, .btn-lupa-flotante:active {
+  opacity: 0.9;
+}
+
+/* BLOQUE DE FIRMA INFERIOR MODIFICADO */
+.pie-tarjeta-firma {
+  margin-top: 10px;
 }
 
 .tag-prioritario-abajo {
-  background: rgba(255, 59, 48, 0.14) !important;
-  color: var(--apple-rojo) !important;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  padding: 3px 8px !important;
-  border-radius: 5px;
+  display: inline-block;
+  color: var(--apple-naranja);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.tag-vacio-espacio {
+  display: block;
+  height: 5px;
+}
+
+.info-entrega-bloque {
+  border-top: 1px solid var(--glass-borde);
+  padding-top: 8px;
+}
+.txt-hermano-nombre { font-size: 13px; font-weight: 600; }
+.txt-hermano-estado { font-size: 11px; color: var(--texto-secundario); }
+
+/* PANEL FLOTANTE EN SU SITIO FIJO ESTRICTO */
+.panel-inferior-flotante {
+  position: fixed;
+  bottom: 52px; /* Queda perfectamente encajado sobre la barra de progreso */
+  left: 50%;
+  transform: translateX(-50%) translateY(200%);
+  width: 100%;
+  max-width: 480px;
+  background: rgba(18, 18, 22, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 12px 16px;
+  z-index: 99;
+  transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+}
+
+.panel-inferior-flotante.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.contenido-panel-flotante {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#txt-contador-seleccionados {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apple-verde);
+  text-align: center;
+}
+
+.controles-asignacion {
+  display: flex;
+  gap: 10px;
+}
+
+.select-apple {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-principal);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.btn-apple-bloqueado {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.2);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-apple-verde-activo {
+  background: var(--apple-verde);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* BARRA DE PROGRESO DE TIEMPO */
+.barra-tiempo-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #09090b;
+  border-top: 1px solid var(--glass-borde);
+  padding: 10px 16px 14px 16px;
+  z-index: 100;
+}
+
+.info-tiempo-texto {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--texto-secundario);
+  margin-bottom: 4px;
+}
+
+.linea-progreso-fondo {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+.linea-progreso-relleno {
+  height: 100%;
+  width: 0%;
+  background-color: var(--apple-azul);
+  border-radius: 2px;
+}
+
+/* MODAL / LIGHTBOX */
+.visor-pantalla-completa {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.95);
+  z-index: 2000;
+  flex-direction: column;
+}
+
+.cabecera-visor-completo {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-cerrar-visor {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.zona-scroll-zoom {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zona-scroll-zoom img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
 }
