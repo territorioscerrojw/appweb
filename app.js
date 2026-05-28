@@ -1,4 +1,4 @@
-// app.js - Versión Lupa Inferior y Filtro de Nombres Forzado Inteligente
+// app.js - Versión Lupa Inferior y Filtro de Nombres desde la Hoja HERMANOS
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -8,6 +8,7 @@ let vistaActual = "disponibles";
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
+let diccionarioGruposHermanos = {}; // Diccionario para almacenar los grupos reales de la pestaña HERMANOS
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -44,6 +45,9 @@ function descargarDatosDesdeSheets() {
         const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
         if (document.getElementById("txt-campana-titulo")) document.getElementById("txt-campana-titulo").innerText = campanaNombre;
         
+        // Capturar el nuevo diccionario que viene directo de la pestaña HERMANOS
+        diccionarioGruposHermanos = baseDatosCompleta[0].grupoRealHermano || {};
+        
         // Extracción global e incondicional de hermanos
         extraerNombresDeHermanos();
       }
@@ -69,40 +73,36 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-// 🔥 FUNCIÓN OPTIMIZADA: Extrae y ordena priorizando los del grupo consultado
+// 🔥 FUNCIÓN MEJORADA CON ACCESO DIRECTO A LA PESTAÑA HERMANOS
 function extraerNombresDeHermanos() {
-  let listado = [];
+  // Extraemos todos los nombres únicos del diccionario que vino de la pestaña HERMANOS
+  let listado = Object.keys(diccionarioGruposHermanos);
   
-  // 1. Escanear toda la base de datos para registrar los nombres de forma única
-  baseDatosCompleta.forEach(m => {
-    if (m.hermano && m.hermano.trim() !== "") {
-      const nombreLimpio = m.hermano.trim();
-      if (!listado.includes(nombreLimpio)) {
-        listado.push(nombreLimpio);
+  // Por si acaso la pestaña hermanos estuviera vacía, añadimos un paracaídas con los nombres de Campañas
+  if (listado.length === 0) {
+    baseDatosCompleta.forEach(m => {
+      if (m.hermano && m.hermano.trim() !== "") {
+        const n = m.hermano.trim();
+        if (!listado.includes(n)) listado.push(n);
       }
-    }
-  });
+    });
+  }
   
-  // 2. Ordenación Avanzada: Comprobar el grupo al que pertenece cada hermano
+  // Ordenación inteligente cruzando datos con los Grupos de la Hoja "HERMANOS"
   listaHermanosPool = listado.sort((a, b) => {
-    // Buscamos algún mapa asignado a estos hermanos para saber a qué grupo pertenecen
-    const mapaHermanoA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === a);
-    const mapaHermanoB = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === b);
-    
-    const grupoA = mapaHermanoA ? String(mapaHermanoA.grupo) : "";
-    const grupoB = mapaHermanoB ? String(mapaHermanoB.grupo) : "";
-    const grupoActualStr = String(grupoFiltro);
+    const grupoA = diccionarioGruposHermanos[a] ? String(diccionarioGruposHermanos[a]).trim() : "";
+    const grupoB = diccionarioGruposHermanos[b] ? String(diccionarioGruposHermanos[b]).trim() : "";
+    const grupoActualStr = String(grupoFiltro).trim();
 
-    // Si el Hermano A pertenece a este grupo y el B no, el A sube arriba (-1)
+    // Prioridad 1: Los del grupo activo van arriba
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
-    // Si el Hermano B pertenece a este grupo y el A no, el B sube arriba (1)
     if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
 
-    // Si ambos pertenecen al mismo grupo (o ninguno), se ordenan alfabéticamente de la A a la Z
+    // Si son del mismo grupo (o de ninguno), alfabético normal de la A a la Z
     return a.localeCompare(b);
   });
   
-  // 3. Inyectar los nombres ordenados con un distintivo visual en el selector HTML
+  // Renderizar las opciones en el menú desplegable de asignación
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
@@ -111,11 +111,11 @@ function extraerNombresDeHermanos() {
     const opt = document.createElement("option");
     opt.value = nombre;
     
-    // Añadimos una marca visual rápida si es del grupo para que el encargado lo distinga de un vistazo
-    const mapaH = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombre);
-    const delGrupo = mapaH && String(mapaH.grupo) === String(grupoFiltro);
+    const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
+    const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
     
-    opt.innerText = delGrupo ? `📌 ${nombre} (G. ${grupoFiltro})` : nombre;
+    // Si es de este grupo, le ponemos un Pin y le aclaramos el grupo para dar gusto visual al encargado
+    opt.innerText = esDeEsteGrupo ? `📌 ${nombre} (G. ${grupoFiltro})` : nombre;
     selectorUnico.appendChild(opt);
   });
 }
