@@ -1,4 +1,4 @@
-/* styles.css - Edición Premium Inter, Lupa Transparente & Componentes Corregidos */
+/* styles.css - Edición Premium Inter & Lupa Transparente */
 
 :root {
   --fondo-base: #09090b;
@@ -25,7 +25,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Cambio de fuente general solicitado */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -91,7 +92,7 @@ body {
   color: inherit;
 }
 
-/* WIDGETS ANILLOS - CONTADORES GRANDES */
+/* WIDGETS ANILLOS */
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -119,8 +120,8 @@ body {
 
 .anillo-svg-wrapper {
   position: relative;
-  width: 44px; /* Incrementado para dar espacio al número gigante */
-  height: 44px;
+  width: 36px;
+  height: 36px;
 }
 
 .anillo-circular {
@@ -146,13 +147,13 @@ body {
 .color-asignados .anillo-linea { stroke: var(--apple-rojo); }
 .color-completados .anillo-linea { stroke: var(--apple-verde); }
 
-/* Corregido: Números gigantes sin romper el JS */
+/* CONTADORES GRANDES - Modificados a petición */
 .anillo-numero {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -196,7 +197,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* REJILLA Y TARJETAS */
+/* REJILLA Y TARJETAS RECTIFICADAS */
 .grid-territorios {
   display: flex;
   flex-direction: column;
@@ -249,81 +250,6 @@ body {
   font-weight: 600;
 }
 
-/* NUEVA TARJETA HORIZONTAL COMPACTA (Opcional si cambias la vista con JS) */
-.tarjeta-horizontal-premium {
-  display: flex;
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
-  overflow: hidden;
-  height: 88px;
-  width: 100%;
-  align-items: center;
-  position: relative;
-}
-.tarjeta-horizontal-premium.borde-prioritario {
-  border-left: 4px solid var(--apple-naranja);
-}
-.zona-izquierda-mapa {
-  position: relative;
-  width: 95px;
-  height: 100%;
-  min-width: 95px;
-}
-.img-horizontal-asset {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.zona-derecha-contenido {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 14px;
-  justify-content: space-between;
-  height: 100%;
-  flex-grow: 1;
-}
-
-/* MENÚ ORDENACIÓN SUPERIOR (ASIGNADOS) - Corregida la selección visual */
-.menu-agrupacion-premium {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  margin-bottom: 14px;
-  width: 100%;
-}
-
-.titulo-filtro-lbl {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--texto-secundario);
-}
-
-.btn-sub-filtro {
-  background: rgba(120, 120, 128, 0.15);
-  border: none;
-  color: var(--texto-principal);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-/* Eliminados bloqueos para permitir que la clase activa inyectada por JS funcione */
-.btn-sub-filtro.activa, .btn-sub-filtro.activo {
-  background: var(--texto-principal) !important;
-  color: var(--fondo-base) !important;
-  font-weight: 600;
-}
-
 /* CHECKBOX */
 .check-apple-custom {
   width: 22px;
@@ -348,7 +274,7 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* IMAGEN CON LUPA ABAJO A LA DERECHA (Con opacidad corregida al 50%) */
+/* IMAGEN CON LUPA ABAJO A LA DERECHA ULTRA MINIMALISTA */
 .imagen-mapa-wrapper {
   position: relative;
   width: 100%;
@@ -380,7 +306,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.5; /* Opacidad del 50% solicitada */
+  opacity: 0.5;  /* Modificado a 0.5 de opacidad fija */
   transition: opacity 0.2s ease;
 }
 
@@ -413,10 +339,10 @@ body {
 .txt-hermano-nombre { font-size: 13px; font-weight: 600; }
 .txt-hermano-estado { font-size: 11px; color: var(--texto-secundario); }
 
-/* PANEL FLOTANTE - Pegado perfectamente sin separación */
-.panel-inferior-flotante, #panel-asignacion-unico {
+/* PANEL FLOTANTE EN SU SITIO FIJO ESTRICTO */
+.panel-inferior-flotante {
   position: fixed;
-  bottom: 49px; /* Eliminado el hueco: ahora descansa exactamente sobre la barra de progreso (49px) */
+  bottom: 52px; 
   left: 50%;
   transform: translateX(-50%) translateY(200%);
   width: 100%;
@@ -425,12 +351,10 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   padding: 12px 16px;
-  border-radius: 12px 12px 0 0; /* Suave curvatura superior estilo iOS */
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
 }
 
-/* Soporte para cuando se activa mediante clase o estilos directos de JS */
 .panel-inferior-flotante.visible {
   transform: translateX(-50%) translateY(0);
 }
@@ -453,8 +377,7 @@ body {
   gap: 10px;
 }
 
-/* Selector nativo limpio para que JS pueda meter el listado de hermanos */
-.select-apple, #sel-hermano-unico {
+.select-apple {
   flex: 1;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--glass-borde);
@@ -462,7 +385,6 @@ body {
   padding: 10px;
   border-radius: 10px;
   font-size: 14px;
-  outline: none;
 }
 
 .btn-apple-bloqueado {
@@ -475,7 +397,7 @@ body {
   font-weight: 600;
 }
 
-.btn-apple-verde-activo, #btn-asignar-multiple {
+.btn-apple-verde-activo {
   background: var(--apple-verde);
   color: white;
   border: none;
@@ -483,19 +405,17 @@ body {
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
 }
 
-/* BARRA DE PROGRESO DE TIEMPO (Altura fijada en 49px para cuadrar el panel) */
+/* BARRA DE PROGRESO DE TIEMPO */
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 49px;
   background: #09090b;
   border-top: 1px solid var(--glass-borde);
-  padding: 8px 16px 12px 16px;
+  padding: 10px 16px 14px 16px;
   z-index: 100;
 }
 
