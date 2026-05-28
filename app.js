@@ -15,7 +15,7 @@ let criterioOrdenacionAsignados = "territorio";
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
-  inyectarEstilosCorreccionSelector(); // Asegura el comportamiento visual idéntico al buscador
+  inyectarEstilosCorreccionSelector(); // Asegura el comportamiento visual idéntico al buscador y el panel flotante
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -165,7 +165,6 @@ function inyectarArcoProgreso(idPath, valor, total) {
 
 function cambiarCriterioAsignados(criterio) {
   criterioOrdenacionAsignados = criterio;
-  // Refresca la vista para renderizar de nuevo los botones y añadir la clase activa correctamente
   filtrarYRenderizar();
 }
 
@@ -258,7 +257,6 @@ function filtrarYRenderizar() {
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      // Sanitización cruzada de la columna N para asegurar la lectura sin importar mayúsculas/minúsculas
       let rawFecha = mapa.fechaEntrega || mapa.fechaentrega;
       let fechaFormateada = "Sin fecha";
       if (rawFecha) {
@@ -306,7 +304,6 @@ function filtrarYRenderizar() {
 
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
-    // Si ya existe, actualizamos los botones para marcar el activo correcto
     actualizarEstadosBotonesFiltro();
     return;
   }
@@ -522,34 +519,60 @@ function conmutarTema() {
   document.getElementById("btn-cambiar-tema").innerText = nuevo === "oscuro" ? "☀️" : "🌙";
 }
 
-// Inyección limpia y directa del CSS para el selector adaptativo
+// NUEVA INYECCIÓN PREMIUM: Corrige Select, Panel Flotante y Textos dinámicos en Claro/Oscuro
 function inyectarEstilosCorreccionSelector() {
   if (document.getElementById("hoja-estilos-dinamica-selector")) return;
   const style = document.createElement("style");
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
-    /* Vincula el comportamiento estético del selector de hermanos directamente al del input de búsqueda */
+    /* MODO OSCURO (Por Defecto) */
+    #panel-asignacion-unico {
+      background-color: rgba(28, 28, 30, 0.85) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #txt-contador-seleccionados {
+      color: #ffffff !important;
+      font-weight: 600;
+    }
     #sel-hermano-unico {
-      background-color: var(--fondo-tarjeta, rgba(255, 255, 255, 0.06)) !important;
-      color: var(--texto-principal, #ffffff) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
-    
-    [data-theme="claro"] #sel-hermano-unico {
-      background-color: rgba(0, 0, 0, 0.04) !important;
-      color: #1c1c1e !important;
-      border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    }
-
     #sel-hermano-unico option {
       background-color: #1c1c1e !important;
       color: #ffffff !important;
     }
 
+    /* MODO CLARO COMPLETO (Forzado mediante Atributo) */
+    [data-theme="claro"] #panel-asignacion-unico {
+      background-color: rgba(242, 242, 247, 0.9) !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+    [data-theme="claro"] #txt-contador-seleccionados {
+      color: #1c1c1e !important;
+    }
+    [data-theme="claro"] #sel-hermano-unico {
+      background-color: #ffffff !important;
+      color: #1c1c1e !important;
+      border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    }
     [data-theme="claro"] #sel-hermano-unico option {
       background-color: #ffffff !important;
       color: #1c1c1e !important;
+    }
+    
+    /* Clases dinámicas de los botones en modo claro */
+    [data-theme="claro"] .btn-apple-bloqueado {
+      background-color: rgba(0, 0, 0, 0.05) !important;
+      color: rgba(0, 0, 0, 0.3) !important;
+    }
+    [data-theme="claro"] .btn-apple-verde-activo {
+      background-color: #34c759 !important;
+      color: #ffffff !important;
     }
   `;
   document.head.appendChild(style);
