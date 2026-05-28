@@ -1,4 +1,4 @@
-// app.js - Versión Lupa Inferior y Filtro de Nombres Forzado
+// app.js - Versión Lupa Inferior y Filtro de Nombres Forzado Inteligente
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -69,9 +69,11 @@ function descargarDatosDesdeSheets() {
   });
 }
 
+// 🔥 FUNCIÓN OPTIMIZADA: Extrae y ordena priorizando los del grupo consultado
 function extraerNombresDeHermanos() {
   let listado = [];
-  // Escanea toda la hoja sin importar el filtro para asegurar que no quede vacío
+  
+  // 1. Escanear toda la base de datos para registrar los nombres de forma única
   baseDatosCompleta.forEach(m => {
     if (m.hermano && m.hermano.trim() !== "") {
       const nombreLimpio = m.hermano.trim();
@@ -81,8 +83,26 @@ function extraerNombresDeHermanos() {
     }
   });
   
-  listaHermanosPool = listado.sort((a, b) => a.localeCompare(b));
+  // 2. Ordenación Avanzada: Comprobar el grupo al que pertenece cada hermano
+  listaHermanosPool = listado.sort((a, b) => {
+    // Buscamos algún mapa asignado a estos hermanos para saber a qué grupo pertenecen
+    const mapaHermanoA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === a);
+    const mapaHermanoB = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === b);
+    
+    const grupoA = mapaHermanoA ? String(mapaHermanoA.grupo) : "";
+    const grupoB = mapaHermanoB ? String(mapaHermanoB.grupo) : "";
+    const grupoActualStr = String(grupoFiltro);
+
+    // Si el Hermano A pertenece a este grupo y el B no, el A sube arriba (-1)
+    if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
+    // Si el Hermano B pertenece a este grupo y el A no, el B sube arriba (1)
+    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
+
+    // Si ambos pertenecen al mismo grupo (o ninguno), se ordenan alfabéticamente de la A a la Z
+    return a.localeCompare(b);
+  });
   
+  // 3. Inyectar los nombres ordenados con un distintivo visual en el selector HTML
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
@@ -90,7 +110,12 @@ function extraerNombresDeHermanos() {
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
-    opt.innerText = nombre;
+    
+    // Añadimos una marca visual rápida si es del grupo para que el encargado lo distinga de un vistazo
+    const mapaH = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombre);
+    const delGrupo = mapaH && String(mapaH.grupo) === String(grupoFiltro);
+    
+    opt.innerText = delGrupo ? `📌 ${nombre} (G. ${grupoFiltro})` : nombre;
     selectorUnico.appendChild(opt);
   });
 }
@@ -189,7 +214,6 @@ function filtrarYRenderizar() {
           <div class="check-apple-custom ${seleccionadoActivo ? 'checked' : ''}" id="circulo-check-${mapa.id}"></div>
         </div>
       `;
-      // Muestra la etiqueta de prioridad abajo en lugar de "Territorio libre"
       subFirmaHTML = esPrio ? `<span class="tag-prioritario-abajo">⚠️ MAPA PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`;
     } else {
       subFirmaHTML = `
@@ -209,9 +233,8 @@ function filtrarYRenderizar() {
         ${visualCheckHTML}
       </div>
       <div class="imagen-mapa-wrapper">
-        <!-- Lupa minimalista recolocada abajo a la derecha -->
         <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x1="16.65" y2="16.65"></line></svg>
         </button>
         <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
       </div>
@@ -331,7 +354,7 @@ function filtrarYRenderizarHermano() {
       </div>
       <div class="imagen-mapa-wrapper">
         <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x1="16.65" y2="16.65"></line></svg>
         </button>
         <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
