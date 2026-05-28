@@ -1,4 +1,4 @@
-/* styles.css - Versión Corrección Completa Premium */
+/* styles.css - Adiciones de proporción y maquetación de iconos */
 
 :root {
   --fondo-base: #09090b;
@@ -13,7 +13,6 @@
   --blur-filter: brightness(0.3) blur(35px);
 }
 
-/* CAMBIO: Ahora el Modo Claro aclara drásticamente el fondo para que no se vea igual */
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
   --glass-fondo: rgba(255, 255, 255, 0.82);
@@ -92,7 +91,7 @@ body {
   color: inherit;
 }
 
-/* CAMBIO: CONTADORES GRANDES E IMPACTANTES */
+/* ANILLOS Y CONTADORES */
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -117,7 +116,7 @@ body {
 }
 .anillo-svg-wrapper {
   position: relative;
-  width: 55px; /* Aumentado de tamaño */
+  width: 55px;
   height: 55px;
 }
 .anillo-circular {
@@ -145,11 +144,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px; /* Número considerablemente más grande */
+  font-size: 18px;
   font-weight: 800;
 }
 
-/* TABS */
+/* SEGMENTED CONTROL */
 .control-segmentado {
   background: rgba(0, 0, 0, 0.15);
   padding: 3px;
@@ -187,7 +186,7 @@ body {
   margin-bottom: 16px;
 }
 
-/* SUB FILTROS ORDENACIÓN */
+/* SUB FILTROS */
 .contenedor-sub-filtros {
   display: flex;
   gap: 6px;
@@ -213,13 +212,15 @@ body {
   color: var(--texto-principal);
 }
 
-/* TARJETAS VISTA DISPONIBLES (VERTICALES) */
+/* GRID GENERAL */
 .grid-territorios {
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
 }
+
+/* TARJETAS DISPONIBLES (PROPORCIÓN RECTANGULAR ESTABLE) */
 .tarjeta-apple {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -229,8 +230,8 @@ body {
   transition: all 0.2s ease;
 }
 .tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.6);
-  background-color: rgba(39, 174, 96, 0.05);
+  border-color: rgba(39, 174, 96, 0.7);
+  background-color: rgba(39, 174, 96, 0.06);
 }
 .tarjeta-apple.prioritaria-row, .tarjeta-apple-horizontal.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
@@ -269,13 +270,13 @@ body {
 .imagen-mapa-wrapper {
   position: relative;
   width: 100%;
-  height: 150px;
+  height: 165px; /* Altura rectangular recuperada */
   border-radius: 10px;
   overflow: hidden;
 }
 .imagen-mapa-asset { width: 100%; height: 100%; object-fit: cover; }
 
-/* CAMBIO: NUEVO DISEÑO ESTRICTO TARJETA ASIGNADOS HORIZONTAL ESTRECHA */
+/* RECTÁNGULO DE TARJETA ASIGNADOS HORIZONTAL */
 .tarjeta-apple-horizontal {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -288,15 +289,22 @@ body {
   width: 100%;
   box-sizing: border-box;
 }
-.img-lateral-wrapper {
+
+/* CORRECCIÓN: Contenedor lateral RECTANGULAR exacto (Proporción 3:2 de mapa) */
+.img-lateral-wrapper-rectangular {
   position: relative;
-  width: 75px; 
-  height: 75px;
-  border-radius: 8px;
+  width: 105px; 
+  height: 70px;
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
 }
-.imagen-lateral-asset { width: 100%; height: 100%; object-fit: cover; }
+.imagen-lateral-asset-rect {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .contenido-lateral-datos {
   flex: 1;
@@ -313,13 +321,31 @@ body {
 .num-mapa-chico { font-size: 16px; font-weight: 800; }
 .nombre-barrio-chico { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* SECCIÓN DE ICONOS MINIMALISTAS */
 .info-hermano-linea {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 12px;
   color: var(--texto-secundario);
+  gap: 4px;
 }
-.txt-horizontal-hermano { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;}
+.txt-horizontal-hermano, .txt-horizontal-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.txt-horizontal-hermano { max-width: 140px; font-weight: 500; }
+
+.svg-icono-chico {
+  width: 12px;
+  height: 12px;
+  color: var(--texto-secundario);
+  flex-shrink: 0;
+}
 
 .estado-badge-linea {
   display: flex;
@@ -331,11 +357,19 @@ body {
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
-.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.15); color: var(--apple-rojo); }
-.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.15); color: var(--apple-verde); }
+.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
+.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
 
-/* CAMBIO: ICONOS ULTRA-MINIMALISTAS TRANSPARENTES SIN RELLENO SÓLIDO */
+.svg-icono-mini {
+  width: 10px;
+  height: 10px;
+}
+
+/* LUPA MINIMALISTA */
 .btn-lupa-flotante {
   position: absolute;
   bottom: 6px;
@@ -359,7 +393,6 @@ body {
   stroke: #ffffff;
 }
 
-/* CAMBIO: SE QUITÓ LA PALABRA "MAPA", SÓLO PRIORITARIO */
 .tag-prioritario-abajo {
   display: inline-block;
   color: var(--apple-naranja);
@@ -373,7 +406,7 @@ body {
   font-weight: 700;
 }
 
-/* CAMBIO: VERDADERO TRANSLÚCIDO TRANSPARENTE EN EL MENÚ FLOTANTE */
+/* MENÚ FLOTANTE TRANSLÚCIDO */
 .panel-inferior-flotante {
   position: fixed;
   bottom: 48px; 
@@ -381,7 +414,7 @@ body {
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
-  background: rgba(20, 20, 25, 0.65); /* Más transparente para que actúe de cristal real */
+  background: rgba(20, 20, 25, 0.65);
   backdrop-filter: blur(25px) saturate(130%);
   -webkit-backdrop-filter: blur(25px) saturate(130%);
   border-top: 1px solid var(--glass-borde);
