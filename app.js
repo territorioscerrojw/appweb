@@ -1,4 +1,4 @@
-// app.js - Versión Lupa Inferior, WhatsApp, Ordenación y Mejoras de Renderizado
+// app.js - Versión Corregida y Optimizada Horizontal Premium
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -8,7 +8,7 @@ let vistaActual = "disponibles";
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
-let criterioOrdenacionAsignados = "fecha"; // 'territorio', 'hermano', 'fecha'
+let criterioOrdenacionAsignados = "territorio"; 
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -24,6 +24,9 @@ async function inicializarPantalla(tipo) {
   }
   
   await descargarDatosDesdeSheets();
+  if (tipoUsuario === "encargado") {
+    await descargarHermanosDesdeSheets();
+  }
 }
 
 function descargarDatosDesdeSheets() {
@@ -42,27 +45,26 @@ function descargarDatosDesdeSheets() {
       
       if (baseDatosCompleta.length > 0) {
         procesarFechasYBarras(baseDatosCompleta[0].inicio, baseDatosCompleta[0].fin);
-        const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
-        if (document.getElementById("txt-campana-titulo")) document.getElementById("txt-campana-titulo").innerText = campanaNombre;
         
-        // Extracción global e incondicional de hermanos
-        extraerNombresDeHermanos();
+        // CORRECCIÓN: Nombre de campaña ARRIBA, número de Grupo ABAJO
+        const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
+        if (document.getElementById("txt-campana-titulo")) {
+          document.getElementById("txt-campana-titulo").innerText = campanaNombre;
+        }
       }
       
       if (tipoUsuario === "encargado") {
-        // Corrección: Inyectar "Grupo X" arriba en el encabezado principal H1
-        const elementoH1 = document.querySelector(".cabecera-titulos h1");
-        if (elementoH1) elementoH1.innerText = `Grupo ${grupoFiltro}`;
-        if (document.getElementById("txt-grupo-sub")) document.getElementById("txt-grupo-sub").innerText = "Control de Mapas";
-        
+        if (document.getElementById("txt-grupo-sub")) {
+          document.getElementById("txt-grupo-sub").innerText = `Grupo ${grupoFiltro}`;
+        }
         actualizarAnillosEstadisticos();
         filtrarYRenderizar();
       } else if (tipoUsuario === "hermano") {
         filtrarYRenderizarHermano();
       }
       
-      const scriptBorrar = document.getElementById(nombreCallback);
-      if (scriptBorrar) scriptBorrar.remove();
+      const elScript = document.getElementById(nombreCallback);
+      if (elScript) elScript.remove();
       delete window[nombreCallback];
       resolve();
     };
@@ -75,19 +77,31 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-function extraerNombresDeHermanos() {
-  let listado = [];
-  baseDatosCompleta.forEach(m => {
-    if (m.hermano && m.hermano.trim() !== "") {
-      const nombreLimpio = m.hermano.trim();
-      if (!listado.includes(nombreLimpio)) {
-        listado.push(nombreLimpio);
+// CORRECCIÓN: Descarga los hermanos consultando la hoja exclusiva de HERMANOS, no la de mapas
+function descargarHermanosDesdeSheets() {
+  return new Promise((resolve) => {
+    const callbackHermanos = "callbackHermanos_" + new Date().getTime();
+    
+    window[callbackHervanos] = function(datos) {
+      if (datos && !datos.error) {
+        listaHermanosPool = datos.sort((a, b) => a.localeCompare(b));
+        inyectarSelectorHermanos();
       }
-    }
+      const elScript = document.getElementById(callbackHermanos);
+      if (elScript) elScript.remove();
+      delete window[callbackHermanos];
+      resolve();
+    };
+
+    const script = document.createElement("script");
+    script.id = callbackHermanos;
+    script.src = `${URL_API_SHEETS}?accion=leerHermanos&callback=${callbackHermanos}`;
+    script.onerror = () => { resolve(); };
+    document.body.appendChild(script);
   });
-  
-  listaHermanosPool = listado.sort((a, b) => a.localeCompare(b));
-  
+}
+
+function inyectarSelectorHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
@@ -118,9 +132,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
   
   const barra = document.getElementById("barra-progreso-elemento");
-  if (barra) {
-    barra.style.width = `${porcentaje}%`;
-  }
+  if (barra) barra.style.width = `${porcentaje}%`;
 }
 
 function actualizarAnillosEstadisticos() {
@@ -151,8 +163,8 @@ function inyectarArcoProgreso(idPath, valor, total) {
 function cambiarCriterioOrdenacion(criterio) {
   criterioOrdenacionAsignados = criterio;
   document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activa"));
-  const btnActivo = document.getElementById(`btn-ord-${criterio}`);
-  if (btnActivo) btnActivo.classList.add("activa");
+  const bActivo = document.getElementById(`btn-ord-${criterio}`);
+  if (bActivo) bActivo.classList.add("activa");
   filtrarYRenderizar();
 }
 
@@ -162,7 +174,7 @@ function filtrarYRenderizar() {
   const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
   grid.innerHTML = "";
   
-  // Mostrar o esconder el menú de ordenación si estamos en Asignados
+  // Mostrar u ocultar el panel de ordenación según la pestaña activa
   const menuOrdenacion = document.getElementById("menu-ordenacion-asignados");
   if (menuOrdenacion) {
     menuOrdenacion.style.display = vistaActual === "asignados" ? "flex" : "none";
@@ -179,6 +191,7 @@ function filtrarYRenderizar() {
     );
   }
   
+  // LÓGICA DE ORDENACIÓN
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -188,65 +201,84 @@ function filtrarYRenderizar() {
       return parseInt(a.id) - parseInt(b.id);
     });
   } else {
-    // Lógica estricta de ordenación para asignados
     if (criterioOrdenacionAsignados === "territorio") {
       dataset.sort((a, b) => parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "hermano") {
       dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || ""));
-    } else {
-      // Orden predeterminado: por estado "En la calle" / Fecha entrega simulada por estado trabajado
-      dataset.sort((a, b) => b.trabajado - a.trabajado);
+    } else if (criterioOrdenacionAsignados === "fecha") {
+      dataset.sort((a, b) => new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0));
     }
   }
   
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
-    const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
-    
-    div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
-    div.id = `tarjeta-real-${mapa.id}`;
     
     if (vistaActual === "disponibles") {
+      // DISEÑO DISPONIBLES: Vertical Clásico Apple
+      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+      div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-    }
-    
-    let subFirmaHTML = "";
-    let visualCheckHTML = "";
-    
-    if (vistaActual === "disponibles") {
-      visualCheckHTML = `
-        <div class="contenedor-check">
-          <div class="check-apple-custom ${seleccionadoActivo ? 'checked' : ''}" id="circulo-check-${mapa.id}"></div>
+      
+      div.innerHTML = `
+        <div class="cabecera-tarjeta">
+          <div class="bloque-id">
+            <span class="num-mapa">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio">${mapa.barriada}</span>
+          </div>
+          <div class="contenedor-check">
+            <div class="check-apple-custom ${seleccionadoActivo ? 'checked' : ''}" id="circulo-check-${mapa.id}"></div>
+          </div>
+        </div>
+        <div class="imagen-mapa-wrapper">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
+        </div>
+        <div class="pie-tarjeta-firma">
+          ${esPrio ? `<span class="tag-prioritario-abajo">⚠️ PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`}
         </div>
       `;
-      subFirmaHTML = esPrio ? `<span class="tag-prioritario-abajo">⚠️ MAPA PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`;
     } else {
-      subFirmaHTML = `
-        <div class="info-entrega-bloque">
-          <p class="txt-hermano-nombre">👤 ${mapa.hermano}</p>
-          <p class="txt-hermano-estado">${mapa.trabajado ? "⏳ En la calle" : "✅ Hecho"}</p>
+      // DISEÑO ASIGNADOS CORREGIDO: Tarjeta Estrecha Horizontal con Imagen Izquierda
+      div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
+      
+      // Formatear Fecha de Entrega Limpia
+      let fechaFormateada = "Sin fecha";
+      if (mapa.fechaEntrega) {
+        const f = new Date(mapa.fechaEntrega);
+        if (!isNaN(f.getTime())) {
+          fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit' });
+        }
+      }
+
+      div.innerHTML = `
+        <div class="img-lateral-wrapper">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset" onerror="this.src='https://placehold.co/150x150?text=Mapa'">
+        </div>
+        <div class="contenido-lateral-datos">
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
+          <div class="info-hermano-linea">
+            <p class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</p>
+            <p class="txt-horizontal-fecha">📅 ${fechaFormateada}</p>
+          </div>
+          <div class="estado-badge-linea">
+            <span class="badge-estado-pill ${mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
+              ${mapa.trabajado ? "⏳ En la calle" : "✅ Hecho"}
+            </span>
+            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
+          </div>
         </div>
       `;
     }
-    
-    div.innerHTML = `
-      <div class="cabecera-tarjeta">
-        <div class="bloque-id">
-          <span class="num-mapa">${parseInt(mapa.id)}</span>
-          <span class="nombre-barrio">${mapa.barriada}</span>
-        </div>
-        ${visualCheckHTML}
-      </div>
-      <div class="imagen-mapa-wrapper">
-        <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
-      </div>
-      <div class="pie-tarjeta-firma">${subFirmaHTML}</div>
-    `;
-    
     grid.appendChild(div);
   });
 }
@@ -278,6 +310,7 @@ function actualizarPanelAsignacionFlotante() {
   
   if (!panel) return;
   
+  // El panel selector de hermanos SOLO se muestra si hay elementos seleccionados y estamos en Disponibles
   if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
     if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
     panel.classList.add("visible");
@@ -315,17 +348,12 @@ async function procesarAsignacionMultiple() {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
   
-  // Disparar redirección automática a WhatsApp tras guardar con éxito
-  redireccionarWhatsAppAsignados(nombreH, territoriosSeleccionados);
+  // Enviar notificación limpia vía WhatsApp
+  const listaNumeros = territoriosSeleccionados.map(id => parseInt(id)).join(", ");
+  const msj = `¡Hola! Te he asignado los siguientes mapas: *${listaNumeros}*.\nPuedes verlos desde tu enlace personal de la app. ¡Muchas gracias!`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msj)}`, '_blank');
   
   await descargarDatosDesdeSheets();
-}
-
-function redireccionarWhatsAppAsignados(hermano, mapasIds) {
-  const listaNumeros = mapasIds.map(id => parseInt(id)).join(", ");
-  const mensaje = `¡Hola! Te he asignado los siguientes mapas del territorio: *${listaNumeros}*.\n\nPuedes verlos y gestionarlos desde tu enlace personal de la aplicación. ¡Muchas gracias!`;
-  const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`;
-  window.open(urlWA, '_blank');
 }
 
 function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
@@ -370,7 +398,7 @@ function filtrarYRenderizarHermano() {
       </div>
       <div class="imagen-mapa-wrapper">
         <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
@@ -413,6 +441,9 @@ function cambiarPestana(vista, btn) {
   vistaActual = vista;
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
   btn.classList.add("activa");
+  
+  // Resetear paneles flotantes de asignación al cambiar de vista
+  actualizarPanelAsignacionFlotante();
   filtrarYRenderizar();
 }
 
