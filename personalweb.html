@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Territorios Asignados</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .pantalla-bloqueo {
+      position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px;
+    }
+    .pantalla-bloqueo h2 { font-size:28px; margin-bottom:10px; color:#ff3b30; }
+    .btn-completar {
+      width:100%; margin-top:12px; padding:12px; background:#34c759; border:none; border-radius:10px; color:white; font-weight:bold; cursor:pointer;
+    }
+    .tarjeta-mapa.terminado { opacity: 0.4; filter: grayscale(1); }
+  </style>
+</head>
+<body>
+
+  <div id="bloqueo-temporal" class="pantalla-bloqueo" style="display: none;">
+    <h2>Campaña no disponible</h2>
+    <p style="color:#a1a1aa;">Esta sección solo se activará desde una semana antes de la campaña y hasta 3 días después de su finalización.</p>
+  </div>
+
+  <header>
+    <div>
+      <h1 id="txt-nombre-hermano">Mis Asignaciones</h1>
+      <p id="txt-campana-hermano">Cargando...</p>
+    </div>
+    <button class="btn-tema" onclick="conmutarTema()">☀️</button>
+  </header>
+
+  <main class="grid-mapas" id="contenedor-hermano-grid"></main>
+
+  <div class="barra-fija-inferior">
+    <div style="display:flex; justify-content:space-between; font-size:12px;">
+      <span id="lbl-tiempo-restante">Campaña activa</span>
+      <span id="lbl-porcentaje-tiempo">0%</span>
+    </div>
+    <div class="progreso-contenedor">
+      <div class="progreso-llenado" id="barra-progreso-elemento"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      inicializarPantalla("hermano");
+    });
+  </script>
+</body>
+</html>

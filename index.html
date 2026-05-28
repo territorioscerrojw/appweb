@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Subpanel de Territorios Premium</title>
+  <!-- Fuente Ultra-Moderna Inter -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="fondo-mapa-blur"></div>
+
+  <div class="contenedor-app">
+    <!-- CABECERA LIMPIA -->
+    <header class="cabecera-apple">
+      <div class="cabecera-titulos">
+        <h1 id="txt-campana-titulo">Campaña Activa</h1>
+        <h2 id="txt-grupo-sub">Grupo</h2>
+      </div>
+      <button id="btn-cambiar-tema" onclick="conmutarTema()">☀️</button>
+    </header>
+
+    <!-- WIDGETS ANILLOS -->
+    <section class="seccion-anillos">
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-totales">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-totales" class="anillo-linea" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-totales" class="anillo-numero">0</div>
+        </div>
+        <span>Totales</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-prioritarios">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-prioritarios" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-prioritarios" class="anillo-numero">0</div>
+        </div>
+        <span>Prioritarios</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-asignados">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-asignados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-asignados" class="anillo-numero">0</div>
+        </div>
+        <span>En Calle</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-completados">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-completados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-completados" class="anillo-numero">0</div>
+        </div>
+        <span>Hechos</span>
+      </div>
+    </section>
+
+    <!-- TABS -->
+    <div class="contenedor-tabs">
+      <div class="control-segmentado">
+        <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
+        <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
+      </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="contenedor-busqueda">
+      <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
+    </div>
+
+    <!-- REJILLAS -->
+    <main id="contenedor-principal-grid" class="grid-territorios"></main>
+    <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
+  </div>
+
+  <!-- PANEL INFERIOR DE ASIGNACIÓN -->
+  <div id="panel-asignacion-unico" class="panel-inferior-flotante">
+    <div class="contenido-panel-flotante">
+      <span id="txt-contador-seleccionados">0 mapas seleccionados</span>
+      <div class="controles-asignacion">
+        <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
+          <option value="">Seleccionar Hermano...</option>
+        </select>
+        <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DE PROGRESO DE TIEMPO -->
+  <footer class="barra-tiempo-footer">
+    <div class="info-tiempo-texto">
+      <span id="lbl-tiempo-restante">Calculando campaña...</span>
+      <span id="lbl-porcentaje-tiempo">0%</span>
+    </div>
+    <div class="linea-progreso-fondo">
+      <div id="barra-progreso-elemento" class="linea-progreso-relleno"></div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX FOTO -->
+  <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
+    <div class="cabecera-visor-completo">
+      <span id="titulo-visor-completo">Mapa</span>
+      <button class="btn-cerrar-visor" onclick="cerrarVisorPantallaCompleta()">✕</button>
+    </div>
+    <div class="zona-scroll-zoom">
+      <img id="img-visor-completa" src="" alt="Mapa Expandido">
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("id")) {
+        document.getElementById("contenedor-principal-grid").style.display = "none";
+        document.getElementById("contenedor-hermano-grid").style.display = "flex";
+        document.querySelector(".seccion-anillos").style.display = "none";
+        document.querySelector(".contenedor-tabs").style.display = "none";
+        document.querySelector(".contenedor-busqueda").style.display = "none";
+        document.getElementById("panel-asignacion-unico").style.display = "none";
+        inicializarPantalla("hermano");
+      } else {
+        inicializarPantalla("encargado");
+      }
+    });
+  </script>
+</body>
+</html>
