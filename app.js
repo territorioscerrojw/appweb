@@ -1,4 +1,4 @@
-// app.js - Versión Corregida sin conflictos de estilos heredados
+// app.js - Versión Lupa Inferior, WhatsApp, Ordenación y Mejoras de Renderizado
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -8,20 +8,18 @@ let vistaActual = "disponibles";
 let tipoUsuario = ""; 
 let grupoFiltro = null;
 let idHermanoUrl = null;
-let diccionarioGruposHermanos = {};
-let criterioOrdenacionAsignados = "territorio"; 
+let criterioOrdenacionAsignados = "fecha"; // 'territorio', 'hermano', 'fecha'
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
-  corregirEtiquetasContadoresFijas();
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
   idHermanoUrl = parametros.get("id");
   
   if (!grupoFiltro && tipoUsuario === "encargado") {
-    document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:var(--font-premium); color:var(--texto-principal);'><h2>🚨 Error de Acceso</h2><p style='opacity:0.6; margin-top:10px;'>Falta especificar el número de grupo (?grupo=1)</p></div>";
+    document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:sans-serif;'><h2>🚨 Error de Acceso</h2><p style='color:gray; margin-top:10px;'>Falta especificar el número de grupo (?grupo=1)</p></div>";
     return;
   }
   
@@ -34,7 +32,7 @@ function descargarDatosDesdeSheets() {
     
     window[nombreCallback] = function(datos) {
       if (datos.error) {
-        document.body.innerHTML = `<div style="padding:40px; color:#ff3b30; font-family:var(--font-premium); text-align:center;">🚨 <b>Error:</b><br>${datos.mensaje}</div>`;
+        document.body.innerHTML = `<div style="padding:40px; color:#ff3b30; font-family:sans-serif; text-align:center;">🚨 <b>Error:</b><br>${datos.mensaje}</div>`;
         return;
       }
 
@@ -47,19 +45,24 @@ function descargarDatosDesdeSheets() {
         const campanaNombre = baseDatosCompleta[0].campana || "Campaña Activa";
         if (document.getElementById("txt-campana-titulo")) document.getElementById("txt-campana-titulo").innerText = campanaNombre;
         
-        diccionarioGruposHermanos = baseDatosCompleta[0].grupoRealHermano || {};
+        // Extracción global e incondicional de hermanos
         extraerNombresDeHermanos();
       }
       
       if (tipoUsuario === "encargado") {
-        if (document.getElementById("txt-grupo-sub")) document.getElementById("txt-grupo-sub").innerText = `Grupo ${grupoFiltro}`;
+        // Corrección: Inyectar "Grupo X" arriba en el encabezado principal H1
+        const elementoH1 = document.querySelector(".cabecera-titulos h1");
+        if (elementoH1) elementoH1.innerText = `Grupo ${grupoFiltro}`;
+        if (document.getElementById("txt-grupo-sub")) document.getElementById("txt-grupo-sub").innerText = "Control de Mapas";
+        
         actualizarAnillosEstadisticos();
         filtrarYRenderizar();
       } else if (tipoUsuario === "hermano") {
         filtrarYRenderizarHermano();
       }
       
-      document.getElementById(nombreCallback).remove();
+      const scriptBorrar = document.getElementById(nombreCallback);
+      if (scriptBorrar) scriptBorrar.remove();
       delete window[nombreCallback];
       resolve();
     };
@@ -73,26 +76,17 @@ function descargarDatosDesdeSheets() {
 }
 
 function extraerNombresDeHermanos() {
-  let listado = Object.keys(diccionarioGruposHermanos);
-  
-  if (listado.length === 0) {
-    baseDatosCompleta.forEach(m => {
-      if (m.hermano && m.hermano.trim() !== "") {
-        const n = m.hermano.trim();
-        if (!listado.includes(n)) listado.push(n);
+  let listado = [];
+  baseDatosCompleta.forEach(m => {
+    if (m.hermano && m.hermano.trim() !== "") {
+      const nombreLimpio = m.hermano.trim();
+      if (!listado.includes(nombreLimpio)) {
+        listado.push(nombreLimpio);
       }
-    });
-  }
-  
-  listaHermanosPool = listado.sort((a, b) => {
-    const grupoA = diccionarioGruposHermanos[a] ? String(diccionarioGruposHermanos[a]).trim() : "";
-    const grupoB = diccionarioGruposHermanos[b] ? String(diccionarioGruposHermanos[b]).trim() : "";
-    const grupoActualStr = String(grupoFiltro).trim();
-
-    if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
-    if (grupoA !== grupoActualStr && groupB === grupoActualStr) return 1;
-    return a.localeCompare(b);
+    }
   });
+  
+  listaHermanosPool = listado.sort((a, b) => a.localeCompare(b));
   
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
@@ -101,11 +95,7 @@ function extraerNombresDeHermanos() {
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
-    
-    const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
-    const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
-    
-    opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
+    opt.innerText = nombre;
     selectorUnico.appendChild(opt);
   });
 }
@@ -158,31 +148,34 @@ function inyectarArcoProgreso(idPath, valor, total) {
   el.setAttribute("stroke-dasharray", `${porcentaje}, 100`);
 }
 
+function cambiarCriterioOrdenacion(criterio) {
+  criterioOrdenacionAsignados = criterio;
+  document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activa"));
+  const btnActivo = document.getElementById(`btn-ord-${criterio}`);
+  if (btnActivo) btnActivo.classList.add("activa");
+  filtrarYRenderizar();
+}
+
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
-  
-  const barraBusquedaInput = document.getElementById("input-busqueda");
-  const contenedorBuscadorEstilo = document.querySelector(".bloque-busqueda") || document.getElementById("input-busqueda")?.parentNode;
-  
-  if (vistaActual === "disponibles") {
-    eliminarSelectorDeAgrupacionAsignados();
-    if (contenedorBuscadorEstilo) contenedorBuscadorEstilo.style.display = "block";
-  } else {
-    if (contenedorBuscadorEstilo) contenedorBuscadorEstilo.style.display = "none";
-    inyectarSelectorDeAgrupacionAsignados();
-  }
-  
-  const buscadorValue = barraBusquedaInput && vistaActual === "disponibles" ? barraBusquedaInput.value.toLowerCase() : "";
+  const buscadorValue = document.getElementById("input-busqueda").value.toLowerCase();
   grid.innerHTML = "";
+  
+  // Mostrar o esconder el menú de ordenación si estamos en Asignados
+  const menuOrdenacion = document.getElementById("menu-ordenacion-asignados");
+  if (menuOrdenacion) {
+    menuOrdenacion.style.display = vistaActual === "asignados" ? "flex" : "none";
+  }
   
   let dataset = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   dataset = vistaActual === "disponibles" ? dataset.filter(m => m.entregado === false) : dataset.filter(m => m.entregado === true);
   
-  if (buscadorValue && vistaActual === "disponibles") {
+  if (buscadorValue) {
     dataset = dataset.filter(m => 
       m.id.toString().includes(buscadorValue) || 
-      m.barriada.toLowerCase().includes(buscadorValue)
+      m.barriada.toLowerCase().includes(buscadorValue) ||
+      (m.hermano && m.hermano.toLowerCase().includes(buscadorValue))
     );
   }
   
@@ -195,12 +188,14 @@ function filtrarYRenderizar() {
       return parseInt(a.id) - parseInt(b.id);
     });
   } else {
-    if (criterioOrdenacionAsignados === "hermano") {
-      dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
-    } else if (criterioOrdenacionAsignados === "fecha") {
-      dataset.sort((a, b) => parseInt(b.id) - parseInt(a.id)); 
-    } else {
+    // Lógica estricta de ordenación para asignados
+    if (criterioOrdenacionAsignados === "territorio") {
       dataset.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    } else if (criterioOrdenacionAsignados === "hermano") {
+      dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || ""));
+    } else {
+      // Orden predeterminado: por estado "En la calle" / Fecha entrega simulada por estado trabajado
+      dataset.sort((a, b) => b.trabajado - a.trabajado);
     }
   }
   
@@ -209,92 +204,55 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
     
+    div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+    div.id = `tarjeta-real-${mapa.id}`;
+    
     if (vistaActual === "disponibles") {
-      div.className = `tarjeta-apple ${esPrio ? 'prioritarios' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
-      div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-      
-      let visualCheckHTML = `
+    }
+    
+    let subFirmaHTML = "";
+    let visualCheckHTML = "";
+    
+    if (vistaActual === "disponibles") {
+      visualCheckHTML = `
         <div class="contenedor-check">
           <div class="check-apple-custom ${seleccionadoActivo ? 'checked' : ''}" id="circulo-check-${mapa.id}"></div>
         </div>
       `;
-      let subFirmaHTML = esPrio ? `<span class="tag-prioritario-abajo">PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`;
-      
-      div.innerHTML = `
-        <div class="cabecera-tarjeta">
-          <div class="bloque-id" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <span class="num-mapa">${parseInt(mapa.id)}</span>
-            <span class="nombre-barrio-centrado">${mapa.barriada}</span>
-            <div style="width: 24px;"></div> 
-          </div>
-          ${visualCheckHTML}
-        </div>
-        <div class="imagen-mapa-wrapper">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
-        </div>
-        <div class="pie-tarjeta-firma">${subFirmaHTML}</div>
-      `;
+      subFirmaHTML = esPrio ? `<span class="tag-prioritario-abajo">⚠️ MAPA PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`;
     } else {
-      div.className = `tarjeta-horizontal-premium ${esPrio ? 'borde-prioritario' : ''}`;
-      
-      div.innerHTML = `
-        <div class="zona-izquierda-mapa">
-          <img src="${mapa.rutaMapa}" class="img-horizontal-asset" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)" onerror="this.src='https://placehold.co/100x100?text=Mapa'">
-          <span class="badge-id-horizontal">${parseInt(mapa.id)}</span>
-        </div>
-        <div class="zona-derecha-contenido">
-          <div class="fila-superior-barrio">${mapa.barriada}</div>
-          <div class="fila-inferior-hermano">
-            <span class="lbl-avatar">👤</span> 
-            <span class="lbl-nombre-h">${mapa.hermano}</span>
-          </div>
-          <div class="fila-estado-tag">
-            <span class="indicador-circulo ${mapa.trabajado ? 'color-calle' : 'color-hecho'}"></span>
-            <span class="texto-estado-lbl">${mapa.trabajado ? "En la calle" : "Completado"}</span>
-          </div>
+      subFirmaHTML = `
+        <div class="info-entrega-bloque">
+          <p class="txt-hermano-nombre">👤 ${mapa.hermano}</p>
+          <p class="txt-hermano-estado">${mapa.trabajado ? "⏳ En la calle" : "✅ Hecho"}</p>
         </div>
       `;
     }
     
+    div.innerHTML = `
+      <div class="cabecera-tarjeta">
+        <div class="bloque-id">
+          <span class="num-mapa">${parseInt(mapa.id)}</span>
+          <span class="nombre-barrio">${mapa.barriada}</span>
+        </div>
+        ${visualCheckHTML}
+      </div>
+      <div class="imagen-mapa-wrapper">
+        <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
+      </div>
+      <div class="pie-tarjeta-firma">${subFirmaHTML}</div>
+    `;
+    
     grid.appendChild(div);
   });
-  
-  actualizarPanelAsignacionFlotante();
-}
-
-function inyectarSelectorDeAgrupacionAsignados() {
-  if (document.getElementById("contenedor-agrupador-asignados")) return;
-  const mainContenido = document.getElementById("contenedor-principal-grid");
-  if (!mainContenido) return;
-  
-  const navAgrupador = document.createElement("div");
-  navAgrupador.id = "contenedor-agrupador-asignados";
-  navAgrupador.className = "menu-agrupacion-premium";
-  navAgrupador.innerHTML = `
-    <span class="titulo-filtro-lbl">Ordenar por:</span>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
-  `;
-  mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
-}
-
-function eliminarSelectorDeAgrupacionAsignados() {
-  const el = document.getElementById("contenedor-agrupador-asignados");
-  if (el) el.remove();
-}
-
-function cambiarCriterioAsignados(criterio) {
-  criterioOrdenacionAsignados = criterio;
-  filtrarYRenderizar();
 }
 
 function alternarSeleccionTarjeta(idMapa, evento) {
-  if (evento.target.closest('.btn-lupa-flotante') || vistaActual !== "disponibles") return;
+  if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
   const index = territoriosSeleccionados.indexOf(idStr);
@@ -321,11 +279,11 @@ function actualizarPanelAsignacionFlotante() {
   if (!panel) return;
   
   if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
-    if (textContador) textContador.innerText = `${territoriosSeleccionados.length} Seleccionado(s)`;
-    panel.style.display = "flex";
+    if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
+    panel.classList.add("visible");
     evaluarEstadoBotonAsignar();
   } else {
-    panel.style.display = "none";
+    panel.classList.remove("visible");
   }
 }
 
@@ -353,26 +311,21 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
   
-  let telefonoWhatsApp = "";
-  baseDatosCompleta.forEach(m => {
-    if (m.hermano && m.hermano.trim() === nombreH && m.whatsapp) {
-      telefonoWhatsApp = m.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-    }
-  });
-  
   for (let id of territoriosSeleccionados) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
   
-  if (telefonoWhatsApp && telefonoWhatsApp !== "") {
-    let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
-    let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu labor!`;
-    let enlaceWhatsAppFinal = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensajeCompleto}`;
-    
-    window.open(enlaceWhatsAppFinal, '_blank');
-  }
+  // Disparar redirección automática a WhatsApp tras guardar con éxito
+  redireccionarWhatsAppAsignados(nombreH, territoriosSeleccionados);
   
   await descargarDatosDesdeSheets();
+}
+
+function redireccionarWhatsAppAsignados(hermano, mapasIds) {
+  const listaNumeros = mapasIds.map(id => parseInt(id)).join(", ");
+  const mensaje = `¡Hola! Te he asignado los siguientes mapas del territorio: *${listaNumeros}*.\n\nPuedes verlos y gestionarlos desde tu enlace personal de la aplicación. ¡Muchas gracias!`;
+  const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`;
+  window.open(urlWA, '_blank');
 }
 
 function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
@@ -393,7 +346,7 @@ function filtrarYRenderizarHermano() {
   const asignadosHermano = baseDatosCompleta.filter(m => m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
   
   if (asignadosHermano.length === 0) {
-    grid.innerHTML = "<p style='padding:50px; text-align:center; opacity:0.5; font-size:14px;'>No tienes mapas asignados.</p>";
+    grid.innerHTML = "<p style='padding:50px; text-align:center; color:var(--texto-secundario); font-size:14px;'>No tienes mapas asignados.</p>";
     return;
   }
   
@@ -401,22 +354,27 @@ function filtrarYRenderizarHermano() {
   
   asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
-    div.className = `tarjeta-horizontal-premium`;
+    div.className = `tarjeta-apple ${!mapa.trabajado ? 'terminado' : ''}`;
     
     let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
     if (!mapa.trabajado) {
-      accionBotonHTML = `<span style='color:var(--apple-verde); font-weight:700; font-size:12px;'>✓ Hecho</span>`;
+      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
     }
     
     div.innerHTML = `
-      <div class="zona-izquierda-mapa">
-        <img src="${mapa.rutaMapa}" class="img-horizontal-asset" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-        <span class="badge-id-horizontal">${parseInt(mapa.id)}</span>
+      <div class="cabecera-tarjeta">
+        <div class="bloque-id">
+          <span class="num-mapa">${parseInt(mapa.id)}</span>
+          <span class="nombre-barrio">${mapa.barriada}</span>
+        </div>
       </div>
-      <div class="zona-derecha-contenido" style="justify-content: center; gap: 6px;">
-        <div class="fila-superior-barrio">${mapa.barriada}</div>
-        <div>${accionBotonHTML}</div>
+      <div class="imagen-mapa-wrapper">
+        <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
+      <div style="margin-top:4px;">${accionBotonHTML}</div>
     `;
     grid.appendChild(div);
   });
@@ -424,7 +382,7 @@ function filtrarYRenderizarHermano() {
 
 function ejecutarHechoHermano(idMapa, btn) {
   btn.disabled = true;
-  btn.innerText = "...";
+  btn.innerText = "Guardando...";
   const sCompletar = document.createElement("script");
   sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
   sCompletar.onload = async () => { sCompletar.remove(); await descargarDatosDesdeSheets(); };
@@ -461,7 +419,6 @@ function cambiarPestana(vista, btn) {
 function configurarTemaInicial() {
   const t = localStorage.getItem("tema_app") || "oscuro";
   document.documentElement.setAttribute("data-theme", t);
-  actualizarIconoTemaEstructural(t);
 }
 
 function conmutarTema() {
@@ -469,23 +426,5 @@ function conmutarTema() {
   const nuevo = actual === "oscuro" ? "claro" : "oscuro";
   document.documentElement.setAttribute("data-theme", nuevo);
   localStorage.setItem("tema_app", nuevo);
-  actualizarIconoTemaEstructural(nuevo);
-}
-
-function actualizarIconoTemaEstructural(tema) {
-  const btn = document.getElementById("btn-cambiar-tema");
-  if (!btn) return;
-  if (tema === "oscuro") {
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-  } else {
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-  }
-}
-
-function corregirEtiquetasContadoresFijas() {
-  const widgetsTextos = document.querySelectorAll(".widget-anillo");
-  if (widgetsTextos.length >= 4) {
-    widgetsTextos[2].querySelector("p").innerText = "Asignados";
-    widgetsTextos[3].querySelector("p").innerText = "Completados";
-  }
+  document.getElementById("btn-cambiar-tema").innerText = nuevo === "oscuro" ? "☀️" : "🌙";
 }
