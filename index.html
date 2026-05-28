@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Subpanel de Territorios Premium</title>
-  <!-- Fuente Ultra-Moderna Inter -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -13,7 +12,6 @@
   <div class="fondo-mapa-blur"></div>
 
   <div class="contenedor-app">
-    <!-- CABECERA LIMPIA -->
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1 id="txt-campana-titulo">Campaña Activa</h1>
@@ -22,7 +20,6 @@
       <button id="btn-cambiar-tema" onclick="conmutarTema()">☀️</button>
     </header>
 
-    <!-- WIDGETS ANILLOS -->
     <section class="seccion-anillos">
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
@@ -69,7 +66,6 @@
       </div>
     </section>
 
-    <!-- TABS -->
     <div class="contenedor-tabs">
       <div class="control-segmentado">
         <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
@@ -77,17 +73,20 @@
       </div>
     </div>
 
-    <!-- BUSCADOR -->
     <div class="contenedor-busqueda">
       <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
     </div>
 
-    <!-- REJILLAS -->
+    <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
+      <button class="btn-sub-filtro" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
+      <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
+      <button class="btn-sub-filtro" id="btn-ord-fecha" class="btn-sub-filtro activa" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
+    </div>
+
     <main id="contenedor-principal-grid" class="grid-territorios"></main>
     <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
   </div>
 
-  <!-- PANEL INFERIOR DE ASIGNACIÓN -->
   <div id="panel-asignacion-unico" class="panel-inferior-flotante">
     <div class="contenido-panel-flotante">
       <span id="txt-contador-seleccionados">0 mapas seleccionados</span>
@@ -100,7 +99,6 @@
     </div>
   </div>
 
-  <!-- BARRA DE PROGRESO DE TIEMPO -->
   <footer class="barra-tiempo-footer">
     <div class="info-tiempo-texto">
       <span id="lbl-tiempo-restante">Calculando campaña...</span>
@@ -111,7 +109,6 @@
     </div>
   </footer>
 
-  <!-- LIGHTBOX FOTO -->
   <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
     <div class="cabecera-visor-completo">
       <span id="titulo-visor-completo">Mapa</span>
