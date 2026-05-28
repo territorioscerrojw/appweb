@@ -1,8 +1,8 @@
-/* styles.css - Adiciones de proporción y maquetación de iconos */
+/* styles.css - Diseño Minimalista Liso */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(22, 22, 26, 0.35); /* Cristal oscuro muy transparente */
+  --glass-fondo: #121214; /* Fondo liso para tarjetas en modo oscuro */
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -10,21 +10,15 @@
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
-  
-  /* MODO OSCURO: Más brillo (0.45) y blur sutil (6px) para que tu mapa sea claramente visible */
-  --blur-filter: brightness(0.45) contrast(1.1) blur(6px);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.40); /* Cristal claro translúcido */
+  --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
-  
-  /* MODO CLARO: Filtro limpio con blur de 6px para ver el mapa sin perder nitidez */
-  --blur-filter: brightness(0.98) contrast(0.95) blur(6px);
 }
 
 * {
@@ -44,20 +38,9 @@ body {
   letter-spacing: -0.2px;
 }
 
-/* FONDO CON TU NUEVA IMAGEN DE MAPA NÍTIDA */
+/* CONTENEDOR DE FONDO ELIMINADO/RESETEADO A LISO */
 .fondo-mapa-blur {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('mapa-fondo.png');
-  background-size: cover;
-  background-position: center;
-  filter: var(--blur-filter);
-  z-index: -2;
-  pointer-events: none;
-  transition: filter 0.4s ease; /* Transición premium al cambiar de tema */
+  display: none;
 }
 
 .contenedor-app {
@@ -86,9 +69,8 @@ body {
   margin-top: 2px;
 }
 #btn-cambiar-tema {
-  background: rgba(255,255,255,0.05);
+  background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(10px);
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -106,7 +88,6 @@ body {
 .tarjeta-anillo {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(20px);
   border-radius: 14px;
   padding: 14px 2px;
   display: flex;
@@ -155,12 +136,15 @@ body {
 
 /* SEGMENTED CONTROL */
 .control-segmentado {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.1);
   padding: 3px;
   border-radius: 12px;
   display: flex;
   margin-bottom: 14px;
   border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .control-segmentado {
+  background: rgba(0, 0, 0, 0.05);
 }
 .tab {
   flex: 1;
@@ -174,14 +158,15 @@ body {
   cursor: pointer;
 }
 .tab.activa {
-  background: #ffffff;
-  color: #000000;
+  background: var(--glass-fondo);
+  color: var(--texto-principal);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* BUSCADOR */
 .contenedor-busqueda input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   color: var(--texto-principal);
   padding: 12px 14px;
@@ -237,7 +222,6 @@ body {
 .tarjeta-apple {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 14px;
   transition: all 0.2s ease;
@@ -293,7 +277,6 @@ body {
 .tarjeta-apple-horizontal {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  backdrop-filter: blur(20px);
   border-radius: 14px;
   padding: 10px;
   display: flex;
@@ -388,7 +371,6 @@ body {
   bottom: 6px;
   right: 6px;
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
   border: 1px solid rgba(255,255,255,0.1);
   color: white;
   width: 24px;
@@ -419,16 +401,16 @@ body {
   font-weight: 700;
 }
 
-/* BLINDAJE ULTRA-TRANSLÚCIDO PARA AMBOS PANELES INFERIORES */
+/* PANELES INFERIORES SÓLIDOS Y LISOS */
 #panel-asignacion-unico,
 .panel-inferior-flotante,
 .panel-inferior-flotante * .contenido-panel-flotante {
-  background: var(--glass-fondo) !important; /* Fuerza el cristal e impide que JS inyecte grises sólidos */
-  backdrop-filter: blur(25px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(140%) !important;
+  background: var(--glass-fondo) !important; /* Mismo fondo sólido que las tarjetas */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-/* Estructura y maquetación del panel de selección */
+/* Estructura del panel de selección hermano */
 .panel-inferior-flotante {
   position: fixed;
   bottom: 48px; 
@@ -452,7 +434,7 @@ body {
 
 .select-apple {
   flex: 1;
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(0, 0, 0, 0.1) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
   padding: 8px;
@@ -469,19 +451,20 @@ body {
   border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
 }
 
-/* FOOTER BARRA DE TIEMPO TRANSLÚCIDA */
+/* FOOTER BARRA DE TIEMPO SÓLIDA */
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--glass-fondo) !important; /* Comparte exactamente los mismos estilos del cristal superior */
-  backdrop-filter: blur(25px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(140%) !important;
+  background: var(--glass-fondo) !important; /* Mismo tono exacto uniforme */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
 }
 .info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
 .linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+[data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
 /* LIGHTBOX */
