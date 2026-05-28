@@ -11,8 +11,8 @@
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
   
-  /* MODO OSCURO: Filtro agresivo para oscurecer el mapa blanco y darle un tono místico */
-  --blur-filter: brightness(0.12) contrast(1.2) blur(20px);
+  /* MODO OSCURO: Más brillo (0.45) y blur sutil (6px) para que tu mapa sea claramente visible */
+  --blur-filter: brightness(0.45) contrast(1.1) blur(6px);
 }
 
 [data-theme="claro"] {
@@ -23,8 +23,8 @@
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
   
-  /* MODO CLARO: Mantiene el mapa brillante pero suave para no competir con el texto */
-  --blur-filter: brightness(0.95) contrast(0.9) blur(15px);
+  /* MODO CLARO: Filtro limpio con blur de 6px para ver el mapa sin perder nitidez */
+  --blur-filter: brightness(0.98) contrast(0.95) blur(6px);
 }
 
 * {
@@ -44,21 +44,20 @@ body {
   letter-spacing: -0.2px;
 }
 
-/* FONDO CON TU NUEVA IMAGEN DE MAPA */
+/* FONDO CON TU NUEVA IMAGEN DE MAPA NÍTIDA */
 .fondo-mapa-blur {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Usa tu imagen local (puedes cambiar el nombre/ruta aquí si lo necesitas) */
   background-image: url('mapa-fondo.png');
   background-size: cover;
   background-position: center;
   filter: var(--blur-filter);
   z-index: -2;
   pointer-events: none;
-  transition: filter 0.4s ease; /* Transición suave al cambiar de tema */
+  transition: filter 0.4s ease; /* Transición premium al cambiar de tema */
 }
 
 .contenedor-app {
@@ -467,7 +466,7 @@ body {
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--glass-fondo) !important; /* Ahora también es de cristal */
+  background: var(--glass-fondo) !important; /* Ahora también responde a las transparencias del mapa */
   backdrop-filter: blur(25px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(25px) saturate(140%) !important;
   border-top: 1px solid var(--glass-borde);
