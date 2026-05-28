@@ -1,4 +1,4 @@
-/* styles.css - Diseño Minimalista Liso */
+/* styles.css - Diseño Minimalista Liso y Corregido */
 
 :root {
   --fondo-base: #09090b;
@@ -10,6 +10,9 @@
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
+  
+  /* CORREGIDO: Línea de fondo vacía de los contadores visible en modo oscuro */
+  --anillo-vacio: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="claro"] {
@@ -19,6 +22,9 @@
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
+  
+  /* CORREGIDO: Línea de fondo vacía de los contadores visible en modo claro */
+  --anillo-vacio: rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -38,7 +44,6 @@ body {
   letter-spacing: -0.2px;
 }
 
-/* CONTENEDOR DE FONDO ELIMINADO/RESETEADO A LISO */
 .fondo-mapa-blur {
   display: none;
 }
@@ -50,7 +55,7 @@ body {
   padding: 20px 14px 170px 14px;
 }
 
-/* CABECERA */
+/* CABECERA Y BOTÓN LUNA/SOL MINIMALISTA */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
@@ -69,13 +74,28 @@ body {
   margin-top: 2px;
 }
 #btn-cambiar-tema {
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
+  background: transparent !important; /* CORREGIDO: Totalmente transparente sin círculos de color */
+  border: none !important;
   width: 38px;
   height: 38px;
-  border-radius: 50%;
   cursor: pointer;
-  color: inherit;
+  color: var(--texto-principal); /* Hereda el color del texto actual */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+#btn-cambiar-tema:active {
+  opacity: 0.6;
+}
+#btn-cambiar-tema svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* ANILLOS Y CONTADORES */
@@ -112,7 +132,7 @@ body {
 }
 .anillo-fondo {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.05);
+  stroke: var(--anillo-vacio); /* CORREGIDO: Ahora la zona vacía se ve claramente */
   stroke-width: 3.5;
 }
 .anillo-linea {
@@ -201,7 +221,6 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-/* Estado activo del botón Ordenar Por */
 .btn-sub-filtro.activo,
 .btn-sub-filtro.activa {
   background: var(--apple-azul) !important;
@@ -286,7 +305,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Contenedor lateral RECTANGULAR exact */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -357,6 +375,7 @@ body {
   align-items: center;
   gap: 3px;
 }
+/* CAMBIADO: Términos actualizados a Asignados y Completados */
 .badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
 .badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
 
@@ -405,12 +424,11 @@ body {
 #panel-asignacion-unico,
 .panel-inferior-flotante,
 .panel-inferior-flotante * .contenido-panel-flotante {
-  background: var(--glass-fondo) !important; /* Mismo fondo sólido que las tarjetas */
+  background: var(--glass-fondo) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* Estructura del panel de selección hermano */
 .panel-inferior-flotante {
   position: fixed;
   bottom: 48px; 
@@ -455,7 +473,7 @@ body {
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--glass-fondo) !important; /* Mismo tono exacto uniforme */
+  background: var(--glass-fondo) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-top: 1px solid var(--glass-borde);
@@ -467,15 +485,51 @@ body {
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
-/* LIGHTBOX */
+/* LIGHTBOX (VISOR DE PANTALLA COMPLETA CORREGIDO) */
 .visor-pantalla-completa {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column;
+  display: none; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background-color: #000000; /* Fondo negro puro para el visor */
+  z-index: 2000; 
+  flex-direction: column;
 }
-.cabecera-visor-completo { padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.btn-cerrar-visor { background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; }
-.zona-scroll-zoom { flex: 1; display: flex; align-items: center; justify-content: center; }
-.zona-scroll-zoom img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+.cabecera-visor-completo { 
+  padding: 16px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  background-color: rgba(20, 20, 25, 0.9); /* CORREGIDO: Fondo oscuro sólido para blindar las letras */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff !important; /* CORREGIDO: Letras 100% blancas y legibles */
+}
+.cabecera-visor-completo * {
+  color: #ffffff !important; /* Asegura que títulos e identificadores sean blancos */
+}
+.btn-cerrar-visor { 
+  background: rgba(255, 255, 255, 0.15); 
+  border: none; 
+  color: #ffffff !important; 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
+  font-weight: bold;
+  cursor: pointer;
+}
+.zona-scroll-zoom { 
+  flex: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+.zona-scroll-zoom img { 
+  max-width: 100%; 
+  max-height: 85vh; 
+  object-fit: contain; 
+}
 
 /* Forzar estilos del selector de hermanos en modo claro */
 [data-theme="claro"] .select-apple {
@@ -483,7 +537,6 @@ body {
   color: #18181b !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
 }
-
 [data-theme="claro"] .select-apple option {
   background-color: #ffffff !important;
   color: #18181b !important;
