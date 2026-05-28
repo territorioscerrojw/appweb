@@ -15,7 +15,7 @@
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.82);
+  --glass-fondo: rgba(255, 255, 255, 0.75); /* Optimizado para mayor transparencia en claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
@@ -191,25 +191,33 @@ body {
   display: flex;
   gap: 6px;
   margin-bottom: 16px;
-  background: rgba(0,0,0,0.08);
-  padding: 3px;
+  background: rgba(0,0,0,0.06);
+  padding: 4px;
   border-radius: 10px;
   border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .contenedor-sub-filtros {
+  background: rgba(0,0,0,0.04);
 }
 .btn-sub-filtro {
   flex: 1;
   background: transparent;
   border: none;
   color: var(--texto-secundario);
-  padding: 7px 2px;
+  padding: 8px 2px;
   font-size: 11px;
   font-weight: 600;
   border-radius: 7px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
+/* Estado activo del botón Ordenar Por (en azul Apple destacado) */
+.btn-sub-filtro.activo,
 .btn-sub-filtro.activa {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--texto-principal);
+  background: var(--apple-azul) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
 }
 
 /* GRID GENERAL */
@@ -220,7 +228,7 @@ body {
   width: 100%;
 }
 
-/* TARJETAS DISPONIBLES (PROPORCIÓN RECTANGULAR ESTABLE) */
+/* TARJETAS DISPONIBLES */
 .tarjeta-apple {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -270,7 +278,7 @@ body {
 .imagen-mapa-wrapper {
   position: relative;
   width: 100%;
-  height: 165px; /* Altura rectangular recuperada */
+  height: 165px;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -290,7 +298,7 @@ body {
   box-sizing: border-box;
 }
 
-/* CORRECCIÓN: Contenedor lateral RECTANGULAR exacto (Proporción 3:2 de mapa) */
+/* Contenedor lateral RECTANGULAR exacto */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -406,8 +414,7 @@ body {
   font-weight: 700;
 }
 
-/* MENÚ FLOTANTE TRANSLÚCIDO */
-/* MENÚ FLOTANTE TRANSLÚCIDO (CORREGIDO PARA AMBOS MODOS) */
+/* MENÚ FLOTANTE TRANSLÚCIDO COMPLETAMENTE DINÁMICO */
 .panel-inferior-flotante {
   position: fixed;
   bottom: 48px; 
@@ -415,23 +422,17 @@ body {
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
-  
-  /* EXPLICACIÓN: Usamos la variable de fondo para que cambie de oscuro a claro automáticamente */
-  background: var(--glass-fondo);
-  
-  /* El desenfoque de fondo premium (puedes subir de 25px a 35px si quieres más blur) */
-  backdrop-filter: blur(25px) saturate(140%);
-  -webkit-backdrop-filter: blur(25px) saturate(140%);
-  
+  background: var(--glass-fondo); /* Responde al tema claro u oscuro */
+  backdrop-filter: blur(25px) saturate(130%);
+  -webkit-backdrop-filter: blur(25px) saturate(130%);
   border-top: 1px solid var(--glass-borde);
   border-left: 1px solid var(--glass-borde);
   border-right: 1px solid var(--glass-borde);
-  border-radius: 20px 20px 0 0; /* Esquinas superiores redondeadas tipo iPhone */
-  padding: 16px 16px 20px 16px;
+  border-radius: 20px 20px 0 0;
+  padding: 14px 16px 20px 16px;
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
-}
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.12);
 }
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; }
@@ -478,6 +479,7 @@ body {
 .btn-cerrar-visor { background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; }
 .zona-scroll-zoom { flex: 1; display: flex; align-items: center; justify-content: center; }
 .zona-scroll-zoom img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+
 /* Forzar estilos del selector de hermanos en modo claro */
 [data-theme="claro"] .select-apple {
   background-color: #ffffff !important;
