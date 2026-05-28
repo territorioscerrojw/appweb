@@ -1,4 +1,4 @@
-// app.js - Versión Estabilizada con Ajustes de Modo Claro, Estados y Filtros Dinámicos
+// app.js - Versión Premium Estabilizada con Corrección de Fechas, Temas y Estados Activos
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
@@ -14,6 +14,7 @@ let criterioOrdenacionAsignados = "territorio";
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
+  inyectarEstilosCorreccionSelector(); // Asegura el comportamiento visual idéntico al buscador
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -163,7 +164,7 @@ function inyectarArcoProgreso(idPath, valor, total) {
 
 function cambiarCriterioAsignados(criterio) {
   criterioOrdenacionAsignados = criterio;
-  document.querySelectorAll(".btn-sub-filtro").forEach(b => b.classList.remove("activo"));
+  // Refresca la vista para renderizar de nuevo los botones y añadir la clase activa correctamente
   filtrarYRenderizar();
 }
 
@@ -171,7 +172,6 @@ function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
   
-  // Ocultar o mostrar el buscador dependiendo de la pestaña de forma dinámica
   const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
@@ -216,7 +216,11 @@ function filtrarYRenderizar() {
     } else if (criterioOrdenacionAsignados === "hermano") {
       dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "fecha") {
-      dataset.sort((a, b) => new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0));
+      dataset.sort((a, b) => {
+        let fA = a.fechaEntrega || a.fechaentrega || 0;
+        let fB = b.fechaEntrega || b.fechaentrega || 0;
+        return new Date(fB) - new Date(fA);
+      });
     }
   }
   
@@ -253,10 +257,11 @@ function filtrarYRenderizar() {
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      // Captura y saneamiento estricto del valor de fecha de entrega
+      // Sanitización cruzada de la columna N para asegurar la lectura sin importar mayúsculas/minúsculas
+      let rawFecha = mapa.fechaEntrega || mapa.fechaentrega;
       let fechaFormateada = "Sin fecha";
-      if (mapa.fechaEntrega) {
-        const f = new Date(mapa.fechaEntrega);
+      if (rawFecha) {
+        const f = new Date(rawFecha);
         if (!isNaN(f.getTime())) {
           fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: '2-digit' });
         }
@@ -299,20 +304,32 @@ function filtrarYRenderizar() {
 }
 
 function inyectarSelectorDeAgrupacionAsignados() {
-  if (document.getElementById("contenedor-agrupador-asignados")) return;
+  if (document.getElementById("contenedor-agrupador-asignados")) {
+    // Si ya existe, actualizamos los botones para marcar el activo correcto
+    actualizarEstadosBotonesFiltro();
+    return;
+  }
   const mainContenido = document.getElementById("contenedor-principal-grid");
   if (!mainContenido) return;
   
   const navAgrupador = document.createElement("div");
   navAgrupador.id = "contenedor-agrupador-asignados";
   navAgrupador.style = "display: flex; gap: 6px; padding: 10px 0; width: 100%; overflow-x: auto;";
-  navAgrupador.innerHTML = `
-    <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px;">Ordenar por:</span>
+  mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
+  
+  actualizarEstadosBotonesFiltro();
+}
+
+function actualizarEstadosBotonesFiltro() {
+  const contenedor = document.getElementById("contenedor-agrupador-asignados");
+  if (!contenedor) return;
+  
+  contenedor.innerHTML = `
+    <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px; white-space: nowrap;">Ordenar por:</span>
     <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
     <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
     <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
   `;
-  mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
 }
 
 function eliminarSelectorDeAgrupacionAsignados() {
@@ -324,7 +341,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -502,4 +519,37 @@ function conmutarTema() {
   document.documentElement.setAttribute("data-theme", nuevo);
   localStorage.setItem("tema_app", nuevo);
   document.getElementById("btn-cambiar-tema").innerText = nuevo === "oscuro" ? "☀️" : "🌙";
+}
+
+// Inyección limpia y directa del CSS para el selector adaptativo
+function inyectarEstilosCorreccionSelector() {
+  if (document.getElementById("hoja-estilos-dinamica-selector")) return;
+  const style = document.createElement("style");
+  style.id = "hoja-estilos-dinamica-selector";
+  style.innerHTML = `
+    /* Vincula el comportamiento estético del selector de hermanos directamente al del input de búsqueda */
+    #sel-hermano-unico {
+      background-color: var(--fondo-tarjeta, rgba(255, 255, 255, 0.06)) !important;
+      color: var(--texto-principal, #ffffff) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    [data-theme="claro"] #sel-hermano-unico {
+      background-color: rgba(0, 0, 0, 0.04) !important;
+      color: #1c1c1e !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    }
+
+    #sel-hermano-unico option {
+      background-color: #1c1c1e !important;
+      color: #ffffff !important;
+    }
+
+    [data-theme="claro"] #sel-hermano-unico option {
+      background-color: #ffffff !important;
+      color: #1c1c1e !important;
+    }
+  `;
+  document.head.appendChild(style);
 }
