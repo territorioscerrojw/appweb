@@ -277,7 +277,7 @@ body {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   border-radius: 16px;
-  padding: 12px; /* Altura optimizada y más estrecha */
+  padding: 12px;
   transition: all 0.2s ease;
   width: 100%;
   box-sizing: border-box;
@@ -371,11 +371,11 @@ body {
   display: block;
 }
 
-/* Lupa flotante con transparencia colocada estrictamente ENCIMA y DENTRO del mapa */
+/* Lupa flotante abajo a la izquierda en la pestaña Disponibles */
 .btn-lupa-flotante {
   position: absolute !important;
   bottom: 12px;
-  left: 12px; /* Esquina inferior izquierda */
+  left: 12px;
   background: rgba(0, 0, 0, 0.55) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -438,6 +438,26 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* NUEVO EN ASIGNADOS: Lupa colocada exactamente al centro, más chica y muy transparente */
+.tarjeta-apple-horizontal .btn-lupa-flotante {
+  top: 50% !important;
+  left: 50% !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important; /* Centrado matemático */
+  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  opacity: 0.5 !important; /* Menor opacidad inicial */
+  width: 24px !important; /* Formato más compacto */
+  height: 24px !important;
+}
+.tarjeta-apple-horizontal .btn-lupa-flotante:hover {
+  opacity: 0.85 !important;
+}
+.tarjeta-apple-horizontal .btn-lupa-flotante:active {
+  transform: translate(-50%, -50%) scale(0.9) !important;
 }
 
 /* Columna de datos en asignados (Compacta y controlada) */
