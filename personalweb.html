@@ -76,30 +76,30 @@
       margin: 0 !important;
     }
 
-    /* Marca de agua diagonal "TRABAJADO" limpia (Sin recuadro) */
+    /* Marca de agua diagonal "TRABAJADO" - Estilo Ultra Minimalista */
     .marca-agua-trabajado {
       display: none;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) rotate(-22deg);
-      color: rgba(39, 174, 96, 0.35); 
-      font-size: 2.8rem;
-      font-weight: 900;
-      letter-spacing: 4px;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      color: rgba(39, 174, 96, 0.22); /* Tono verde sutil sin sombras ni trazos duros */
+      font-size: 2.6rem;
+      font-weight: 600; /* Tipografía más fina y elegante */
+      letter-spacing: 5px;
       text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-shadow: none !important; /* Eliminada cualquier sombra de fondo */
     }
 
     /* Comportamiento del mapa Terminado */
     .tarjeta-mapa.terminado { 
-      opacity: 0.6; 
+      opacity: 0.55; 
     }
     .tarjeta-mapa.terminado .imagen-mapa {
-      filter: grayscale(1) contrast(0.85); 
+      filter: grayscale(1) opacity(0.8); 
     }
     .tarjeta-mapa.terminado .marca-agua-trabajado {
       display: block;
@@ -238,6 +238,23 @@
       document.documentElement.setAttribute("data-theme", temaGuardado);
     }
 
+    // Transforma cualquier formato ISO o estándar de Sheets en dd/mm/aaaa
+    function formatearFechaComun(fechaRaw) {
+      if (!fechaRaw) return "Sin fecha";
+      try {
+        const fechaObj = new Date(fechaRaw);
+        if (isNaN(fechaObj.getTime())) return fechaRaw; // Si ya viene formateada como texto, la deja igual
+        
+        const dia = String(fechaObj.getDate()).padStart(2, '0');
+        const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
+        const anio = fechaObj.getFullYear();
+        
+        return `${dia}/${mes}/${anio}`;
+      } catch (e) {
+        return fechaRaw;
+      }
+    }
+
     async function cargarDatosFlujoHermano() {
       try {
         const urlPeticion = `${URL_API_SHEETS}?accion=leerDatos`;
@@ -286,7 +303,7 @@
             
             <div class="detalles-mapa">
               <h3 class="titulo-barrio">${mapa.barriada}</h3>
-              <p class="subtexto-campana">Fecha de entrega: <b>${mapa.fechaEntrega}</b></p>
+              <p class="subtexto-campana">Fecha de entrega: <b>${formatearFechaComun(mapa.fechaEntrega)}</b></p>
               
               <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
                 ${esTerminado 
@@ -312,7 +329,6 @@
       });
     }
 
-    // Procesa de forma dinámica el Marcado (completar) o Reactivado (volver a pendiente)
     async function cambiarEstadoTerritorio(idMapa, modo) {
       const boton = document.getElementById(`btn-accion-${idMapa}`);
       if (boton) {
@@ -321,19 +337,16 @@
       }
 
       try {
-        // Al desmarcar, llamamos a la acción 'asignar' pasándole el nombre del hermano, revirtiendo 'Trabajado' a false en tu Sheets
         const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
         const urlPeticion = `${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`;
         
         await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
 
-        // Modificamos el estado local en la memoria de la página web al instante
         const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
         if (indice !== -1) {
           datosLocalesHermano[indice].trabajado = (modo === "completar");
         }
 
-        // Repintamos el grid dinámicamente con los nuevos estados y posiciones
         inyectarTarjetasHermano();
 
       } catch (error) {
@@ -346,7 +359,6 @@
       }
     }
 
-    // Funciones del Lightbox (Visor)
     function abrirVisorPantallaCompleta(src, titulo) {
       document.getElementById("img-visor-completa").src = src;
       document.getElementById("titulo-visor-completo").innerText = titulo;
