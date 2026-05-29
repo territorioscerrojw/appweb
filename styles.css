@@ -97,6 +97,11 @@ body {
   box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
+  /* CORREGIDO: Fuerza a desaparecer cualquier emoticono viejo o texto del HTML */
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  overflow: hidden;
 }
 #btn-cambiar-tema:active {
   transform: scale(0.94);
@@ -110,6 +115,8 @@ body {
   height: 20px;
   display: block;
   background-color: currentColor;
+  /* Re-activa la visibilidad del pseudo-elemento anulando el font-size 0 del padre */
+  text-indent: 0 !important;
 }
 /* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
@@ -277,34 +284,38 @@ body {
   border-left: 4px solid var(--apple-naranja);
 }
 
-/* Cabecera balanceada: mantiene los extremos fijos y la barriada centrada */
+/* CORREGIDO: Sistema balanceado que independiza el número y centra la barriada al medio real */
 .cabecera-tarjeta {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-  margin-bottom: 8px; /* Altura optimizada */
+  justify-content: center; /* Centrado estricto del bloque central */
+  min-height: 28px;
+  margin-bottom: 8px;
   width: 100%;
 }
-/* Número en esquina superior izquierda grande */
+/* El número de mapa se queda fijo de forma absoluta en su esquina izquierda */
 .num-mapa { 
+  position: absolute;
+  left: 4px;
   font-size: 24px; 
   font-weight: 800; 
   line-height: 1;
-  flex-shrink: 0;
 }
-/* Nombre de la barriada perfectamente al centro */
+/* Nombre de la barriada perfectamente alineado al centro de la tarjeta */
 .nombre-barrio { 
   font-size: 14px; 
   font-weight: 600; 
-  text-align: center; 
-  flex-grow: 1;
-  padding: 0 10px;
+  text-align: center;
+  max-width: 65%; /* Evita colisiones con los extremos */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-/* Contenedor del checkbox alineado a la derecha */
+/* Contenedor del checkbox alineado de forma absoluta en su esquina derecha */
 .contenedor-check {
-  flex-shrink: 0;
+  position: absolute;
+  right: 4px;
 }
 
 .check-apple-custom {
@@ -333,7 +344,7 @@ body {
 
 /* Muestra la imagen completa estrechándola sutilmente sin recortar laterales */
 .imagen-mapa-wrapper {
-  position: relative;
+  position: relative !important; /* Estricto: Base para que la lupa flote dentro */
   width: 100%;
   height: 165px;
   border-radius: 10px;
@@ -351,120 +362,35 @@ body {
   height: auto;
   object-fit: contain; 
   border-radius: 6px;
+  display: block;
 }
 
-/* RECTÁNGULO DE TARJETA ASIGNADOS HORIZONTAL */
-.tarjeta-apple-horizontal {
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
-  border-radius: 14px;
-  padding: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.img-lateral-wrapper-rectangular {
-  position: relative;
-  width: 105px; 
-  height: 70px;
-  border-radius: 6px;
-  overflow: hidden;
-  flex-shrink: 0;
-  background: rgba(0,0,0,0.2);
-}
-.imagen-lateral-asset-rect {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.contenido-lateral-datos {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow: hidden;
-}
-.cabecera-datos-linea {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.num-mapa-chico { font-size: 16px; font-weight: 800; }
-.nombre-barrio-chico { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* SECCIÓN DE ICONOS MINIMALISTAS */
-.info-hermano-linea {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--texto-secundario);
-  gap: 4px;
-}
-.txt-horizontal-hermano, .txt-horizontal-fecha {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.txt-horizontal-hermano { max-width: 140px; font-weight: 500; }
-
-.svg-icono-chico {
-  width: 12px;
-  height: 12px;
-  color: var(--texto-secundario);
-  flex-shrink: 0;
-}
-
-.estado-badge-linea {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.badge-estado-pill {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
-.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
-.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
-
-.svg-icono-mini {
-  width: 10px;
-  height: 10px;
-}
-
-/* LUPA MINIMALISTA EN LA ESQUINA INFERIOR IZQUIERDA DEL MAPA */
+/* CORREGIDO: Lupa colocada de forma flotante con transparencia ENCIMA de la imagen */
 .btn-lupa-flotante {
-  position: absolute;
-  bottom: 6px;
-  left: 6px; /* Movido con precisión a la izquierda */
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: white;
-  width: 26px;
-  height: 26px;
+  position: absolute !important;
+  bottom: 12px;
+  left: 12px; /* Esquina inferior izquierda dentro de la imagen */
+  background: rgba(0, 0, 0, 0.55) !important; /* Translúcido oscuro Apple */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 5;
+  z-index: 10; /* Se superpone sin problemas al mapa */
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0.85;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.1s;
+  backdrop-filter: blur(2px); /* Toque sutil cristalizado tras la lupa */
+  -webkit-backdrop-filter: blur(2px);
 }
 .btn-lupa-flotante:hover {
   opacity: 1;
+}
+.btn-lupa-flotante:active {
+  transform: scale(0.9);
 }
 .ico-minimalista {
   opacity: 0.9;
