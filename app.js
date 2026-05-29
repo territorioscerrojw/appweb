@@ -83,6 +83,14 @@ function descargarDatosDesdeSheets() {
 function extraerNombresDeHermanos() {
   let listado = Object.keys(diccionarioGruposHermanos);
   
+  // DIAGNÓSTICO: Vamos a ver en la consola qué pinta tiene el diccionario que viene de Sheets
+  console.log("=== DATOS DE HERMANOS RECIBIDOS DESDE GOOGLE SHEETS ===");
+  console.log("Diccionario completo:", diccionarioGruposHermanos);
+  if (baseDatosCompleta.length > 0) {
+    console.log("Muestra de la primera fila de la base de datos:", baseDatosCompleta[0]);
+  }
+  console.log("======================================================");
+
   if (listado.length === 0) {
     baseDatosCompleta.forEach(m => {
       if (m.hermano && m.hermano.trim() !== "") {
@@ -96,42 +104,44 @@ function extraerNombresDeHermanos() {
     const grupoA = diccionarioGruposHermanos[a] ? String(diccionarioGruposHermanos[a]).trim() : "";
     const grupoB = diccionarioGruposHermanos[b] ? String(diccionarioGruposHermanos[b]).trim() : "";
     const grupoActualStr = String(grupoFiltro).trim();
-
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
-    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1; // <- CORREGIDO AQUÍ (Antes ponía googleActualStr)
+    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
     return a.localeCompare(b);
   });
   
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no">Seleccionar Hermano...</option>';
+  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no" data-telefono="">Seleccionar Hermano...</option>';
   
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
     
     const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
-    
     opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
     
-    const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombre && m.whatsapp);
+    // Intentamos buscar el teléfono si viniera en el objeto extendido de hermanos
     let telClean = "";
-    if (mapaConWA && mapaConWA.whatsapp) {
-      telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-      if (telClean !== "" && !telClean.startsWith("34")) telClean = "34" + telClean;
+    if (diccionarioGruposHermanos[nombre] && diccionarioGruposHermanos[nombre].whatsapp) {
+      telClean = diccionarioGruposHermanos[nombre].whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+    } else {
+      // Por si acaso viene en las filas de la campaña
+      const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.toLowerCase() && m.whatsapp);
+      if (mapaConWA && mapaConWA.whatsapp) {
+        telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+      }
     }
+    
+    if (telClean !== "" && !telClean.startsWith("34")) telClean = "34" + telClean;
     opt.setAttribute("data-telefono", telClean);
 
     const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
-    
-    const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
-    const esDeEsteGrupo = (grupoH === String(grupoFiltro).trim());
-    
+    const grupoH = typeof diccionarioGruposHermanos[nombre] === 'object' ? diccionarioGruposHermanos[nombre].grupo : diccionarioGruposHermanos[nombre];
+    const esDeEsteGrupo = (String(grupoH).trim() === String(grupoFiltro).trim());
     const prefijoGrupo = esDeEsteGrupo ? "● " : "";
     
     opt.innerText = `${prefijoGrupo}${nombre}${marcaDiscreta}`;
-    
     selectorUnico.appendChild(opt);
   });
 }
