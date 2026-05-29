@@ -1,4 +1,4 @@
-// app.js - VERSIÓN CORREGIDA: Selección de tarjetas restaurada y optimización total
+// app.js - Versión con Memoria Inteligente de Redirección Automática a WhatsApp
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -12,14 +12,10 @@ let idHermanoUrl = null;
 let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "territorio"; 
 
-// Estado del hermano seleccionado guardado por adelantado
-let estadoHermanoSeleccionado = { nombre: "", esPrimerVez: false };
-
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
   inyectarEstilosCorreccionSelector();
-  inyectarEstilosModalWhatsApp();
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -108,8 +104,6 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  selectorUnico.setAttribute("onchange", "preverificarHermanoSeleccionado()");
-  
   selectorUnico.innerHTML = '<option value="">Seleccionar Hermano...</option>';
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
@@ -121,27 +115,6 @@ function extraerNombresDeHermanos() {
     opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
     selectorUnico.appendChild(opt);
   });
-}
-
-async function preverificarHermanoSeleccionado() {
-  const selector = document.getElementById("sel-hermano-unico");
-  const nombreH = selector.value;
-  
-  if (!nombreH) {
-    estadoHermanoSeleccionado = { nombre: "", esPrimerVez: false };
-    evaluarEstadoBotonAsignar();
-    return;
-  }
-  
-  estadoHermanoSeleccionado = { nombre: nombreH, esPrimerVez: false };
-  evaluarEstadoBotonAsignar();
-  
-  const esPrimerVez = await verificarPrimerVez(nombreH);
-  
-  if (selector.value === nombreH) { 
-    estadoHermanoSeleccionado.esPrimerVez = esPrimerVez;
-    evaluarEstadoBotonAsignar();
-  }
 }
 
 function procesarFechasYBarras(inicioStr, finStr) {
@@ -195,7 +168,6 @@ function cambiarCriterioAsignados(criterio) {
   filtrarYRenderizar();
 }
 
-/* FUNCIÓN CORREGIDA: SE REINJECTÓ EL ATRIBUTO ONCLICK EN LAS TARJETAS */
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
@@ -259,11 +231,9 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
-      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
+      const seleccionadoActivo = territoriesSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
-      
-      // AQUÍ ESTÁ LA CORRECCIÓN: Volvemos a activar el clic para seleccionar la tarjeta
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
       div.innerHTML = `
@@ -373,7 +343,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriesSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -421,24 +391,30 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
+/* FUNCIÓN PROCESAR: LOGICA DE MEMORIA INTELIGENTE PARA REDIRECCIÓN DE WHATSAPP */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
-  
-  const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
+
+  // 1. Verificar cuántos mapas tiene ya asignados este hermano actualmente en la base de datos
+  const mapasActualesDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombreH.trim().toLowerCase() && m.entregado === true);
+  const contadorTerritoriosAsignados = mapasActualesDelHermano.length;
+
+  // 2. Extraer teléfono de WhatsApp del hermano
+  const mapaConWhatsApp = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH && m.whatsapp);
   let telefonoWhatsApp = "";
-  if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
-    telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+  if (mapaConWhatsApp && mapaConWhatsApp.whatsapp) {
+    telefonoWhatsApp = mapaConWhatsApp.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
     if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
       telefonoWhatsApp = "34" + telefonoWhatsApp;
     }
   }
 
-  const esPrimerVez = estadoHermanoSeleccionado.nombre === nombreH ? estadoHermanoSeleccionado.esPrimerVez : false;
   const copiaSeleccionados = [...territoriosSeleccionados];
 
+  // 3. Actualización optimista de inmediato para máxima rapidez visual
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
@@ -453,38 +429,29 @@ function procesarAsignacionMultiple() {
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
-  if (telefonoWhatsApp !== "" && esPrimerVez) {
-    mostrarModalNotificacionWhatsApp(nombreH, telefonoWhatsApp);
+  // 4. LÓGICA DE MEMORIA LOCAL: 
+  // Si tiene 0 territorios y además NUNCA se le ha redirigido en este navegador... ¡Redirigimos!
+  if (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "") {
+    // Revisamos la lista de personas ya notificadas en localStorage
+    let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
+    
+    if (!memoriaNotificados.includes(nombreH.trim())) {
+      // Guardamos a este hermano en la memoria inmediatamente para que no repita
+      memoriaNotificados.push(nombreH.trim());
+      localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
+
+      // Construimos el enlace oficial e infalible
+      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+      const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+
+      // Redirección nativa limpia en pestaña nueva
+      window.open(urlWhatsApp, '_blank');
+    }
   }
 
+  // 5. Envío paralelo al servidor en background
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
-}
-
-function mostrarModalNotificacionWhatsApp(nombreHermano, telefono) {
-  const previo = document.getElementById("modal-flotante-whatsapp");
-  if (previo) previo.remove();
-
-  const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreHermano)}`;
-  const mensaje = `Hola ${nombreHermano}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
-  const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
-
-  const modalHtml = document.createElement("div");
-  modalHtml.id = "modal-flotante-whatsapp";
-  modalHtml.className = "notificacion-popup-apple";
-  modalHtml.innerHTML = `
-    <div class="popup-contenido-diseno">
-      <div class="popup-icono-globo">📱</div>
-      <div class="popup-bloque-texto">
-        <h4>¡Web de ${nombreHermano} lista!</h4>
-        <p>Es la primera vez que recibe territorios. Envíale su panel personal por WhatsApp.</p>
-      </div>
-      <div class="popup-bloque-botones">
-        <button class="btn-popup-cancelar" onclick="this.closest('#modal-flotante-whatsapp').remove()">Luego</button>
-        <a class="btn-popup-enviar-wa" href="${urlWhatsApp}" target="_blank" onclick="this.closest('#modal-flotante-whatsapp').remove()">Enviar Ahora</a>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modalHtml);
 }
 
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
@@ -495,20 +462,6 @@ async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   } catch (e) {
     console.error("Error al guardar en background", e);
   }
-}
-
-function verificarPrimerVez(nombreHermano) {
-  return new Promise((resolve) => {
-    const cbNombre = "cbPrimerVez_" + Date.now();
-    window[cbNombre] = function(datos) {
-      delete window[cbNombre];
-      resolve(datos.primerVez === true);
-    };
-    const script = document.createElement("script");
-    script.src = `${URL_API_SHEETS}?accion=verificarPrimerVez&hermano=${encodeURIComponent(nombreHermano)}&callback=${cbNombre}`;
-    script.onerror = () => { delete window[cbNombre]; resolve(false); };
-    document.body.appendChild(script);
-  });
 }
 
 function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
@@ -644,55 +597,6 @@ function inyectarEstilosCorreccionSelector() {
     [data-theme="claro"] #sel-hermano-unico option { background-color: #ffffff !important; color: #1c1c1e !important; }
     [data-theme="claro"] .btn-apple-bloqueado { background-color: rgba(0, 0, 0, 0.05) !important; color: rgba(0, 0, 0, 0.3) !important; }
     [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
-  `;
-  document.head.appendChild(style);
-}
-
-function inyectarEstilosModalWhatsApp() {
-  if (document.getElementById("hoja-estilos-modal-wa")) return;
-  const style = document.createElement("style");
-  style.id = "hoja-estilos-modal-wa";
-  style.innerHTML = `
-    .notificacion-popup-apple {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 400px;
-      background: rgba(30, 30, 30, 0.9);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      z-index: 99999;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      animation: desplazarAbajo 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    [data-theme="claro"] .notificacion-popup-apple {
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
-    .popup-contenido-diseno { display: flex; align-items: start; gap: 12px; position: relative; flex-wrap: wrap; }
-    .popup-icono-globo { font-size: 24px; }
-    .popup-bloque-texto { flex: 1; min-width: 200px; }
-    .popup-bloque-texto h4 { margin: 0 0 4px 0; font-size: 15px; color: #fff; font-weight: 600; }
-    [data-theme="claro"] .popup-bloque-texto h4 { color: #1c1c1e; }
-    .popup-bloque-texto p { margin: 0; font-size: 13px; color: #aaa; line-height: 1.4; }
-    [data-theme="claro"] .popup-bloque-texto p { color: #666; }
-    .popup-bloque-botones { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; }
-    [data-theme="claro"] .popup-bloque-botones { border-top: 1px solid rgba(0,0,0,0.05); }
-    .btn-popup-cancelar { background: transparent; border: none; color: #ff453a; font-size: 14px; font-weight: 500; padding: 6px 12px; cursor: pointer; }
-    .btn-popup-enviar-wa { background: #34c759; color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; display: inline-block; cursor: pointer; transition: background 0.2s; }
-    .btn-popup-enviar-wa:hover { background: #2ebd50; }
-    
-    @keyframes desplazarAbajo {
-      from { top: -100px; opacity: 0; }
-      to { top: 20px; opacity: 1; }
-    }
   `;
   document.head.appendChild(style);
 }
