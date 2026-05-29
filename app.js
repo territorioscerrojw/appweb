@@ -1,5 +1,4 @@
-// app.js - VERSIÓN ULTRA-SEGURA CONTRA BLOQUEOS DE POPUPS
-// Estrategia: Datos pre-cargados en el HTML para apertura instantánea de WhatsApp
+// app.js - VERSIÓN CON MARCAS DISCRETAS AL FINAL DEL NOMBRE
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -80,6 +79,7 @@ function descargarDatosDesdeSheets() {
   });
 }
 
+/* MODIFICADO: Marcas pequeñas fijadas al final del nombre */
 function extraerNombresDeHermanos() {
   let listado = Object.keys(diccionarioGruposHermanos);
   
@@ -105,33 +105,37 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  selectorUnico.innerHTML = '<option value="" data-telefono="" data-cantidad="0">Seleccionar Hermano...</option>';
+  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no">Seleccionar Hermano...</option>';
   
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
     
-    // Dejamos calculado de antemano el teléfono y cuántos mapas tiene asignados ya
-    const mapasDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
-    const cantidadMapas = mapasDelHermano.length;
+    // Verificación en tiempo de carga
+    const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
+    
+    opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
     
     const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombre && m.whatsapp);
     let telClean = "";
     if (mapaConWA && mapaConWA.whatsapp) {
       telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-      if (telClean !== "" && !telClean.startsWith("34")) {
-        telClean = "34" + telClean;
-      }
+      if (telClean !== "" && !telClean.startsWith("34")) telClean = "34" + telClean;
     }
-
-    // Inyectamos estos valores en atributos ocultos del HTML
     opt.setAttribute("data-telefono", telClean);
-    opt.setAttribute("data-cantidad", cantidadMapas);
+
+    // Definimos la marca usando caracteres pequeños y discretos de manera sutil al final
+    // " ₍✓₎ " si ya tiene territorio asignado o " ₍₋₎ " si no tiene asignado ninguno.
+    const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
     
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
     const esDeEsteGrupo = (grupoH === String(grupoFiltro).trim());
     
-    opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
+    const prefijoGrupo = esDeEsteGrupo ? "● " : "";
+    
+    // Ejemplo visual resultante discreto: "● Juan Pérez ₍✓₎" o "Pedro Gómez ₍₋₎"
+    opt.innerText = `${prefijoGrupo}${nombre}${marcaDiscreta}`;
+    
     selectorUnico.appendChild(opt);
   });
 }
@@ -159,7 +163,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
 
 function actualizarAnillosEstadisticos() {
   const grupoMapas = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
-  const total = grupoMapas.length;
+  const total = groupMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
@@ -410,36 +414,25 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* FUNCIÓN PROCESAR REESTRUCTURADA: ACCESO INSTANTÁNEO SIN CÁLCULOS PREVIOS */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
-  // Extraemos instantáneamente los valores pre-calculados del HTML
   const opcionSeleccionada = selector.options[selector.selectedIndex];
+  const tieneTerritorioAlInicio = opcionSeleccionada.getAttribute("data-tiene-territorio");
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
-  const contadorTerritoriosAsignados = parseInt(opcionSeleccionada.getAttribute("data-cantidad") || "0", 10);
 
-  // REDIRECCIÓN INSTANTÁNEA EN LA PRIMERA LÍNEA DE ACCIÓN DE USUARIO
-  if (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "") {
-    let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
-    
-    if (!memoriaNotificados.includes(nombreH.trim())) {
-      memoriaNotificados.push(nombreH.trim());
-      localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
+  // Abre WhatsApp de forma limpia instantáneamente si al CARGAR la web el hermano tenía "no" (raya)
+  if (tieneTerritorioAlInicio === "no" && telefonoWhatsApp !== "") {
+    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
-      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
-      const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
-
-      // El navegador obedece al 100% porque esta es la primera instrucción real ejecutada tras el clic
-      window.open(urlWhatsApp, '_blank');
-    }
+    window.open(urlWhatsApp, '_blank');
   }
 
-  // A partir de aquí hacemos los cambios locales y remotos
   const copiaSeleccionados = [...territoriosSeleccionados];
 
   baseDatosCompleta.forEach(mapa => {
@@ -585,6 +578,7 @@ function inyectarEstilosCorreccionSelector() {
       background-color: rgba(255, 255, 255, 0.08) !important;
       color: #ffffff !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      font-size: 14px !important;
     }
     #sel-hermano-unico option { background-color: #1c1c1e !important; color: #ffffff !important; }
 
