@@ -1,5 +1,5 @@
 // app.js - VERSIÓN CORREGIDA Y COMPLETADA EN SU TOTALIDAD
-// Estrategia: Marcas discretas al final del nombre y lógica infalible contra bloqueos de WhatsApp
+// Estrategia: Marcas discretas unificadas, lectura enriquecida desde Sheets y simulación física de clics contra bloqueos de WhatsApp.
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -83,14 +83,6 @@ function descargarDatosDesdeSheets() {
 function extraerNombresDeHermanos() {
   let listado = Object.keys(diccionarioGruposHermanos);
   
-  // DIAGNÓSTICO: Vamos a ver en la consola qué pinta tiene el diccionario que viene de Sheets
-  console.log("=== DATOS DE HERMANOS RECIBIDOS DESDE GOOGLE SHEETS ===");
-  console.log("Diccionario completo:", diccionarioGruposHermanos);
-  if (baseDatosCompleta.length > 0) {
-    console.log("Muestra de la primera fila de la base de datos:", baseDatosCompleta[0]);
-  }
-  console.log("======================================================");
-
   if (listado.length === 0) {
     baseDatosCompleta.forEach(m => {
       if (m.hermano && m.hermano.trim() !== "") {
@@ -101,9 +93,13 @@ function extraerNombresDeHermanos() {
   }
   
   listaHermanosPool = listado.sort((a, b) => {
-    const grupoA = diccionarioGruposHermanos[a] ? String(diccionarioGruposHermanos[a]).trim() : "";
-    const grupoB = diccionarioGruposHermanos[b] ? String(diccionarioGruposHermanos[b]).trim() : "";
+    const infoA = diccionarioGruposHermanos[a];
+    const infoB = diccionarioGruposHermanos[b];
+    const grupoA = infoA && typeof infoA === 'object' ? String(infoA.grupo).trim() : String(infoA || "").trim();
+    const grupoB = infoB && typeof infoB === 'object' ? String(infoB.grupo).trim() : String(infoB || "").trim();
+    
     const grupoActualStr = String(grupoFiltro).trim();
+
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
     if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
     return a.localeCompare(b);
@@ -121,15 +117,16 @@ function extraerNombresDeHermanos() {
     const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
     opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
     
-    // Intentamos buscar el teléfono si viniera en el objeto extendido de hermanos
+    // EXTRAEMOS EL TELÉFONO DE LA NUEVA ESTRUCTURA UNIFICADA ENVIADA POR EL SERVIDOR
     let telClean = "";
-    if (diccionarioGruposHermanos[nombre] && diccionarioGruposHermanos[nombre].whatsapp) {
-      telClean = diccionarioGruposHermanos[nombre].whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+    const infoHermano = diccionarioGruposHermanos[nombre];
+    if (infoHermano && typeof infoHermano === 'object' && infoHermano.whatsapp) {
+      telClean = infoHermano.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
     } else {
-      // Por si acaso viene en las filas de la campaña
+      // Vía de escape por si acaso
       const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.toLowerCase() && m.whatsapp);
       if (mapaConWA && mapaConWA.whatsapp) {
-        telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+        telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
       }
     }
     
@@ -137,7 +134,9 @@ function extraerNombresDeHermanos() {
     opt.setAttribute("data-telefono", telClean);
 
     const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
-    const grupoH = typeof diccionarioGruposHermanos[nombre] === 'object' ? diccionarioGruposHermanos[nombre].grupo : diccionarioGruposHermanos[nombre];
+    
+    const infoH = diccionarioGruposHermanos[nombre];
+    const grupoH = infoH && typeof infoH === 'object' ? infoH.grupo : infoH;
     const esDeEsteGrupo = (String(grupoH).trim() === String(grupoFiltro).trim());
     const prefijoGrupo = esDeEsteGrupo ? "● " : "";
     
@@ -372,7 +371,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriesSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -422,25 +421,31 @@ function evaluarEstadoBotonAsignar() {
 
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
-  const nombreH = selector.value; // Este es el valor puro (Ej: "Juan Pérez")
+  const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
-  // 1. Conseguimos el texto exacto que el encargado está viendo en la pantalla
   const opcionSeleccionada = selector.options[selector.selectedIndex];
-  const textoVisible = opcionSeleccionada.innerText; // Ej: "● Juan Pérez ₍₋₎" o "● Juan Pérez ₍✓₎"
+  const textoVisible = opcionSeleccionada.innerText; 
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
 
-  // 2. LA SOLUCIÓN DIRECTA: Si el texto visible incluye el símbolo (-), redirigimos de inmediato
+  // SI EL TEXTO CONTIENE (-) Y EL TELÉFONO HA SIDO CARGADO, DISPARAR ENLACE FANTASMA SÍNCRONO
   if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
-    window.open(urlWhatsApp, '_blank');
+    // Burla los bloqueos de popups creando un nodo físico y disparando su clic
+    const enlaceFantasma = document.createElement("a");
+    enlaceFantasma.href = urlWhatsApp;
+    enlaceFantasma.target = "_blank";
+    enlaceFantasma.rel = "noopener noreferrer";
+    document.body.appendChild(enlaceFantasma);
+    enlaceFantasma.click();
+    enlaceFantasma.remove();
   }
 
-  // 3. Continuamos con el proceso normal de asignación en la app
+  // Continuar con el guardado visual en local
   const copiaSeleccionados = [...territoriosSeleccionados];
 
   baseDatosCompleta.forEach(mapa => {
@@ -459,6 +464,7 @@ function procesarAsignacionMultiple() {
 
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
+
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   try {
     const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
