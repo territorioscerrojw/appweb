@@ -1,5 +1,5 @@
-// app.js - VERSIÓN FINAL COMPLETADA Y CORREGIDA
-// Funciones: Selección instantánea, Memoria Local de WhatsApp e interfaz ultra rápida
+// app.js - VERSIÓN ULTRA-SEGURA CONTRA BLOQUEOS DE POPUPS
+// Estrategia: Datos pre-cargados en el HTML para apertura instantánea de WhatsApp
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -105,10 +105,28 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  selectorUnico.innerHTML = '<option value="">Seleccionar Hermano...</option>';
+  selectorUnico.innerHTML = '<option value="" data-telefono="" data-cantidad="0">Seleccionar Hermano...</option>';
+  
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
+    
+    // Dejamos calculado de antemano el teléfono y cuántos mapas tiene asignados ya
+    const mapasDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
+    const cantidadMapas = mapasDelHermano.length;
+    
+    const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombre && m.whatsapp);
+    let telClean = "";
+    if (mapaConWA && mapaConWA.whatsapp) {
+      telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
+      if (telClean !== "" && !telClean.startsWith("34")) {
+        telClean = "34" + telClean;
+      }
+    }
+
+    // Inyectamos estos valores en atributos ocultos del HTML
+    opt.setAttribute("data-telefono", telClean);
+    opt.setAttribute("data-cantidad", cantidadMapas);
     
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
     const esDeEsteGrupo = (grupoH === String(grupoFiltro).trim());
@@ -392,45 +410,36 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
+/* FUNCIÓN PROCESAR REESTRUCTURADA: ACCESO INSTANTÁNEO SIN CÁLCULOS PREVIOS */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
-  // 1. Averiguar si cumple los requisitos para WhatsApp ANTES de tocar la interfaz
-  const mapasActualesDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombreH.trim().toLowerCase() && m.entregado === true);
-  const contadorTerritoriosAsignados = mapasActualesDelHermano.length;
+  // Extraemos instantáneamente los valores pre-calculados del HTML
+  const opcionSeleccionada = selector.options[selector.selectedIndex];
+  const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
+  const contadorTerritoriosAsignados = parseInt(opcionSeleccionada.getAttribute("data-cantidad") || "0", 10);
 
-  const mapaConWhatsApp = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH && m.whatsapp);
-  let telefonoWhatsApp = "";
-  if (mapaConWhatsApp && mapaConWhatsApp.whatsapp) {
-    telefonoWhatsApp = mapaConWhatsApp.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-    if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
-      telefonoWhatsApp = "34" + telefonoWhatsApp;
+  // REDIRECCIÓN INSTANTÁNEA EN LA PRIMERA LÍNEA DE ACCIÓN DE USUARIO
+  if (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "") {
+    let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
+    
+    if (!memoriaNotificados.includes(nombreH.trim())) {
+      memoriaNotificados.push(nombreH.trim());
+      localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
+
+      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+      const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+
+      // El navegador obedece al 100% porque esta es la primera instrucción real ejecutada tras el clic
+      window.open(urlWhatsApp, '_blank');
     }
   }
 
-  let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
-  let necesitaRedireccion = (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "" && !memoriaNotificados.includes(nombreH.trim()));
-
-  // 2. ¡CRUCIAL! Si necesita WhatsApp, creamos la ventana INMEDIATAMENTE. 
-  // Al hacerlo arriba del todo, el navegador no lo detecta como un popup sospechoso.
-  let ventanaWhatsApp = null;
-  if (necesitaRedireccion) {
-    // Guardamos en la memoria local para que no vuelva a abrirse en el futuro
-    memoriaNotificados.push(nombreH.trim());
-    localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
-
-    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
-    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
-    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
-    
-    // Abrimos la pestaña YA
-    ventanaWhatsApp = window.open(urlWhatsApp, '_blank');
-  }
-
-  // 3. Ahora que el navegador ya procesó el clic, hacemos toda la actualización visual
+  // A partir de aquí hacemos los cambios locales y remotos
   const copiaSeleccionados = [...territoriosSeleccionados];
 
   baseDatosCompleta.forEach(mapa => {
@@ -447,7 +456,6 @@ function procesarAsignacionMultiple() {
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
-  // 4. Envío al servidor en segundo plano
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
