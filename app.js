@@ -1,4 +1,5 @@
-// app.js - Versión con Memoria Inteligente de Redirección Automática a WhatsApp
+// app.js - VERSIÓN FINAL COMPLETADA Y CORREGIDA
+// Funciones: Selección instantánea, Memoria Local de WhatsApp e interfaz ultra rápida
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -231,7 +232,7 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
-      const seleccionadoActivo = territoriesSeleccionados.includes(mapa.id.toString());
+      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
@@ -343,7 +344,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -391,18 +392,15 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* FUNCIÓN PROCESAR: LOGICA DE MEMORIA INTELIGENTE PARA REDIRECCIÓN DE WHATSAPP */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
-  // 1. Verificar cuántos mapas tiene ya asignados este hermano actualmente en la base de datos
   const mapasActualesDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombreH.trim().toLowerCase() && m.entregado === true);
   const contadorTerritoriosAsignados = mapasActualesDelHermano.length;
 
-  // 2. Extraer teléfono de WhatsApp del hermano
   const mapaConWhatsApp = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH && m.whatsapp);
   let telefonoWhatsApp = "";
   if (mapaConWhatsApp && mapaConWhatsApp.whatsapp) {
@@ -414,7 +412,6 @@ function procesarAsignacionMultiple() {
 
   const copiaSeleccionados = [...territoriosSeleccionados];
 
-  // 3. Actualización optimista de inmediato para máxima rapidez visual
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
@@ -429,28 +426,21 @@ function procesarAsignacionMultiple() {
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
-  // 4. LÓGICA DE MEMORIA LOCAL: 
-  // Si tiene 0 territorios y además NUNCA se le ha redirigido en este navegador... ¡Redirigimos!
   if (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "") {
-    // Revisamos la lista de personas ya notificadas en localStorage
     let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
     
     if (!memoriaNotificados.includes(nombreH.trim())) {
-      // Guardamos a este hermano en la memoria inmediatamente para que no repita
       memoriaNotificados.push(nombreH.trim());
       localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
 
-      // Construimos el enlace oficial e infalible
       const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
       const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
       const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
-      // Redirección nativa limpia en pestaña nueva
       window.open(urlWhatsApp, '_blank');
     }
   }
 
-  // 5. Envío paralelo al servidor en background
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
