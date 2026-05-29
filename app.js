@@ -112,8 +112,9 @@ function extraerNombresDeHermanos() {
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
     const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
     
-    opt.innerText = esDeEsteGrupo ? `● ${nombre} (G. ${grupoFiltro})` : nombre;
+   opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
     selectorUnico.appendChild(opt);
+  })
   });
 }
 
