@@ -451,7 +451,7 @@ function procesarAsignacionMultiple() {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = true; 
+      mapa.trabajado = false; 
     }
   });
 
