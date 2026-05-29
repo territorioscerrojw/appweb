@@ -401,15 +401,16 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
 
-  // Obtener teléfono del hermano
+  // Obtener y limpiar el teléfono del hermano
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
     telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-// Añadir prefijo 34 si no lo tiene ya
-if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
-  telefonoWhatsApp = "34" + telefonoWhatsApp;
-}
+    // Añadir prefijo España +34 si no lo tiene ya
+    if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
+      telefonoWhatsApp = "34" + telefonoWhatsApp;
+    }
+  }
 
   // Verificar si es la primera vez ANTES de asignar
   const esPrimerVez = await verificarPrimerVez(nombreH);
@@ -419,7 +420,7 @@ if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
 
-  if (telefonoWhatsApp && telefonoWhatsApp !== "") {
+  if (telefonoWhatsApp !== "") {
     if (esPrimerVez) {
       // Primera vez: enviar enlace personal a personalweb
       const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
