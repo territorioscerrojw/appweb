@@ -15,7 +15,7 @@ let criterioOrdenacionAsignados = "territorio";
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
-  inyectarEstilosCorreccionSelector(); // Asegura el comportamiento visual idéntico al buscador y el panel flotante
+  inyectarEstilosCorreccionSelector();
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -112,7 +112,6 @@ function extraerNombresDeHermanos() {
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
     const esDeEsteGrupo = (grupoH === String(grupoFiltro).trim());
     
-    // Configura el texto limpio sin añadir paréntesis adicionales redundantes
     opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
     selectorUnico.appendChild(opt);
   });
@@ -217,7 +216,6 @@ function filtrarYRenderizar() {
     } else if (criterioOrdenacionAsignados === "hermano") {
       dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "fecha") {
-      // CORREGIDO: Ajustado para buscar de manera estricta la propiedad fechaEntrega mapeada de la columna N
       dataset.sort((a, b) => {
         let fA = a.fechaEntrega || 0;
         let fB = b.fechaEntrega || 0;
@@ -261,7 +259,6 @@ function filtrarYRenderizar() {
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      // CORREGIDO: Formatea de manera segura la fechaEntrega obtenida de la columna N
       let rawFecha = mapa.fechaEntrega;
       let fechaFormateada = "Sin fecha";
       if (rawFecha && rawFecha !== "Sin fecha") {
@@ -269,7 +266,7 @@ function filtrarYRenderizar() {
         if (!isNaN(f.getTime())) {
           fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: '2-digit' });
         } else {
-          fechaFormateada = rawFecha; // Si ya viene formateada tipo string de Sheets, se mantiene limpia
+          fechaFormateada = rawFecha;
         }
       }
 
@@ -404,25 +401,51 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
 
+  // Obtener teléfono del hermano
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
     telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
   }
-  
+
+  // Verificar si es la primera vez ANTES de asignar
+  const esPrimerVez = await verificarPrimerVez(nombreH);
+
+  // Asignar todos los territorios seleccionados
   for (let id of territoriosSeleccionados) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
-  
+
   if (telefonoWhatsApp && telefonoWhatsApp !== "") {
-    let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
-    let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu apoyo!`;
-    let enlaceWhatsAppFinal = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensajeCompleto}`;
-    
-    window.open(enlaceWhatsAppFinal, '_blank');
+    if (esPrimerVez) {
+      // Primera vez: enviar enlace personal a personalweb
+      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
+      const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️%0A%0ADesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:%0A%0A${enlacePersonal}%0A%0A¡Muchas gracias por tu apoyo!`;
+      window.open(`https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensaje}`, '_blank');
+    } else {
+      // No es primera vez: notificar solo los nuevos territorios
+      let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
+      let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu apoyo!`;
+      window.open(`https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensajeCompleto}`, '_blank');
+    }
   }
-  
+
   await descargarDatosDesdeSheets();
+}
+
+// Consulta al backend si el hermano ya tiene territorios asignados alguna vez
+function verificarPrimerVez(nombreHermano) {
+  return new Promise((resolve) => {
+    const cbNombre = "cbPrimerVez_" + Date.now();
+    window[cbNombre] = function(datos) {
+      delete window[cbNombre];
+      resolve(datos.primerVez === true);
+    };
+    const script = document.createElement("script");
+    script.src = `${URL_API_SHEETS}?accion=verificarPrimerVez&hermano=${encodeURIComponent(nombreHermano)}&callback=${cbNombre}`;
+    script.onerror = () => { delete window[cbNombre]; resolve(false); };
+    document.body.appendChild(script);
+  });
 }
 
 function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
@@ -518,7 +541,6 @@ function configurarTemaInicial() {
   document.documentElement.setAttribute("data-theme", t);
 }
 
-// CORREGIDO: Alterna el tema en cascada sin machacar los SVGs minimalistas del CSS externo
 function conmutarTema() {
   const actual = document.documentElement.getAttribute("data-theme");
   const nuevo = actual === "oscuro" ? "claro" : "oscuro";
@@ -526,7 +548,6 @@ function conmutarTema() {
   localStorage.setItem("tema_app", nuevo);
 }
 
-// NUEVA INYECCIÓN PREMIUM: Corrige Select, Panel Flotante y Textos dinámicos en Claro/Oscuro
 function inyectarEstilosCorreccionSelector() {
   if (document.getElementById("hoja-estilos-dinamica-selector")) return;
   const style = document.createElement("style");
