@@ -65,7 +65,9 @@ body {
   padding: 20px 14px 170px 14px;
 }
 
-/* CABECERA Y BOTÓN LUNA/SOL ESTILO SÍMBOLO VECTORIAL CON RELIEVE */
+/* ==========================================================================
+   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
+   ========================================================================== */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
@@ -97,7 +99,7 @@ body {
   box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
-  /* CORREGIDO: Fuerza a desaparecer cualquier emoticono viejo o texto del HTML */
+  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
@@ -115,8 +117,7 @@ body {
   height: 20px;
   display: block;
   background-color: currentColor;
-  /* Re-activa la visibilidad del pseudo-elemento anulando el font-size 0 del padre */
-  text-indent: 0 !important;
+  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
 }
 /* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
@@ -129,7 +130,9 @@ body {
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
 }
 
-/* ANILLOS Y CONTADORES */
+/* ==========================================================================
+   ANILLOS Y CONTADORES
+   ========================================================================== */
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -185,7 +188,9 @@ body {
   font-weight: 800;
 }
 
-/* SEGMENTED CONTROL */
+/* ==========================================================================
+   CONTROLES, SELECTORES Y BUSCADOR
+   ========================================================================== */
 .control-segmentado {
   background: rgba(0, 0, 0, 0.1);
   padding: 3px;
@@ -214,7 +219,6 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* BUSCADOR */
 .contenedor-busqueda input {
   width: 100%;
   background: var(--glass-fondo);
@@ -227,7 +231,6 @@ body {
   margin-bottom: 16px;
 }
 
-/* SUB FILTROS */
 .contenedor-sub-filtros {
   display: flex;
   gap: 6px;
@@ -260,7 +263,6 @@ body {
   box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
 }
 
-/* GRID GENERAL */
 .grid-territorios {
   display: flex;
   flex-direction: column;
@@ -268,52 +270,56 @@ body {
   width: 100%;
 }
 
-/* TARJETAS DISPONIBLES */
+/* ==========================================================================
+   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO)
+   ========================================================================== */
 .tarjeta-apple {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   border-radius: 16px;
-  padding: 12px; /* Reducido para estrechar la tarjeta verticalmente */
+  padding: 12px; /* Altura optimizada y más estrecha */
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 .tarjeta-apple.seleccionada {
   border-color: rgba(39, 174, 96, 0.7);
   background-color: rgba(39, 174, 96, 0.06);
 }
-.tarjeta-apple.prioritaria-row, .tarjeta-apple-horizontal.prioritaria-row {
+.tarjeta-apple.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
 
-/* CORREGIDO: Sistema balanceado que independiza el número y centra la barriada al medio real */
-.cabecera-tarjeta {
+/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
+.tarjeta-apple .cabecera-tarjeta {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrado estricto del bloque central */
+  justify-content: center; /* Alineación perfecta al centro real */
   min-height: 28px;
   margin-bottom: 8px;
   width: 100%;
 }
-/* El número de mapa se queda fijo de forma absoluta en su esquina izquierda */
-.num-mapa { 
+/* El número grande se ancla fijo en la izquierda */
+.tarjeta-apple .num-mapa { 
   position: absolute;
   left: 4px;
   font-size: 24px; 
   font-weight: 800; 
   line-height: 1;
 }
-/* Nombre de la barriada perfectamente alineado al centro de la tarjeta */
-.nombre-barrio { 
+/* La barriada se auto-centra al medio sin importar el número */
+.tarjeta-apple .nombre-barrio { 
   font-size: 14px; 
   font-weight: 600; 
   text-align: center;
-  max-width: 65%; /* Evita colisiones con los extremos */
+  max-width: 65%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Contenedor del checkbox alineado de forma absoluta en su esquina derecha */
-.contenedor-check {
+/* Checkbox anclado fijo a la derecha */
+.tarjeta-apple .contenedor-check {
   position: absolute;
   right: 4px;
 }
@@ -342,9 +348,9 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* Muestra la imagen completa estrechándola sutilmente sin recortar laterales */
+/* Contenedor de la imagen en la tarjeta vertical */
 .imagen-mapa-wrapper {
-  position: relative !important; /* Estricto: Base para que la lupa flote dentro */
+  position: relative !important; /* Base indispensable para la lupa */
   width: 100%;
   height: 165px;
   border-radius: 10px;
@@ -365,37 +371,30 @@ body {
   display: block;
 }
 
-/* CORREGIDO: Lupa colocada de forma flotante con transparencia ENCIMA de la imagen */
+/* Lupa flotante con transparencia colocada estrictamente ENCIMA y DENTRO del mapa */
 .btn-lupa-flotante {
   position: absolute !important;
   bottom: 12px;
-  left: 12px; /* Esquina inferior izquierda dentro de la imagen */
-  background: rgba(0, 0, 0, 0.55) !important; /* Translúcido oscuro Apple */
+  left: 12px; /* Esquina inferior izquierda */
+  background: rgba(0, 0, 0, 0.55) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   width: 28px;
   height: 28px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 10; /* Se superpone sin problemas al mapa */
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0.85;
   transition: opacity 0.2s, transform 0.1s;
-  backdrop-filter: blur(2px); /* Toque sutil cristalizado tras la lupa */
+  backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
-.btn-lupa-flotante:hover {
-  opacity: 1;
-}
-.btn-lupa-flotante:active {
-  transform: scale(0.9);
-}
-.ico-minimalista {
-  opacity: 0.9;
-  stroke: #ffffff;
-}
+.btn-lupa-flotante:hover { opacity: 1; }
+.btn-lupa-flotante:active { transform: scale(0.9); }
+.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
 
 .tag-prioritario-abajo {
   display: inline-block;
@@ -406,13 +405,126 @@ body {
   text-align: center;
   width: 100%;
 }
-.tag-prio-mini {
-  font-size: 9px;
-  color: var(--apple-naranja);
-  font-weight: 700;
+
+/* ==========================================================================
+   TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
+   ========================================================================== */
+.tarjeta-apple-horizontal {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tarjeta-apple-horizontal.prioritaria-row {
+  border-left: 4px solid var(--apple-naranja);
 }
 
-/* PANELES INFERIORES SÓLIDOS Y LISOS */
+/* Contenedor miniatura lateral izquierdo */
+.img-lateral-wrapper-rectangular {
+  position: relative;
+  width: 105px; 
+  height: 70px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+}
+.imagen-lateral-asset-rect {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Columna de datos en asignados (Compacta y controlada) */
+.contenido-lateral-datos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+/* Fila superior con número chico de corrido y barriada */
+.cabecera-datos-linea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.num-mapa-chico { 
+  font-size: 16px; 
+  font-weight: 800; 
+  line-height: 1;
+  flex-shrink: 0;
+}
+.nombre-barrio-chico { 
+  font-size: 13px; 
+  font-weight: 600; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+/* Fila de información del hermano asignado */
+.info-hermano-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--texto-secundario);
+  gap: 4px;
+  width: 100%;
+}
+.txt-horizontal-hermano, 
+.txt-horizontal-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.txt-horizontal-hermano { 
+  max-width: 130px; 
+  font-weight: 500; 
+}
+
+.svg-icono-chico {
+  width: 12px;
+  height: 12px;
+  color: var(--texto-secundario);
+  flex-shrink: 0;
+}
+
+.estado-badge-linea {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.badge-estado-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
+.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
+
+.svg-icono-mini { width: 10px; height: 10px; }
+.tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
+
+/* ==========================================================================
+   PANELES INFERIORES SÓLIDOS Y LISOS
+   ========================================================================== */
 #panel-asignacion-unico,
 .panel-inferior-flotante,
 .panel-inferior-flotante * .contenido-panel-flotante {
@@ -461,7 +573,9 @@ body {
   border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
 }
 
-/* FOOTER BARRA DE TIEMPO SÓLIDA */
+/* ==========================================================================
+   FOOTER (BARRA DE PROGRESO DE TIEMPO)
+   ========================================================================== */
 .barra-tiempo-footer {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
@@ -477,7 +591,9 @@ body {
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
-/* LIGHTBOX (VISOR DE PANTALLA COMPLETA) */
+/* ==========================================================================
+   VISOR MULTIMEDIA INTERNO (LIGHTBOX)
+   ========================================================================== */
 .visor-pantalla-completa {
   display: none; 
   position: fixed; 
@@ -498,9 +614,7 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff !important;
 }
-.cabecera-visor-completo * {
-  color: #ffffff !important;
-}
+.cabecera-visor-completo * { color: #ffffff !important; }
 .btn-cerrar-visor { 
   background: rgba(255, 255, 255, 0.15); 
   border: none; 
@@ -523,7 +637,7 @@ body {
   object-fit: contain; 
 }
 
-/* Forzar estilos del selector de hermanos en modo claro */
+/* FORZAR COMPORTAMIENTO SELECCIONES EN MODO CLARO */
 [data-theme="claro"] .select-apple {
   background-color: #ffffff !important;
   color: #18181b !important;
