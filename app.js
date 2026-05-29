@@ -1,4 +1,4 @@
-// app.js - Versión Ultra-Rápida con Actualización Optimista y Envío en Paralelo
+// app.js - Versión Ultra-Rápida con Confirmación Directa e Infalible de WhatsApp
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -19,6 +19,7 @@ async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
   inyectarEstilosCorreccionSelector();
+  inyectarEstilosModalWhatsApp(); // Nueva inyección visual
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -369,7 +370,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr);
+  const index = territoriesSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -417,7 +418,7 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* FUNCIÓN OPTIMIZADA: ACTUALIZACIÓN OPTIMISTA (0 SEGUNDOS DE ESPERA) */
+/* FUNCIÓN PROCESAR: CAMBIO EN ESTRATEGIA DE WHATSAPP (MODAL DE ACCIÓN INMEDIATA) */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
@@ -437,43 +438,63 @@ function procesarAsignacionMultiple() {
   const esPrimerVez = estadoHermanoSeleccionado.nombre === nombreH ? estadoHermanoSeleccionado.esPrimerVez : false;
   const copiaSeleccionados = [...territoriosSeleccionados];
 
-  // 2. ACTUALIZACIÓN OPTIMISTA INSTANTÁNEA EN LA MEMORIA LOCAL
-  // Modificamos los estados de los mapas localmente de inmediato para que desaparezcan de la vista
+  // 2. Actualización optimista de inmediato
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = true; // Pendiente
+      mapa.trabajado = true; 
     }
   });
 
-  // Limpiamos interfaz inmediatamente (0 segundos de espera para el usuario)
   territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
   actualizarAnillosEstadisticos();
-  filtrarYRenderizar(); // Se vuelve a dibujar la cuadrícula sin los mapas asignados al instante
+  filtrarYRenderizar(); 
 
-  // 3. REDIRECCIÓN DIRECTA SIN ESPERAS
+  // 3. ESTRATEGIA NUEVA: Si es primera vez, abrimos el Modal de Confirmación Directa
   if (telefonoWhatsApp !== "" && esPrimerVez) {
-    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
-    const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
-    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
-    
-    window.location.href = urlWhatsApp;
+    mostrarModalNotificacionWhatsApp(nombreH, telefonoWhatsApp);
   }
 
-  // 4. ENVÍO EN PARALELO AL SERVIDOR EN SEGUNDO PLANO (Silencioso y en background)
+  // 4. Envío en background en paralelo
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
-// Envía todas las promesas al mismo tiempo (Paralelismo eficiente)
+// Genera e inyecta dinámicamente un banner emergente elegante para abrir WhatsApp limpiamente
+function mostrarModalNotificacionWhatsApp(nombreHermano, telefono) {
+  // Eliminar si ya existía uno previo
+  const previo = document.getElementById("modal-flotante-whatsapp");
+  if (previo) previo.remove();
+
+  const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreHermano)}`;
+  const mensaje = `Hola ${nombreHermano}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+  const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+
+  const modalHtml = document.createElement("div");
+  modalHtml.id = "modal-flotante-whatsapp";
+  modalHtml.className = "notificacion-popup-apple";
+  modalHtml.innerHTML = `
+    <div class="popup-contenido-diseno">
+      <div class="popup-icono-globo">📱</div>
+      <div class="popup-bloque-texto">
+        <h4>¡Web de ${nombreHermano} lista!</h4>
+        <p>Es la primera vez que recibe territorios. Envíale su panel personal por WhatsApp.</p>
+      </div>
+      <div class="popup-bloque-botones">
+        <button class="btn-popup-cancelar" onclick="this.closest('#modal-flotante-whatsapp').remove()">Luego</button>
+        <a class="btn-popup-enviar-wa" href="${urlWhatsApp}" target="_blank" onclick="this.closest('#modal-flotante-whatsapp').remove()">Enviar Ahora</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modalHtml);
+}
+
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   try {
     const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
-    await Promise.all(promesas); // Se ejecutan todas a la vez en lugar de una tras otra
-    
-    // Una vez guardado con éxito real, sincronizamos con los últimos datos verídicos de Sheets
+    await Promise.all(promesas); 
     await descargarDatosDesdeSheets();
   } catch (e) {
     console.error("Error al guardar en background", e);
@@ -599,53 +620,83 @@ function inyectarEstilosCorreccionSelector() {
   const style = document.createElement("style");
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
-    /* MODO OSCURO */
     #panel-asignacion-unico {
       background-color: rgba(28, 28, 30, 0.85) !important;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    #txt-contador-seleccionados {
-      color: #ffffff !important;
-      font-weight: 600;
-    }
+    #txt-contador-seleccionados { color: #ffffff !important; font-weight: 600; }
     #sel-hermano-unico {
       background-color: rgba(255, 255, 255, 0.08) !important;
       color: #ffffff !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
-    #sel-hermano-unico option {
-      background-color: #1c1c1e !important;
-      color: #ffffff !important;
-    }
+    #sel-hermano-unico option { background-color: #1c1c1e !important; color: #ffffff !important; }
 
-    /* MODO CLARO */
     [data-theme="claro"] #panel-asignacion-unico {
       background-color: rgba(242, 242, 247, 0.9) !important;
       border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
       box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
     }
-    [data-theme="claro"] #txt-contador-seleccionados {
-      color: #1c1c1e !important;
-    }
+    [data-theme="claro"] #txt-contador-seleccionados { color: #1c1c1e !important; }
     [data-theme="claro"] #sel-hermano-unico {
       background-color: #ffffff !important;
       color: #1c1c1e !important;
       border: 1px solid rgba(0, 0, 0, 0.15) !important;
     }
-    [data-theme="claro"] #sel-hermano-unico option {
-      background-color: #ffffff !important;
-      color: #1c1c1e !important;
+    [data-theme="claro"] #sel-hermano-unico option { background-color: #ffffff !important; color: #1c1c1e !important; }
+    [data-theme="claro"] .btn-apple-bloqueado { background-color: rgba(0, 0, 0, 0.05) !important; color: rgba(0, 0, 0, 0.3) !important; }
+    [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
+  `;
+  document.head.appendChild(style);
+}
+
+// NUEVOS ESTILOS PARA EL MODAL/AVISO DE WHATSAPP CON DISEÑO APPLE NOTIFICATION
+function inyectarEstilosModalWhatsApp() {
+  if (document.getElementById("hoja-estilos-modal-wa")) return;
+  const style = document.createElement("style");
+  style.id = "hoja-estilos-modal-wa";
+  style.innerHTML = `
+    .notificacion-popup-apple {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      background: rgba(30, 30, 30, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 99999;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      animation: desplazarAbajo 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    [data-theme="claro"] .notificacion-popup-apple {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .popup-contenido-diseno { display: flex; align-items: start; gap: 12px; position: relative; flex-wrap: wrap; }
+    .popup-icono-globo { font-size: 24px; }
+    .popup-bloque-texto { flex: 1; min-width: 200px; }
+    .popup-bloque-texto h4 { margin: 0 0 4px 0; font-size: 15px; color: #fff; font-weight: 600; }
+    [data-theme="claro"] .popup-bloque-texto h4 { color: #1c1c1e; }
+    .popup-bloque-texto p { margin: 0; font-size: 13px; color: #aaa; line-height: 1.4; }
+    [data-theme="claro"] .popup-bloque-texto p { color: #666; }
+    .popup-bloque-botones { width: 100%; display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; }
+    [data-theme="claro"] .popup-bloque-botones { border-top: 1px solid rgba(0,0,0,0.05); }
+    .btn-popup-cancelar { background: transparent; border: none; color: #ff453a; font-size: 14px; font-weight: 500; padding: 6px 12px; cursor: pointer; }
+    .btn-popup-enviar-wa { background: #34c759; color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; display: inline-block; cursor: pointer; transition: background 0.2s; }
+    .btn-popup-enviar-wa:hover { background: #2ebd50; }
     
-    [data-theme="claro"] .btn-apple-bloqueado {
-      background-color: rgba(0, 0, 0, 0.05) !important;
-      color: rgba(0, 0, 0, 0.3) !important;
-    }
-    [data-theme="claro"] .btn-apple-verde-activo {
-      background-color: #34c759 !important;
-      color: #ffffff !important;
+    @keyframes desplazarAbajo {
+      from { top: -100px; opacity: 0; }
+      to { top: 20px; opacity: 1; }
     }
   `;
   document.head.appendChild(style);
