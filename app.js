@@ -416,20 +416,25 @@ function procesarAsignacionMultiple() {
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
+  // 1. LEER INMEDIATAMENTE LOS DATOS DEL HTML (Antes de tocar nada más)
   const opcionSeleccionada = selector.options[selector.selectedIndex];
   const tieneTerritorioAlInicio = opcionSeleccionada.getAttribute("data-tiene-territorio");
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
 
+  // 2. RESPALDAR LA LISTA DE SELECCIONADOS
+  const copiaSeleccionados = [...territoriosSeleccionados];
+
+  // 3. REDIRECCIÓN INMEDIATA A WHATSAPP (Si no tenía territorios al hacer click)
   if (tieneTerritorioAlInicio === "no" && telefonoWhatsApp !== "") {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
+    // Se ejecuta de primero, asegurando que el navegador no bloquee el popup
     window.open(urlWhatsApp, '_blank');
   }
 
-  const copiaSeleccionados = [...territoriosSeleccionados];
-
+  // 4. AHORA SÍ, MODIFICAMOS LA BASE DE DATOS LOCAL Y VISUAL
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
@@ -439,11 +444,13 @@ function procesarAsignacionMultiple() {
     }
   });
 
+  // 5. LIMPIAR Y RE-RENDERIZAR LA PANTALLA
   territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
+  // 6. ENVIAR AL SERVIDOR EN SEGUNDO PLANO
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
