@@ -1,4 +1,4 @@
-// app.js - Versión Premium Estabilizada con Corrección de Fechas, Temas, Estados Activos y WhatsApp Fix Real
+// app.js - Versión Corregida Anti-Bloqueo de Navegador (WhatsApp Fix)
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -11,6 +11,9 @@ let grupoFiltro = null;
 let idHermanoUrl = null;
 let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "territorio"; 
+
+// Variable global para guardar el estado del hermano seleccionado antes del clic
+let estadoHermanoSeleccionado = { nombre: "", esPrimerVez: false };
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -104,6 +107,9 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
+  // Añadimos el evento onchange para verificar la primera vez de forma anticipada
+  selectorUnico.setAttribute("onchange", "preverificarHermanoSeleccionado()");
+  
   selectorUnico.innerHTML = '<option value="">Seleccionar Hermano...</option>';
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
@@ -115,6 +121,31 @@ function extraerNombresDeHermanos() {
     opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
     selectorUnico.appendChild(opt);
   });
+}
+
+// NUEVA FUNCIÓN: Comprueba la primera vez ANTICIPADAMENTE al seleccionar el nombre
+async function preverificarHermanoSeleccionado() {
+  const selector = document.getElementById("sel-hermano-unico");
+  const nombreH = selector.value;
+  
+  if (!nombreH) {
+    estadoHermanoSeleccionado = { nombre: "", esPrimerVez: false };
+    evaluarEstadoBotonAsignar();
+    return;
+  }
+  
+  // Reseteamos temporalmente mientras busca
+  estadoHermanoSeleccionado = { nombre: nombreH, esPrimerVez: false };
+  evaluarEstadoBotonAsignar();
+  
+  // Hacemos la consulta silenciosa mientras el encargado decide o hace clic
+  const esPrimerVez = await verificarPrimerVez(nombreH);
+  
+  // Guardamos el resultado real en memoria
+  if (selector.value === nombreH) { // Validar que no haya cambiado de hermano en esos segundos
+    estadoHermanoSeleccionado.esPrimerVez = esPrimerVez;
+    evaluarEstadoBotonAsignar();
+  }
 }
 
 function procesarFechasYBarras(inicioStr, finStr) {
@@ -391,7 +422,8 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-async function procesarAsignacionMultiple() {
+/* ENFOQUE ULTRA ESTABLE DE REDIRECCIÓN DIRECTA SIN ESPERAS INTERNAS */
+function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const btn = document.getElementById("btn-asignar-multiple");
   const nombreH = selector.value;
@@ -401,7 +433,7 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
 
-  // 1. Extraer y limpiar el teléfono de forma inmediata
+  // 1. Extraer y limpiar el teléfono inmediatamente (acción síncrona)
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
@@ -411,31 +443,36 @@ async function procesarAsignacionMultiple() {
     }
   }
 
-  // 2. Comprobar si es primera vez haciendo la petición ANTES de tocar nada de WhatsApp
-  const esPrimerVez = await verificarPrimerVez(nombreH);
+  // 2. Comprobar la variable global que ya guardó la respuesta por adelantado
+  const esPrimerVez = estadoHermanoSeleccionado.nombre === nombreH ? estadoHermanoSeleccionado.esPrimerVez : false;
 
-  // 3. Clonamos la selección y limpiamos la interfaz para evitar parpadeos
+  // 3. Clonar selección y limpiar la interfaz al instante
   const copiaSeleccionados = [...territoriosSeleccionados];
   territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
 
-  // 4. LÓGICA DE REDIRECCIÓN ESTRICTA
+  // 4. FLUJO DE REDIRECCIÓN SIN CONFIGURACIÓN ASÍNCRONA (Inmediato para el Navegador)
   if (telefonoWhatsApp !== "" && esPrimerVez) {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
     const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
     
+    // Redirige al instante. El navegador no lo bloqueará porque ocurre en el mismo hilo del clic.
     window.location.href = urlWhatsApp;
   } else {
-    console.log("Este hermano ya tiene historial. Asignación silenciosa activada.");
+    console.log("Asignación silenciosa: No es su primera vez o no tiene teléfono registrado.");
   }
 
-  // 5. Enviar las peticiones de asignación al Google Sheets en segundo plano
-  for (let id of copiaSeleccionados) {
-    await lanzarPeticionGoogleAsincrona(id, nombreH);
-  }
+  // 5. El envío a la base de datos de Google se hace en segundo plano
+  ejecutarEnvioSecuencialHojas(copiaSeleccionados, nombreH);
+}
 
-  // 6. Recargar la base de datos local para refrescar la vista en segundo plano
+// Envía las solicitudes a Sheets en bucle asíncrono controlado en background
+async function ejecutarEnvioSecuencialHojas(listaIds, nombreHermano) {
+  for (let id of listaIds) {
+    await lanzarPeticionGoogleAsincrona(id, nombreHermano);
+  }
+  // Refresca la vista local
   await descargarDatosDesdeSheets();
 }
 
