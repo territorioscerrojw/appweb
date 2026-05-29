@@ -110,11 +110,11 @@ function extraerNombresDeHermanos() {
     opt.value = nombre;
     
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
-    const esDeEsteGrupo = grupoH === String(grupoFiltro).trim();
+    const esDeEsteGrupo = (grupoH === String(grupoFiltro).trim());
     
-   opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
+    // Configura el texto limpio sin añadir paréntesis adicionales redundantes
+    opt.innerText = esDeEsteGrupo ? `● ${nombre}` : nombre;
     selectorUnico.appendChild(opt);
-  })
   });
 }
 
