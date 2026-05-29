@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mis Territorios</title>
+  <!-- Importamos la misma fuente y la hoja de estilos compartida -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
   
   <style>
     /* ==========================================================================
-       CORRECCIONES DE CONFIGURACIÓN Y TAMAÑOS PARA LA VISTA DEL HERMANO
+       Ajustes de Grid y Estructuras Compactas para la vista del Hermano
        ========================================================================== */
-    
-    /* Forzar que el grid de mapas no se estire y sea compacto */
     .grid-mapas {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -22,7 +21,6 @@
       box-sizing: border-box;
     }
 
-    /* Contenedor controlado para evitar gigantismo */
     .tarjeta-territorio-wrapper {
       position: relative;
       overflow: hidden;
@@ -30,7 +28,6 @@
       max-width: 100%;
     }
 
-    /* Ajuste de la tarjeta base para que use el formato nativo liso */
     .tarjeta-mapa {
       background-color: var(--glass-fondo, #121214) !important;
       border: 1px solid var(--glass-borde, rgba(255, 255, 255, 0.08)) !important;
@@ -42,11 +39,11 @@
       transition: transform 0.2s ease, opacity 0.3s ease;
     }
 
-    /* Redimensionado estricto de la zona de la imagen */
+    /* Redimensionado de la imagen para evitar gigantismo */
     .tarjeta-mapa .contenedor-imagen {
       position: relative;
       width: 100%;
-      height: 160px; /* Altura máxima fija para que no explote en pantallas grandes */
+      height: 160px; 
       overflow: hidden;
       background-color: #000;
     }
@@ -54,12 +51,11 @@
     .tarjeta-mapa .imagen-mapa {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ajusta la foto sin deformarla */
+      object-fit: cover; 
       display: block;
       transition: filter 0.3s ease;
     }
 
-    /* Ajuste de los acolchados del texto inferior */
     .tarjeta-mapa .detalles-mapa {
       padding: 14px !important;
       display: flex;
@@ -80,29 +76,25 @@
       margin: 0 !important;
     }
 
-    /* Marca de agua diagonal "TRABAJADO" estilo sello premium */
+    /* Marca de agua diagonal "TRABAJADO" limpia (Sin recuadro) */
     .marca-agua-trabajado {
       display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-22deg);
-      color: rgba(39, 174, 96, 0.35);
-      font-size: 2.4rem;
+      color: rgba(39, 174, 96, 0.35); 
+      font-size: 2.8rem;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      border: 4px solid rgba(39, 174, 96, 0.4);
-      padding: 6px 18px;
-      border-radius: 8px;
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      text-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
-      background-color: rgba(9, 9, 11, 0.2);
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Comportamiento del estado Terminado */
+    /* Comportamiento del mapa Terminado */
     .tarjeta-mapa.terminado { 
       opacity: 0.6; 
     }
@@ -113,7 +105,7 @@
       display: block;
     }
 
-    /* Modificadores de las etiquetas de estado */
+    /* Etiquetas de estado inferiores */
     .badge-estado {
       display: inline-flex;
       align-items: center;
@@ -132,7 +124,7 @@
       color: var(--apple-verde);
     }
 
-    /* Ajuste del botón de acción interactivo */
+    /* Botones de acción dinámicos */
     .btn-completar-accion {
       width: 100%;
       margin-top: 12px;
@@ -146,13 +138,31 @@
       cursor: pointer;
       transition: background 0.2s ease;
     }
-    .btn-completar-accion:disabled {
-      background: var(--glass-borde);
+    .btn-desmarcar-accion {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: transparent;
       color: var(--texto-secundario);
+      border: 1px solid var(--glass-borde);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-desmarcar-accion:hover {
+      background: rgba(235, 87, 87, 0.1);
+      color: var(--apple-rojo);
+      border-color: rgba(235, 87, 87, 0.3);
+    }
+    button:disabled {
+      background: var(--glass-borde) !important;
+      color: var(--texto-secundario) !important;
+      border: none !important;
       cursor: not-allowed;
     }
 
-    /* Pantalla de bloqueo */
     .pantalla-bloqueo {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
       background: var(--fondo-base, #09090b); z-index: 99999; 
@@ -172,6 +182,7 @@
   </div>
 
   <div class="contenedor-app">
+    <!-- Cabecera iOS con soporte de tema nativo -->
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1>Mis territorios</h1>
@@ -180,9 +191,11 @@
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
 
+    <!-- Listado principal -->
     <main class="grid-mapas" id="contenedor-hermano-grid" style="margin-top: 16px; padding-bottom: 60px;"></main>
   </div>
 
+  <!-- Visor de imágenes expandido -->
   <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
     <div class="cabecera-visor-completo">
       <span id="titulo-visor-completo">Mapa Ampliado</span>
@@ -205,7 +218,7 @@
       idHermanoUrl = params.get("id");
 
       if (!idHermanoUrl) {
-        document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:sans-serif; color:white;'><h3>Error: Enlace incorrecto</h3><p>Falta especificar el identificador en la URL (?id=...)</p></div>";
+        document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:sans-serif; color:white;'><h3>Error: Enlace incorrecto</h3><p>Falta el parámetro identificador de la URL (?id=...)</p></div>";
         return;
       }
 
@@ -237,8 +250,8 @@
           inyectarTarjetasHermano();
         }
       } catch (err) {
-        console.error("Error al leer datos:", err);
-        document.getElementById("contenedor-hermano-grid").innerHTML = "<p style='color:var(--apple-rojo); text-align:center;'>Error al sincronizar tus mapas.</p>";
+        console.error("Error cargando la API:", err);
+        document.getElementById("contenedor-hermano-grid").innerHTML = "<p style='color:var(--apple-rojo); text-align:center;'>Error al sincronizar tus mapas con la base de datos.</p>";
       }
     }
 
@@ -248,13 +261,13 @@
 
       if (datosLocalesHermano.length === 0) {
         contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
-          <h3>No se encontraron territorios</h3>
-          <p>Actualmente no constan mapas bajo tu nombre en esta campaña.</p>
+          <h3>No constan territorios</h3>
+          <p>Actualmente no se registran mapas para ti en esta campaña.</p>
         </div>`;
         return;
       }
 
-      // Ordenar: Pendientes arriba, Trabajados abajo
+      // Ordenar: Pendientes arriba, Trabajados abajo automáticamente
       datosLocalesHermano.sort((a, b) => a.trabajado - b.trabajado);
 
       datosLocalesHermano.forEach(mapa => {
@@ -273,7 +286,7 @@
             
             <div class="detalles-mapa">
               <h3 class="titulo-barrio">${mapa.barriada}</h3>
-              <p class="subtexto-campana">Devolver antes de: <b>${mapa.fechaEntrega}</b></p>
+              <p class="subtexto-campana">Fecha de entrega: <b>${mapa.fechaEntrega}</b></p>
               
               <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
                 ${esTerminado 
@@ -282,11 +295,16 @@
                 }
               </div>
 
+              <!-- Alternancia de botones basada en el estado real del mapa -->
               ${!esTerminado ? `
-                <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="marcarTerritorioComoTrabajado('${mapa.id}')">
+                <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">
                   Marcar como completado
                 </button>
-              ` : ''}
+              ` : `
+                <button id="btn-accion-${mapa.id}" class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">
+                  Reactivar territorio
+                </button>
+              `}
             </div>
           </div>
         `;
@@ -294,7 +312,8 @@
       });
     }
 
-    async function marcarTerritorioComoTrabajado(idMapa) {
+    // Procesa de forma dinámica el Marcado (completar) o Reactivado (volver a pendiente)
+    async function cambiarEstadoTerritorio(idMapa, modo) {
       const boton = document.getElementById(`btn-accion-${idMapa}`);
       if (boton) {
         boton.disabled = true;
@@ -302,26 +321,32 @@
       }
 
       try {
-        const urlAsignacion = `${URL_API_SHEETS}?accion=completar&id=${encodeURIComponent(idMapa)}`;
-        await fetch(urlAsignacion, { method: "GET", mode: "no-cors" });
+        // Al desmarcar, llamamos a la acción 'asignar' pasándole el nombre del hermano, revirtiendo 'Trabajado' a false en tu Sheets
+        const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
+        const urlPeticion = `${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`;
+        
+        await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
 
+        // Modificamos el estado local en la memoria de la página web al instante
         const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
         if (indice !== -1) {
-          datosLocalesHermano[indice].trabajado = true;
+          datosLocalesHermano[indice].trabajado = (modo === "completar");
         }
 
+        // Repintamos el grid dinámicamente con los nuevos estados y posiciones
         inyectarTarjetasHermano();
 
       } catch (error) {
-        console.error("Error:", error);
-        alert("No se pudo guardar. Inténtalo de nuevo.");
+        console.error("Error al mutar estado:", error);
+        alert("Surgió un error al guardar los cambios. Inténtalo de nuevo.");
         if (boton) {
           boton.disabled = false;
-          boton.innerText = "Marcar como completado";
+          boton.innerText = modo === "completar" ? "Marcar como completado" : "Reactivar territorio";
         }
       }
     }
 
+    // Funciones del Lightbox (Visor)
     function abrirVisorPantallaCompleta(src, titulo) {
       document.getElementById("img-visor-completa").src = src;
       document.getElementById("titulo-visor-completo").innerText = titulo;
