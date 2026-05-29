@@ -1,4 +1,4 @@
-// app.js - Versión Ultra-Rápida con Confirmación Directa e Infalible de WhatsApp
+// app.js - VERSIÓN CORREGIDA: Selección de tarjetas restaurada y optimización total
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -19,7 +19,7 @@ async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
   inyectarEstilosCorreccionSelector();
-  inyectarEstilosModalWhatsApp(); // Nueva inyección visual
+  inyectarEstilosModalWhatsApp();
   
   const parametros = new URLSearchParams(window.location.search);
   grupoFiltro = parametros.get("grupo");
@@ -195,6 +195,7 @@ function cambiarCriterioAsignados(criterio) {
   filtrarYRenderizar();
 }
 
+/* FUNCIÓN CORREGIDA: SE REINJECTÓ EL ATRIBUTO ONCLICK EN LAS TARJETAS */
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
@@ -261,6 +262,8 @@ function filtrarYRenderizar() {
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
+      
+      // AQUÍ ESTÁ LA CORRECCIÓN: Volvemos a activar el clic para seleccionar la tarjeta
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
       div.innerHTML = `
@@ -370,7 +373,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -418,14 +421,12 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* FUNCIÓN PROCESAR: CAMBIO EN ESTRATEGIA DE WHATSAPP (MODAL DE ACCIÓN INMEDIATA) */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
   
-  // 1. Obtener datos de WhatsApp síncronamente
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
@@ -438,7 +439,6 @@ function procesarAsignacionMultiple() {
   const esPrimerVez = estadoHermanoSeleccionado.nombre === nombreH ? estadoHermanoSeleccionado.esPrimerVez : false;
   const copiaSeleccionados = [...territoriosSeleccionados];
 
-  // 2. Actualización optimista de inmediato
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
@@ -453,18 +453,14 @@ function procesarAsignacionMultiple() {
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
-  // 3. ESTRATEGIA NUEVA: Si es primera vez, abrimos el Modal de Confirmación Directa
   if (telefonoWhatsApp !== "" && esPrimerVez) {
     mostrarModalNotificacionWhatsApp(nombreH, telefonoWhatsApp);
   }
 
-  // 4. Envío en background en paralelo
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
-// Genera e inyecta dinámicamente un banner emergente elegante para abrir WhatsApp limpiamente
 function mostrarModalNotificacionWhatsApp(nombreHermano, telefono) {
-  // Eliminar si ya existía uno previo
   const previo = document.getElementById("modal-flotante-whatsapp");
   if (previo) previo.remove();
 
@@ -652,7 +648,6 @@ function inyectarEstilosCorreccionSelector() {
   document.head.appendChild(style);
 }
 
-// NUEVOS ESTILOS PARA EL MODAL/AVISO DE WHATSAPP CON DISEÑO APPLE NOTIFICATION
 function inyectarEstilosModalWhatsApp() {
   if (document.getElementById("hoja-estilos-modal-wa")) return;
   const style = document.createElement("style");
