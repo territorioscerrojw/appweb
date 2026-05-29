@@ -1,60 +1,609 @@
-/* ==========================================================================
-   BOTÓN DE TEMA: REDONDO, EFECTO RELIEVE Y UN SOLO SÍMBOLO SEGÚN EL MODO
-   ========================================================================== */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
+
+:root {
+  --fondo-base: #09090b;
+  --glass-fondo: #121214; /* Fondo liso para tarjetas en modo oscuro */
+  --glass-borde: rgba(255, 255, 255, 0.08);
+  --texto-principal: #f4f4f5;
+  --texto-secundario: #a1a1aa;
+  --apple-azul: #2f80ed;
+  --apple-verde: #27ae60;
+  --apple-naranja: #f2994a;
+  --apple-rojo: #eb5757;
+  
+  /* Línea de fondo vacía de los contadores visible en modo oscuro */
+  --anillo-vacio: rgba(255, 255, 255, 0.12);
+  
+  /* Estilos para el botón de tema en modo oscuro */
+  --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
+  --btn-tema-color: var(--texto-principal);
+  --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="claro"] {
+  --fondo-base: #f4f4f7;
+  --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
+  --glass-borde: rgba(0, 0, 0, 0.07);
+  --texto-principal: #18181b;
+  --texto-secundario: #71717a;
+  --apple-azul: #007aff;
+  
+  /* Línea de fondo vacía de los contadores visible en modo claro */
+  --anillo-vacio: rgba(0, 0, 0, 0.1);
+  
+  /* Estilos para el botón de tema en modo claro */
+  --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
+  --btn-tema-color: var(--texto-principal);
+  --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--fondo-base);
+  color: var(--texto-principal);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  letter-spacing: -0.2px;
+}
+
+.fondo-mapa-blur {
+  display: none;
+}
+
+.contenedor-app {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 14px 170px 14px;
+}
+
+/* CABECERA Y BOTÓN LUNA/SOL ESTILO SÍMBOLO VECTORIAL CON RELIEVE */
+.cabecera-apple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.cabecera-titulos h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+.cabecera-titulos h2 {
+  font-size: 14px;
+  color: var(--apple-azul);
+  font-weight: 600;
+  margin-top: 2px;
+}
 #btn-cambiar-tema {
+  background: var(--btn-tema-bg) !important;
+  border: none !important;
   width: 40px;
   height: 40px;
   border-radius: 50% !important; /* Totalmente redondo */
-  border: none !important;
   cursor: pointer;
+  color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
   transition: transform 0.1s ease, box-shadow 0.2s ease;
+  position: relative;
 }
-
-/* Relieve físico en Modo Oscuro */
-[data-theme="oscuro"] #btn-cambiar-tema {
-  background: linear-gradient(135deg, #1e1e20, #09090b);
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.5), 
-    inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  color: var(--texto-principal); /* Símbolo color claro del texto */
-}
-
-/* Relieve físico en Modo Claro */
-[data-theme="claro"] #btn-cambiar-tema {
-  background: linear-gradient(135deg, #ffffff, #e5e5ea);
-  box-shadow: 
-    0 4px 6px rgba(0, 0, 0, 0.08), 
-    inset 0 1px 0 #ffffff;
-  color: var(--texto-principal); /* Símbolo color oscuro del texto */
-}
-
-/* Efecto hundido/pulsado real al hacer clic */
 #btn-cambiar-tema:active {
   transform: scale(0.94);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Contenedor del símbolo */
+/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
   width: 20px;
   height: 20px;
   display: block;
-  background-color: currentColor; /* Adopta el color del texto automáticamente */
+  background-color: currentColor;
 }
-
-/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista para cambiar a claro */
+/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
-
-/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista para cambiar a oscuro */
+/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
+}
+
+/* ANILLOS Y CONTADORES */
+.seccion-anillos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.tarjeta-anillo {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  border-radius: 14px;
+  padding: 14px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tarjeta-anillo span {
+  font-size: 10px;
+  color: var(--texto-secundario);
+  margin-top: 8px;
+  font-weight: 600;
+}
+.anillo-svg-wrapper {
+  position: relative;
+  width: 55px;
+  height: 55px;
+}
+.anillo-circular {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.anillo-fondo {
+  fill: none;
+  stroke: var(--anillo-vacio);
+  stroke-width: 3.5;
+}
+.anillo-linea {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+.color-totales .anillo-linea { stroke: var(--apple-azul); }
+.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
+.color-asignados .anillo-linea { stroke: var(--apple-rojo); }
+.color-completados .anillo-linea { stroke: var(--apple-verde); }
+
+.anillo-numero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* SEGMENTED CONTROL */
+.control-segmentado {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  border-radius: 12px;
+  display: flex;
+  margin-bottom: 14px;
+  border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .control-segmentado {
+  background: rgba(0, 0, 0, 0.05);
+}
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.tab.activa {
+  background: var(--glass-fondo);
+  color: var(--texto-principal);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* BUSCADOR */
+.contenedor-busqueda input {
+  width: 100%;
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-principal);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+/* SUB FILTROS */
+.contenedor-sub-filtros {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  background: rgba(0,0,0,0.06);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .contenedor-sub-filtros {
+  background: rgba(0,0,0,0.04);
+}
+.btn-sub-filtro {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 8px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-sub-filtro.activo,
+.btn-sub-filtro.activa {
+  background: var(--apple-azul) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
+}
+
+/* GRID GENERAL */
+.grid-territorios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* TARJETAS DISPONIBLES */
+.tarjeta-apple {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  border-radius: 16px;
+  padding: 12px; /* Reducido para estrechar la tarjeta verticalmente */
+  transition: all 0.2s ease;
+}
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.7);
+  background-color: rgba(39, 174, 96, 0.06);
+}
+.tarjeta-apple.prioritaria-row, .tarjeta-apple-horizontal.prioritaria-row {
+  border-left: 4px solid var(--apple-naranja);
+}
+
+/* Cabecera balanceada: mantiene los extremos fijos y la barriada centrada */
+.cabecera-tarjeta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: 8px; /* Altura optimizada */
+  width: 100%;
+}
+/* Número en esquina superior izquierda grande */
+.num-mapa { 
+  font-size: 24px; 
+  font-weight: 800; 
+  line-height: 1;
+  flex-shrink: 0;
+}
+/* Nombre de la barriada perfectamente al centro */
+.nombre-barrio { 
+  font-size: 14px; 
+  font-weight: 600; 
+  text-align: center; 
+  flex-grow: 1;
+  padding: 0 10px;
+}
+/* Contenedor del checkbox alineado a la derecha */
+.contenedor-check {
+  flex-shrink: 0;
+}
+
+.check-apple-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+[data-theme="claro"] .check-apple-custom {
+  border: 2px solid rgba(0,0,0,0.2);
+}
+.check-apple-custom.checked {
+  background-color: var(--apple-verde);
+  border-color: var(--apple-verde);
+  position: relative;
+}
+.check-apple-custom.checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Muestra la imagen completa estrechándola sutilmente sin recortar laterales */
+.imagen-mapa-wrapper {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.imagen-mapa-asset { 
+  max-width: 100%; 
+  max-height: 100%; 
+  width: auto;
+  height: auto;
+  object-fit: contain; 
+  border-radius: 6px;
+}
+
+/* RECTÁNGULO DE TARJETA ASIGNADOS HORIZONTAL */
+.tarjeta-apple-horizontal {
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.img-lateral-wrapper-rectangular {
+  position: relative;
+  width: 105px; 
+  height: 70px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+}
+.imagen-lateral-asset-rect {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contenido-lateral-datos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+.cabecera-datos-linea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.num-mapa-chico { font-size: 16px; font-weight: 800; }
+.nombre-barrio-chico { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* SECCIÓN DE ICONOS MINIMALISTAS */
+.info-hermano-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--texto-secundario);
+  gap: 4px;
+}
+.txt-horizontal-hermano, .txt-horizontal-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.txt-horizontal-hermano { max-width: 140px; font-weight: 500; }
+
+.svg-icono-chico {
+  width: 12px;
+  height: 12px;
+  color: var(--texto-secundario);
+  flex-shrink: 0;
+}
+
+.estado-badge-linea {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.badge-estado-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
+.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
+
+.svg-icono-mini {
+  width: 10px;
+  height: 10px;
+}
+
+/* LUPA MINIMALISTA EN LA ESQUINA INFERIOR IZQUIERDA DEL MAPA */
+.btn-lupa-flotante {
+  position: absolute;
+  bottom: 6px;
+  left: 6px; /* Movido con precisión a la izquierda */
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.btn-lupa-flotante:hover {
+  opacity: 1;
+}
+.ico-minimalista {
+  opacity: 0.9;
+  stroke: #ffffff;
+}
+
+.tag-prioritario-abajo {
+  display: inline-block;
+  color: var(--apple-naranja);
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 6px;
+  text-align: center;
+  width: 100%;
+}
+.tag-prio-mini {
+  font-size: 9px;
+  color: var(--apple-naranja);
+  font-weight: 700;
+}
+
+/* PANELES INFERIORES SÓLIDOS Y LISOS */
+#panel-asignacion-unico,
+.panel-inferior-flotante,
+.panel-inferior-flotante * .contenido-panel-flotante {
+  background: var(--glass-fondo) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.panel-inferior-flotante {
+  position: fixed;
+  bottom: 48px; 
+  left: 50%;
+  transform: translateX(-50%) translateY(200%);
+  width: 100%;
+  max-width: 480px;
+  border-top: 1px solid var(--glass-borde) !important;
+  border-left: 1px solid var(--glass-borde) !important;
+  border-right: 1px solid var(--glass-borde) !important;
+  border-radius: 20px 20px 0 0;
+  padding: 14px 16px 20px 16px;
+  z-index: 99;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+}
+.panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
+.contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
+#txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
+.controles-asignacion { display: flex; gap: 8px; background: transparent !important; }
+
+.select-apple {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--glass-borde) !important;
+  color: var(--texto-principal) !important;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.btn-apple-bloqueado {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.2);
+  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+}
+.btn-apple-verde-activo {
+  background: var(--apple-verde); color: white;
+  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+}
+
+/* FOOTER BARRA DE TIEMPO SÓLIDA */
+.barra-tiempo-footer {
+  position: fixed;
+  bottom: 0; left: 0; width: 100%; height: 48px;
+  background: var(--glass-fondo) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: 1px solid var(--glass-borde);
+  padding: 8px 16px;
+  z-index: 100;
+}
+.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
+.linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+[data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
+.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
+
+/* LIGHTBOX (VISOR DE PANTALLA COMPLETA) */
+.visor-pantalla-completa {
+  display: none; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background-color: #000000;
+  z-index: 2000; 
+  flex-direction: column;
+}
+.cabecera-visor-completo { 
+  padding: 16px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  background-color: rgba(20, 20, 25, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+}
+.cabecera-visor-completo * {
+  color: #ffffff !important;
+}
+.btn-cerrar-visor { 
+  background: rgba(255, 255, 255, 0.15); 
+  border: none; 
+  color: #ffffff !important; 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
+  font-weight: bold;
+  cursor: pointer;
+}
+.zona-scroll-zoom { 
+  flex: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+.zona-scroll-zoom img { 
+  max-width: 100%; 
+  max-height: 85vh; 
+  object-fit: contain; 
+}
+
+/* Forzar estilos del selector de hermanos en modo claro */
+[data-theme="claro"] .select-apple {
+  background-color: #ffffff !important;
+  color: #18181b !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+[data-theme="claro"] .select-apple option {
+  background-color: #ffffff !important;
+  color: #18181b !important;
 }
