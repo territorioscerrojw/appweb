@@ -1,11 +1,11 @@
-// app.js - VERSIÓN CORREGIDA Y COMPLETADA EN SU TOTALIDAD
+// app.js - VERSIÓN CORREGIDA (Corrección del error tipográfico en la selección)
 // Estrategia: Marcas discretas unificadas, lectura enriquecida desde Sheets y simulación física de clics contra bloqueos de WhatsApp.
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
-let territoriosSeleccionados = []; 
+let territoriosSeleccionados = []; // <-- Variable unificada en español
 let vistaActual = "disponibles"; 
 let tipoUsuario = ""; 
 let grupoFiltro = null;
@@ -152,7 +152,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const inicio = new Date(inicioStr);
   
   const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = ahora - inicio;
+  const tiempoTranscurrido = advertiser = ahora - inicio;
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
@@ -371,7 +371,8 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  // CORREGIDO: Cambiado de territoriesSeleccionados a territoriosSeleccionados de forma unificada
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -429,13 +430,11 @@ function procesarAsignacionMultiple() {
   const textoVisible = opcionSeleccionada.innerText; 
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
 
-  // SI EL TEXTO CONTIENE (-) Y EL TELÉFONO HA SIDO CARGADO, DISPARAR ENLACE FANTASMA SÍNCRONO
   if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
-    // Burla los bloqueos de popups creando un nodo físico y disparando su clic
     const enlaceFantasma = document.createElement("a");
     enlaceFantasma.href = urlWhatsApp;
     enlaceFantasma.target = "_blank";
@@ -445,7 +444,6 @@ function procesarAsignacionMultiple() {
     enlaceFantasma.remove();
   }
 
-  // Continuar con el guardado visual en local
   const copiaSeleccionados = [...territoriosSeleccionados];
 
   baseDatosCompleta.forEach(mapa => {
