@@ -406,7 +406,10 @@ async function procesarAsignacionMultiple() {
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
     telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-  }
+// Añadir prefijo 34 si no lo tiene ya
+if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
+  telefonoWhatsApp = "34" + telefonoWhatsApp;
+}
 
   // Verificar si es la primera vez ANTES de asignar
   const esPrimerVez = await verificarPrimerVez(nombreH);
