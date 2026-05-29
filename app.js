@@ -231,7 +231,7 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
-      const seleccionadoActivo = territoriesSeleccionados.includes(mapa.id.toString());
+      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
@@ -343,16 +343,16 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
   if (index === -1) {
-    territoriesSeleccionados.push(idStr);
+    territoriosSeleccionados.push(idStr);
     if (card) card.classList.add("seleccionada");
     if (customCheck) customCheck.classList.add("checked");
   } else {
-    territoriesSeleccionados.splice(index, 1);
+    territoriosSeleccionados.splice(index, 1);
     if (card) card.classList.remove("seleccionada");
     if (customCheck) customCheck.classList.remove("checked");
   }
@@ -366,8 +366,8 @@ function actualizarPanelAsignacionFlotante() {
   
   if (!panel) return;
   
-  if (territoriesSeleccionados.length > 0 && vistaActual === "disponibles") {
-    if (textContador) textContador.innerText = `${territoriesSeleccionados.length} seleccionado(s)`;
+  if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
+    if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
     panel.style.display = "flex";
     panel.classList.add("visible");
     evaluarEstadoBotonAsignar();
@@ -382,7 +382,7 @@ function evaluarEstadoBotonAsignar() {
   const btn = document.getElementById("btn-asignar-multiple");
   if (!selector || !btn) return;
   
-  if (selector.value !== "" && territoriesSeleccionados.length > 0) {
+  if (selector.value !== "" && territoriosSeleccionados.length > 0) {
     btn.disabled = false;
     btn.className = "btn-apple-verde-activo";
   } else {
@@ -391,13 +391,12 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* LÓGICA REVISADA, REESCRITA Y FIJADA CONTRA BLOQUEOS DE NAVEGADOR */
 async function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const btn = document.getElementById("btn-asignar-multiple");
   const nombreH = selector.value;
   
-  if (!nombreH || territoriesSeleccionados.length === 0) return;
+  if (!nombreH || territoriosSeleccionados.length === 0) return;
   
   btn.disabled = true;
   btn.innerText = "Asignando...";
@@ -416,22 +415,18 @@ async function procesarAsignacionMultiple() {
   const esPrimerVez = await verificarPrimerVez(nombreH);
 
   // 3. Clonamos la selección y limpiamos la interfaz para evitar parpadeos
-  const copiaSeleccionados = [...territoriesSeleccionados];
-  territoriesSeleccionados = [];
+  const copiaSeleccionados = [...territoriosSeleccionados];
+  territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
 
-  // 4. LÓGICA DE REDIRECCIÓN ESTRICTA:
+  // 4. LÓGICA DE REDIRECCIÓN ESTRICTA
   if (telefonoWhatsApp !== "" && esPrimerVez) {
-    // Si es su primera vez: se genera el mensaje con su enlace web y se le redirige inmediatamente
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
     const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
     
-    // Abrimos WhatsApp de forma directa
     window.location.href = urlWhatsApp;
   } else {
-    // Si NO es su primera vez: NUNCA se le redirige a WhatsApp ni se le envían avisos. 
-    // El proceso continúa silenciosamente en la app.
     console.log("Este hermano ya tiene historial. Asignación silenciosa activada.");
   }
 
@@ -444,7 +439,6 @@ async function procesarAsignacionMultiple() {
   await descargarDatosDesdeSheets();
 }
 
-// Consulta al backend si el hermano ya tiene territorios asignados alguna vez
 function verificarPrimerVez(nombreHermano) {
   return new Promise((resolve) => {
     const cbNombre = "cbPrimerVez_" + Date.now();
