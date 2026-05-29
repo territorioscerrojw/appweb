@@ -271,7 +271,7 @@ body {
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL CON MÁRGENES INTERNOS)
+   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
    ========================================================================== */
 .tarjeta-apple {
   background: var(--glass-fondo);
@@ -348,33 +348,37 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* CORREGIDO: Conserva el tamaño original con márgenes externos, pero remueve el color gris de fondo */
+/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
 .imagen-mapa-wrapper {
-  position: relative !important; /* Esencial para que la lupa se posicione respecto a este contenedor */
+  position: relative !important; /* Estricto para contener la lupa flotante */
   width: 100%;
-  height: 165px;
+  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
   border-radius: 10px;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  background-color: transparent !important; /* Elimina cualquier residuo o fondo gris */
+  background-color: transparent !important; /* Sin fondo gris */
+  
+  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
+  border: 1px solid var(--glass-borde);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 .imagen-mapa-asset { 
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ajusta la imagen perfectamente ocupando su espacio original */
+  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
   border-radius: 10px;
   display: block;
 }
 
-/* CORREGIDO: Lupa colocada exactamente en la esquina inferior izquierda ENCIMA de los píxeles del mapa */
+/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
 .btn-lupa-flotante {
   position: absolute !important;
-  bottom: 8px; /* Separación estética desde el borde inferior del mapa */
-  left: 8px;   /* Separación estética desde el borde izquierdo del mapa */
-  background: rgba(0, 0, 0, 0.6) !important; /* Estilo Apple translúcido oscuro */
+  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   width: 28px;
