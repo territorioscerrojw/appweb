@@ -2,52 +2,294 @@
 <html lang="es" data-theme="oscuro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mis Territorios Asignados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mis Territorios</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
+  
   <style>
+    /* Estilos específicos y prioritarios para la experiencia del Hermano */
     .pantalla-bloqueo {
-      position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+      background: var(--fondo-base, #09090b); z-index: 99999; 
+      display: flex; flex-direction: column; justify-content: center; 
+      align-items: center; text-align: center; padding: 30px;
     }
-    .pantalla-bloqueo h2 { font-size:28px; margin-bottom:10px; color:#ff3b30; }
-    .btn-completar {
-      width:100%; margin-top:12px; padding:12px; background:#34c759; border:none; border-radius:10px; color:white; font-weight:bold; cursor:pointer;
+    .pantalla-bloqueo h2 { font-size: 28px; margin-bottom: 10px; color: var(--apple-rojo); font-weight: 700; }
+    
+    /* Contenedor relativo de la tarjeta para albergar la marca de agua diagonal */
+    .tarjeta-territorio-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
     }
-    .tarjeta-mapa.terminado { opacity: 0.4; filter: grayscale(1); }
+
+    /* Marca de agua diagonal "TRABAJADO" estilo sello */
+    .marca-agua-trabajado {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      color: rgba(39, 174, 96, 0.28); /* Verde var(--apple-verde) con transparencia */
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      border: 6px solid rgba(39, 174, 96, 0.35);
+      padding: 8px 24px;
+      border-radius: 12px;
+      pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(9, 9, 11, 0.5);
+    }
+
+    /* Estado cuando el mapa está terminado */
+    .tarjeta-mapa.terminado { 
+      opacity: 0.65; 
+    }
+    .tarjeta-mapa.terminado .imagen-mapa {
+      filter: grayscale(1) contrast(0.9); 
+    }
+    .tarjeta-mapa.terminado .marca-agua-trabajado {
+      display: block;
+    }
+
+    /* Ajustes específicos de las etiquetas de estado inferiores */
+    .badge-estado {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-pendiente {
+      background-color: rgba(235, 87, 87, 0.15);
+      color: var(--apple-rojo);
+    }
+    .badge-completado {
+      background-color: rgba(39, 174, 96, 0.15);
+      color: var(--apple-verde);
+    }
+
+    /* Botón de acción integrado */
+    .btn-completar-accion {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px;
+      background: var(--apple-verde);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-completar-accion:disabled {
+      background: var(--glass-borde);
+      color: var(--texto-secundario);
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
 
-  <div id="bloqueo-temporal" class="pantalla-bloqueo" style="display: none;">
+  <div class="fondo-mapa-blur"></div>
+
+  <div id=\"bloqueo-temporal\" class=\"pantalla-bloqueo\" style=\"display: none;\">
     <h2>Campaña no disponible</h2>
-    <p style="color:#a1a1aa;">Esta sección solo se activará desde una semana antes de la campaña y hasta 3 días después de su finalización.</p>
+    <p style=\"color: var(--texto-secundario);\">Esta sección solo se activará desde una semana antes de la campaña y hasta 3 días después de vuestro cierre.</p>
   </div>
 
-  <header>
-    <div>
-      <h1 id="txt-nombre-hermano">Mis Asignaciones</h1>
-      <p id="txt-campana-hermano">Cargando...</p>
-    </div>
-    <button class="btn-tema" onclick="conmutarTema()">☀️</button>
-  </header>
+  <div class="contenedor-app">
+    <header class="cabecera-apple">
+      <div class="cabecera-titulos">
+        <h1>Mis territorios</h1>
+        <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
+      </div>
+      <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
+    </header>
 
-  <main class="grid-mapas" id="contenedor-hermano-grid"></main>
+    <main class="grid-mapas" id="contenedor-hermano-grid" style="margin-top: 24px; padding-bottom: 60px;"></main>
+  </div>
 
-  <div class="barra-fija-inferior">
-    <div style="display:flex; justify-content:space-between; font-size:12px;">
-      <span id="lbl-tiempo-restante">Campaña activa</span>
-      <span id="lbl-porcentaje-tiempo">0%</span>
+  <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
+    <div class="cabecera-visor-completo">
+      <span id="titulo-visor-completo">Mapa Ampliado</span>
+      <button class="btn-cerrar-visor" onclick="cerrarVisorPantallaCompleta()">✕</button>
     </div>
-    <div class="progreso-contenedor">
-      <div class="progreso-llenado" id="barra-progreso-elemento"></div>
+    <div class="zona-scroll-zoom">
+      <img id="img-visor-completa" src="" alt="Mapa Expandido">
     </div>
   </div>
 
-  <script src="app.js"></script>
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      inicializarPantalla("hermano");
+    // URL Base compartida extraída de tu app.js
+    const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
+    
+    let datosLocalesHermano = [];
+    let idHermanoUrl = null;
+
+    // Inicialización al cargar el documento
+    window.addEventListener("DOMContentLoaded", () => {
+      configurarTemaInicial();
+      const params = new URLSearchParams(window.location.search);
+      idHermanoUrl = params.get("id");
+
+      if (!idHermanoUrl) {
+        document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:sans-serif; color:white;'><h3>Error: Enlace no válido</h3><p>Falta el identificador del hermano en la URL (?id=...)</p></div>";
+        return;
+      }
+
+      cargarDatosFlujoHermano();
     });
+
+    // Cambiar dinámicamente entre modo claro y oscuro respetando estilos globales
+    function conmutarTema() {
+      const html = document.documentElement;
+      const temaActual = html.getAttribute("data-theme");
+      const nuevoTema = temaActual === "oscuro" ? "claro" : "oscuro";
+      html.setAttribute("data-theme", nuevoTema);
+      localStorage.setItem("tema-preferido", nuevoTema);
+    }
+
+    function configurarTemaInicial() {
+      const temaGuardado = localStorage.getItem("tema-preferido") || "oscuro";
+      document.documentElement.setAttribute("data-theme", temaGuardado);
+    }
+
+    // Consultar el Google Script pasándole la acción de lectura
+    async function cargarDatosFlujoHermano() {
+      try {
+        const urlPeticion = `${URL_API_SHEETS}?accion=leerDatos`;
+        const respuesta = await fetch(urlPeticion);
+        const data = await respuesta.json();
+        
+        if (data && data.length > 0) {
+          // Extraemos dinámicamente el nombre de la campaña desde el primer registro
+          document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
+          
+          // Filtramos únicamente los territorios cuyo "hermano" coincida con el ID de la URL
+          datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
+          
+          inyectarTarjetasHermano();
+        }
+      } catch (err) {
+        console.error("Error cargando base de datos", err);
+        document.getElementById("contenedor-hermano-grid").innerHTML = "<p style='color:red; text-align:center;'>Error de conexión al recuperar tus mapas.</p>";
+      }
+    }
+
+    // Renderizado del Grid dinámico
+    function inyectarTarjetasHermano() {
+      const contenedor = document.getElementById("contenedor-hermano-grid");
+      contenedor.innerHTML = "";
+
+      if (datosLocalesHermano.length === 0) {
+        contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
+          <h3>No tienes territorios asignados</h3>
+          <p>Si crees que esto es un error, contacta al encargado de tarjetas.</p>
+        </div>`;
+        return;
+      }
+
+      // ORDENACIÓN SOLICITADA: Los pendientes arriba y los ya trabajados pasan abajo
+      datosLocalesHermano.sort((a, b) => a.trabajado - b.trabajado);
+
+      datosLocalesHermano.forEach(mapa => {
+        const esTerminado = mapa.trabajado;
+        
+        // Creamos la estructura usando las clases de tarjeta de styles.css para unificar el aspecto
+        const wrapper = document.createElement("div");
+        wrapper.className = "tarjeta-territorio-wrapper";
+
+        wrapper.innerHTML = `
+          <div class="tarjeta-mapa ${esTerminado ? 'terminado' : ''}" style="cursor:default;">
+            <div class="marca-agua-trabajado">Trabajado</div>
+            
+            <div class="contenedor-imagen" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')">
+              <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'">
+              <div class="badge-id">${mapa.id}</div>
+            </div>
+            
+            <div class="detalles-mapa">
+              <h3 class="titulo-barrio">${mapa.barriada}</h3>
+              <p class="subtexto-campana">Devolver antes de: <b>${mapa.fechaEntrega}</b></p>
+              
+              <div style="margin-top: 12px; display:flex; justify-content:space-between; align-items:center;">
+                ${esTerminado 
+                  ? `<span class="badge-estado badge-completado">✓ TRABAJADO</span>` 
+                  : `<span class="badge-estado badge-pendiente">● PENDIENTE</span>`
+                }
+              </div>
+
+              ${!esTerminado ? `
+                <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="marcarTerritorioComoTrabajado('${mapa.id}')">
+                  Marcar como completado
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        contenedor.appendChild(wrapper);
+      });
+    }
+
+    // FUNCIÓN CRÍTICA: Cambia de pendiente a completado en la interfaz al instante y actualiza Sheets
+    async function marcarTerritorioComoTrabajado(idMapa) {
+      const boton = document.getElementById(`btn-accion-${idMapa}`);
+      if (boton) {
+        boton.disabled = true;
+        boton.innerText = "Guardando...";
+      }
+
+      try {
+        // Enlace físico directo asíncrono hacia el motor de Google Apps Script
+        const urlAsignacion = `${URL_API_SHEETS}?accion=completar&id=${encodeURIComponent(idMapa)}`;
+        
+        // Ejecutamos la petición en segundo plano utilizando el modo no-cors para evitar bloqueos del navegador
+        await fetch(urlAsignacion, { method: "GET", mode: "no-cors" });
+
+        // MODIFICACIÓN DE LA INTERFAZ SIN BLOQUEO:
+        // Buscamos el elemento modificado en el array local y mutamos su estado inmediatamente
+        const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
+        if (indice !== -1) {
+          datosLocalesHermano[indice].trabajado = true;
+        }
+
+        // Re-inyectamos las tarjetas inmediatamente: el territorio pasará abajo, se volverá gris y mostrará el sello
+        inyectarTarjetasHermano();
+
+      } catch (error) {
+        console.error("Error al procesar la actualización del territorio:", error);
+        alert("Hubo un percance guardando el estado. Por favor, inténtalo de nuevo.");
+        if (boton) {
+          boton.disabled = false;
+          boton.innerText = "Marcar como completado";
+        }
+      }
+    }
+
+    // Funciones del visor de imágenes (Lightbox integrado)
+    function abrirVisorPantallaCompleta(src, titulo) {
+      document.getElementById("img-visor-completa").src = src;
+      document.getElementById("titulo-visor-completo").innerText = titulo;
+      document.getElementById("modal-visor-pantalla-completa").style.display = "flex";
+    }
+
+    function cerrarVisorPantallaCompleta() {
+      document.getElementById("modal-visor-pantalla-completa").style.display = "none";
+    }
   </script>
 </body>
 </html>
