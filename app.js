@@ -1,4 +1,4 @@
-// app.js - Versión Corregida Anti-Bloqueo de Navegador (WhatsApp Fix)
+// app.js - Versión Ultra-Rápida con Actualización Optimista y Envío en Paralelo
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -12,7 +12,7 @@ let idHermanoUrl = null;
 let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "territorio"; 
 
-// Variable global para guardar el estado del hermano seleccionado antes del clic
+// Estado del hermano seleccionado guardado por adelantado
 let estadoHermanoSeleccionado = { nombre: "", esPrimerVez: false };
 
 async function inicializarPantalla(tipo) {
@@ -107,7 +107,6 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  // Añadimos el evento onchange para verificar la primera vez de forma anticipada
   selectorUnico.setAttribute("onchange", "preverificarHermanoSeleccionado()");
   
   selectorUnico.innerHTML = '<option value="">Seleccionar Hermano...</option>';
@@ -123,7 +122,6 @@ function extraerNombresDeHermanos() {
   });
 }
 
-// NUEVA FUNCIÓN: Comprueba la primera vez ANTICIPADAMENTE al seleccionar el nombre
 async function preverificarHermanoSeleccionado() {
   const selector = document.getElementById("sel-hermano-unico");
   const nombreH = selector.value;
@@ -134,15 +132,12 @@ async function preverificarHermanoSeleccionado() {
     return;
   }
   
-  // Reseteamos temporalmente mientras busca
   estadoHermanoSeleccionado = { nombre: nombreH, esPrimerVez: false };
   evaluarEstadoBotonAsignar();
   
-  // Hacemos la consulta silenciosa mientras el encargado decide o hace clic
   const esPrimerVez = await verificarPrimerVez(nombreH);
   
-  // Guardamos el resultado real en memoria
-  if (selector.value === nombreH) { // Validar que no haya cambiado de hermano en esos segundos
+  if (selector.value === nombreH) { 
     estadoHermanoSeleccionado.esPrimerVez = esPrimerVez;
     evaluarEstadoBotonAsignar();
   }
@@ -422,18 +417,14 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
-/* ENFOQUE ULTRA ESTABLE DE REDIRECCIÓN DIRECTA SIN ESPERAS INTERNAS */
+/* FUNCIÓN OPTIMIZADA: ACTUALIZACIÓN OPTIMISTA (0 SEGUNDOS DE ESPERA) */
 function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
-  const btn = document.getElementById("btn-asignar-multiple");
   const nombreH = selector.value;
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
   
-  btn.disabled = true;
-  btn.innerText = "Asignando...";
-
-  // 1. Extraer y limpiar el teléfono inmediatamente (acción síncrona)
+  // 1. Obtener datos de WhatsApp síncronamente
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
@@ -443,37 +434,50 @@ function procesarAsignacionMultiple() {
     }
   }
 
-  // 2. Comprobar la variable global que ya guardó la respuesta por adelantado
   const esPrimerVez = estadoHermanoSeleccionado.nombre === nombreH ? estadoHermanoSeleccionado.esPrimerVez : false;
-
-  // 3. Clonar selección y limpiar la interfaz al instante
   const copiaSeleccionados = [...territoriosSeleccionados];
+
+  // 2. ACTUALIZACIÓN OPTIMISTA INSTANTÁNEA EN LA MEMORIA LOCAL
+  // Modificamos los estados de los mapas localmente de inmediato para que desaparezcan de la vista
+  baseDatosCompleta.forEach(mapa => {
+    if (copiaSeleccionados.includes(mapa.id.toString())) {
+      mapa.entregado = true;
+      mapa.hermano = nombreH;
+      mapa.fechaEntrega = new Date().toISOString();
+      mapa.trabajado = true; // Pendiente
+    }
+  });
+
+  // Limpiamos interfaz inmediatamente (0 segundos de espera para el usuario)
   territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
+  actualizarAnillosEstadisticos();
+  filtrarYRenderizar(); // Se vuelve a dibujar la cuadrícula sin los mapas asignados al instante
 
-  // 4. FLUJO DE REDIRECCIÓN SIN CONFIGURACIÓN ASÍNCRONA (Inmediato para el Navegador)
+  // 3. REDIRECCIÓN DIRECTA SIN ESPERAS
   if (telefonoWhatsApp !== "" && esPrimerVez) {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
     const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
     
-    // Redirige al instante. El navegador no lo bloqueará porque ocurre en el mismo hilo del clic.
     window.location.href = urlWhatsApp;
-  } else {
-    console.log("Asignación silenciosa: No es su primera vez o no tiene teléfono registrado.");
   }
 
-  // 5. El envío a la base de datos de Google se hace en segundo plano
-  ejecutarEnvioSecuencialHojas(copiaSeleccionados, nombreH);
+  // 4. ENVÍO EN PARALELO AL SERVIDOR EN SEGUNDO PLANO (Silencioso y en background)
+  ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
-// Envía las solicitudes a Sheets en bucle asíncrono controlado en background
-async function ejecutarEnvioSecuencialHojas(listaIds, nombreHermano) {
-  for (let id of listaIds) {
-    await lanzarPeticionGoogleAsincrona(id, nombreHermano);
+// Envía todas las promesas al mismo tiempo (Paralelismo eficiente)
+async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
+  try {
+    const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
+    await Promise.all(promesas); // Se ejecutan todas a la vez en lugar de una tras otra
+    
+    // Una vez guardado con éxito real, sincronizamos con los últimos datos verídicos de Sheets
+    await descargarDatosDesdeSheets();
+  } catch (e) {
+    console.error("Error al guardar en background", e);
   }
-  // Refresca la vista local
-  await descargarDatosDesdeSheets();
 }
 
 function verificarPrimerVez(nombreHermano) {
@@ -595,7 +599,7 @@ function inyectarEstilosCorreccionSelector() {
   const style = document.createElement("style");
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
-    /* MODO OSCURO (Por Defecto) */
+    /* MODO OSCURO */
     #panel-asignacion-unico {
       background-color: rgba(28, 28, 30, 0.85) !important;
       backdrop-filter: blur(20px);
@@ -616,7 +620,7 @@ function inyectarEstilosCorreccionSelector() {
       color: #ffffff !important;
     }
 
-    /* MODO CLARO COMPLETO (Forzado mediante Atributo) */
+    /* MODO CLARO */
     [data-theme="claro"] #panel-asignacion-unico {
       background-color: rgba(242, 242, 247, 0.9) !important;
       border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -635,7 +639,6 @@ function inyectarEstilosCorreccionSelector() {
       color: #1c1c1e !important;
     }
     
-    /* Clases dinámicas de los botones en modo claro */
     [data-theme="claro"] .btn-apple-bloqueado {
       background-color: rgba(0, 0, 0, 0.05) !important;
       color: rgba(0, 0, 0, 0.3) !important;
