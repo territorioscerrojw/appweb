@@ -216,9 +216,12 @@ function filtrarYRenderizar() {
     } else if (criterioOrdenacionAsignados === "hermano") {
       dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
     } else if (criterioOrdenacionAsignados === "fecha") {
+      // CORREGIDO: Ajustado para buscar de manera estricta la propiedad fechaEntrega mapeada de la columna N
       dataset.sort((a, b) => {
-        let fA = a.fechaEntrega || a.fechaentrega || 0;
-        let fB = b.fechaEntrega || b.fechaentrega || 0;
+        let fA = a.fechaEntrega || 0;
+        let fB = b.fechaEntrega || 0;
+        if (fA === "Sin fecha" || !fA) return 1;
+        if (fB === "Sin fecha" || !fB) return -1;
         return new Date(fB) - new Date(fA);
       });
     }
@@ -257,12 +260,15 @@ function filtrarYRenderizar() {
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
-      let rawFecha = mapa.fechaEntrega || mapa.fechaentrega;
+      // CORREGIDO: Formatea de manera segura la fechaEntrega obtenida de la columna N
+      let rawFecha = mapa.fechaEntrega;
       let fechaFormateada = "Sin fecha";
-      if (rawFecha) {
+      if (rawFecha && rawFecha !== "Sin fecha") {
         const f = new Date(rawFecha);
         if (!isNaN(f.getTime())) {
           fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: '2-digit' });
+        } else {
+          fechaFormateada = rawFecha; // Si ya viene formateada tipo string de Sheets, se mantiene limpia
         }
       }
 
@@ -511,12 +517,12 @@ function configurarTemaInicial() {
   document.documentElement.setAttribute("data-theme", t);
 }
 
+// CORREGIDO: Alterna el tema en cascada sin machacar los SVGs minimalistas del CSS externo
 function conmutarTema() {
   const actual = document.documentElement.getAttribute("data-theme");
   const nuevo = actual === "oscuro" ? "claro" : "oscuro";
   document.documentElement.setAttribute("data-theme", nuevo);
   localStorage.setItem("tema_app", nuevo);
-  document.getElementById("btn-cambiar-tema").innerText = nuevo === "oscuro" ? "☀️" : "🌙";
 }
 
 // NUEVA INYECCIÓN PREMIUM: Corrige Select, Panel Flotante y Textos dinámicos en Claro/Oscuro
