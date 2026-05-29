@@ -271,7 +271,7 @@ body {
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO)
+   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL CON MÁRGENES INTERNOS)
    ========================================================================== */
 .tarjeta-apple {
   background: var(--glass-fondo);
@@ -348,35 +348,33 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* Contenedor de la imagen en la tarjeta vertical */
+/* CORREGIDO: Conserva el tamaño original con márgenes externos, pero remueve el color gris de fondo */
 .imagen-mapa-wrapper {
-  position: relative !important; /* Base indispensable para la lupa */
+  position: relative !important; /* Esencial para que la lupa se posicione respecto a este contenedor */
   width: 100%;
   height: 165px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  padding: 0;
+  background-color: transparent !important; /* Elimina cualquier residuo o fondo gris */
 }
 .imagen-mapa-asset { 
-  max-width: 100%; 
-  max-height: 100%; 
-  width: auto;
-  height: auto;
-  object-fit: contain; 
-  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ajusta la imagen perfectamente ocupando su espacio original */
+  border-radius: 10px;
   display: block;
 }
 
-/* Lupa flotante abajo a la izquierda en la pestaña Disponibles */
+/* CORREGIDO: Lupa colocada exactamente en la esquina inferior izquierda ENCIMA de los píxeles del mapa */
 .btn-lupa-flotante {
   position: absolute !important;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(0, 0, 0, 0.55) !important;
+  bottom: 8px; /* Separación estética desde el borde inferior del mapa */
+  left: 8px;   /* Separación estética desde el borde izquierdo del mapa */
+  background: rgba(0, 0, 0, 0.6) !important; /* Estilo Apple translúcido oscuro */
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   width: 28px;
@@ -389,8 +387,8 @@ body {
   justify-content: center;
   opacity: 0.85;
   transition: opacity 0.2s, transform 0.1s;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .btn-lupa-flotante:hover { opacity: 1; }
 .btn-lupa-flotante:active { transform: scale(0.9); }
@@ -440,7 +438,7 @@ body {
   object-fit: cover;
 }
 
-/* NUEVO EN ASIGNADOS: Lupa colocada exactamente al centro, más chica y muy transparente */
+/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
 .tarjeta-apple-horizontal .btn-lupa-flotante {
   top: 50% !important;
   left: 50% !important;
