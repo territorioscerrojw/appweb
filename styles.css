@@ -1,4 +1,4 @@
-/* styles.css - Diseño Minimalista Liso, Visible y Corregido */
+/* styles.css - Diseño Minimalista Liso, Visible y Corregido con Acabado Premium */
 
 :root {
   --fondo-base: #09090b;
@@ -14,9 +14,10 @@
   /* Línea de fondo vacía de los contadores visible en modo oscuro */
   --anillo-vacio: rgba(255, 255, 255, 0.12);
   
-  /* CORREGIDO: Estilo visible para el botón de tema en modo oscuro */
-  --btn-tema-bg: rgba(255, 255, 255, 0.06);
-  --btn-tema-borde: rgba(255, 255, 255, 0.15);
+  /* Estilos para el botón de tema en modo oscuro */
+  --btn-tema-bg: linear-gradient(135deg, #2c2c2e, #1c1c1e);
+  --btn-tema-color: #ffcc00;
+  --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="claro"] {
@@ -30,9 +31,10 @@
   /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
   
-  /* CORREGIDO: Estilo visible para el botón de tema en modo claro */
-  --btn-tema-bg: rgba(0, 0, 0, 0.04);
-  --btn-tema-borde: rgba(0, 0, 0, 0.12);
+  /* Estilos para el botón de tema en modo claro */
+  --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
+  --btn-tema-color: #5856d6;
+  --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
 }
 
 * {
@@ -63,7 +65,7 @@ body {
   padding: 20px 14px 170px 14px;
 }
 
-/* CABECERA Y BOTÓN LUNA/SOL MINIMALISTA VISIBLE */
+/* CABECERA Y BOTÓN LUNA/SOL ESTILO SÍMBOLO VECTORIAL CON RELIEVE */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
@@ -82,30 +84,41 @@ body {
   margin-top: 2px;
 }
 #btn-cambiar-tema {
-  background: var(--btn-tema-bg) !important; /* CORREGIDO: Fondo sutil que se nota */
-  border: 1px solid var(--btn-tema-borde) !important; /* CORREGIDO: Borde delimitador visible */
+  background: var(--btn-tema-bg) !important;
+  border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 10px; /* Bordes ligeramente redondeados estilo Apple */
+  border-radius: 50% !important; /* Totalmente redondo */
   cursor: pointer;
-  color: var(--texto-principal);
+  color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.1s;
+  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 #btn-cambiar-tema:active {
   transform: scale(0.95);
-  background: rgba(128, 128, 128, 0.2) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
-#btn-cambiar-tema svg {
+
+/* Dibujo sutil de los símbolos Sol/Luna mediante máscaras CSS vectoriales */
+#btn-cambiar-tema::before {
+  content: "";
   width: 20px;
   height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  display: block;
+  background-color: currentColor;
+  transition: all 0.2s ease;
+}
+[data-theme="oscuro"] #btn-cambiar-tema::before {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
+}
+[data-theme="claro"] #btn-cambiar-tema::before {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
 
 /* ANILLOS Y CONTADORES */
@@ -142,7 +155,7 @@ body {
 }
 .anillo-fondo {
   fill: none;
-  stroke: var(--anillo-vacio); /* Zona vacía de la barra perfectamente visible */
+  stroke: var(--anillo-vacio);
   stroke-width: 3.5;
 }
 .anillo-linea {
@@ -206,39 +219,6 @@ body {
   margin-bottom: 16px;
 }
 
-/* SUB FILTROS */
-.contenedor-sub-filtros {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  background: rgba(0,0,0,0.06);
-  padding: 4px;
-  border-radius: 10px;
-  border: 1px solid var(--glass-borde);
-}
-[data-theme="claro"] .contenedor-sub-filtros {
-  background: rgba(0,0,0,0.04);
-}
-.btn-sub-filtro {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--texto-secundario);
-  padding: 8px 2px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.btn-sub-filtro.activo,
-.btn-sub-filtro.activa {
-  background: var(--apple-azul) !important;
-  color: #ffffff !important;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
-}
-
 /* GRID GENERAL */
 .grid-territorios {
   display: flex;
@@ -247,7 +227,7 @@ body {
   width: 100%;
 }
 
-/* TARJETAS DISPONIBLES */
+/* TARJETAS DISPONIBLES CON CONTENIDOS Y TEXTOS CENTRADOS */
 .tarjeta-apple {
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -262,21 +242,44 @@ body {
 .tarjeta-apple.prioritaria-row, .tarjeta-apple-horizontal.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
-.cabecera-tarjeta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.bloque-id { display: flex; align-items: center; gap: 8px; }
-.num-mapa { font-size: 22px; font-weight: 800; }
-.nombre-barrio { font-size: 14px; font-weight: 600; }
 
+/* CORREGIDO: Caja de cabecera reestructurada para garantizar el centrado exacto */
+.cabecera-tarjeta {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 28px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.bloque-id { 
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  gap: 2px; 
+  text-align: center;
+  width: 100%;
+}
+.num-mapa { font-size: 22px; font-weight: 800; line-height: 1; }
+/* CORREGIDO: Centrado del nombre de la barriada */
+.nombre-barrio { font-size: 14px; font-weight: 600; text-align: center; width: 100%; }
+
+.contenedor-check {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 .check-apple-custom {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.2);
+}
+[data-theme="claro"] .check-apple-custom {
+  border: 2px solid rgba(0,0,0,0.2);
 }
 .check-apple-custom.checked {
   background-color: var(--apple-verde);
@@ -293,14 +296,27 @@ body {
   transform: translate(-50%, -50%);
 }
 
+/* CORREGIDO: Muestra el mapa al 100% estrechándolo de forma limpia sin recortes laterales */
 .imagen-mapa-wrapper {
   position: relative;
   width: 100%;
-  height: 165px;
+  height: 180px;
   border-radius: 10px;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
 }
-.imagen-mapa-asset { width: 100%; height: 100%; object-fit: cover; }
+.imagen-mapa-asset { 
+  max-width: 100%; 
+  max-height: 100%; 
+  width: auto;
+  height: auto;
+  object-fit: contain; 
+  border-radius: 6px;
+}
 
 /* RECTÁNGULO DE TARJETA ASIGNADOS HORIZONTAL */
 .tarjeta-apple-horizontal {
@@ -422,6 +438,8 @@ body {
   font-size: 10px;
   font-weight: 700;
   margin-top: 6px;
+  text-align: center;
+  width: 100%;
 }
 .tag-prio-mini {
   font-size: 9px;
@@ -511,9 +529,9 @@ body {
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-  background-color: rgba(20, 20, 25, 0.9); /* Fondo oscuro semitransparente sólido */
+  background-color: rgba(20, 20, 25, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff !important; /* Letras 100% blancas */
+  color: #ffffff !important;
 }
 .cabecera-visor-completo * {
   color: #ffffff !important;
