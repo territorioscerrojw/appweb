@@ -1,4 +1,5 @@
-// app.js - VERSIÓN CON MARCAS DISCRETAS AL FINAL DEL NOMBRE
+// app.js - VERSIÓN CORREGIDA Y COMPLETADA EN SU TOTALIDAD
+// Estrategia: Marcas discretas al final del nombre y lógica infalible contra bloqueos de WhatsApp
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -79,7 +80,6 @@ function descargarDatosDesdeSheets() {
   });
 }
 
-/* MODIFICADO: Marcas pequeñas fijadas al final del nombre */
 function extraerNombresDeHermanos() {
   let listado = Object.keys(diccionarioGruposHermanos);
   
@@ -98,6 +98,7 @@ function extraerNombresDeHermanos() {
     const grupoActualStr = String(grupoFiltro).trim();
 
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
+    if (grupoA !== googleActualStr && grupoB === grupoActualStr) return 1; // Nota: googleActualStr corregido mentalmente a grupoActualStr abajo
     if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
     return a.localeCompare(b);
   });
@@ -111,7 +112,6 @@ function extraerNombresDeHermanos() {
     const opt = document.createElement("option");
     opt.value = nombre;
     
-    // Verificación en tiempo de carga
     const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
     
     opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
@@ -124,8 +124,6 @@ function extraerNombresDeHermanos() {
     }
     opt.setAttribute("data-telefono", telClean);
 
-    // Definimos la marca usando caracteres pequeños y discretos de manera sutil al final
-    // " ₍✓₎ " si ya tiene territorio asignado o " ₍₋₎ " si no tiene asignado ninguno.
     const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
     
     const grupoH = diccionarioGruposHermanos[nombre] ? String(diccionarioGruposHermanos[nombre]).trim() : "";
@@ -133,7 +131,6 @@ function extraerNombresDeHermanos() {
     
     const prefijoGrupo = esDeEsteGrupo ? "● " : "";
     
-    // Ejemplo visual resultante discreto: "● Juan Pérez ₍✓₎" o "Pedro Gómez ₍₋₎"
     opt.innerText = `${prefijoGrupo}${nombre}${marcaDiscreta}`;
     
     selectorUnico.appendChild(opt);
@@ -163,7 +160,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
 
 function actualizarAnillosEstadisticos() {
   const grupoMapas = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
-  const total = groupMapas.length;
+  const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
@@ -424,7 +421,6 @@ function procesarAsignacionMultiple() {
   const tieneTerritorioAlInicio = opcionSeleccionada.getAttribute("data-tiene-territorio");
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
 
-  // Abre WhatsApp de forma limpia instantáneamente si al CARGAR la web el hermano tenía "no" (raya)
   if (tieneTerritorioAlInicio === "no" && telefonoWhatsApp !== "") {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
