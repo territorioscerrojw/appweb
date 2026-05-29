@@ -1,11 +1,12 @@
-// app.js - VERSIÓN CORREGIDA (Corrección del error tipográfico en la selección)
-// Estrategia: Marcas discretas unificadas, lectura enriquecida desde Sheets y simulación física de clics contra bloqueos de WhatsApp.
+// app.js - VERSIÓN CORREGIDA (Lógica de estados invertida según requerimiento)
+// Estado Pendiente: entregado=true, trabajado=false
+// Estado Terminado: entregado=true, trabajado=true
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
-let territoriosSeleccionados = []; // <-- Variable unificada en español
+let territoriosSeleccionados = []; 
 let vistaActual = "disponibles"; 
 let tipoUsuario = ""; 
 let grupoFiltro = null;
@@ -117,13 +118,11 @@ function extraerNombresDeHermanos() {
     const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
     opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
     
-    // EXTRAEMOS EL TELÉFONO DE LA NUEVA ESTRUCTURA UNIFICADA ENVIADA POR EL SERVIDOR
     let telClean = "";
     const infoHermano = diccionarioGruposHermanos[nombre];
     if (infoHermano && typeof infoHermano === 'object' && infoHermano.whatsapp) {
       telClean = infoHermano.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
     } else {
-      // Vía de escape por si acaso
       const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.toLowerCase() && m.whatsapp);
       if (mapaConWA && mapaConWA.whatsapp) {
         telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
@@ -152,7 +151,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const inicio = new Date(inicioStr);
   
   const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = advertiser = ahora - inicio;
+  const tiempoTranscurrido = ahora - inicio;
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
@@ -171,8 +170,10 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
-  const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
-  const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
+  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
+  const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
+  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
+  const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
   if (document.getElementById("w-prioritarios")) document.getElementById("w-prioritarios").innerText = prio;
@@ -298,6 +299,7 @@ function filtrarYRenderizar() {
         }
       }
 
+      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
@@ -321,9 +323,9 @@ function filtrarYRenderizar() {
             </span>
           </div>
           <div class="estado-badge-linea">
-            <span class="badge-estado-pill ${mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
               <svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              ${mapa.trabajado ? "Pendiente" : "Hecho"}
+              ${!mapa.trabajado ? "Pendiente" : "Hecho"}
             </span>
             ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
@@ -371,7 +373,6 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  // CORREGIDO: Cambiado de territoriesSeleccionados a territoriosSeleccionados de forma unificada
   const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
@@ -451,7 +452,7 @@ function procesarAsignacionMultiple() {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = false; 
+      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
     }
   });
 
@@ -495,14 +496,17 @@ function filtrarYRenderizarHermano() {
     return;
   }
   
-  asignadosHermano.sort((a,b) => b.trabajado - a.trabajado);
+  // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
+  asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
   
   asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
-    div.className = `tarjeta-apple ${!mapa.trabajado ? 'terminado' : ''}`;
+    // NUEVA LÓGICA: Si ya está trabajado (true), se le añade la opacidad visual de 'terminado'
+    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
     
+    // NUEVA LÓGICA: Si NO está trabajado (false), se le ofrece el botón para completarlo
     let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
-    if (!mapa.trabajado) {
+    if (mapa.trabajado) {
       accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
     }
     
