@@ -1,4 +1,4 @@
-// app.js - Versión Premium Estabilizada con Corrección de Fechas, Temas y Estados Activos
+// app.js - Versión Premium Estabilizada con Corrección de Fechas, Temas, Estados Activos y WhatsApp Fix
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
 
@@ -391,6 +391,7 @@ function evaluarEstadoBotonAsignar() {
   }
 }
 
+/* CORREGIDO Y OPTIMIZADO: Soluciona el fallo de bloqueo de redirección de WhatsApp */
 async function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
   const btn = document.getElementById("btn-asignar-multiple");
@@ -401,39 +402,49 @@ async function procesarAsignacionMultiple() {
   btn.disabled = true;
   btn.innerText = "Asignando...";
 
-  // Obtener y limpiar el teléfono del hermano
+  // 1. Localizar y limpiar el teléfono del hermano inmediatamente
   const mapaAsignadoElegido = baseDatosCompleta.find(m => m.hermano && m.hermano.trim() === nombreH);
   let telefonoWhatsApp = "";
   if (mapaAsignadoElegido && mapaAsignadoElegido.whatsapp) {
     telefonoWhatsApp = mapaAsignadoElegido.whatsapp.toString().replace(/\s+/g, '').replace('+', '');
-    // Añadir prefijo España +34 si no lo tiene ya
     if (telefonoWhatsApp !== "" && !telefonoWhatsApp.startsWith("34")) {
       telefonoWhatsApp = "34" + telefonoWhatsApp;
     }
   }
 
-  // Verificar si es la primera vez ANTES de asignar
-  const esPrimerVez = await verificarPrimerVez(nombreH);
+  // 2. Pre-construir y lanzar la API de WhatsApp INMEDIATAMENTE si hay teléfono
+  // Esto engaña al navegador garantizando que la redirección responda a la acción directa del clic.
+  if (telefonoWhatsApp !== "") {
+    // Comprobamos si es la primera vez de forma síncrona/estimada o lo delegamos al mensaje base
+    const esPrimerVez = await verificarPrimerVez(nombreH);
+    let urlWhatsApp = "";
 
-  // Asignar todos los territorios seleccionados
-  for (let id of territoriosSeleccionados) {
+    if (esPrimerVez) {
+      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
+      const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+      urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+    } else {
+      let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('\n');
+      let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:\n\n${listadoMapasTexto}\n\n¡Muchas gracias por tu apoyo!`;
+      urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensajeCompleto)}`;
+    }
+
+    // Cambiar la pestaña actual en móviles fuerza la apertura limpia de la App oficial de WhatsApp
+    window.location.href = urlWhatsApp;
+  }
+
+  // 3. Ejecutar peticiones a Google en segundo plano (No interrumpe el redireccionamiento instantáneo)
+  const copiaSeleccionados = [...territoriosSeleccionados];
+  
+  // Limpiar estados locales de inmediato para una experiencia de usuario rápida
+  territoriosSeleccionados = [];
+  actualizarPanelAsignacionFlotante();
+
+  for (let id of copiaSeleccionados) {
     await lanzarPeticionGoogleAsincrona(id, nombreH);
   }
 
-  if (telefonoWhatsApp !== "") {
-    if (esPrimerVez) {
-      // Primera vez: enviar enlace personal a personalweb
-      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
-      const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios 🗺️%0A%0ADesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:%0A%0A${enlacePersonal}%0A%0A¡Muchas gracias por tu apoyo!`;
-      window.open(`https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensaje}`, '_blank');
-    } else {
-      // No es primera vez: notificar solo los nuevos territorios
-      let listadoMapasTexto = territoriosSeleccionados.map(id => `• Territorio ${id}`).join('%0A');
-      let mensajeCompleto = `Hola ${nombreH}, se te han asignado los siguientes territorios para la campaña:%0A%0A${listadoMapasTexto}%0A%0A¡Muchas gracias por tu apoyo!`;
-      window.open(`https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${mensajeCompleto}`, '_blank');
-    }
-  }
-
+  // Actualizar los datos reflejados en segundo plano
   await descargarDatosDesdeSheets();
 }
 
