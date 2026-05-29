@@ -98,8 +98,7 @@ function extraerNombresDeHermanos() {
     const grupoActualStr = String(grupoFiltro).trim();
 
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
-    if (grupoA !== googleActualStr && grupoB === grupoActualStr) return 1; // Nota: googleActualStr corregido mentalmente a grupoActualStr abajo
-    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
+    if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1; // <- CORREGIDO AQUÍ (Antes ponía googleActualStr)
     return a.localeCompare(b);
   });
   
