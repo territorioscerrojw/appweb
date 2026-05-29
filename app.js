@@ -398,6 +398,7 @@ function procesarAsignacionMultiple() {
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
+  // 1. Averiguar si cumple los requisitos para WhatsApp ANTES de tocar la interfaz
   const mapasActualesDelHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === nombreH.trim().toLowerCase() && m.entregado === true);
   const contadorTerritoriosAsignados = mapasActualesDelHermano.length;
 
@@ -410,6 +411,26 @@ function procesarAsignacionMultiple() {
     }
   }
 
+  let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
+  let necesitaRedireccion = (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "" && !memoriaNotificados.includes(nombreH.trim()));
+
+  // 2. ¡CRUCIAL! Si necesita WhatsApp, creamos la ventana INMEDIATAMENTE. 
+  // Al hacerlo arriba del todo, el navegador no lo detecta como un popup sospechoso.
+  let ventanaWhatsApp = null;
+  if (necesitaRedireccion) {
+    // Guardamos en la memoria local para que no vuelva a abrirse en el futuro
+    memoriaNotificados.push(nombreH.trim());
+    localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
+
+    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+    
+    // Abrimos la pestaña YA
+    ventanaWhatsApp = window.open(urlWhatsApp, '_blank');
+  }
+
+  // 3. Ahora que el navegador ya procesó el clic, hacemos toda la actualización visual
   const copiaSeleccionados = [...territoriosSeleccionados];
 
   baseDatosCompleta.forEach(mapa => {
@@ -426,21 +447,7 @@ function procesarAsignacionMultiple() {
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
 
-  if (contadorTerritoriosAsignados === 0 && telefonoWhatsApp !== "") {
-    let memoriaNotificados = JSON.parse(localStorage.getItem("hermanos_notificados_wa")) || [];
-    
-    if (!memoriaNotificados.includes(nombreH.trim())) {
-      memoriaNotificados.push(nombreH.trim());
-      localStorage.setItem("hermanos_notificados_wa", JSON.stringify(memoriaNotificados));
-
-      const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
-      const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
-
-      window.open(urlWhatsApp, '_blank');
-    }
-  }
-
+  // 4. Envío al servidor en segundo plano
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
