@@ -56,38 +56,38 @@
       transition: all 0.3s ease;
     }
 
-    /* Identificador del Territorio en Grande (Estilo Flotante iOS) */
-    .badge-id-grande {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: #ffffff;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      z-index: 15;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
     .tarjeta-mapa .detalles-mapa {
       padding: 14px !important;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      position: relative; /* Para poder estructurar los bloques internos */
+    }
+
+    /* Estructura para dividir los textos del número en grande */
+    .bloque-informacion-superior {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 4px;
     }
 
     .tarjeta-mapa .titulo-barrio {
       font-size: 16px !important;
       font-weight: 700;
-      margin: 0 0 4px 0 !important;
+      margin: 0 !important;
       color: var(--texto-principal) !important;
+      line-height: 1.3;
+    }
+
+    /* El número de territorio en grande abajo de la imagen sin fondos ni transparencias */
+    .numero-territorio-grande {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--texto-principal);
+      line-height: 1;
+      letter-spacing: -1px;
     }
 
     .tarjeta-mapa .subtexto-campana {
@@ -319,17 +319,17 @@
           <div class="tarjeta-mapa ${esTerminado ? 'terminado' : ''}">
             
             <div class="contenedor-imagen">
-              <!-- Marca de agua diagonal -->
               <div class="marca-agua-trabajado">Trabajado</div>
-              
-              <!-- Identificador en Grande en la esquina superior derecha de la foto -->
-              <div class="badge-id-grande">${mapa.id}</div>
-              
               <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')" style="cursor:pointer;">
             </div>
             
             <div class="detalles-mapa">
-              <h3 class="titulo-barrio">${mapa.barriada}</h3>
+              <!-- Bloque flex superior: Barriada a la izquierda y número en grande a la derecha -->
+              <div class="bloque-informacion-superior">
+                <h3 class="titulo-barrio">${mapa.barriada}</h3>
+                <span class="numero-territorio-grande">${mapa.id}</span>
+              </div>
+              
               <p class="subtexto-campana">Fecha de entrega: <b>${formatearFechaComun(mapa.fechaEntrega)}</b></p>
               
               <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
