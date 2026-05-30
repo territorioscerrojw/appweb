@@ -10,12 +10,39 @@
   
   <style>
     /* ==========================================================================
-       Ajustes de Grid y Estructuras Compactas para la vista del Hermano
+       Variables de alto contraste según el tema activo
+       ========================================================================== */
+    html[data-theme="oscuro"] {
+      --fondo-pantalla: #09090b;          /* Fondo base muy oscuro */
+      --fondo-tarjeta: #18181b;           /* Tarjeta gris oscuro sólida para contraste */
+      --borde-tarjeta: rgba(255, 255, 255, 0.15); /* Borde bien definido */
+      --sombra-tarjeta: rgba(0, 0, 0, 0.5) 0px 4px 12px;
+      --texto-principal: #ffffff;
+      --texto-secundario: #a1a1aa;
+    }
+
+    html[data-theme="claro"] {
+      --fondo-pantalla: #f4f4f5;          /* Fondo gris claro limpio */
+      --fondo-tarjeta: #ffffff;           /* Tarjeta blanca pura */
+      --borde-tarjeta: rgba(0, 0, 0, 0.12); /* Borde claro pero visible */
+      --sombra-tarjeta: rgba(0, 0, 0, 0.08) 0px 4px 14px;
+      --texto-principal: #09090b;
+      --texto-secundario: #71717a;
+    }
+
+    body {
+      background-color: var(--fondo-pantalla) !important;
+      color: var(--texto-principal);
+      transition: background-color 0.2s ease;
+    }
+
+    /* ==========================================================================
+       Grid y Estructura de Tarjetas con Alto Contraste
        ========================================================================== */
     .grid-mapas {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      gap: 20px; /* Un poco más de separación ayuda al contraste visual */
       padding: 16px;
       width: 100%;
       box-sizing: border-box;
@@ -29,23 +56,25 @@
     }
 
     .tarjeta-mapa {
-      background-color: var(--glass-fondo, #121214) !important;
-      border: 1px solid var(--glass-borde, rgba(255, 255, 255, 0.08)) !important;
+      background-color: var(--fondo-tarjeta) !important;
+      border: 1px solid var(--borde-tarjeta) !important;
+      box-shadow: var(--sombra-tarjeta) !important;
       border-radius: 14px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       height: 100%;
-      transition: transform 0.2s ease, opacity 0.3s ease;
+      transition: transform 0.2s ease, opacity 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    /* Redimensionado de la imagen para evitar gigantismo */
+    /* Redimensionado de la imagen */
     .tarjeta-mapa .contenedor-imagen {
       position: relative;
       width: 100%;
       height: 160px; 
       overflow: hidden;
       background-color: #000;
+      border-bottom: 1px solid var(--borde-tarjeta);
     }
 
     .tarjeta-mapa .imagen-mapa {
@@ -57,11 +86,10 @@
     }
 
     .tarjeta-mapa .detalles-mapa {
-      padding: 14px !important;
+      padding: 16px !important;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      position: relative; /* Para poder estructurar los bloques internos */
     }
 
     /* Estructura para dividir los textos del número en grande */
@@ -70,7 +98,7 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .tarjeta-mapa .titulo-barrio {
@@ -81,9 +109,9 @@
       line-height: 1.3;
     }
 
-    /* El número de territorio en grande abajo de la imagen sin fondos ni transparencias */
+    /* Número de territorio sin transparencias, con el color de texto principal */
     .numero-territorio-grande {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 800;
       color: var(--texto-principal);
       line-height: 1;
@@ -96,7 +124,7 @@
       margin: 0 !important;
     }
 
-    /* Marca de agua diagonal "TRABAJADO" - Situada encima de la imagen */
+    /* Marca de agua diagonal "TRABAJADO" sobre la imagen aclarada */
     .marca-agua-trabajado {
       display: none;
       position: absolute;
@@ -104,7 +132,7 @@
       left: 50%;
       transform: translate(-50%, -50%) rotate(-20deg);
       color: var(--apple-verde, #27ae60);
-      opacity: 0.85; 
+      opacity: 0.95; 
       font-size: 2.2rem;
       font-weight: 800;
       letter-spacing: 4px;
@@ -117,15 +145,16 @@
 
     /* Comportamiento cuando el mapa se marca como completado */
     .tarjeta-mapa.terminado .imagen-mapa {
-      filter: brightness(1.4) opacity(0.5); 
+      filter: brightness(1.3) opacity(0.4); 
     }
     
     .tarjeta-mapa.terminado .contenedor-imagen .marca-agua-trabajado {
       display: block; 
     }
 
+    /* En tarjetas terminadas reducimos levemente la opacidad general para dar sensación de archivado */
     .tarjeta-mapa.terminado {
-      opacity: 0.85; 
+      opacity: 0.8; 
     }
 
     /* Etiquetas de estado inferiores */
@@ -139,18 +168,18 @@
       letter-spacing: 0.5px;
     }
     .badge-pendiente {
-      background-color: rgba(235, 87, 87, 0.12);
+      background-color: rgba(235, 87, 87, 0.15);
       color: var(--apple-rojo);
     }
     .badge-completado {
-      background-color: rgba(39, 174, 96, 0.12);
+      background-color: rgba(39, 174, 96, 0.15);
       color: var(--apple-verde);
     }
 
     /* Botones de acción dinámicos */
     .btn-completar-accion {
       width: 100%;
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 10px;
       background: var(--apple-verde);
       color: #ffffff;
@@ -163,32 +192,34 @@
     }
     .btn-desmarcar-accion {
       width: 100%;
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 10px;
       background: transparent;
       color: var(--texto-secundario);
-      border: 1px solid var(--glass-borde);
+      border: 1px solid var(--borde-tarjeta);
       border-radius: 8px;
       font-weight: 500;
       font-size: 13px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
+    
+    html[data-theme="oscuro"] .btn-desmarcar-accion {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    html[data-theme="claro"] .btn-desmarcar-accion {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
     .btn-desmarcar-accion:hover {
       background: rgba(235, 87, 87, 0.1);
       color: var(--apple-rojo);
       border-color: rgba(235, 87, 87, 0.3);
     }
-    button:disabled {
-      background: var(--glass-borde) !important;
-      color: var(--texto-secundario) !important;
-      border: none !important;
-      cursor: not-allowed;
-    }
 
     .pantalla-bloqueo {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-      background: var(--fondo-base, #09090b); z-index: 99999; 
+      background: var(--fondo-pantalla, #09090b); z-index: 99999; 
       display: flex; flex-direction: column; justify-content: center; 
       align-items: center; text-align: center; padding: 30px;
     }
@@ -197,7 +228,7 @@
 </head>
 <body>
 
-  <div class="fondo-mapa-blur"></div>
+  <div class="fondo-mapa-blur" style="display: none;"></div>
 
   <div id="bloqueo-temporal" class="pantalla-bloqueo" style="display: none;">
     <h2>Campaña no disponible</h2>
@@ -261,7 +292,6 @@
       document.documentElement.setAttribute("data-theme", temaGuardado);
     }
 
-    // Transforma cualquier formato de Sheets en dd/mm/aaaa
     function formatearFechaComun(fechaRaw) {
       if (!fechaRaw) return "Sin fecha";
       try {
@@ -307,7 +337,6 @@
         return;
       }
 
-      // Ordenar: Pendientes arriba, Trabajados abajo automáticamente
       datosLocalesHermano.sort((a, b) => a.trabajado - b.trabajado);
 
       datosLocalesHermano.forEach(mapa => {
@@ -324,7 +353,6 @@
             </div>
             
             <div class="detalles-mapa">
-              <!-- Bloque flex superior: Barriada a la izquierda y número en grande a la derecha -->
               <div class="bloque-informacion-superior">
                 <h3 class="titulo-barrio">${mapa.barriada}</h3>
                 <span class="numero-territorio-grande">${mapa.id}</span>
@@ -339,7 +367,6 @@
                 }
               </div>
 
-              <!-- Alternancia de botones con respuesta instantánea optimista -->
               ${!esTerminado ? `
                 <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">
                   Marcar como completado
@@ -361,7 +388,6 @@
       if (indice === -1) return;
       const estadoOriginalAnterior = datosLocalesHermano[indice].trabajado;
 
-      // Actualización optimista inmediata
       datosLocalesHermano[indice].trabajado = (modo === "completar");
       inyectarTarjetasHermano();
 
