@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mis Territorios</title>
-  <!-- Importamos la misma fuente y la hoja de estilos compartida -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
   
@@ -53,7 +52,7 @@
       height: 100%;
       object-fit: cover; 
       display: block;
-      transition: filter 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .tarjeta-mapa .detalles-mapa {
@@ -76,33 +75,36 @@
       margin: 0 !important;
     }
 
-    /* Marca de agua diagonal "TRABAJADO" - Estilo Ultra Minimalista */
+    /* Marca de agua diagonal "TRABAJADO" - Situada encima de la imagen */
     .marca-agua-trabajado {
       display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-20deg);
-      color: rgba(39, 174, 96, 0.22); /* Tono verde sutil sin sombras ni trazos duros */
-      font-size: 2.6rem;
-      font-weight: 600; /* Tipografía más fina y elegante */
-      letter-spacing: 5px;
+      color: var(--apple-verde, #27ae60);
+      opacity: 0.85; /* Buena visibilidad sobre la imagen aclarada */
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 4px;
       text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      text-shadow: none !important; /* Eliminada cualquier sombra de fondo */
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sutil relieve para leerse sobre cualquier mapa */
     }
 
-    /* Comportamiento del mapa Terminado */
-    .tarjeta-mapa.terminado { 
-      opacity: 0.55; 
-    }
+    /* Comportamiento cuando el mapa se marca como completado */
     .tarjeta-mapa.terminado .imagen-mapa {
-      filter: grayscale(1) opacity(0.8); 
+      filter: brightness(1.4) opacity(0.5); /* No se pone en blanco y negro; se aclara la imagen */
     }
-    .tarjeta-mapa.terminado .marca-agua-trabajado {
-      display: block;
+    
+    .tarjeta-mapa.terminado .contenedor-imagen .marca-agua-trabajado {
+      display: block; /* Muestra el texto únicamente en la zona de la foto */
+    }
+
+    .tarjeta-mapa.terminado {
+      opacity: 0.85; /* Mantiene la tarjeta visible pero suavizada */
     }
 
     /* Etiquetas de estado inferiores */
@@ -182,7 +184,6 @@
   </div>
 
   <div class="contenedor-app">
-    <!-- Cabecera iOS con soporte de tema nativo -->
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1>Mis territorios</h1>
@@ -191,11 +192,9 @@
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
 
-    <!-- Listado principal -->
     <main class="grid-mapas" id="contenedor-hermano-grid" style="margin-top: 16px; padding-bottom: 60px;"></main>
   </div>
 
-  <!-- Visor de imágenes expandido -->
   <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
     <div class="cabecera-visor-completo">
       <span id="titulo-visor-completo">Mapa Ampliado</span>
@@ -238,12 +237,12 @@
       document.documentElement.setAttribute("data-theme", temaGuardado);
     }
 
-    // Transforma cualquier formato ISO o estándar de Sheets en dd/mm/aaaa
+    // Transforma cualquier formato de Sheets en dd/mm/aaaa
     function formatearFechaComun(fechaRaw) {
       if (!fechaRaw) return "Sin fecha";
       try {
         const fechaObj = new Date(fechaRaw);
-        if (isNaN(fechaObj.getTime())) return fechaRaw; // Si ya viene formateada como texto, la deja igual
+        if (isNaN(fechaObj.getTime())) return fechaRaw;
         
         const dia = String(fechaObj.getDate()).padStart(2, '0');
         const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
@@ -294,10 +293,10 @@
 
         wrapper.innerHTML = `
           <div class="tarjeta-mapa ${esTerminado ? 'terminado' : ''}">
-            <div class="marca-agua-trabajado">Trabajado</div>
             
-            <div class="contenedor-imagen" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')" style="cursor:pointer;">
-              <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'">
+            <div class="contenedor-imagen">
+              <div class="marca-agua-trabajado">Trabajado</div>
+              <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')" style="cursor:pointer;">
               <div class="badge-id">${mapa.id}</div>
             </div>
             
@@ -312,7 +311,6 @@
                 }
               </div>
 
-              <!-- Alternancia de botones basada en el estado real del mapa -->
               ${!esTerminado ? `
                 <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">
                   Marcar como completado
