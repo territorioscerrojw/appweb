@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mis Territorios</title>
+  <!-- Importamos la misma fuente y la hoja de estilos compartida -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
   
@@ -55,6 +56,26 @@
       transition: all 0.3s ease;
     }
 
+    /* Identificador del Territorio en Grande (Estilo Flotante iOS) */
+    .badge-id-grande {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 15;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
     .tarjeta-mapa .detalles-mapa {
       padding: 14px !important;
       display: flex;
@@ -91,16 +112,16 @@
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      text-shadow: none !important; /* Totalmente minimalista sin sombras duras */
+      text-shadow: none !important;
     }
 
     /* Comportamiento cuando el mapa se marca como completado */
     .tarjeta-mapa.terminado .imagen-mapa {
-      filter: brightness(1.4) opacity(0.5); /* Se aclara la imagen elegantemente */
+      filter: brightness(1.4) opacity(0.5); 
     }
     
     .tarjeta-mapa.terminado .contenedor-imagen .marca-agua-trabajado {
-      display: block; /* Muestra el texto únicamente en la zona de la foto */
+      display: block; 
     }
 
     .tarjeta-mapa.terminado {
@@ -184,6 +205,7 @@
   </div>
 
   <div class="contenedor-app">
+    <!-- Cabecera iOS con soporte de tema nativo -->
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1>Mis territorios</h1>
@@ -192,9 +214,11 @@
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
 
+    <!-- Listado principal -->
     <main class="grid-mapas" id="contenedor-hermano-grid" style="margin-top: 16px; padding-bottom: 60px;"></main>
   </div>
 
+  <!-- Visor de imágenes expandido -->
   <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
     <div class="cabecera-visor-completo">
       <span id="titulo-visor-completo">Mapa Ampliado</span>
@@ -295,9 +319,13 @@
           <div class="tarjeta-mapa ${esTerminado ? 'terminado' : ''}">
             
             <div class="contenedor-imagen">
+              <!-- Marca de agua diagonal -->
               <div class="marca-agua-trabajado">Trabajado</div>
+              
+              <!-- Identificador en Grande en la esquina superior derecha de la foto -->
+              <div class="badge-id-grande">${mapa.id}</div>
+              
               <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')" style="cursor:pointer;">
-              <div class="badge-id">${mapa.id}</div>
             </div>
             
             <div class="detalles-mapa">
@@ -311,6 +339,7 @@
                 }
               </div>
 
+              <!-- Alternancia de botones con respuesta instantánea optimista -->
               ${!esTerminado ? `
                 <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">
                   Marcar como completado
@@ -327,32 +356,24 @@
       });
     }
 
-    // EJECUCIÓN OPTIMISTA INSTANTÁNEA
     async function cambiarEstadoTerritorio(idMapa, modo) {
-      // 1. Guardamos una copia del estado original por si la red falla por completo
       const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
       if (indice === -1) return;
       const estadoOriginalAnterior = datosLocalesHermano[indice].trabajado;
 
-      // 2. Modificamos el estado local INMEDIATAMENTE en la interfaz
+      // Actualización optimista inmediata
       datosLocalesHermano[indice].trabajado = (modo === "completar");
-      
-      // 3. Repintamos las tarjetas de inmediato (El mapa se mueve abajo/arriba al instante)
       inyectarTarjetasHermano();
 
-      // 4. Lanzamos la petición a Google Sheets en segundo plano sin hacer esperar al usuario
       try {
         const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
         const urlPeticion = `${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`;
         
-        // Petición silenciosa de fondo
         await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
-        console.log(`Sincronización exitosa en la nube para el mapa #${idMapa}`);
+        console.log(`Sincronizado de fondo para el mapa #${idMapa}`);
 
       } catch (error) {
-        console.error("Error de red en segundo plano:", error);
-        
-        // REVERSIÓN EN CASO DE FALLO REAL: Si se corta internet, devolvemos la tarjeta a su estado real y avisamos
+        console.error("Error de red diferido:", error);
         alert("No se pudo guardar el cambio en el servidor debido a un problema de conexión. Revirtiendo estado...");
         datosLocalesHermano[indice].trabajado = estadoOriginalAnterior;
         inyectarTarjetasHermano();
