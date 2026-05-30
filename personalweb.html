@@ -83,7 +83,7 @@
       left: 50%;
       transform: translate(-50%, -50%) rotate(-20deg);
       color: var(--apple-verde, #27ae60);
-      opacity: 0.85; /* Buena visibilidad sobre la imagen aclarada */
+      opacity: 0.85; 
       font-size: 2.2rem;
       font-weight: 800;
       letter-spacing: 4px;
@@ -91,12 +91,12 @@
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sutil relieve para leerse sobre cualquier mapa */
+      text-shadow: none !important; /* Totalmente minimalista sin sombras duras */
     }
 
     /* Comportamiento cuando el mapa se marca como completado */
     .tarjeta-mapa.terminado .imagen-mapa {
-      filter: brightness(1.4) opacity(0.5); /* No se pone en blanco y negro; se aclara la imagen */
+      filter: brightness(1.4) opacity(0.5); /* Se aclara la imagen elegantemente */
     }
     
     .tarjeta-mapa.terminado .contenedor-imagen .marca-agua-trabajado {
@@ -104,7 +104,7 @@
     }
 
     .tarjeta-mapa.terminado {
-      opacity: 0.85; /* Mantiene la tarjeta visible pero suavizada */
+      opacity: 0.85; 
     }
 
     /* Etiquetas de estado inferiores */
@@ -327,33 +327,35 @@
       });
     }
 
+    // EJECUCIÓN OPTIMISTA INSTANTÁNEA
     async function cambiarEstadoTerritorio(idMapa, modo) {
-      const boton = document.getElementById(`btn-accion-${idMapa}`);
-      if (boton) {
-        boton.disabled = true;
-        boton.innerText = "Guardando...";
-      }
+      // 1. Guardamos una copia del estado original por si la red falla por completo
+      const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
+      if (indice === -1) return;
+      const estadoOriginalAnterior = datosLocalesHermano[indice].trabajado;
 
+      // 2. Modificamos el estado local INMEDIATAMENTE en la interfaz
+      datosLocalesHermano[indice].trabajado = (modo === "completar");
+      
+      // 3. Repintamos las tarjetas de inmediato (El mapa se mueve abajo/arriba al instante)
+      inyectarTarjetasHermano();
+
+      // 4. Lanzamos la petición a Google Sheets en segundo plano sin hacer esperar al usuario
       try {
         const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
         const urlPeticion = `${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`;
         
+        // Petición silenciosa de fondo
         await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
-
-        const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
-        if (indice !== -1) {
-          datosLocalesHermano[indice].trabajado = (modo === "completar");
-        }
-
-        inyectarTarjetasHermano();
+        console.log(`Sincronización exitosa en la nube para el mapa #${idMapa}`);
 
       } catch (error) {
-        console.error("Error al mutar estado:", error);
-        alert("Surgió un error al guardar los cambios. Inténtalo de nuevo.");
-        if (boton) {
-          boton.disabled = false;
-          boton.innerText = modo === "completar" ? "Marcar como completado" : "Reactivar territorio";
-        }
+        console.error("Error de red en segundo plano:", error);
+        
+        // REVERSIÓN EN CASO DE FALLO REAL: Si se corta internet, devolvemos la tarjeta a su estado real y avisamos
+        alert("No se pudo guardar el cambio en el servidor debido a un problema de conexión. Revirtiendo estado...");
+        datosLocalesHermano[indice].trabajado = estadoOriginalAnterior;
+        inyectarTarjetasHermano();
       }
     }
 
