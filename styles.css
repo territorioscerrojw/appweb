@@ -1,8 +1,8 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Fondo Urbano */
+/* styles.css - Diseño Minimalista Liso con Fondo de Mapa Activo */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(18, 18, 20, 0.75);
+  --glass-fondo: rgba(18, 18, 20, 0.7); /* Ahora con transparencia para ver el mapa */
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -14,78 +14,48 @@
   --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  --filtro-mapa: rgba(9, 9, 11, 0.85);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.85);
+  --glass-fondo: rgba(255, 255, 255, 0.7); /* Transparente para modo claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
-  --apple-verde: #34c759;
-  --apple-naranja: #ff9500;
-  --apple-rojo: #ff3b30;
   --anillo-vacio: rgba(0, 0, 0, 0.1);
   --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
-  --filtro-mapa: rgba(244, 244, 247, 0.88);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', -apple-system, sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
 
-body {
-  background-image: url('mapa-fondo.png') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-}
+body { background-color: var(--fondo-base); color: var(--texto-principal); min-height: 100vh; width: 100%; overflow-x: hidden; letter-spacing: -0.2px; }
 
-/* ==========================================================================
-   FONDO DE MAPA URBANO (VISTA CALLES)
-   ========================================================================== */
-/* ==========================================================================
-   FONDO DE MAPA URBANO (IMAGEN PROPIA)
-   ========================================================================== */
+/* FONDO DE MAPA ACTIVO Y CORREGIDO */
 .fondo-mapa-blur {
-  display: block;
+  display: block; /* Activado */
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   z-index: -1;
-  pointer-events: none;
-  /* Referencia a tu archivo local */
-  background-image: url('mapa-fondo.png'); 
+  background-image: url('mapa-fondo.png');
   background-size: cover;
   background-position: center;
-  filter: blur(45px) saturate(0.8);
+  background-repeat: no-repeat;
+  filter: blur(20px) brightness(0.5); /* Desenfoque y oscurecido para resaltar las tarjetas */
   transform: scale(1.1);
 }
 
-.fondo-mapa-blur::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--filtro-mapa);
-}
+.contenedor-app { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 14px 170px 14px; }
 
-.contenedor-app {
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 20px 14px 170px 14px;
-  position: relative;
-  z-index: 1;
+/* Estilos de tarjetas ajustados para ser "Glassmorphic" (permiten ver el fondo) */
+.tarjeta-apple, .tarjeta-anillo, .contenedor-busqueda input, .control-segmentado {
+  background: var(--glass-fondo) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-borde);
 }
 
 /* ==========================================================================
