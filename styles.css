@@ -1,8 +1,8 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Fondo Satelital Blur */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: #121214; /* Fondo liso para tarjetas en modo oscuro */
+  --glass-fondo: rgba(18, 18, 20, 0.75); /* Fondo liso translúcido para tarjetas en modo oscuro */
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -18,15 +18,21 @@
   --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  
+  /* Capa de tinte sobre el mapa satelital */
+  --filtro-mapa: rgba(9, 9, 11, 0.82);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
+  --glass-fondo: rgba(255, 255, 255, 0.8); /* Fondo liso translúcido para tarjetas en modo claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
+  --apple-verde: #34c759;
+  --apple-naranja: #ff9500;
+  --apple-rojo: #ff3b30;
   
   /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
@@ -35,6 +41,9 @@
   --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
+
+  /* Capa de tinte sobre el mapa satelital (Modo Claro) */
+  --filtro-mapa: rgba(244, 244, 247, 0.85);
 }
 
 * {
@@ -52,10 +61,36 @@ body {
   width: 100%;
   overflow-x: hidden;
   letter-spacing: -0.2px;
+  position: relative;
 }
 
+/* ==========================================================================
+   FONDO DE MAPA SATELITAL DE CIUDAD CON BLUR ULTRA-PREMIUM
+   ========================================================================== */
 .fondo-mapa-blur {
-  display: none;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  /* Imagen de satélite urbana abstracta y limpia */
+  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) scale(1.1); /* Sube el blur para simular un mapa desenfocado elegante */
+  transform: scale(1.05);
+}
+
+/* Capa de tinte para matizar el fondo y asegurar legibilidad */
+.fondo-mapa-blur::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--filtro-mapa);
+  transition: background 0.3s ease;
 }
 
 .contenedor-app {
@@ -63,6 +98,8 @@ body {
   max-width: 480px;
   margin: 0 auto;
   padding: 20px 14px 170px 14px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ==========================================================================
@@ -90,16 +127,15 @@ body {
   border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 50% !important; /* Totalmente redondo */
+  border-radius: 50% !important;
   cursor: pointer;
   color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
+  box-shadow: var(--btn-tema-sombra) !important;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
-  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
@@ -110,28 +146,25 @@ body {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
   width: 20px;
   height: 20px;
   display: block;
   background-color: currentColor;
-  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
+  text-indent: 0 !important;
 }
-/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
-/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
 }
 
 /* ==========================================================================
-   ANILLOS Y CONTADORES
+   ANILLOS Y CONTADORES (GLASSMORPHISM)
    ========================================================================== */
 .seccion-anillos {
   display: grid;
@@ -141,6 +174,8 @@ body {
 }
 .tarjeta-anillo {
   background: var(--glass-fondo);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
   padding: 14px 2px;
@@ -192,15 +227,14 @@ body {
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
 .control-segmentado {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--glass-fondo);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 3px;
   border-radius: 12px;
   display: flex;
   margin-bottom: 14px;
   border: 1px solid var(--glass-borde);
-}
-[data-theme="claro"] .control-segmentado {
-  background: rgba(0, 0, 0, 0.05);
 }
 .tab {
   flex: 1;
@@ -214,14 +248,20 @@ body {
   cursor: pointer;
 }
 .tab.activa {
-  background: var(--glass-fondo);
+  background: var(--fondo-base);
   color: var(--texto-principal);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+[data-theme="claro"] .tab.activa {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .contenedor-busqueda input {
   width: 100%;
   background: var(--glass-fondo);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-borde);
   color: var(--texto-principal);
   padding: 12px 14px;
@@ -235,13 +275,12 @@ body {
   display: flex;
   gap: 6px;
   margin-bottom: 16px;
-  background: rgba(0,0,0,0.06);
+  background: var(--glass-fondo);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 4px;
   border-radius: 10px;
   border: 1px solid var(--glass-borde);
-}
-[data-theme="claro"] .contenedor-sub-filtros {
-  background: rgba(0,0,0,0.04);
 }
 .btn-sub-filtro {
   flex: 1;
@@ -266,124 +305,92 @@ body {
 .grid-territorios {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
+   NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
    ========================================================================== */
 .tarjeta-apple {
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
+  background: rgba(28, 28, 30, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 16px;
-  padding: 12px;
-  transition: all 0.2s ease;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: all 0.25s ease;
   width: 100%;
   box-sizing: border-box;
 }
-.tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.7);
-  background-color: rgba(39, 174, 96, 0.06);
-}
-.tarjeta-apple.prioritaria-row {
-  border-left: 4px solid var(--apple-naranja);
+
+[data-theme="claro"] .tarjeta-apple {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
-/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
-.tarjeta-apple .cabecera-tarjeta {
-  position: relative;
+.fila-tarjeta-superior,
+.fila-tarjeta-inferior {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center; /* Alineación perfecta al centro real */
-  min-height: 28px;
-  margin-bottom: 8px;
   width: 100%;
 }
-/* El número grande se ancla fijo en la izquierda */
-.tarjeta-apple .num-mapa { 
-  position: absolute;
-  left: 4px;
-  font-size: 24px; 
-  font-weight: 800; 
+
+.num-mapa-gigante {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--texto-principal);
   line-height: 1;
 }
-/* La barriada se auto-centra al medio sin importar el número */
-.tarjeta-apple .nombre-barrio { 
-  font-size: 14px; 
-  font-weight: 600; 
-  text-align: center;
-  max-width: 65%;
+
+.barriada-derecha {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  text-align: right;
+  max-width: 70%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Checkbox anclado fijo a la derecha */
-.tarjeta-apple .contenedor-check {
-  position: absolute;
-  right: 4px;
-}
 
-.check-apple-custom {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.2);
-}
-[data-theme="claro"] .check-apple-custom {
-  border: 2px solid rgba(0,0,0,0.2);
-}
-.check-apple-custom.checked {
-  background-color: var(--apple-verde);
-  border-color: var(--apple-verde);
-  position: relative;
-}
-.check-apple-custom.checked::after {
-  content: "✓";
-  position: absolute;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
-.imagen-mapa-wrapper {
-  position: relative !important; /* Estricto para contener la lupa flotante */
+.tarjeta-apple .imagen-mapa-wrapper {
+  position: relative !important;
   width: 100%;
-  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
+  height: 160px;
   border-radius: 10px;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  background-color: transparent !important; /* Sin fondo gris */
-  
-  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
   border: 1px solid var(--glass-borde);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
-.imagen-mapa-asset { 
+
+.tarjeta-apple .imagen-mapa-asset {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
-  border-radius: 10px;
-  display: block;
+  object-fit: contain;
 }
 
-/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
-.btn-lupa-flotante {
+/* Lupa flotante perfectamente adaptada */
+.tarjeta-apple .btn-lupa-flotante {
   position: absolute !important;
-  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
-  left: 8px;
-  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  bottom: 8px !important;
+  left: 8px !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
   cursor: pointer;
   z-index: 10;
   display: flex;
@@ -394,18 +401,62 @@ body {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-.btn-lupa-flotante:hover { opacity: 1; }
-.btn-lupa-flotante:active { transform: scale(0.9); }
-.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
+.tarjeta-apple .btn-lupa-flotante:hover { opacity: 1; }
+.tarjeta-apple .btn-lupa-flotante:active { transform: scale(0.9); }
 
-.tag-prioritario-abajo {
-  display: inline-block;
-  color: var(--apple-naranja);
-  font-size: 10px;
+.tag-prioritario-esquina {
+  background-color: rgba(242, 153, 74, 0.15);
+  color: #f2994a !important;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
   font-weight: 700;
-  margin-top: 6px;
-  text-align: center;
-  width: 100%;
+  letter-spacing: 0.5px;
+}
+
+.btn-check-rectangular {
+  width: 65px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+[data-theme="claro"] .btn-check-rectangular {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.4) !important;
+  background: rgba(39, 174, 96, 0.05) !important;
+}
+
+.tarjeta-apple.seleccionada .btn-check-rectangular {
+  background-color: var(--apple-verde) !important;
+  border-color: var(--apple-verde) !important;
+}
+
+.btn-check-rectangular .check-icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s ease;
+}
+
+.tarjeta-apple.seleccionada .btn-check-rectangular .check-icon {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* ==========================================================================
@@ -413,6 +464,8 @@ body {
    ========================================================================== */
 .tarjeta-apple-horizontal {
   background: var(--glass-fondo);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
   padding: 10px;
@@ -426,7 +479,6 @@ body {
   border-left: 4px solid var(--apple-naranja);
 }
 
-/* Contenedor miniatura lateral izquierdo */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -442,27 +494,27 @@ body {
   object-fit: cover;
 }
 
-/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
 .tarjeta-apple-horizontal .btn-lupa-flotante {
+  position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   bottom: auto !important;
   right: auto !important;
-  transform: translate(-50%, -50%) !important; /* Centrado matemático */
-  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
+  transform: translate(-50%, -50%) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  opacity: 0.5 !important; /* Menor opacidad inicial */
-  width: 24px !important; /* Formato más compacto */
+  opacity: 0.5 !important;
+  width: 24px !important;
   height: 24px !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .tarjeta-apple-horizontal .btn-lupa-flotante:hover {
   opacity: 0.85 !important;
 }
-.tarjeta-apple-horizontal .btn-lupa-flotante:active {
-  transform: translate(-50%, -50%) scale(0.9) !important;
-}
 
-/* Columna de datos en asignados (Compacta y controlada) */
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
@@ -471,7 +523,6 @@ body {
   overflow: hidden;
 }
 
-/* Fila superior con número chico de corrido y barriada */
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
@@ -493,7 +544,6 @@ body {
   flex-grow: 1;
 }
 
-/* Fila de información del hermano asignado */
 .info-hermano-linea {
   display: flex;
   justify-content: space-between;
@@ -545,14 +595,14 @@ body {
 .tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
 /* ==========================================================================
-   PANELES INFERIORES SÓLIDOS Y LISOS
+   PANELES INFERIORES FIJOS AL FONDO
    ========================================================================== */
 #panel-asignacion-unico,
 .panel-inferior-flotante,
-.panel-inferior-flotante * .contenido-panel-flotante {
+.panel-inferior-flotante .contenido-panel-flotante {
   background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
 
 .panel-inferior-flotante {
@@ -569,7 +619,7 @@ body {
   padding: 14px 16px 20px 16px;
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
 }
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
@@ -578,7 +628,7 @@ body {
 
 .select-apple {
   flex: 1;
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
   padding: 8px;
@@ -596,14 +646,17 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER (BARRA DE PROGRESO DE TIEMPO)
+   FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
    ========================================================================== */
 .barra-tiempo-footer {
   position: fixed;
-  bottom: 0; left: 0; width: 100%; height: 48px;
+  bottom: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 48px;
   background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
