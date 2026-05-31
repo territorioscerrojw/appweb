@@ -293,7 +293,7 @@ function filtrarYRenderizar() {
             <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
           </div>
           <div class="estado-badge-linea">
-            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Hecho"}</span>
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Completo"}</span>
             ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
         </div>`;
