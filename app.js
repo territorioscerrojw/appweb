@@ -266,26 +266,31 @@ function filtrarYRenderizar() {
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
       div.innerHTML = `
-        <div class="cabecera-tarjeta">
-          <div class="bloque-id">
-            <span class="num-mapa">${parseInt(mapa.id)}</span>
-            <span class="nombre-barrio">${mapa.barriada}</span>
-          </div>
-          <div class="contenedor-check">
-            <div class="check-apple-custom ${seleccionadoActivo ? 'checked' : ''}" id="circulo-check-${mapa.id}"></div>
-          </div>
+        <div class="fila-tarjeta-superior">
+          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
+          <span class="barriada-derecha">${mapa.barriada}</span>
         </div>
+
         <div class="imagen-mapa-wrapper">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
-        <div class="pie-tarjeta-firma">
-          ${esPrio ? `<span class="tag-prioritario-abajo">⚠️ PRIORITARIO</span>` : `<span class="tag-vacio-espacio"></span>`}
+
+        <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq">
+            ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
+          </div>
+          <button class="btn-check-rectangular" aria-label="Seleccionar territorio">
+            <svg class="check-icon" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
         </div>
       `;
     } else {
+      // Mantiene el diseño horizontal original e intacto para la pestaña "Asignados"
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
       let rawFecha = mapa.fechaEntrega;
@@ -299,7 +304,6 @@ function filtrarYRenderizar() {
         }
       }
 
-      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
@@ -312,22 +316,22 @@ function filtrarYRenderizar() {
             <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
             <span class="nombre-barrio-chico">${mapa.barriada}</span>
           </div>
-          <div class="info-hermano-linea">
-            <span class="txt-horizontal-hermano">
-              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-              ${mapa.hermano || 'No asignado'}
-            </span>
-            <span class="txt-horizontal-fecha">
-              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              ${fechaFormateada}
-            </span>
+          <div class="info-asignacion-bloque">
+            <div class="item-info-linea">
+              <span class="ico-gris">👤</span>
+              <span class="txt-valor-negro">${mapa.hermano || 'No asignado'}</span>
+            </div>
+            <div class="item-info-linea">
+              <span class="ico-gris">📅</span>
+              <span class="txt-valor-gris">${fechaFormateada}</span>
+            </div>
           </div>
-          <div class="estado-badge-linea">
-            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
-              <svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              ${!mapa.trabajado ? "Pendiente" : "Hecho"}
-            </span>
-            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
+          <div class="fila-acciones-horizontal">
+            ${mapa.trabajado === true 
+              ? `<span class="badge-estado badge-hecho">✓ Terminado</span>`
+              : `<span class="badge-estado badge-pendiente">⏳ Pendiente</span>`
+            }
+            <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')" title="Quitar asignación">✕</button>
           </div>
         </div>
       `;
