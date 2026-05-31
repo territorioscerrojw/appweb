@@ -4,27 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mis Territorios</title>
-  <!-- Importamos la misma fuente y la hoja de estilos compartida -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
   
   <style>
-    /* ==========================================================================
-       Variables de alto contraste según el tema activo
-       ========================================================================== */
+    /* Variables de alto contraste */
     html[data-theme="oscuro"] {
-      --fondo-pantalla: #09090b;          /* Fondo base muy oscuro */
-      --fondo-tarjeta: #18181b;           /* Tarjeta gris oscuro sólida para contraste */
-      --borde-tarjeta: rgba(255, 255, 255, 0.15); /* Borde bien definido */
+      --fondo-pantalla: #09090b;
+      --fondo-tarjeta: #18181b;
+      --borde-tarjeta: rgba(255, 255, 255, 0.15);
       --sombra-tarjeta: rgba(0, 0, 0, 0.5) 0px 4px 12px;
       --texto-principal: #ffffff;
       --texto-secundario: #a1a1aa;
     }
 
     html[data-theme="claro"] {
-      --fondo-pantalla: #f4f4f5;          /* Fondo gris claro limpio */
-      --fondo-tarjeta: #ffffff;           /* Tarjeta blanca pura */
-      --borde-tarjeta: rgba(0, 0, 0, 0.12); /* Borde claro pero visible */
+      --fondo-pantalla: #f4f4f5;
+      --fondo-tarjeta: #ffffff;
+      --borde-tarjeta: rgba(0, 0, 0, 0.12);
       --sombra-tarjeta: rgba(0, 0, 0, 0.08) 0px 4px 14px;
       --texto-principal: #09090b;
       --texto-secundario: #71717a;
@@ -33,28 +30,55 @@
     body {
       background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
-      transition: background-color 0.2s ease;
     }
 
-    /* ==========================================================================
-       Grid y Estructura de Tarjetas con Alto Contraste
-       ========================================================================== */
+    /* Estilos para las pestañas (Tabs) similares a index.html */
+    .contenedor-tabs {
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+
+    .control-segmentado {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 3px;
+      border-radius: 12px;
+      display: flex;
+      border: 1px solid var(--borde-tarjeta);
+    }
+
+    [data-theme="claro"] .control-segmentado {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--texto-secundario);
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab.activa {
+      background: var(--fondo-tarjeta);
+      color: var(--texto-principal);
+      box-shadow: var(--sombra-tarjeta);
+    }
+
     .grid-mapas {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px; /* Un poco más de separación ayuda al contraste visual */
+      gap: 20px;
       padding: 16px;
       width: 100%;
       box-sizing: border-box;
     }
 
-    .tarjeta-territorio-wrapper {
-      position: relative;
-      overflow: hidden;
-      border-radius: 14px;
-      max-width: 100%;
-    }
-
+    /* Diseño de tarjeta de alto contraste */
     .tarjeta-mapa {
       background-color: var(--fondo-tarjeta) !important;
       border: 1px solid var(--borde-tarjeta) !important;
@@ -64,179 +88,62 @@
       display: flex;
       flex-direction: column;
       height: 100%;
-      transition: transform 0.2s ease, opacity 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    /* Redimensionado de la imagen */
     .tarjeta-mapa .contenedor-imagen {
       position: relative;
       width: 100%;
-      height: 160px; 
-      overflow: hidden;
+      height: 160px;
       background-color: #000;
-      border-bottom: 1px solid var(--borde-tarjeta);
     }
 
     .tarjeta-mapa .imagen-mapa {
       width: 100%;
       height: 100%;
-      object-fit: cover; 
-      display: block;
-      transition: all 0.3s ease;
+      object-fit: cover;
     }
 
     .tarjeta-mapa .detalles-mapa {
       padding: 16px !important;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
     }
 
-    /* Estructura para dividir los textos del número en grande */
-    .bloque-informacion-superior {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 6px;
-    }
-
-    .tarjeta-mapa .titulo-barrio {
-      font-size: 16px !important;
-      font-weight: 700;
-      margin: 0 !important;
-      color: var(--texto-principal) !important;
-      line-height: 1.3;
-    }
-
-    /* Número de territorio sin transparencias, con el color de texto principal */
     .numero-territorio-grande {
       font-size: 30px;
       font-weight: 800;
-      color: var(--texto-principal);
       line-height: 1;
-      letter-spacing: -1px;
     }
 
-    .tarjeta-mapa .subtexto-campana {
-      font-size: 12px !important;
-      color: var(--texto-secundario) !important;
-      margin: 0 !important;
-    }
-
-    /* Marca de agua diagonal "TRABAJADO" sobre la imagen aclarada */
     .marca-agua-trabajado {
       display: none;
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%) rotate(-20deg);
-      color: var(--apple-verde, #27ae60);
-      opacity: 0.95; 
-      font-size: 2.2rem;
+      color: #27ae60;
+      font-size: 2rem;
       font-weight: 800;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      pointer-events: none;
       z-index: 10;
-      white-space: nowrap;
-      text-shadow: none !important;
     }
 
-    /* Comportamiento cuando el mapa se marca como completado */
-    .tarjeta-mapa.terminado .imagen-mapa {
-      filter: brightness(1.3) opacity(0.4); 
-    }
-    
-    .tarjeta-mapa.terminado .contenedor-imagen .marca-agua-trabajado {
-      display: block; 
-    }
+    .tarjeta-mapa.terminado .marca-agua-trabajado { display: block; }
+    .tarjeta-mapa.terminado .imagen-mapa { filter: brightness(1.2) opacity(0.4); }
 
-    /* En tarjetas terminadas reducimos levemente la opacidad general para dar sensación de archivado */
-    .tarjeta-mapa.terminado {
-      opacity: 0.8; 
-    }
-
-    /* Etiquetas de estado inferiores */
-    .badge-estado {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-    .badge-pendiente {
-      background-color: rgba(235, 87, 87, 0.15);
-      color: var(--apple-rojo);
-    }
-    .badge-completado {
-      background-color: rgba(39, 174, 96, 0.15);
-      color: var(--apple-verde);
-    }
-
-    /* Botones de acción dinámicos */
     .btn-completar-accion {
-      width: 100%;
-      margin-top: 14px;
-      padding: 10px;
-      background: var(--apple-verde);
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.2s ease;
+      width: 100%; margin-top: 14px; padding: 12px;
+      background: #27ae60; color: #fff; border: none;
+      border-radius: 8px; font-weight: 700; cursor: pointer;
     }
+
     .btn-desmarcar-accion {
-      width: 100%;
-      margin-top: 14px;
-      padding: 10px;
-      background: transparent;
-      color: var(--texto-secundario);
-      border: 1px solid var(--borde-tarjeta);
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      width: 100%; margin-top: 14px; padding: 12px;
+      background: transparent; color: var(--texto-secundario);
+      border: 1px solid var(--borde-tarjeta); border-radius: 8px;
+      font-weight: 600; cursor: pointer;
     }
-    
-    html[data-theme="oscuro"] .btn-desmarcar-accion {
-      background: rgba(255, 255, 255, 0.03);
-    }
-    html[data-theme="claro"] .btn-desmarcar-accion {
-      background: rgba(0, 0, 0, 0.02);
-    }
-
-    .btn-desmarcar-accion:hover {
-      background: rgba(235, 87, 87, 0.1);
-      color: var(--apple-rojo);
-      border-color: rgba(235, 87, 87, 0.3);
-    }
-
-    .pantalla-bloqueo {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-      background: var(--fondo-pantalla, #09090b); z-index: 99999; 
-      display: flex; flex-direction: column; justify-content: center; 
-      align-items: center; text-align: center; padding: 30px;
-    }
-    .pantalla-bloqueo h2 { font-size: 26px; margin-bottom: 10px; color: var(--apple-rojo); font-weight: 700; }
   </style>
 </head>
 <body>
 
-  <div class="fondo-mapa-blur" style="display: none;"></div>
-
-  <div id="bloqueo-temporal" class="pantalla-bloqueo" style="display: none;">
-    <h2>Campaña no disponible</h2>
-    <p style="color: var(--texto-secundario);">Esta sección solo se activará desde una semana antes de la campaña y hasta 3 días después de vuestro cierre.</p>
-  </div>
-
   <div class="contenedor-app">
-    <!-- Cabecera iOS con soporte de tema nativo -->
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1>Mis territorios</h1>
@@ -245,175 +152,108 @@
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
 
-    <!-- Listado principal -->
-    <main class="grid-mapas" id="contenedor-hermano-grid" style="margin-top: 16px; padding-bottom: 60px;"></main>
-  </div>
+    <!-- Nueva sección de pestañas[cite: 6] -->
+    <div class="contenedor-tabs">
+      <div class="control-segmentado">
+        <button id="tab-pendientes" class="tab activa" onclick="cambiarVistaHermano('pendientes')">Pendientes</button>
+        <button id="tab-completados" class="tab" onclick="cambiarVistaHermano('completados')">Completados</button>
+      </div>
+    </div>
 
-  <!-- Visor de imágenes expandido -->
-  <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
-    <div class="cabecera-visor-completo">
-      <span id="titulo-visor-completo">Mapa Ampliado</span>
-      <button class="btn-cerrar-visor" onclick="cerrarVisorPantallaCompleta()">✕</button>
-    </div>
-    <div class="zona-scroll-zoom">
-      <img id="img-visor-completa" src="" alt="Mapa Expandido">
-    </div>
+    <main class="grid-mapas" id="contenedor-hermano-grid"></main>
   </div>
 
   <script>
     const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
-    
     let datosLocalesHermano = [];
     let idHermanoUrl = null;
+    let vistaActual = 'pendientes'; // Estado inicial
 
     window.addEventListener("DOMContentLoaded", () => {
       configurarTemaInicial();
       const params = new URLSearchParams(window.location.search);
       idHermanoUrl = params.get("id");
-
-      if (!idHermanoUrl) {
-        document.body.innerHTML = "<div style='padding:40px; text-align:center; font-family:sans-serif; color:white;'><h3>Error: Enlace incorrecto</h3><p>Falta el parámetro identificador de la URL (?id=...)</p></div>";
-        return;
-      }
-
+      if (!idHermanoUrl) return;
       cargarDatosFlujoHermano();
     });
 
-    function conmutarTema() {
-      const html = document.documentElement;
-      const temaActual = html.getAttribute("data-theme");
-      const nuevoTema = temaActual === "oscuro" ? "claro" : "oscuro";
-      html.setAttribute("data-theme", nuevoTema);
-      localStorage.setItem("tema-preferido", nuevoTema);
-    }
-
-    function configurarTemaInicial() {
-      const temaGuardado = localStorage.getItem("tema-preferido") || "oscuro";
-      document.documentElement.setAttribute("data-theme", temaGuardado);
-    }
-
-    function formatearFechaComun(fechaRaw) {
-      if (!fechaRaw) return "Sin fecha";
-      try {
-        const fechaObj = new Date(fechaRaw);
-        if (isNaN(fechaObj.getTime())) return fechaRaw;
-        
-        const dia = String(fechaObj.getDate()).padStart(2, '0');
-        const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
-        const anio = fechaObj.getFullYear();
-        
-        return `${dia}/${mes}/${anio}`;
-      } catch (e) {
-        return fechaRaw;
-      }
-    }
-
     async function cargarDatosFlujoHermano() {
       try {
-        const urlPeticion = `${URL_API_SHEETS}?accion=leerDatos`;
-        const respuesta = await fetch(urlPeticion);
+        const respuesta = await fetch(`${URL_API_SHEETS}?accion=leerDatos`);
         const data = await respuesta.json();
-        
         if (data && data.length > 0) {
           document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
           datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
           inyectarTarjetasHermano();
         }
-      } catch (err) {
-        console.error("Error cargando la API:", err);
-        document.getElementById("contenedor-hermano-grid").innerHTML = "<p style='color:var(--apple-rojo); text-align:center;'>Error al sincronizar tus mapas con la base de datos.</p>";
-      }
+      } catch (err) { console.error(err); }
+    }
+
+    // Función para cambiar de pestaña
+    function cambiarVistaHermano(nuevaVista) {
+      vistaActual = nuevaVista;
+      document.getElementById('tab-pendientes').classList.toggle('activa', vistaActual === 'pendientes');
+      document.getElementById('tab-completados').classList.toggle('activa', vistaActual === 'completados');
+      inyectarTarjetasHermano();
     }
 
     function inyectarTarjetasHermano() {
       const contenedor = document.getElementById("contenedor-hermano-grid");
       contenedor.innerHTML = "";
 
-      if (datosLocalesHermano.length === 0) {
-        contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
-          <h3>No constan territorios</h3>
-          <p>Actualmente no se registran mapas para ti en esta campaña.</p>
-        </div>`;
+      // Filtrado según la pestaña seleccionada
+      const filtrados = datosLocalesHermano.filter(mapa => {
+        return vistaActual === 'pendientes' ? !mapa.trabajado : mapa.trabajado;
+      });
+
+      if (filtrados.length === 0) {
+        contenedor.innerHTML = `<p style="text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas en esta sección.</p>`;
         return;
       }
 
-      datosLocalesHermano.sort((a, b) => a.trabajado - b.trabajado);
-
-      datosLocalesHermano.forEach(mapa => {
-        const esTerminado = mapa.trabajado;
-        const wrapper = document.createElement("div");
-        wrapper.className = "tarjeta-territorio-wrapper";
-
-        wrapper.innerHTML = `
-          <div class="tarjeta-mapa ${esTerminado ? 'terminado' : ''}">
-            
-            <div class="contenedor-imagen">
-              <div class="marca-agua-trabajado">Trabajado</div>
-              <img src="${mapa.rutaMapa}" class="imagen-mapa" alt="Mapa" onerror="this.src='imagenes/mapa_defecto.png'" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')" style="cursor:pointer;">
+      filtrados.forEach(mapa => {
+        const div = document.createElement("div");
+        div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
+        div.innerHTML = `
+          <div class="contenedor-imagen">
+            <div class="marca-agua-trabajado">TRABAJADO</div>
+            <img src="${mapa.rutaMapa}" class="imagen-mapa">
+          </div>
+          <div class="detalles-mapa">
+            <div style="display:flex; justify-content:space-between;">
+              <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
+              <span class="numero-territorio-grande">${mapa.id}</span>
             </div>
-            
-            <div class="detalles-mapa">
-              <div class="bloque-informacion-superior">
-                <h3 class="titulo-barrio">${mapa.barriada}</h3>
-                <span class="numero-territorio-grande">${mapa.id}</span>
-              </div>
-              
-              <p class="subtexto-campana">Fecha de entrega: <b>${formatearFechaComun(mapa.fechaEntrega)}</b></p>
-              
-              <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
-                ${esTerminado 
-                  ? `<span class="badge-estado badge-completado">✓ TRABAJADO</span>` 
-                  : `<span class="badge-estado badge-pendiente">● PENDIENTE</span>`
-                }
-              </div>
-
-              ${!esTerminado ? `
-                <button id="btn-accion-${mapa.id}" class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">
-                  Marcar como completado
-                </button>
-              ` : `
-                <button id="btn-accion-${mapa.id}" class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">
-                  Reactivar territorio
-                </button>
-              `}
-            </div>
+            ${!mapa.trabajado 
+              ? `<button class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar Completado</button>`
+              : `<button class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar Mapa</button>`
+            }
           </div>
         `;
-        contenedor.appendChild(wrapper);
+        contenedor.appendChild(div);
       });
     }
 
     async function cambiarEstadoTerritorio(idMapa, modo) {
       const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
       if (indice === -1) return;
-      const estadoOriginalAnterior = datosLocalesHermano[indice].trabajado;
 
       datosLocalesHermano[indice].trabajado = (modo === "completar");
       inyectarTarjetasHermano();
 
-      try {
-        const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
-        const urlPeticion = `${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`;
-        
-        await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
-        console.log(`Sincronizado de fondo para el mapa #${idMapa}`);
-
-      } catch (error) {
-        console.error("Error de red diferido:", error);
-        alert("No se pudo guardar el cambio en el servidor debido a un problema de conexión. Revirtiendo estado...");
-        datosLocalesHermano[indice].trabajado = estadoOriginalAnterior;
-        inyectarTarjetasHermano();
-      }
+      const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
+      fetch(`${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`, { mode: 'no-cors' });
     }
 
-    function abrirVisorPantallaCompleta(src, titulo) {
-      document.getElementById("img-visor-completa").src = src;
-      document.getElementById("titulo-visor-completo").innerText = titulo;
-      document.getElementById("modal-visor-pantalla-completa").style.display = "flex";
+    function conmutarTema() {
+      const nuevoTema = document.documentElement.getAttribute("data-theme") === "oscuro" ? "claro" : "oscuro";
+      document.documentElement.setAttribute("data-theme", nuevoTema);
+      localStorage.setItem("tema-preferido", nuevoTema);
     }
 
-    function cerrarVisorPantallaCompleta() {
-      document.getElementById("modal-visor-pantalla-completa").style.display = "none";
+    function configurarTemaInicial() {
+      const tema = localStorage.getItem("tema-preferido") || "oscuro";
+      document.documentElement.setAttribute("data-theme", tema);
     }
   </script>
 </body>
