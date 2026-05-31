@@ -1,4 +1,4 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Soporte Táctil Apple */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
 
 :root {
   --fondo-base: #09090b;
@@ -66,41 +66,7 @@ body {
 }
 
 /* ==========================================================================
-   ESTRUCTURA DE ARRASTRE TÁCTIL PANORÁMICO HORIZONTAL
-   ========================================================================== */
-.viewport-deslizable {
-  width: 100%;
-  overflow: hidden;
-  touch-action: pan-y; /* Habilita el scroll vertical y delega el horizontal a JS */
-}
-
-.carrete-panoramico {
-  display: flex;
-  width: 200%; /* Dos pestañas en paralelo: 100% + 100% */
-  will-change: transform;
-}
-
-.carrete-panoramico.con-transicion {
-  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); /* Curva de inercia Apple */
-}
-
-.seccion-tab-contenido {
-  width: 50%; /* Cada columna abarca la totalidad del ancho móvil */
-  flex-shrink: 0;
-  box-sizing: border-box;
-}
-
-/* Forzar que los grids mantengan su comportamiento nativo a lo ancho del carrete */
-.seccion-tab-contenido .grid-mapas {
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-  box-sizing: border-box;
-}
-
-/* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL
+   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
    ========================================================================== */
 .cabecera-apple {
   display: flex;
@@ -199,17 +165,17 @@ body {
   stroke: var(--anillo-vacio);
   stroke-width: 3.5;
 }
-.anillo-relleno {
+.anillo-linea {
   fill: none;
   stroke-width: 3.5;
   stroke-linecap: round;
 }
-.color-totales .anillo-relleno { stroke: var(--apple-azul); }
-.color-prioritarios .anillo-relleno { stroke: var(--apple-naranja); }
-.color-asignados .anillo-relleno { stroke: var(--apple-rojo); }
-.color-completados .anillo-relleno { stroke: var(--apple-verde); }
+.color-totales .anillo-linea { stroke: var(--apple-azul); }
+.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
+.color-asignados .anillo-linea { stroke: var(--apple-rojo); }
+.color-completados .anillo-linea { stroke: var(--apple-verde); }
 
-.anillo-porcentaje {
+.anillo-numero {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -221,15 +187,12 @@ body {
 /* ==========================================================================
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
-.contenedor-tabs {
-  width: 100%;
-  margin-bottom: 14px;
-}
 .control-segmentado {
   background: rgba(0, 0, 0, 0.1);
   padding: 3px;
   border-radius: 12px;
   display: flex;
+  margin-bottom: 14px;
   border: 1px solid var(--glass-borde);
 }
 [data-theme="claro"] .control-segmentado {
@@ -272,7 +235,6 @@ body {
   padding: 4px;
   border-radius: 10px;
   border: 1px solid var(--glass-borde);
-  width: 100%;
 }
 [data-theme="claro"] .contenedor-sub-filtros {
   background: rgba(0,0,0,0.04);
@@ -297,6 +259,13 @@ body {
   box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
 }
 
+.grid-territorios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
 /* ==========================================================================
    TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
    ========================================================================== */
@@ -316,10 +285,6 @@ body {
 .tarjeta-apple.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
-.tarjeta-apple.terminado {
-  opacity: 0.4;
-}
-
 .tarjeta-apple .cabecera-tarjeta {
   position: relative;
   display: flex;
@@ -329,16 +294,16 @@ body {
   margin-bottom: 8px;
   width: 100%;
 }
-.tarjeta-apple .num-mapa { 
+.tarjeta-apple .num-mapa {
   position: absolute;
   left: 4px;
-  font-size: 24px; 
-  font-weight: 800; 
+  font-size: 24px;
+  font-weight: 800;
   line-height: 1;
 }
-.tarjeta-apple .nombre-barrio { 
-  font-size: 14px; 
-  font-weight: 600; 
+.tarjeta-apple .nombre-barrio {
+  font-size: 14px;
+  font-weight: 600;
   text-align: center;
   max-width: 65%;
   white-space: nowrap;
@@ -349,7 +314,6 @@ body {
   position: absolute;
   right: 4px;
 }
-
 .check-apple-custom {
   width: 20px;
   height: 20px;
@@ -369,274 +333,215 @@ body {
   position: absolute;
   color: white;
   font-size: 11px;
-  font-weight: bold;
-  top: 50%; left: 50%;
+  font-weight: 700;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }
-
 .imagen-mapa-wrapper {
-  position: relative !important;
+  position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
   border-radius: 10px;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background-color: transparent !important;
-  border: 1px solid var(--glass-borde);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background: rgba(0,0,0,0.05);
 }
-.imagen-mapa-asset { 
+.imagen-mapa-asset {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 10px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
   display: block;
 }
-
 .btn-lupa-flotante {
-  position: absolute !important;
-  bottom: 8px;
-  left: 8px;
-  background: rgba(0, 0, 0, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.85;
-  transition: opacity 0.2s, transform 0.1s;
+  color: white !important;
+  cursor: pointer;
+  z-index: 10;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-.btn-lupa-flotante:hover { opacity: 1; }
-.btn-lupa-flotante:active { transform: scale(0.9); }
-.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
-
+.pie-tarjeta-firma {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
 .tag-prioritario-abajo {
-  display: inline-block;
+  background: rgba(242, 153, 74, 0.15);
   color: var(--apple-naranja);
   font-size: 10px;
   font-weight: 700;
-  margin-top: 6px;
-  text-align: center;
-  width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
 }
-
-.btn-completar-hermano {
-  width: 100%;
-  background: var(--apple-azul);
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  margin-top: 8px;
+.tag-vacio-espacio {
+  height: 18px;
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
+   SISTEMA DE ARRASTRE TOUCH (SWIPE TO SLIDE) PARA TARJETAS ASIGNADAS
    ========================================================================== */
 .tarjeta-apple-horizontal {
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
+  position: relative;
+  overflow: hidden;
   border-radius: 14px;
-  padding: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
+  border: 1px solid var(--glass-borde);
+  background-color: #1e1e1e; /* Color de base de fondo para revelar los botones traseros */
   width: 100%;
+  height: 94px;
   box-sizing: border-box;
+}
+[data-theme="claro"] .tarjeta-apple-horizontal {
+  background-color: #e5e5ea;
 }
 .tarjeta-apple-horizontal.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
 
-.img-lateral-wrapper-rectangular {
+.tarjeta-apple-horizontal .contenido-deslizable {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
   position: relative;
-  width: 105px; 
-  height: 70px;
-  border-radius: 6px;
+  z-index: 2;
+  background: var(--glass-fondo);
+  padding: 8px;
+  align-items: center;
+}
+
+.tarjeta-apple-horizontal .img-lateral-wrapper-rectangular {
+  position: relative;
+  width: 100px;
+  height: 100%;
+  border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.05);
 }
-.imagen-lateral-asset-rect {
+.tarjeta-apple-horizontal .imagen-lateral-asset-rect {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.tarjeta-apple-horizontal .btn-lupa-flotante {
-  top: 50% !important;
-  left: 50% !important;
-  bottom: auto !important;
-  right: auto !important;
-  transform: translate(-50%, -50%) !important;
-  background: rgba(0, 0, 0, 0.35) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  opacity: 0.6 !important;
-  width: 24px !important;
-  height: 24px !important;
-}
-.tarjeta-apple-horizontal .btn-lupa-flotante:hover { opacity: 0.9 !important; }
-.tarjeta-apple-horizontal .btn-lupa-flotante:active { transform: translate(-50%, -50%) scale(0.9) !important; }
-
-.contenido-lateral-datos {
+.tarjeta-apple-horizontal .contenido-lateral-datos {
   flex: 1;
+  padding-left: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  height: 100%;
   overflow: hidden;
 }
-
-.cabecera-datos-linea {
+.tarjeta-apple-horizontal .cabecera-datos-linea {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
+  align-items: baseline;
+  gap: 8px;
 }
-.num-mapa-chico { 
-  font-size: 16px; 
-  font-weight: 800; 
-  line-height: 1;
-  flex-shrink: 0;
+.tarjeta-apple-horizontal .num-mapa-chico {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--texto-principal);
 }
-.nombre-barrio-chico { 
-  font-size: 13px; 
-  font-weight: 600; 
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis;
-  flex-grow: 1;
-}
-
-.info-hermano-linea {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--texto-secundario);
-  gap: 4px;
-  width: 100%;
-}
-.txt-horizontal-hermano, 
-.txt-horizontal-fecha {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.tarjeta-apple-horizontal .nombre-barrio-chico {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-principal);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.txt-horizontal-hermano { 
-  max-width: 120px; 
-  font-weight: 500; 
-}
-
-.svg-icono-chico {
-  width: 12px;
-  height: 12px;
+.tarjeta-apple-horizontal .info-hermano-linea {
+  font-size: 12px;
   color: var(--texto-secundario);
-  flex-shrink: 0;
-}
-
-.estado-badge-linea {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
+}
+.tarjeta-apple-horizontal .txt-horizontal-hermano {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tarjeta-apple-horizontal .svg-icono-chico {
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
+  opacity: 0.7;
+}
+.tarjeta-apple-horizontal .pie-fechas-horizontal {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
-.badge-estado-pill {
+.tarjeta-apple-horizontal .txt-horizontal-fecha {
+  font-size: 11px;
+  color: var(--texto-secundario);
+}
+.tarjeta-apple-horizontal .contenedor-estado-pill {
+  display: inline-block;
+}
+.pill-estado {
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
 }
-.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
-.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
-
-.svg-icono-mini { width: 10px; height: 10px; }
-.tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
-
-/* ==========================================================================
-   PANELES INFERIORES SÓLIDOS Y LISOS
-   ========================================================================== */
-#panel-asignacion-unico {
-  position: fixed;
-  bottom: 48px;
-  left: 50%;
-  transform: translateX(-50%) translateY(150%);
-  width: 100%;
-  max-width: 480px;
-  background: var(--glass-fondo) !important;
-  border-top: 1px solid var(--glass-borde);
-  border-left: 1px solid var(--glass-borde);
-  border-right: 1px solid var(--glass-borde);
-  border-radius: 20px 20px 0 0;
-  padding: 14px 16px 20px 16px;
-  z-index: 99;
-  display: none; 
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+.pill-estado.pendiente {
+  background: rgba(235, 87, 87, 0.12);
+  color: var(--apple-rojo);
 }
-#panel-asignacion-unico.visible {
-  transform: translateX(-50%) translateY(0);
+.pill-estado.terminado {
+  background: rgba(39, 174, 96, 0.12);
+  color: var(--apple-verde);
 }
 
-#sel-hermano-unico {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.15) !important;
-  border: 1px solid var(--glass-borde) !important;
-  color: var(--texto-principal) !important;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 14px;
-  outline: none;
+/* Capa trasera contenedora de los botones laterales */
+.tarjeta-apple-horizontal .acciones-deslizable-derecha {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 140px;
+  display: flex;
+  z-index: 1;
 }
-
-.btn-apple-bloqueado {
-  background: rgba(255,255,255,0.05) !important;
-  color: rgba(255,255,255,0.2) !important;
-  border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; width: 100%; cursor: not-allowed;
-}
-.btn-apple-verde-activo {
-  background: var(--apple-verde) !important; color: white !important;
-  border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; width: 100%; cursor: pointer;
-  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-}
-
-/* ==========================================================================
-   FOOTER (BARRA DE PROGRESO DE TIEMPO)
-   ========================================================================== */
-.pie-progreso-tiempo {
-  position: fixed;
-  bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--glass-fondo) !important;
-  border-top: 1px solid var(--glass-borde);
-  padding: 8px 16px;
-  z-index: 100;
+.tarjeta-apple-horizontal .btn-accion-swipe {
+  flex: 1;
+  border: none;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  height: 100%;
 }
-.pie-textos { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 4px; font-weight: 500; }
-.linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
-[data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
-.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; transition: width 0.4s ease; }
+.tarjeta-apple-horizontal .btn-accion-swipe.completar {
+  background-color: var(--apple-verde) !important;
+}
+.tarjeta-apple-horizontal .btn-accion-swipe.desasignar {
+  background-color: var(--apple-rojo) !important;
+}
 
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
@@ -644,40 +549,29 @@ body {
 .visor-pantalla-completa {
   display: none; 
   position: fixed; 
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0; 
+  left: 0; \
+  width: 100%; 
+  height: 100%;
   background-color: #000000;
   z-index: 2000; 
   flex-direction: column;
 }
 .cabecera-visor-completo { 
   padding: 16px; 
-  display: flex; 
+  display: flex; \
   justify-content: space-between; 
   align-items: center; 
   background-color: rgba(20, 20, 25, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
 }
-.cabecera-visor-completo span { color: #ffffff !important; font-weight: 600; font-size: 15px; }
+.cabecera-visor-completo * { color: #ffffff !important; }
 .btn-cerrar-visor { 
   background: rgba(255, 255, 255, 0.15); 
-  border: none; color: #ffffff !important; 
-  width: 32px; height: 32px; border-radius: 50%; 
-  font-weight: bold; cursor: pointer;
-}
-.zona-scroll-zoom { 
-  flex: 1; display: flex; align-items: center; justify-content: center; 
-}
-.zona-scroll-zoom img { 
-  max-width: 100%; max-height: 85vh; object-fit: contain; 
-}
-
-/* COMPORTAMIENTO EXCLUSIVO EN MODO CLARO */
-[data-theme="claro"] .select-apple {
-  background-color: #ffffff !important;
-  color: #18181b !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-}
-[data-theme="claro"] .select-apple option {
-  background-color: #ffffff !important;
-  color: #18181b !important;
+  border: none; 
+  color: #ffffff !important; 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
 }
