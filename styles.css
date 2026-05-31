@@ -90,15 +90,16 @@ body {
   border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 50% !important;
+  border-radius: 50% !important; /* Totalmente redondo */
   cursor: pointer;
   color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--btn-tema-sombra) !important;
+  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
+  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
@@ -109,18 +110,21 @@ body {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
   width: 20px;
   height: 20px;
   display: block;
   background-color: currentColor;
-  text-indent: 0 !important;
+  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
 }
+/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
+/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
@@ -285,35 +289,41 @@ body {
 .tarjeta-apple.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
+
+/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
 .tarjeta-apple .cabecera-tarjeta {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* Alineación perfecta al centro real */
   min-height: 28px;
   margin-bottom: 8px;
   width: 100%;
 }
-.tarjeta-apple .num-mapa {
+/* El número grande se ancla fijo en la izquierda */
+.tarjeta-apple .num-mapa { 
   position: absolute;
   left: 4px;
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 24px; 
+  font-weight: 800; 
   line-height: 1;
 }
-.tarjeta-apple .nombre-barrio {
-  font-size: 14px;
-  font-weight: 600;
+/* La barriada se auto-centra al medio sin importar el número */
+.tarjeta-apple .nombre-barrio { 
+  font-size: 14px; 
+  font-weight: 600; 
   text-align: center;
   max-width: 65%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Checkbox anclado fijo a la derecha */
 .tarjeta-apple .contenedor-check {
   position: absolute;
   right: 4px;
 }
+
 .check-apple-custom {
   width: 20px;
   height: 20px;
@@ -333,215 +343,275 @@ body {
   position: absolute;
   color: white;
   font-size: 11px;
-  font-weight: 700;
-  top: 50%;
-  left: 50%;
+  font-weight: bold;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
 .imagen-mapa-wrapper {
-  position: relative;
+  position: relative !important; /* Estricto para contener la lupa flotante */
   width: 100%;
+  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
   border-radius: 10px;
   overflow: hidden;
-  background: rgba(0,0,0,0.05);
-}
-.imagen-mapa-asset {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  display: block;
-}
-.btn-lupa-flotante {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white !important;
+  padding: 0;
+  background-color: transparent !important; /* Sin fondo gris */
+  
+  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
+  border: 1px solid var(--glass-borde);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.imagen-mapa-asset { 
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
+  border-radius: 10px;
+  display: block;
+}
+
+/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
+.btn-lupa-flotante {
+  position: absolute !important;
+  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   cursor: pointer;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.1s;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-.pie-tarjeta-firma {
-  margin-top: 8px;
-  display: flex;
-  justify-content: flex-start;
-}
+.btn-lupa-flotante:hover { opacity: 1; }
+.btn-lupa-flotante:active { transform: scale(0.9); }
+.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
+
 .tag-prioritario-abajo {
-  background: rgba(242, 153, 74, 0.15);
+  display: inline-block;
   color: var(--apple-naranja);
   font-size: 10px;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-.tag-vacio-espacio {
-  height: 18px;
+  margin-top: 6px;
+  text-align: center;
+  width: 100%;
 }
 
 /* ==========================================================================
-   SISTEMA DE ARRASTRE TOUCH (SWIPE TO SLIDE) PARA TARJETAS ASIGNADAS
+   TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
    ========================================================================== */
 .tarjeta-apple-horizontal {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
+  background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  background-color: #1e1e1e; /* Color de base de fondo para revelar los botones traseros */
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
   width: 100%;
-  height: 94px;
   box-sizing: border-box;
-}
-[data-theme="claro"] .tarjeta-apple-horizontal {
-  background-color: #e5e5ea;
 }
 .tarjeta-apple-horizontal.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
 
-.tarjeta-apple-horizontal .contenido-deslizable {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+/* Contenedor miniatura lateral izquierdo */
+.img-lateral-wrapper-rectangular {
   position: relative;
-  z-index: 2;
-  background: var(--glass-fondo);
-  padding: 8px;
-  align-items: center;
-}
-
-.tarjeta-apple-horizontal .img-lateral-wrapper-rectangular {
-  position: relative;
-  width: 100px;
-  height: 100%;
-  border-radius: 8px;
+  width: 105px; 
+  height: 70px;
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
-  background: rgba(0,0,0,0.05);
+  background: rgba(0,0,0,0.2);
 }
-.tarjeta-apple-horizontal .imagen-lateral-asset-rect {
+.imagen-lateral-asset-rect {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-.tarjeta-apple-horizontal .contenido-lateral-datos {
+/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
+.tarjeta-apple-horizontal .btn-lupa-flotante {
+  top: 50% !important;
+  left: 50% !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important; /* Centrado matemático */
+  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  opacity: 0.5 !important; /* Menor opacidad inicial */
+  width: 24px !important; /* Formato más compacto */
+  height: 24px !important;
+}
+.tarjeta-apple-horizontal .btn-lupa-flotante:hover {
+  opacity: 0.85 !important;
+}
+.tarjeta-apple-horizontal .btn-lupa-flotante:active {
+  transform: translate(-50%, -50%) scale(0.9) !important;
+}
+
+/* Columna de datos en asignados (Compacta y controlada) */
+.contenido-lateral-datos {
   flex: 1;
-  padding-left: 12px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  gap: 4px;
   overflow: hidden;
 }
-.tarjeta-apple-horizontal .cabecera-datos-linea {
+
+/* Fila superior con número chico de corrido y barriada */
+.cabecera-datos-linea {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
 }
-.tarjeta-apple-horizontal .num-mapa-chico {
-  font-size: 19px;
-  font-weight: 800;
-  color: var(--texto-principal);
+.num-mapa-chico { 
+  font-size: 16px; 
+  font-weight: 800; 
+  line-height: 1;
+  flex-shrink: 0;
 }
-.tarjeta-apple-horizontal .nombre-barrio-chico {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--texto-principal);
-  white-space: nowrap;
-  overflow: hidden;
+.nombre-barrio-chico { 
+  font-size: 13px; 
+  font-weight: 600; 
+  white-space: nowrap; 
+  overflow: hidden; 
   text-overflow: ellipsis;
+  flex-grow: 1;
 }
-.tarjeta-apple-horizontal .info-hermano-linea {
+
+/* Fila de información del hermano asignado */
+.info-hermano-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 12px;
   color: var(--texto-secundario);
-  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+.txt-horizontal-hermano, 
+.txt-horizontal-fecha {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-}
-.tarjeta-apple-horizontal .txt-horizontal-hermano {
-  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.tarjeta-apple-horizontal .svg-icono-chico {
-  width: 11px;
-  height: 11px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 2px;
-  opacity: 0.7;
-}
-.tarjeta-apple-horizontal .pie-fechas-horizontal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.tarjeta-apple-horizontal .txt-horizontal-fecha {
-  font-size: 11px;
-  color: var(--texto-secundario);
-}
-.tarjeta-apple-horizontal .contenedor-estado-pill {
-  display: inline-block;
-}
-.pill-estado {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-}
-.pill-estado.pendiente {
-  background: rgba(235, 87, 87, 0.12);
-  color: var(--apple-rojo);
-}
-.pill-estado.terminado {
-  background: rgba(39, 174, 96, 0.12);
-  color: var(--apple-verde);
+.txt-horizontal-hermano { 
+  max-width: 130px; 
+  font-weight: 500; 
 }
 
-/* Capa trasera contenedora de los botones laterales */
-.tarjeta-apple-horizontal .acciones-deslizable-derecha {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 140px;
-  display: flex;
-  z-index: 1;
+.svg-icono-chico {
+  width: 12px;
+  height: 12px;
+  color: var(--texto-secundario);
+  flex-shrink: 0;
 }
-.tarjeta-apple-horizontal .btn-accion-swipe {
-  flex: 1;
-  border: none;
-  color: #ffffff !important;
-  font-weight: 700;
-  font-size: 11px;
+
+.estado-badge-linea {
   display: flex;
-  flex-direction: column;
+  gap: 6px;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  height: 100%;
 }
-.tarjeta-apple-horizontal .btn-accion-swipe.completar {
-  background-color: var(--apple-verde) !important;
+.badge-estado-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
-.tarjeta-apple-horizontal .btn-accion-swipe.desasignar {
-  background-color: var(--apple-rojo) !important;
+.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
+.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
+
+.svg-icono-mini { width: 10px; height: 10px; }
+.tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
+
+/* ==========================================================================
+   PANELES INFERIORES SÓLIDOS Y LISOS
+   ========================================================================== */
+#panel-asignacion-unico,
+.panel-inferior-flotante,
+.panel-inferior-flotante * .contenido-panel-flotante {
+  background: var(--glass-fondo) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
+
+.panel-inferior-flotante {
+  position: fixed;
+  bottom: 48px; 
+  left: 50%;
+  transform: translateX(-50%) translateY(200%);
+  width: 100%;
+  max-width: 480px;
+  border-top: 1px solid var(--glass-borde) !important;
+  border-left: 1px solid var(--glass-borde) !important;
+  border-right: 1px solid var(--glass-borde) !important;
+  border-radius: 20px 20px 0 0;
+  padding: 14px 16px 20px 16px;
+  z-index: 99;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+}
+.panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
+.contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
+#txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
+.controles-asignacion { display: flex; gap: 8px; background: transparent !important; }
+
+.select-apple {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--glass-borde) !important;
+  color: var(--texto-principal) !important;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.btn-apple-bloqueado {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.2);
+  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+}
+.btn-apple-verde-activo {
+  background: var(--apple-verde); color: white;
+  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+}
+
+/* ==========================================================================
+   FOOTER (BARRA DE PROGRESO DE TIEMPO)
+   ========================================================================== */
+.barra-tiempo-footer {
+  position: fixed;
+  bottom: 0; left: 0; width: 100%; height: 48px;
+  background: var(--glass-fondo) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: 1px solid var(--glass-borde);
+  padding: 8px 16px;
+  z-index: 100;
+}
+.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
+.linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+[data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
+.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
@@ -550,7 +620,7 @@ body {
   display: none; 
   position: fixed; 
   top: 0; 
-  left: 0; \
+  left: 0; 
   width: 100%; 
   height: 100%;
   background-color: #000000;
@@ -559,7 +629,7 @@ body {
 }
 .cabecera-visor-completo { 
   padding: 16px; 
-  display: flex; \
+  display: flex; 
   justify-content: space-between; 
   align-items: center; 
   background-color: rgba(20, 20, 25, 0.9);
@@ -574,4 +644,28 @@ body {
   width: 32px; 
   height: 32px; 
   border-radius: 50%; 
+  font-weight: bold;
+  cursor: pointer;
+}
+.zona-scroll-zoom { 
+  flex: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+.zona-scroll-zoom img { 
+  max-width: 100%; 
+  max-height: 85vh; 
+  object-fit: contain; 
+}
+
+/* FORZAR COMPORTAMIENTO SELECCIONES EN MODO CLARO */
+[data-theme="claro"] .select-apple {
+  background-color: #ffffff !important;
+  color: #18181b !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+[data-theme="claro"] .select-apple option {
+  background-color: #ffffff !important;
+  color: #18181b !important;
 }
