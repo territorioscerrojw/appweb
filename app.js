@@ -170,9 +170,7 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
-  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
-  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
@@ -261,7 +259,7 @@ function filtrarYRenderizar() {
     
     if (vistaActual === "disponibles") {
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadaActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
@@ -299,7 +297,6 @@ function filtrarYRenderizar() {
         }
       }
 
-      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
@@ -452,7 +449,7 @@ function procesarAsignacionMultiple() {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
+      mapa.trabajado = false;
     }
   });
 
@@ -496,15 +493,12 @@ function filtrarYRenderizarHermano() {
     return;
   }
   
-  // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
   asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
   
   asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
-    // NUEVA LÓGICA: Si ya está trabajado (true), se le añade la opacidad visual de 'terminado'
     div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
     
-    // NUEVA LÓGICA: Si NO está trabajado (false), se le ofrece el botón para completarlo
     let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
     if (mapa.trabajado) {
       accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
@@ -613,6 +607,7 @@ function inyectarEstilosCorreccionSelector() {
     [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
   `;
   document.head.appendChild(style);
+}
 
 // ==========================================================================
 // CAPA AUTÓNOMA PARA SOPORTE DE ARRASTRE TÁCTIL (SWIPE) ENTRE PESTAÑAS
@@ -663,4 +658,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }, { passive: true });
-});}
+});
