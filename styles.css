@@ -54,6 +54,9 @@ body {
 /* ==========================================================================
    FONDO DE MAPA URBANO (VISTA CALLES)
    ========================================================================== */
+/* ==========================================================================
+   FONDO DE MAPA URBANO (IMAGEN PROPIA)
+   ========================================================================== */
 .fondo-mapa-blur {
   display: block;
   position: fixed;
@@ -63,8 +66,8 @@ body {
   height: 100vh;
   z-index: -1;
   pointer-events: none;
-  /* Imagen de plano urbano de ciudad (streets/grid) */
-  background-image: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80');
+  /* Referencia a tu archivo local */
+  background-image: url('imagen-fondo.png'); 
   background-size: cover;
   background-position: center;
   filter: blur(45px) saturate(0.8);
