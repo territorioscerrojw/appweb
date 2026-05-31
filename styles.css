@@ -1,9 +1,9 @@
-/* styles.css - Diseño Glassmorphism Profesional */
+/* styles.css - Diseño Minimalista, Optimizado y Glassmorphism Activo */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(255, 255, 255, 0.08); /* Transparencia para efecto cristal */
-  --glass-borde: rgba(255, 255, 255, 0.12);
+  --glass-fondo: rgba(255, 255, 255, 0.06); /* Transparencia para dejar ver el mapa */
+  --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
   --apple-azul: #2f80ed;
@@ -11,20 +11,21 @@
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
   --anillo-vacio: rgba(255, 255, 255, 0.12);
-  --btn-tema-bg: rgba(255, 255, 255, 0.1);
+  --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.7);
-  --glass-borde: rgba(0, 0, 0, 0.1);
+  --glass-fondo: rgba(255, 255, 255, 0.6); /* Fondo semi-transparente claro */
+  --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
   --anillo-vacio: rgba(0, 0, 0, 0.1);
-  --btn-tema-bg: #ffffff;
+  --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
+  --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
 }
 
@@ -32,30 +33,29 @@
 
 body { background-color: var(--fondo-base); color: var(--texto-principal); min-height: 100vh; width: 100%; overflow-x: hidden; letter-spacing: -0.2px; }
 
-/* FONDO DE MAPA CON BLUR PREMIUM */
+/* FONDO DE MAPA: AHORA ACTIVO Y DESENFOCADO */
 .fondo-mapa-blur {
   display: block !important;
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
   background-image: url('mapa-fondo.png');
   background-size: cover; background-position: center; background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.4);
+  filter: blur(25px) brightness(0.4);
   transform: scale(1.1);
+}
+
+/* APLICACIÓN GLOBAL DE GLASSMORPHISM */
+.tarjeta-apple, .tarjeta-anillo, .control-segmentado, .contenedor-busqueda input, 
+.contenedor-sub-filtros, .tarjeta-apple-horizontal, .panel-inferior-flotante, 
+.barra-tiempo-footer, .select-apple {
+  background: var(--glass-fondo) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid var(--glass-borde) !important;
 }
 
 .contenedor-app { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 14px 170px 14px; }
 
-/* APLICACIÓN GLOBAL DEL EFECTO CRISTAL */
-.tarjeta-apple, .tarjeta-anillo, .control-segmentado, .contenedor-busqueda input, 
-.contenedor-sub-filtros, .tarjeta-apple-horizontal, .panel-inferior-flotante, .barra-tiempo-footer {
-  background: var(--glass-fondo) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--glass-borde) !important;
-}
-
-/* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL
-   ========================================================================== */
+/* CABECERA Y BOTONES */
 .cabecera-apple { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .cabecera-titulos h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; }
 .cabecera-titulos h2 { font-size: 14px; color: var(--apple-azul); font-weight: 600; margin-top: 2px; }
@@ -64,12 +64,11 @@ body { background-color: var(--fondo-base); color: var(--texto-principal); min-h
 }
 #btn-cambiar-tema:active { transform: scale(0.94); box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important; }
 #btn-cambiar-tema::before { content: ""; width: 20px; height: 20px; display: block; background-color: currentColor; text-indent: 0 !important; }
+
 [data-theme="oscuro"] #btn-cambiar-tema::before { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain; -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain; }
 [data-theme="claro"] #btn-cambiar-tema::before { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain; -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain; }
 
-/* ==========================================================================
-   ANILLOS, CONTROLES Y TARJETAS
-   ========================================================================== */
+/* ANILLOS Y CONTADORES */
 .seccion-anillos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
 .tarjeta-anillo { border-radius: 14px; padding: 14px 2px; display: flex; flex-direction: column; align-items: center; }
 .anillo-svg-wrapper { position: relative; width: 55px; height: 55px; }
@@ -81,22 +80,22 @@ body { background-color: var(--fondo-base); color: var(--texto-principal); min-h
 .color-asignados .anillo-linea { stroke: var(--apple-rojo); }
 .color-completados .anillo-linea { stroke: var(--apple-verde); }
 
+/* CONTROLES Y BUSCADOR */
 .control-segmentado { padding: 3px; border-radius: 12px; display: flex; margin-bottom: 14px; }
 .tab { flex: 1; background: transparent; border: none; color: var(--texto-secundario); padding: 10px 0; font-size: 13px; font-weight: 600; border-radius: 9px; cursor: pointer; }
 .tab.activa { background: var(--glass-fondo); color: var(--texto-principal); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.contenedor-busqueda input { width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 14px; outline: none; margin-bottom: 16px; }
 
-.tarjeta-apple { border-radius: 16px; padding: 12px; transition: all 0.2s ease; width: 100%; box-sizing: border-box; }
+/* TARJETAS */
+.tarjeta-apple { border-radius: 16px; padding: 12px; transition: all 0.2s ease; width: 100%; }
 .tarjeta-apple.seleccionada { border-color: rgba(39, 174, 96, 0.7); background-color: rgba(39, 174, 96, 0.06); }
+.imagen-mapa-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--glass-borde); }
+.btn-lupa-flotante { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
 
-.imagen-mapa-wrapper { position: relative !important; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.btn-lupa-flotante { position: absolute !important; bottom: 8px; left: 8px; background: rgba(0, 0, 0, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-
-/* ==========================================================================
-   PANELES Y FOOTER
-   ========================================================================== */
+/* PANELES Y FOOTER */
 .panel-inferior-flotante { position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%) translateY(200%); width: 100%; max-width: 480px; border-radius: 20px 20px 0 0; padding: 14px 16px 20px 16px; z-index: 99; transition: transform 0.3s; }
 .barra-tiempo-footer { position: fixed; bottom: 0; left: 0; width: 100%; height: 48px; border-top: 1px solid var(--glass-borde); padding: 8px 16px; z-index: 100; }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
 /* VISOR */
-.visor-pantalla-completa { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; z-index: 2000; flex-direction: column; }
+.visor-pantalla-completa { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
