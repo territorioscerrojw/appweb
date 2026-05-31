@@ -231,6 +231,7 @@ function filtrarYRenderizar() {
     );
   }
   
+  // Ordenación lógica
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -260,6 +261,7 @@ function filtrarYRenderizar() {
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     
     if (vistaActual === "disponibles") {
+      // --- BLOQUE DISPONIBLES (SIN CAMBIOS) ---
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
@@ -286,6 +288,7 @@ function filtrarYRenderizar() {
         </div>
       `;
     } else {
+      // --- BLOQUE ASIGNADOS (FORMATO MINIMALISTA) ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       
       let rawFecha = mapa.fechaEntrega;
@@ -299,7 +302,6 @@ function filtrarYRenderizar() {
         }
       }
 
-      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
