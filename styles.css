@@ -18,607 +18,676 @@
   --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  --btn-tema-borde: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="claro"] {
-  --fondo-base: #f4f4f7;
+  --fondo-base: #f2f2f7;
   --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
-  --glass-borde: rgba(0, 0, 0, 0.07);
-  --texto-principal: #18181b;
-  --texto-secundario: #71717a;
+  --glass-borde: rgba(0, 0, 0, 0.06);
+  --texto-principal: #1c1c1e;
+  --texto-secundario: #68686e;
   --apple-azul: #007aff;
+  --apple-verde: #34c759;
+  --apple-naranja: #ff9500;
+  --apple-rojo: #ff3b30;
   
   /* Línea de fondo vacía de los contadores visible en modo claro */
-  --anillo-vacio: rgba(0, 0, 0, 0.1);
+  --anillo-vacio: rgba(0, 0, 0, 0.08);
   
   /* Estilos para el botón de tema en modo claro */
   --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
   --btn-tema-color: var(--texto-principal);
-  --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
+  --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.05), inset 0 1px 1px #ffffff;
+  --btn-tema-borde: rgba(0, 0, 0, 0.1);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
 body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--fondo-base);
   color: var(--texto-principal);
   min-height: 100vh;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
   overflow-x: hidden;
-  letter-spacing: -0.2px;
+  transition: background-color 0.3s ease;
 }
 
+/* Fondo decorativo blur ajustable */
 .fondo-mapa-blur {
-  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(47, 128, 237, 0.12), transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(39, 174, 96, 0.08), transparent 50%);
+  pointer-events: none;
 }
 
 .contenedor-app {
   width: 100%;
   max-width: 480px;
-  margin: 0 auto;
-  padding: 20px 14px 170px 14px;
+  padding: 16px 16px 120px 16px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
+   CABECERA APPLE
    ========================================================================== */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  margin-top: 4px;
 }
 .cabecera-titulos h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
+  color: var(--texto-principal);
 }
 .cabecera-titulos h2 {
-  font-size: 14px;
-  color: var(--apple-azul);
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--texto-secundario);
   margin-top: 2px;
 }
+
+/* Botón conmutador de tema optimizado */
 #btn-cambiar-tema {
-  background: var(--btn-tema-bg) !important;
-  border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 50% !important; /* Totalmente redondo */
+  border-radius: 50%;
+  background: var(--btn-tema-bg);
+  border: 1px solid var(--btn-tema-borde);
   cursor: pointer;
-  color: var(--btn-tema-color) !important;
+  box-shadow: var(--btn-tema-sombra);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transition: all 0.25s ease;
   position: relative;
-  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
-  font-size: 0 !important;
-  line-height: 0 !important;
-  text-indent: -9999px !important;
-  overflow: hidden;
 }
 #btn-cambiar-tema:active {
-  transform: scale(0.94);
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
+  transform: scale(0.92);
 }
-
-/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
-  width: 20px;
-  height: 20px;
-  display: block;
-  background-color: currentColor;
-  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
+  width: 18px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.4s ease;
 }
-/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
+
+/* Iconos de sol y luna puros inyectados */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
-  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
-  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23f4f4f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42'/%3E%3C/svg%3E");
 }
-/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
-  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
-  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%231c1c1e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E");
 }
 
 /* ==========================================================================
-   ANILLOS Y CONTADORES
+   SECCIÓN DE ANILLOS ESTADÍSTICOS
    ========================================================================== */
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 .tarjeta-anillo {
-  background: var(--glass-fondo);
+  background-color: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
-  padding: 14px 2px;
+  padding: 10px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .tarjeta-anillo span {
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--texto-secundario);
-  margin-top: 8px;
-  font-weight: 600;
+  margin-top: 6px;
 }
 .anillo-svg-wrapper {
   position: relative;
-  width: 55px;
-  height: 55px;
+  width: 44px;
+  height: 44px;
 }
 .anillo-circular {
   width: 100%;
   height: 100%;
-  transform: rotate(-90deg);
 }
 .anillo-fondo {
   fill: none;
   stroke: var(--anillo-vacio);
-  stroke-width: 3.5;
+  stroke-width: 3.8;
 }
 .anillo-linea {
   fill: none;
-  stroke-width: 3.5;
+  stroke-width: 3.8;
   stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.color-totales .anillo-linea { stroke: var(--apple-azul); }
-.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
-.color-asignados .anillo-linea { stroke: var(--apple-rojo); }
-.color-completados .anillo-linea { stroke: var(--apple-verde); }
-
 .anillo-numero {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  letter-spacing: -0.3px;
 }
 
+/* Colores fijos de los anillos */
+.color-totales .anillo-linea { stroke: var(--apple-azul); }
+.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
+.color-asignados .anillo-linea { stroke: var(--apple-azul); }
+.color-completados .anillo-linea { stroke: var(--apple-verde); }
+
 /* ==========================================================================
-   CONTROLES, SELECTORES Y BUSCADOR
+   CONTENEDOR DE PESTAÑAS (TABS SEGMENTADOS)
    ========================================================================== */
+.contenedor-tabs {
+  margin-bottom: 14px;
+}
 .control-segmentado {
-  background: rgba(0, 0, 0, 0.1);
+  background-color: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
   padding: 3px;
   border-radius: 12px;
   display: flex;
-  margin-bottom: 14px;
-  border: 1px solid var(--glass-borde);
-}
-[data-theme="claro"] .control-segmentado {
-  background: rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 .tab {
   flex: 1;
-  background: transparent;
+  background: none;
   border: none;
-  color: var(--texto-secundario);
-  padding: 10px 0;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 9px;
-  cursor: pointer;
-}
-.tab.activa {
-  background: var(--glass-fondo);
-  color: var(--texto-principal);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.contenedor-busqueda input {
-  width: 100%;
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
-  color: var(--texto-principal);
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 8px 0;
   font-size: 14px;
-  outline: none;
-  margin-bottom: 16px;
-}
-
-.contenedor-sub-filtros {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  background: rgba(0,0,0,0.06);
-  padding: 4px;
-  border-radius: 10px;
-  border: 1px solid var(--glass-borde);
-}
-[data-theme="claro"] .contenedor-sub-filtros {
-  background: rgba(0,0,0,0.04);
-}
-.btn-sub-filtro {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--texto-secundario);
-  padding: 8px 2px;
-  font-size: 11px;
   font-weight: 600;
-  border-radius: 7px;
+  color: var(--texto-secundario);
   cursor: pointer;
+  border-radius: 9px;
   transition: all 0.2s ease;
 }
-.btn-sub-filtro.activo,
-.btn-sub-filtro.activa {
-  background: var(--apple-azul) !important;
-  color: #ffffff !important;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
+.tab.activa {
+  background-color: var(--fondo-base);
+  color: var(--texto-principal);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
-
-.grid-territorios {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
+[data-theme="claro"] .tab.activa {
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
+   SUBFILTROS DE ORDENACIÓN (PESTAÑA ASIGNADOS)
    ========================================================================== */
-.tarjeta-apple {
-  background: var(--glass-fondo);
-  border: 1px solid var(--glass-borde);
-  border-radius: 16px;
-  padding: 12px;
-  transition: all 0.2s ease;
+.contenedor-sub-filtros {
+  display: flex;
+  gap: 8px;
+  margin-top: -6px;
+  margin-bottom: 14px;
   width: 100%;
-  box-sizing: border-box;
 }
-.tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.7);
-  background-color: rgba(39, 174, 96, 0.06);
+.btn-sub-filtro {
+  flex: 1;
+  background-color: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-secundario);
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
 }
-.tarjeta-apple.prioritaria-row {
-  border-left: 4px solid var(--apple-naranja);
+.btn-sub-filtro.activo {
+  background-color: var(--apple-azul);
+  color: #ffffff !important;
+  border-color: var(--apple-azul);
 }
 
-/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
-.tarjeta-apple .cabecera-tarjeta {
-  position: relative;
+/* ==========================================================================
+   CONTENEDOR BÚSQUEDA
+   ========================================================================== */
+.contenedor-busqueda {
+  margin-bottom: 16px;
+}
+#input-busqueda {
+  width: 100%;
+  background-color: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--texto-principal);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+#input-busqueda:focus {
+  border-color: var(--apple-azul);
+}
+#input-busqueda::placeholder {
+  color: var(--texto-secundario);
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   GRID PRINCIPAL DE TERRITORIOS
+   ========================================================================== */
+.grid-territorios {
   display: flex;
-  align-items: center;
-  justify-content: center; /* Alineación perfecta al centro real */
-  min-height: 28px;
-  margin-bottom: 8px;
+  flex-direction: column;
+  gap: 14px;
   width: 100%;
 }
-/* El número grande se ancla fijo en la izquierda */
-.tarjeta-apple .num-mapa { 
-  position: absolute;
-  left: 4px;
-  font-size: 24px; 
-  font-weight: 800; 
+
+/* ==========================================================================\
+   NUEVO DISEÑO DE TARJETAS DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
+   ========================================================================== */
+
+/* Tarjeta base con fondo translúcido glass */
+.tarjeta-apple {
+  background: rgba(28, 28, 30, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+/* Variación en tema claro */
+[data-theme="claro"] .tarjeta-apple {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Fila superior e inferior distribuidas a los extremos */
+.fila-tarjeta-superior,
+.fila-tarjeta-inferior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Número del territorio grande y limpio */
+.num-mapa-gigante {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--texto-principal);
   line-height: 1;
 }
-/* La barriada se auto-centra al medio sin importar el número */
-.tarjeta-apple .nombre-barrio { 
-  font-size: 14px; 
-  font-weight: 600; 
-  text-align: center;
-  max-width: 65%;
+
+/* Barriada arriba a la derecha */
+.barriada-derecha {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  text-align: right;
+  max-width: 70%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Checkbox anclado fijo a la derecha */
-.tarjeta-apple .contenedor-check {
-  position: absolute;
-  right: 4px;
-}
 
-.check-apple-custom {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.2);
-}
-[data-theme="claro"] .check-apple-custom {
-  border: 2px solid rgba(0,0,0,0.2);
-}
-.check-apple-custom.checked {
-  background-color: var(--apple-verde);
-  border-color: var(--apple-verde);
-  position: relative;
-}
-.check-apple-custom.checked::after {
-  content: "✓";
-  position: absolute;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
-.imagen-mapa-wrapper {
-  position: relative !important; /* Estricto para contener la lupa flotante */
+/* Imagen centrada y protegida para que no se corte */
+.tarjeta-apple .imagen-mapa-wrapper {
   width: 100%;
-  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
+  height: 160px;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  background-color: transparent !important; /* Sin fondo gris */
-  
-  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
-  border: 1px solid var(--glass-borde);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-.imagen-mapa-asset { 
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
-  border-radius: 10px;
-  display: block;
 }
 
-/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
+.tarjeta-apple .imagen-mapa-asset {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Centrada y sin cortarse */
+}
+
+/* Etiqueta de prioritario abajo a la izquierda */
+.tag-prioritario-esquina {
+  background-color: rgba(242, 153, 74, 0.15);
+  color: #f2994a !important;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Botón de selección rectangular redondeado grande */
+.btn-check-rectangular {
+  width: 65px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+[data-theme="claro"] .btn-check-rectangular {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Estado cuando la tarjeta está seleccionada */
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.4) !important;
+  background: rgba(39, 174, 96, 0.05) !important;
+}
+
+.tarjeta-apple.seleccionada .btn-check-rectangular {
+  background-color: var(--apple-verde) !important;
+  border-color: var(--apple-verde) !important;
+}
+
+/* Icono del check blanco dentro del botón */
+.btn-check-rectangular .check-icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s ease;
+}
+
+.tarjeta-apple.seleccionada .btn-check-rectangular .check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Botón flotante lupa */
 .btn-lupa-flotante {
-  position: absolute !important;
-  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
-  left: 8px;
-  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  position: absolute;
+  top: 8px;
+  right: 8px;
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  cursor: pointer;
-  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #ffffff !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.85;
-  transition: opacity 0.2s, transform 0.1s;
+  cursor: pointer;
+  z-index: 2;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  transition: transform 0.15s ease;
 }
-.btn-lupa-flotante:hover { opacity: 1; }
-.btn-lupa-flotante:active { transform: scale(0.9); }
-.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
-
-.tag-prioritario-abajo {
-  display: inline-block;
-  color: var(--apple-naranja);
-  font-size: 10px;
-  font-weight: 700;
-  margin-top: 6px;
-  text-align: center;
-  width: 100%;
+.btn-lupa-flotante:active {
+  transform: scale(0.9);
+}
+.ico-minimalista {
+  stroke: #ffffff;
 }
 
 /* ==========================================================================
-   TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
+   DISEÑO TARJETAS HORIZONTALES (PESTAÑA ASIGNADOS)
    ========================================================================== */
 .tarjeta-apple-horizontal {
-  background: var(--glass-fondo);
+  background-color: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
   padding: 10px;
   display: flex;
   gap: 12px;
   align-items: center;
-  width: 100%;
-  box-sizing: border-box;
 }
-.tarjeta-apple-horizontal.prioritaria-row {
-  border-left: 4px solid var(--apple-naranja);
-}
-
-/* Contenedor miniatura lateral izquierdo */
 .img-lateral-wrapper-rectangular {
-  position: relative;
-  width: 105px; 
-  height: 70px;
-  border-radius: 6px;
+  width: 90px;
+  height: 76px;
+  border-radius: 8px;
   overflow: hidden;
+  position: relative;
+  background-color: rgba(0,0,0,0.1);
   flex-shrink: 0;
-  background: rgba(0,0,0,0.2);
 }
 .imagen-lateral-asset-rect {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
-/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
-.tarjeta-apple-horizontal .btn-lupa-flotante {
-  top: 50% !important;
-  left: 50% !important;
-  bottom: auto !important;
-  right: auto !important;
-  transform: translate(-50%, -50%) !important; /* Centrado matemático */
-  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  opacity: 0.5 !important; /* Menor opacidad inicial */
-  width: 24px !important; /* Formato más compacto */
-  height: 24px !important;
-}
-.tarjeta-apple-horizontal .btn-lupa-flotante:hover {
-  opacity: 0.85 !important;
-}
-.tarjeta-apple-horizontal .btn-lupa-flotante:active {
-  transform: translate(-50%, -50%) scale(0.9) !important;
-}
-
-/* Columna de datos en asignados (Compacta y controlada) */
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  min-height: 76px;
   overflow: hidden;
 }
-
-/* Fila superior con número chico de corrido y barriada */
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
   gap: 6px;
-  width: 100%;
 }
-.num-mapa-chico { 
-  font-size: 16px; 
-  font-weight: 800; 
-  line-height: 1;
-  flex-shrink: 0;
+.num-mapa-chico {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--texto-principal);
 }
-.nombre-barrio-chico { 
-  font-size: 13px; 
-  font-weight: 600; 
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis;
-  flex-grow: 1;
-}
-
-/* Fila de información del hermano asignado */
-.info-hermano-linea {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
+.nombre-barrio-chico {
+  font-size: 13px;
+  font-weight: 600;
   color: var(--texto-secundario);
-  gap: 4px;
-  width: 100%;
-}
-.txt-horizontal-hermano, 
-.txt-horizontal-fecha {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.txt-horizontal-hermano { 
-  max-width: 130px; 
-  font-weight: 500; 
-}
-
-.svg-icono-chico {
-  width: 12px;
-  height: 12px;
-  color: var(--texto-secundario);
-  flex-shrink: 0;
-}
-
-.estado-badge-linea {
+.info-asignacion-bloque {
   display: flex;
-  gap: 6px;
-  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0;
 }
-.badge-estado-pill {
+.item-info-linea {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+}
+.ico-gris {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.txt-valor-negro {
+  color: var(--texto-principal);
+  font-weight: 500;
+}
+.txt-valor-gris {
+  color: var(--texto-secundario);
+}
+.fila-acciones-horizontal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.badge-estado {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.badge-pendiente {
+  background-color: rgba(242, 153, 74, 0.12);
+  color: var(--apple-naranja);
+}
+.badge-hecho {
+  background-color: rgba(39, 174, 96, 0.12);
+  color: var(--apple-verde);
+}
+.btn-circular-rojo-retirar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(235, 87, 87, 0.1);
+  border: none;
+  color: var(--apple-rojo) !important;
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 3px;
+  justify-content: center;
+  cursor: pointer;
 }
-.badge-estado-pill.estado-calle { background: rgba(235, 87, 87, 0.12); color: var(--apple-rojo); }
-.badge-estado-pill.estado-hecho { background: rgba(39, 174, 96, 0.12); color: var(--apple-verde); }
-
-.svg-icono-mini { width: 10px; height: 10px; }
-.tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
 /* ==========================================================================
-   PANELES INFERIORES SÓLIDOS Y LISOS
+   VISTA DEL HERMANO (ZONA DE INTERRUPTOR RETINA)
    ========================================================================== */
-#panel-asignacion-unico,
-.panel-inferior-flotante,
-.panel-inferior-flotante * .contenido-panel-flotante {
-  background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+.area-estado-hermano {
+  border-top: 1px solid var(--glass-borde);
+  margin-top: 2px;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.control-switch-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.label-switch-estado {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+.ios-switch-toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+.ios-switch-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-slider-retina {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--anillo-vacio);
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 26px;
+}
+.switch-slider-retina:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.ios-switch-toggle input:checked + .switch-slider-retina {
+  background-color: var(--apple-verde);
+}
+.ios-switch-toggle input:checked + .switch-slider-retina:before {
+  transform: translateX(20px);
+}
+.indicador-texto-estado {
+  font-size: 12px;
+  color: var(--texto-secundario);
 }
 
-.panel-inferior-flotante {
+/* ==========================================================================
+   PIE DE PÁGINA PROGRESO GENERAL DE CAMPAÑA
+   ========================================================================== */
+.progreso-footer-apple {
   position: fixed;
-  bottom: 48px; 
+  bottom: 0;
   left: 50%;
-  transform: translateX(-50%) translateY(200%);
+  transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
-  border-top: 1px solid var(--glass-borde) !important;
-  border-left: 1px solid var(--glass-borde) !important;
-  border-right: 1px solid var(--glass-borde) !important;
-  border-radius: 20px 20px 0 0;
-  padding: 14px 16px 20px 16px;
-  z-index: 99;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
-}
-.panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
-.contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
-#txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
-.controles-asignacion { display: flex; gap: 8px; background: transparent !important; }
-
-.select-apple {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid var(--glass-borde) !important;
-  color: var(--texto-principal) !important;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-.btn-apple-bloqueado {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.2);
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
-}
-.btn-apple-verde-activo {
-  background: var(--apple-verde); color: white;
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
-}
-
-/* ==========================================================================
-   FOOTER (BARRA DE PROGRESO DE TIEMPO)
-   ========================================================================== */
-.barra-tiempo-footer {
-  position: fixed;
-  bottom: 0; left: 0; width: 100%; height: 48px;
-  background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  background-color: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 16px 24px 16px;
   border-top: 1px solid var(--glass-borde);
-  padding: 8px 16px;
-  z-index: 100;
+  z-index: 900;
 }
-.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
-.linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
-[data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
-.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
+[data-theme="claro"] .progreso-footer-apple {
+  background-color: rgba(242, 242, 247, 0.85);
+}
+.info-tiempo-fila {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  margin-bottom: 6px;
+}
+.linea-progreso-fondo {
+  width: 100%;
+  height: 6px;
+  background-color: var(--anillo-vacio);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.linea-progreso-relleno {
+  width: 0%;
+  height: 100%;
+  background-color: var(--apple-azul);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
 
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
    ========================================================================== */
 .visor-pantalla-completa {
   display: none; 
-  position: fixed; 
+  position: fixed; \
   top: 0; 
   left: 0; 
   width: 100%; 
@@ -639,33 +708,24 @@ body {
 .cabecera-visor-completo * { color: #ffffff !important; }
 .btn-cerrar-visor { 
   background: rgba(255, 255, 255, 0.15); 
-  border: none; 
+  border: none; \
   color: #ffffff !important; 
   width: 32px; 
   height: 32px; 
   border-radius: 50%; 
-  font-weight: bold;
-  cursor: pointer;
+  cursor: pointer; 
+  font-size: 14px;
 }
-.zona-scroll-zoom { 
-  flex: 1; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+.zona-scroll-zoom {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 10px;
 }
-.zona-scroll-zoom img { 
-  max-width: 100%; 
-  max-height: 85vh; 
-  object-fit: contain; 
-}
-
-/* FORZAR COMPORTAMIENTO SELECCIONES EN MODO CLARO */
-[data-theme="claro"] .select-apple {
-  background-color: #ffffff !important;
-  color: #18181b !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-}
-[data-theme="claro"] .select-apple option {
-  background-color: #ffffff !important;
-  color: #18181b !important;
+#img-visor-completa {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
