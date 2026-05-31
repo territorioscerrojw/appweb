@@ -170,7 +170,9 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
+  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
+  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
@@ -297,6 +299,7 @@ function filtrarYRenderizar() {
         }
       }
 
+      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
@@ -343,16 +346,22 @@ function inyectarSelectorDeAgrupacionAsignados() {
   
   const navAgrupador = document.createElement("div");
   navAgrupador.id = "contenedor-agrupador-asignados";
-  navAgrupador.className = "contenedor-sub-filtros";
-  
-  navAgrupador.innerHTML = `
-    <button id="btn-sub-territorio" class="btn-sub-filtro" onclick="cambiarCriterioAsignados('territorio')">Nº Territorio</button>
-    <button id="btn-sub-hermano" class="btn-sub-filtro" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
-    <button id="btn-sub-fecha" class="btn-sub-filtro" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
-  `;
-  
+  navAgrupador.style = "display: flex; gap: 6px; padding: 10px 0; width: 100%; overflow-x: auto;";
   mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
+  
   actualizarEstadosBotonesFiltro();
+}
+
+function actualizarEstadosBotonesFiltro() {
+  const contenedor = document.getElementById("contenedor-agrupador-asignados");
+  if (!contenedor) return;
+  
+  contenedor.innerHTML = `
+    <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px; white-space: nowrap;">Ordenar por:</span>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
+  `;
 }
 
 function eliminarSelectorDeAgrupacionAsignados() {
@@ -360,25 +369,11 @@ function eliminarSelectorDeAgrupacionAsignados() {
   if (el) el.remove();
 }
 
-function actualizarEstadosBotonesFiltro() {
-  const bTerritorio = document.getElementById("btn-sub-territorio");
-  const bHermano = document.getElementById("btn-sub-hermano");
-  const bFecha = document.getElementById("btn-sub-fecha");
-  
-  if (bTerritorio) bTerritorio.classList.remove("activo", "activa");
-  if (bHermano) bHermano.classList.remove("activo", "activa");
-  if (bFecha) bFecha.classList.remove("activo", "activa");
-  
-  if (criterioOrdenacionAsignados === "territorio" && bTerritorio) bTerritorio.classList.add("activa");
-  if (criterioOrdenacionAsignados === "hermano" && bHermano) bHermano.classList.add("activa");
-  if (criterioOrdenacionAsignados === "fecha" && bFecha) bFecha.classList.add("activa");
-}
-
 function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriosSeleccionados.indexOf(idStr); 
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
@@ -414,235 +409,145 @@ function actualizarPanelAsignacionFlotante() {
 
 function evaluarEstadoBotonAsignar() {
   const selector = document.getElementById("sel-hermano-unico");
-  const btn = document.getElementById("btn-confirmar-asignacion");
+  const btn = document.getElementById("btn-asignar-multiple");
   if (!selector || !btn) return;
   
   if (selector.value !== "" && territoriosSeleccionados.length > 0) {
     btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.pointerEvents = "auto";
+    btn.className = "btn-apple-verde-activo";
   } else {
     btn.disabled = true;
-    btn.style.opacity = "0.4";
-    btn.style.pointerEvents = "none";
+    btn.className = "btn-apple-bloqueado";
   }
 }
 
-function ejecutarAsignacionMasivaEstrategica() {
+function procesarAsignacionMultiple() {
   const selector = document.getElementById("sel-hermano-unico");
-  if (!selector || selector.value === "") return;
+  const nombreH = selector.value;
   
-  const hermanoDestino = selector.value;
-  const optionSeleccionada = selector.options[selector.selectedIndex];
-  const telefonoDestino = optionSeleccionada.getAttribute("data-telefono") || "";
-  const yaTieneMapasStr = optionSeleccionada.getAttribute("data-tiene-territorio") || "no";
-  
-  const totalAccion = territoriosSeleccionados.length;
-  if (totalAccion === 0) return;
-  
-  const stringIds = territoriosSeleccionados.join(",");
-  
-  const overlay = document.createElement("div");
-  overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);";
-  overlay.innerHTML = `
-    <div style="background:#1c1c1e; padding:24px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); width:85%; max-width:340px; text-align:center;">
-      <div class="spinner-custom-load" style="width:36px; height:36px; border:3px solid rgba(255,255,255,0.2); border-top-color:#2f80ed; border-radius:50%; animation:spinUnique 0.8s linear infinite; margin:0 auto 16px auto;"></div>
-      <h3 style="margin-bottom:8px; font-size:16px; font-weight:700;">Asignando Territorios...</h3>
-      <p style="font-size:13px; color:#a1a1aa;">Por favor, no cierres esta ventana.</p>
-    </div>
-    <style>@keyframes spinUnique { to { transform:rotate(360deg); } }</style>
-  `;
-  document.body.appendChild(overlay);
-  
-  const scriptName = "cbAssign_" + new Date().getTime();
-  window[scriptName] = function(r) {
-    overlay.remove();
-    if (r.status === "success") {
-      baseDatosCompleta.forEach(m => {
-        if (territoriosSeleccionados.includes(m.id.toString())) {
-          m.entregado = true;
-          m.trabajado = false;
-          m.hermano = hermanoDestino;
-          m.fechaEntrega = new Date().toISOString();
-        }
-      });
-      
-      let listadoOrdenadoMapas = [...territoriosSeleccionados].sort((a,b) => parseInt(a) - parseInt(b));
-      
-      const txtIntro = yaTieneMapasStr === "si" 
-        ? `Hola %2A${encodeURIComponent(hermanoDestino)}%2A, te adjunto más territorios que se han sumado a los tuyos: \n\n`
-        : `Hola %2A${encodeURIComponent(hermanoDestino)}%2A, aquí tienes tus territorios asignados para la campaña: \n\n`;
-        
-      let cuerpoMensaje = txtIntro;
-      listadoOrdenadoMapas.forEach(idM => {
-        const metadato = baseDatosCompleta.find(x => x.id.toString() === idM.toString());
-        const linkMapa = metadato && metadato.rutaMapa ? metadato.rutaMapa : "";
-        cuerpoMensaje += `📌 %2ATerritorio ${idM}%2A\n🗺️ Mapa: ${linkMapa}\n\n`;
-      });
-      
-      cuerpoMensaje += `Por favor, cuando termines de trabajarlos, avísame pulsando el botón de completar en tu enlace personal. ¡Gracias! 🙌`;
-      
-      territoriosSeleccionados = [];
-      actualizarPanelAsignacionFlotante();
-      actualizarAnillosEstadisticos();
-      filtrarYRenderizar();
-      extraerNombresDeHermanos();
-      
-      if (telefonoDestino !== "") {
-        const urlWA = `https://api.whatsapp.com/send?phone=${telefonoDestino}&text=${cuerpoMensaje}`;
-        window.open(urlWA, "_blank");
-      } else {
-        alert("Asignación realizada correctamente en la nube (El hermano no dispone de número de teléfono configurado para enviarle la plantilla de WhatsApp).");
-      }
-    } else {
-      alert("Error al procesar: " + r.message);
+  if (!nombreH || territoriosSeleccionados.length === 0) return;
+
+  const opcionSeleccionada = selector.options[selector.selectedIndex];
+  const textoVisible = opcionSeleccionada.innerText; 
+  const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
+
+  if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
+    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+
+    const enlaceFantasma = document.createElement("a");
+    enlaceFantasma.href = urlWhatsApp;
+    enlaceFantasma.target = "_blank";
+    enlaceFantasma.rel = "noopener noreferrer";
+    document.body.appendChild(enlaceFantasma);
+    enlaceFantasma.click();
+    enlaceFantasma.remove();
+  }
+
+  const copiaSeleccionados = [...territoriosSeleccionados];
+
+  baseDatosCompleta.forEach(mapa => {
+    if (copiaSeleccionados.includes(mapa.id.toString())) {
+      mapa.entregado = true;
+      mapa.hermano = nombreH;
+      mapa.fechaEntrega = new Date().toISOString();
+      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
     }
-    const elScript = document.getElementById(scriptName);
-    if (elScript) elScript.remove();
-    delete window[scriptName];
-  };
-  
-  const script = document.createElement("script");
-  script.id = scriptName;
-  script.src = `${URL_API_SHEETS}?accion=asignarMasivo&ids=${stringIds}&hermano=${encodeURIComponent(hermanoDestino)}&grupo=${grupoFiltro}&callback=${scriptName}`;
-  script.onerror = () => { overlay.remove(); alert("Fallo crítico en red."); };
-  document.body.appendChild(script);
+  });
+
+  territoriosSeleccionados = [];
+  actualizarPanelAsignacionFlotante();
+  actualizarAnillosEstadisticos();
+  filtrarYRenderizar(); 
+
+  ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
-function cambiarPestana(vista, btn) {
-  vistaActual = vista;
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
-  if (btn) btn.classList.add("activa");
-  
-  filtrarYRenderizar();
+async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
+  try {
+    const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
+    await Promise.all(promesas); 
+    await descargarDatosDesdeSheets();
+  } catch (e) {
+    console.error("Error al guardar en background", e);
+  }
+}
+
+function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
+  return new Promise((resolve) => {
+    const scriptTag = document.createElement("script");
+    scriptTag.src = `${URL_API_SHEETS}?accion=asignar&id=${idMapa}&hermano=${encodeURIComponent(hermanoNombre)}`;
+    scriptTag.onload = () => { scriptTag.remove(); resolve(); };
+    scriptTag.onerror = () => { scriptTag.remove(); resolve(); };
+    document.body.appendChild(scriptTag);
+  });
 }
 
 function filtrarYRenderizarHermano() {
-  const gridAsignado = document.getElementById("contenedor-hermano-grid");
-  if (!gridAsignado) return;
+  const grid = document.getElementById("contenedor-hermano-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
   
-  gridAsignado.innerHTML = "";
+  const asignadosHermano = baseDatosCompleta.filter(m => m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
   
-  let misMapas = baseDatosCompleta.filter(m => m.hermano && m.hermano.trim().toLowerCase() === idHermanoUrl.trim().toLowerCase() && m.entregado === true);
-  
-  misMapas.sort((a,b) => {
-    if (a.trabajado === b.trabajado) {
-      return parseInt(a.id) - parseInt(b.id);
-    }
-    return a.trabajado ? 1 : -1;
-  });
-  
-  if (misMapas.length > 0) {
-    if (document.getElementById("txt-hermano-titulo")) {
-      document.getElementById("txt-hermano-titulo").innerText = misMapas[0].hermano;
-    }
-  } else {
-    if (document.getElementById("txt-hermano-titulo")) {
-      document.getElementById("txt-hermano-titulo").innerText = idHermanoUrl;
-    }
-    gridAsignado.innerHTML = `
-      <div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--texto-secundario);">
-        <svg style="width:48px; height:48px; margin-bottom:12px; opacity:0.5;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6M9 9l6 6"/></svg>
-        <p style="font-size:15px; font-weight:600; color:var(--texto-principal);">No tienes territorios asignados</p>
-        <p style="font-size:13px; margin-top:4px;">Si crees que es un error, contacta con tu encargado de grupo.</p>
-      </div>
-    `;
+  if (asignadosHermano.length === 0) {
+    grid.innerHTML = "<p style='padding:50px; text-align:center; color:var(--texto-secundario); font-size:14px;'>No tienes mapas asignados.</p>";
     return;
   }
   
-  misMapas.forEach(mapa => {
+  // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
+  asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
+  
+  asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
-    const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
+    // NUEVA LÓGICA: Si ya está trabajado (true), se le añade la opacidad visual de 'terminado'
+    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
     
-    div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''} ${mapa.trabajado ? 'atenuada-hermano' : ''}`;
+    // NUEVA LÓGICA: Si NO está trabajado (false), se le ofrece el botón para completarlo
+    let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
+    if (mapa.trabajado) {
+      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
+    }
     
     div.innerHTML = `
-      <div class="img-lateral-wrapper-rectangular">
+      <div class="cabecera-tarjeta">
+        <div class="bloque-id">
+          <span class="num-mapa">${parseInt(mapa.id)}</span>
+          <span class="nombre-barrio">${mapa.barriada}</span>
+        </div>
+      </div>
+      <div class="imagen-mapa-wrapper">
         <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
-        <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
-      <div class="contenido-lateral-datos">
-        <div class="cabecera-datos-linea">
-          <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-          <span class="nombre-barrio-chico">${mapa.barriada}</span>
-        </div>
-        <div class="espacio-control-hermano-accion">
-          ${!mapa.trabajado ? `
-            <button class="btn-accion-hermano-completar" onclick="solicitarCambioEstadoHermano('${mapa.id}', 'completar')">
-              <svg style="width:14 height:14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
-              Marcar como Hecho
-            </button>
-          ` : `
-            <span class="texto-hermano-completado-exito">
-              <svg style="width:14px; height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Territorio Concluido
-            </span>
-          `}
-        </div>
-      </div>
+      <div style="margin-top:4px;">${accionBotonHTML}</div>
     `;
-    gridAsignado.appendChild(div);
+    grid.appendChild(div);
   });
 }
 
-function solicitarCambioEstadoHermano(idMapa, metaEstado) {
-  const confirmacion = confirm(`¿Confirmas que has terminado por completo el Territorio ${idMapa}? Esta acción notificará al encargado.`);
-  if (!confirmacion) return;
-  
-  const overlay = document.createElement("div");
-  overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);";
-  overlay.innerHTML = `
-    <div style="background:#1c1c1e; padding:24px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); width:85%; max-width:340px; text-align:center;">
-      <div class="spinner-custom-load" style="width:36px; height:36px; border:3px solid rgba(255,255,255,0.2); border-top-color:#27ae60; border-radius:50%; animation:spinUnique 0.8s linear infinite; margin:0 auto 16px auto;"></div>
-      <h3 style="margin-bottom:8px; font-size:16px; font-weight:700;">Guardando progreso...</h3>
-      <p style="font-size:13px; color:#a1a1aa;">Actualizando hoja de registros.</p>
-    </div>
-    <style>@keyframes spinUnique { to { transform:rotate(360deg); } }</style>
-  `;
-  document.body.appendChild(overlay);
-  
-  const scriptName = "cbHermano_" + new Date().getTime();
-  window[scriptName] = function(r) {
-    overlay.remove();
-    if (r.status === "success") {
-      baseDatosCompleta.forEach(m => {
-        if (m.id.toString() === idMapa.toString()) {
-          m.trabajado = true; 
-        }
-      });
-      filtrarYRenderizarHermano();
-    } else {
-      alert("Error: " + r.message);
-    }
-    const elScript = document.getElementById(scriptName);
-    if (elScript) elScript.remove();
-    delete window[scriptName];
-  };
-  
-  const script = document.createElement("script");
-  script.id = scriptName;
-  script.src = `${URL_API_SHEETS}?accion=completarHermano&id=${idMapa}&callback=${scriptName}`;
-  script.onerror = () => { overlay.remove(); alert("Fallo de conexión."); };
-  document.body.appendChild(script);
+function ejecutarHechoHermano(idMapa, btn) {
+  btn.disabled = true;
+  btn.innerText = "Guardando...";
+  const sCompletar = document.createElement("script");
+  sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
+  sCompletar.onload = async () => { sCompletar.remove(); await descargarDatosDesdeSheets(); };
+  document.body.appendChild(sCompletar);
 }
 
-function abrirVisorPantallaCompleta(srcImagen, textoTitulo, evento) {
-  if (evento) {
-    evento.stopPropagation();
-    evento.preventDefault();
-  }
-  
+function abrirVisorPantallaCompleta(src, descrip, evento) {
+  if (evento) evento.stopPropagation();
   const modal = document.getElementById("modal-visor-pantalla-completa");
-  const img = document.getElementById("img-visor-completa");
-  const titulo = document.getElementById("titulo-visor-completo");
+  const imgTarget = document.getElementById("img-visor-completa");
+  const tituloTarget = document.getElementById("titulo-visor-completo");
   
-  if (!modal || !img) return;
+  if (!modal || !imgTarget) return;
   
-  img.src = srcImagen;
-  if (titulo) titulo.innerText = textoTitulo;
-  
+  tituloTarget.innerText = descrip;
+  imgTarget.src = src;
   modal.style.display = "flex";
   document.body.style.overflow = "hidden";
 }
@@ -653,93 +558,59 @@ function cerrarVisorPantallaCompleta() {
   document.body.style.overflow = "auto";
 }
 
+function cambiarPestana(vista, btn) {
+  vistaActual = vista;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
+  btn.classList.add("activa");
+  filtrarYRenderizar();
+}
+
 function configurarTemaInicial() {
-  const temaGuardado = localStorage.getItem("tema-subpanel") || "oscuro";
-  document.documentElement.setAttribute("data-theme", temaGuardado);
+  const t = localStorage.getItem("tema_app") || "oscuro";
+  document.documentElement.setAttribute("data-theme", t);
 }
 
 function conmutarTema() {
   const actual = document.documentElement.getAttribute("data-theme");
-  const nuevo = actual === "claro" ? "oscuro" : "claro";
+  const nuevo = actual === "oscuro" ? "claro" : "oscuro";
   document.documentElement.setAttribute("data-theme", nuevo);
-  localStorage.setItem("tema-subpanel", nuevo);
+  localStorage.setItem("tema_app", nuevo);
 }
 
 function inyectarEstilosCorreccionSelector() {
-  if (document.getElementById("estilo-parche-selector-unico")) return;
+  if (document.getElementById("hoja-estilos-dinamica-selector")) return;
   const style = document.createElement("style");
-  style.id = "estilo-parche-selector-unico";
+  style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      background-color: rgba(28, 28, 30, 0.95) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-      padding: 16px 20px 32px 20px !important;
-      box-sizing: border-box !important;
-      display: none;
-      flex-direction: column !important;
-      gap: 12px !important;
-      z-index: 1500 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
-      backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
+      background-color: rgba(28, 28, 30, 0.85) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    #panel-asignacion-unico.visible { display: flex !important; }
-    .fila-contador-cerrar-unica { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; }
-    #txt-contador-seleccionados { font-size: 14px !important; color: #ffffff !important; font-weight: 600 !important; }
-    .btn-cerrar-panel-x-unico { background: transparent !important; border: none !important; color: #a1a1aa !important; font-size: 18px !important; cursor: pointer !important; padding: 4px !important; }
-    .contenedor-select-flecha-unico { position: relative !important; width: 100% !important; }
+    #txt-contador-seleccionados { color: #ffffff !important; font-weight: 600; }
     #sel-hermano-unico {
-      width: 100% !important;
       background-color: rgba(255, 255, 255, 0.08) !important;
       color: #ffffff !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      padding: 12px 34px 12px 14px !important;
-      border-radius: 12px !important;
-      font-size: 15px !important;
-      font-weight: 500 !important;
-      outline: none !important;
-      cursor: pointer !important;
-      -webkit-appearance: none !important;
-      -moz-appearance: none !important;
-      appearance: none !important;
+      font-size: 14px !important;
     }
     #sel-hermano-unico option { background-color: #1c1c1e !important; color: #ffffff !important; }
-    .contenedor-select-flecha-unico::after {
-      content: "" !important;
-      position: absolute !important;
-      right: 14px !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
-      width: 0 !important; height: 0 !important;
-      border-left: 5px solid transparent !important;
-      border-right: 5px solid transparent !important;
-      border-top: 5px solid #a1a1aa !important;
-      pointer-events: none !important;
+
+    [data-theme="claro"] #panel-asignacion-unico {
+      background-color: rgba(242, 242, 247, 0.9) !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
     }
-    #btn-confirmar-asignacion {
-      width: 100% !important;
-      background-color: #2f80ed !important;
-      color: #ffffff !important;
-      border: none !important;
-      padding: 14px !important;
-      border-radius: 12px !important;
-      font-size: 15px !important;
-      font-weight: 700 !important;
-      cursor: pointer !important;
-      transition: all 0.2s ease !important;
-      box-shadow: 0 4px 12px rgba(47, 128, 237, 0.3) !important;
-    }
-    #btn-confirmar-asignacion:active { transform: scale(0.98) !important; }
-    [data-theme="claro"] #panel-asignacion-unico { background-color: rgba(242, 242, 247, 0.96) !important; border-top: 1px solid rgba(0, 0, 0, 0.1) !important; box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important; }
     [data-theme="claro"] #txt-contador-seleccionados { color: #1c1c1e !important; }
-    [data-theme="claro"] #sel-hermano-unico { background-color: rgba(0, 0, 0, 0.04) !important; color: #1c1c1e !important; border: 1px solid rgba(0, 0, 0, 0.08) !important; }
+    [data-theme="claro"] #sel-hermano-unico {
+      background-color: #ffffff !important;
+      color: #1c1c1e !important;
+      border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    }
     [data-theme="claro"] #sel-hermano-unico option { background-color: #ffffff !important; color: #1c1c1e !important; }
-    [data-theme="claro"] #btn-confirmar-asignacion { background-color: #007aff !important; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2) !important; }
-    .atenuada-hermano { opacity: 0.6 !important; filter: grayscale(30%) !important; border-left: 4px solid var(--apple-verde) !important; }
+    [data-theme="claro"] .btn-apple-bloqueado { background-color: rgba(0, 0, 0, 0.05) !important; color: rgba(0, 0, 0, 0.3) !important; }
+    [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
   `;
   document.head.appendChild(style);
 }
