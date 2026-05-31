@@ -4,8 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Subpanel de Territorios Premium</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
+    }
+
+    /* CONTENEDORES ADAPTADOS PARA EL EFECTO DE ARRASTRE TIPO APPLE */
+    .viewport-deslizable {
+      width: 100%;
+      overflow: hidden;
+      touch-action: pan-y; /* Permite scroll vertical libre pero bloquea el horizontal nativo */
+    }
+
+    .carrete-panoramico {
+      display: flex;
+      width: 200%; /* Dos pestañas = 200% del ancho de pantalla */
+      will-change: transform;
+    }
+
+    .carrete-panoramico.con-transicion {
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Curva suave de desaceleración Apple */
+    }
+
+    .seccion-tab-contenido {
+      width: 50%; /* Cada sección ocupa exactamente el 100% de la pantalla */
+      flex-shrink: 0;
+    }
+
+    /* Forzamos que los grids ocupen todo el ancho dentro de su sección */
+    .grid-mapas {
+      width: 100% !important;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
 
@@ -25,82 +58,83 @@
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-totales">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-totales" class="anillo-linea" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-totales" class="anillo-relleno" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div id="w-totales" class="anillo-numero">0</div>
+          <div class="anillo-porcentaje" id="w-totales">0</div>
         </div>
-        <span>Totales</span>
+        <span class="anillo-etiqueta">Totales</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-prioritarios">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-prioritarios" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-prioritarios" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div id="w-prioritarios" class="anillo-numero">0</div>
+          <div class="anillo-porcentaje" id="w-prioritarios">0</div>
         </div>
-        <span>Prioritarios</span>
+        <span class="anillo-etiqueta">Prio</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-asignados">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-asignados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-asignados" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div id="w-asignados" class="anillo-numero">0</div>
+          <div class="anillo-porcentaje" id="w-asignados">0</div>
         </div>
-        <span>Asignados</span>
+        <span class="anillo-etiqueta">Asignados</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-completados">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-completados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-completados" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div id="w-completados" class="anillo-numero">0</div>
+          <div class="anillo-porcentaje" id="w-completados">0</div>
         </div>
-        <span>Completados</span>
+        <span class="anillo-etiqueta">Hechos</span>
       </div>
     </section>
 
     <div class="contenedor-tabs">
       <div class="control-segmentado">
-        <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
-        <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
+        <button id="tab-disponibles" class="tab activa" onclick="moverAColumnaEncargado(0)">Disponibles</button>
+        <button id="tab-asignados" class="tab" onclick="moverAColumnaEncargado(1)">Asignados</button>
       </div>
     </div>
 
     <div class="contenedor-busqueda">
-      <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
+      <input type="text" id="input-busqueda-global" placeholder="Buscar por territorio, barrio o hermano..." oninput="filtrarBusquedaGlobal()">
     </div>
 
-    <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
-      <button class="btn-sub-filtro activa" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
-      <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
-      <button class="btn-sub-filtro" id="btn-ord-fecha" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
-    </div>
+    <div class="viewport-deslizable" id="viewport-tactil-encargado">
+      <div class="carrete-panoramico con-transicion" id="carrete-encargado">
+        
+        <div class="seccion-tab-contenido">
+          <main class="grid-mapas" id="contenedor-principal-grid"></main>
+        </div>
 
-    <main id="contenedor-principal-grid" class="grid-territorios"></main>
-    <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
-  </div>
+        <div class="seccion-tab-contenido">
+          <main class="grid-mapas" id="contenedor-hermano-grid"></main>
+        </div>
 
-  <div id="panel-asignacion-unico" class="panel-inferior-flotante">
-    <div class="contenido-panel-flotante">
-      <span id="txt-contador-seleccionados">0 mapas seleccionados</span>
-      <div class="controles-asignacion">
-        <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
-          <option value="">Seleccionar Hermano...</option>
-        </select>
-        <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
       </div>
     </div>
+
+    <div id="panel-asignacion-unico" style="display: none;">
+      <span id="txt-contador-seleccionados">0 seleccionados</span>
+      <select id="sel-hermano-unico">
+        <option value="">Seleccionar Hermano...</option>
+      </select>
+      <button id="btn-confirmar-asignacion-unica" onclick="procesarAsignacionMasivaUnica()">Asignar</button>
+    </div>
   </div>
 
-  <footer class="barra-tiempo-footer">
-    <div class="info-tiempo-texto">
+  <footer class="pie-progreso-tiempo">
+    <div class="pie-textos">
       <span id="lbl-tiempo-restante">Calculando campaña...</span>
       <span id="lbl-porcentaje-tiempo">0%</span>
     </div>
@@ -121,20 +155,114 @@
 
   <script src="app.js"></script>
   <script>
+    // Variables de control de arrastre mecánico para la vista de encargado
+    let columnaEncargado = 0; // 0: Disponibles, 1: Asignados
+    let inicioX = 0;
+    let inicioY = 0;
+    let cambioX = 0;
+    let arrastrando = false;
+    let esScrollVertical = false;
+
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
+      
+      // Si se abre la vista filtrada por un ID de hermano específico desde fuera, ocultamos la navegación por gestos
       if (params.get("id")) {
         document.getElementById("contenedor-principal-grid").style.display = "none";
         document.getElementById("contenedor-hermano-grid").style.display = "flex";
         document.querySelector(".seccion-anillos").style.display = "none";
         document.querySelector(".contenedor-tabs").style.display = "none";
         document.querySelector(".contenedor-busqueda").style.display = "none";
-        document.getElementById("panel-asignacion-unico").style.display = "none";
+        document.getElementById("viewport-tactil-encargado").classList.remove("viewport-deslizable");
+        document.getElementById("carrete-encargado").classList.remove("carrete-panoramico", "con-transicion");
         inicializarPantalla("hermano");
       } else {
+        // Inicialización normal de encargado con soporte táctil
         inicializarPantalla("encargado");
+        configurarArrastreEncargado();
       }
     });
+
+    /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo index.html) */
+    function configurarArrastreEncargado() {
+      const viewport = document.getElementById("viewport-tactil-encargado");
+      const carrete = document.getElementById("carrete-encargado");
+
+      viewport.addEventListener("touchstart", (e) => {
+        inicioX = e.touches[0].clientX;
+        inicioY = e.touches[0].clientY;
+        arrastrando = true;
+        esScrollVertical = false;
+        // Quitamos animación temporal para respuesta instantánea al dedo
+        carrete.classList.remove("con-transicion");
+      }, { passive: true });
+
+      viewport.addEventListener("touchmove", (e) => {
+        if (!arrastrando) return;
+
+        let actualX = e.touches[0].clientX;
+        let actualY = e.touches[0].clientY;
+
+        cambioX = actualX - inicioX;
+        let cambioY = actualY - inicioY;
+
+        // Validar si el usuario solo quiere hacer scroll vertical normal en la lista
+        if (!esScrollVertical && Math.abs(cambioY) > Math.abs(cambioX) && Math.abs(cambioY) > 10) {
+          esScrollVertical = true;
+          arrastrando = false;
+          return;
+        }
+
+        if (esScrollVertical) return;
+
+        let anchoPantalla = viewport.clientWidth;
+        let posicionBase = -columnaEncargado * anchoPantalla;
+        let nuevaPosicionPixels = posicionBase + cambioX;
+
+        // Efecto elástico Apple en los extremos
+        if (nuevaPosicionPixels > 0) {
+          nuevaPosicionPixels = cambioX * 0.25;
+        } else if (nuevaPosicionPixels < -anchoPantalla) {
+          nuevaPosicionPixels = posicionBase + (cambioX * 0.25);
+        }
+
+        carrete.style.transform = `translateX(${nuevaPosicionPixels}px)`;
+      }, { passive: true });
+
+      viewport.addEventListener("touchend", () => {
+        if (!arrastrando || esScrollVertical) return;
+        arrastrando = false;
+
+        let anchoPantalla = viewport.clientWidth;
+        let umbralCambio = anchoPantalla * 0.20; // 20% de arrastre para confirmar cambio
+
+        carrete.classList.add("con-transicion");
+
+        if (cambioX < -umbralCambio && columnaEncargado === 0) {
+          moverAColumnaEncargado(1); // Ir a Asignados
+        } else if (cambioX > umbralCambio && columnaEncargado === 1) {
+          moverAColumnaEncargado(0); // Volver a Disponibles
+        } else {
+          moverAColumnaEncargado(columnaEncargado); // Rebote elástico de cancelación
+        }
+        cambioX = 0;
+      });
+    }
+
+    function moverAColumnaEncargado(index) {
+      columnaEncargado = index;
+      const carrete = document.getElementById("carrete-encargado");
+      
+      carrete.classList.add("con-transicion");
+      carrete.style.transform = `translateX(-${index * 50}%)`;
+
+      // Sincronizar clases activas en los botones de pestañas superiores
+      document.getElementById('tab-disponibles').classList.toggle('activa', index === 0);
+      document.getElementById('tab-asignados').classList.toggle('activa', index === 1);
+
+      // Cambiar la variable de estado interna de app.js para mantener la coherencia de negocio si se requiere
+      vistaActual = index === 0 ? "disponibles" : "asignados";
+    }
   </script>
 </body>
 </html>
