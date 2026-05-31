@@ -151,7 +151,8 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const inicio = new Date(inicioStr);
   
   const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = biorer || (ahora - inicio);
+  // CORREGIDO: Eliminada la palabra errónea 'biorer'
+  const tiempoTranscurrido = ahora - inicio; 
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
