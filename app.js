@@ -170,9 +170,11 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
-  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
-  const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
-  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
+  
+  // CORREGIDO: Ahora cuenta todos los territorios entregados en total (omitiendo si están hechos o no)
+  const calle = grupoMapas.filter(m => m.entregado === true).length;
+  
+  // Hechos (completados) se mantiene igual: entregado y SÍ trabajado
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
