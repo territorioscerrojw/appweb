@@ -151,7 +151,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const inicio = new Date(inicioStr);
   
   const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = ahora - inicio;
+  const tiempoTranscurrido = biorer || (ahora - inicio);
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
@@ -259,7 +259,8 @@ function filtrarYRenderizar() {
     
     if (vistaActual === "disponibles") {
       const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadaActivo ? 'seleccionada' : ''}`;
+      // AQUÍ ESTÁ LA CORRECCIÓN: cambiado 'seleccionadaActivo' por 'seleccionadoActivo'
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
@@ -559,6 +560,10 @@ function cambiarPestana(vista, btn) {
   filtrarYRenderizar();
 }
 
+function configuringTemaInicial() { // Fallback por compatibilidad
+  configurarTemaInicial();
+}
+
 function configurarTemaInicial() {
   const t = localStorage.getItem("tema_app") || "oscuro";
   document.documentElement.setAttribute("data-theme", t);
@@ -619,39 +624,30 @@ document.addEventListener("DOMContentLoaded", () => {
   let touchEndX = 0;
   let touchEndY = 0;
 
-  // Captura el inicio del toque en la pantalla
   document.addEventListener("touchstart", (e) => {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
 
-  // Captura el final del toque en la pantalla
   document.addEventListener("touchend", (e) => {
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
     
-    // Validar que el movimiento sea principalmente horizontal y no un scroll vertical
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
     
-    // Umbral mínimo de 70 píxeles para detectar el gesto como un deslizamiento intencionado
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 70) {
-      
-      // Intentar localizar los botones de pestañas del Panel Segmentado nativo del HTML
       const tabs = Array.from(document.querySelectorAll(".control-segmentado .tab"));
-      if (tabs.length < 2) return; // Si no existen o no se han cargado, no hace nada
+      if (tabs.length < 2) return;
 
-      // Encontrar cuál es el índice de la pestaña que está activa en este momento
       const indiceActivo = tabs.findIndex(tab => tab.classList.contains("activa"));
       if (indiceActivo === -1) return;
 
       if (diffX < 0) {
-        // SWIPE HACIA LA IZQUIERDA -> Avanzar a la siguiente pestaña (Moverse a la derecha)
         if (indiceActivo < tabs.length - 1) {
           tabs[indiceActivo + 1].click();
         }
       } else {
-        // SWIPE HACIA LA DERECHA -> Retroceder a la pestaña anterior (Moverse a la izquierda)
         if (indiceActivo > 0) {
           tabs[indiceActivo - 1].click();
         }
