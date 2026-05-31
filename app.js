@@ -304,41 +304,38 @@ function filtrarYRenderizar() {
         }
       }
 
-      div.innerHTML = `
-        <div class="img-lateral-wrapper-rectangular">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
-        </div>
-        <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea">
-            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-            <span class="nombre-barrio-chico">${mapa.barriada}</span>
-          </div>
-          <div class="info-asignacion-bloque">
-            <div class="item-info-linea">
-              <span class="ico-gris">👤</span>
-              <span class="txt-valor-negro">${mapa.hermano || 'No asignado'}</span>
-            </div>
-            <div class="item-info-linea">
-              <span class="ico-gris">📅</span>
-              <span class="txt-valor-gris">${fechaFormateada}</span>
-            </div>
-          </div>
-          <div class="fila-acciones-horizontal">
-            ${mapa.trabajado === true 
-              ? `<span class="badge-estado badge-hecho">✓ Terminado</span>`
-              : `<span class="badge-estado badge-pendiente">⏳ Pendiente</span>`
-            }
-            <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')" title="Quitar asignación">✕</button>
-          </div>
-        </div>
-      `;
-    }
-    grid.appendChild(div);
-  });
-}
+      d// Dentro de la función filtrarYRenderizar, en el bloque 'else':
+div.innerHTML = `
+  <div class="img-lateral-wrapper-rectangular">
+    <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
+  </div>
+  <div class="contenido-lateral-datos">
+    <div class="cabecera-datos-linea">
+      <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+      <span class="nombre-barrio-chico">${mapa.barriada}</span>
+    </div>
+    <div class="info-asignacion-bloque">
+      <div class="item-info-linea">
+        <span class="icon-svg ico-user"></span>
+        <span class="txt-valor-negro">${mapa.hermano || 'No asignado'}</span>
+      </div>
+      <div class="item-info-linea">
+        <span class="icon-svg ico-date"></span>
+        <span class="txt-valor-gris">${fechaFormateada}</span>
+      </div>
+    </div>
+    <div class="fila-acciones-horizontal">
+      ${mapa.trabajado === true 
+        ? `<span class="badge-estado badge-hecho">Terminado</span>`
+        : `<span class="badge-estado badge-pendiente"><span class="icon-svg ico-clock" style="background-color:currentColor; width:10px; height:10px; margin-right:4px;"></span>Pendiente</span>`
+      }
+      <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')" title="Quitar asignación">✕</button>
+    </div>
+  </div>
+`;
 
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
