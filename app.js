@@ -231,7 +231,7 @@ function filtrarYRenderizar() {
     );
   }
   
-  // Lógica de ordenación...
+  // Ordenación original
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -262,24 +262,25 @@ function filtrarYRenderizar() {
         </div>
         <div class="fila-tarjeta-inferior"><div class="bloque-prio-izq">${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}</div><button class="btn-check-rectangular"><svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>`;
     } else {
+      // FORMATO HORIZONTAL ORIGINAL RESTAURADO
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
           <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
         </div>
         <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea"><span class="num-mapa-chico">${parseInt(mapa.id)}</span><span class="nombre-barrio-chico">${mapa.barriada}</span></div>
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
           <div class="info-asignacion-bloque">
-            <div class="item-info-linea"><span class="icon-svg ico-user"></span><span>${mapa.hermano || 'No asignado'}</span></div>
-            <div class="item-info-linea"><span class="icon-svg ico-date"></span><span>${fechaFormateada}</span></div>
+            <div class="item-info-linea"><span>👤</span> ${mapa.hermano || 'No asignado'}</div>
+            <div class="item-info-linea"><span>📅</span> ${fechaFormateada}</div>
+            <div class="item-info-linea"><span>🕒</span> ${mapa.trabajado ? 'Terminado' : 'Pendiente'}</div>
           </div>
-          <div class="fila-acciones-horizontal">
-            <span class="badge-estado ${mapa.trabajado ? 'badge-hecho' : 'badge-pendiente'}">${mapa.trabajado ? 'Terminado' : 'Pendiente'}</span>
-            <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')">✕</button>
-          </div>
+          <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')">✕</button>
         </div>`;
     }
     grid.appendChild(div);
