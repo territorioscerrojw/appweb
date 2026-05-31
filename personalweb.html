@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css">
   
   <style>
-    /* Estilos de alto contraste */
+    /* Variables de alto contraste */
     html[data-theme="oscuro"] {
       --fondo-pantalla: #09090b;
       --fondo-tarjeta: #18181b;
@@ -30,19 +30,51 @@
     body {
       background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
-      /* Evita rebotes raros en iOS al deslizar */
-      overscroll-behavior-x: none; 
+      /* Previene rebotes incómodos al usar el deslizamiento horizontal */
+      overscroll-behavior-x: none;
     }
 
+    /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
       margin-bottom: 16px;
     }
 
-    /* Contenedor táctil para capturar el deslizamiento */
+    .control-segmentado {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 3px;
+      border-radius: 12px;
+      display: flex;
+      border: 1px solid var(--borde-tarjeta);
+    }
+
+    [data-theme="claro"] .control-segmentado {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--texto-secundario);
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab.activa {
+      background: var(--fondo-tarjeta);
+      color: var(--texto-principal);
+      box-shadow: var(--sombra-tarjeta);
+    }
+
+    /* Contenedor táctil para capturar deslizamientos sin afectar al scroll vertical */
     .zona-deslizable {
-      min-height: calc(100vh - 180px);
       width: 100%;
+      min-height: calc(100vh - 180px);
     }
 
     .grid-mapas {
@@ -51,8 +83,10 @@
       gap: 20px;
       padding: 16px;
       width: 100%;
+      box-sizing: border-box;
     }
 
+    /* Diseño de tarjeta de alto contraste */
     .tarjeta-mapa {
       background-color: var(--fondo-tarjeta) !important;
       border: 1px solid var(--borde-tarjeta) !important;
@@ -64,47 +98,55 @@
       height: 100%;
     }
 
-    .contenedor-imagen {
+    .tarjeta-mapa .contenedor-imagen {
       position: relative;
       width: 100%;
-      height: 160px; 
+      height: 160px;
       background-color: #000;
-      border-bottom: 1px solid var(--borde-tarjeta);
     }
 
-    .imagen-mapa { width: 100%; height: 100%; object-fit: cover; }
+    .tarjeta-mapa .imagen-mapa {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .tarjeta-mapa .detalles-mapa {
+      padding: 16px !important;
+    }
 
     .numero-territorio-grande {
       font-size: 30px;
       font-weight: 800;
-      color: var(--texto-principal);
-      letter-spacing: -1px;
+      line-height: 1;
     }
 
-    .badge-estado {
-      display: inline-flex;
-      padding: 5px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
+    .marca-agua-trabajado {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      color: #27ae60;
+      font-size: 2rem;
+      font-weight: 800;
+      z-index: 10;
     }
 
-    .badge-pendiente { background-color: rgba(235, 87, 87, 0.15); color: var(--apple-rojo); }
-    .badge-completado { background-color: rgba(39, 174, 96, 0.15); color: var(--apple-verde); }
+    .tarjeta-mapa.terminado .marca-agua-trabajado { display: block; }
+    .tarjeta-mapa.terminado .imagen-mapa { filter: brightness(1.2) opacity(0.4); }
 
-    .btn-accion {
-      width: 100%;
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      border: none;
+    .btn-completar-accion {
+      width: 100%; margin-top: 14px; padding: 12px;
+      background: #27ae60; color: #fff; border: none;
+      border-radius: 8px; font-weight: 700; cursor: pointer;
     }
 
-    .btn-completar { background: var(--apple-verde); color: white; }
-    .btn-reactivar { background: transparent; border: 1px solid var(--borde-tarjeta); color: var(--texto-secundario); }
+    .btn-desmarcar-accion {
+      width: 100%; margin-top: 14px; padding: 12px;
+      background: transparent; color: var(--texto-secundario);
+      border: 1px solid var(--borde-tarjeta); border-radius: 8px;
+      font-weight: 600; cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -113,7 +155,7 @@
     <header class="cabecera-apple">
       <div class="cabecera-titulos">
         <h1>Mis territorios</h1>
-        <h2 id="txt-campana-hermano">Cargando...</h2>
+        <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
       </div>
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
@@ -125,20 +167,8 @@
       </div>
     </div>
 
-    <!-- Envuelve el contenido en una zona deslizable -->
     <div id="zona-tactil" class="zona-deslizable">
       <main class="grid-mapas" id="contenedor-hermano-grid"></main>
-    </div>
-  </div>
-
-  <!-- Visor de imágenes -->
-  <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
-    <div class="cabecera-visor-completo">
-      <span id="titulo-visor-completo">Mapa</span>
-      <button class="btn-cerrar-visor" onclick="cerrarVisorPantallaCompleta()">✕</button>
-    </div>
-    <div class="zona-scroll-zoom">
-      <img id="img-visor-completa" src="">
     </div>
   </div>
 
@@ -146,9 +176,9 @@
     const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
     let datosLocalesHermano = [];
     let idHermanoUrl = null;
-    let vistaActualHermano = 'pendientes';[cite: 5]
+    let vistaActual = 'pendientes'; // Estado inicial
 
-    // Variables para controlar el gesto de deslizamiento
+    // Coordenadas globales para controlar el deslizamiento
     let toqueInicioX = 0;
     let toqueFinX = 0;
 
@@ -158,7 +188,7 @@
       idHermanoUrl = params.get("id");
       if (!idHermanoUrl) return;
       cargarDatosFlujoHermano();
-      configurarGestoDeslizar(); // Activa el soporte para Swipe
+      configurarGestoDeslizar(); // Inicializa los gestos sin romper nada
     });
 
     async function cargarDatosFlujoHermano() {
@@ -173,15 +203,16 @@
       } catch (err) { console.error(err); }
     }
 
+    // Función para cambiar de pestaña
     function cambiarVistaHermano(nuevaVista) {
-      if (vistaActualHermano === nuevaVista) return;
-      vistaActualHermano = nuevaVista;[cite: 5]
-      document.getElementById('tab-pendientes').classList.toggle('activa', nuevaVista === 'pendientes');
-      document.getElementById('tab-completados').classList.toggle('activa', nuevaVista === 'completados');
+      if (vistaActual === nuevaVista) return;
+      vistaActual = nuevaVista;
+      document.getElementById('tab-pendientes').classList.toggle('activa', vistaActual === 'pendientes');
+      document.getElementById('tab-completados').classList.toggle('activa', vistaActual === 'completados');
       inyectarTarjetasHermano();
     }
 
-    // Configuración de gestos táctiles (Swipe)
+    // Lógica nativa de captura de deslizamiento (Swipe)
     function configurarGestoDeslizar() {
       const zonaTactil = document.getElementById("zona-tactil");
 
@@ -196,93 +227,82 @@
     }
 
     function evaluarGesto() {
-      const umbralDistancia = 70; // Píxeles mínimos para activar el cambio
+      const umbralDistancia = 75; // Distancia mínima en píxeles requerida
       const diferenciaX = toqueFinX - toqueInicioX;
 
-      // Deslizar de izquierda a derecha -> Ir a Pendientes
-      if (diferenciaX > umbralDistancia && vistaActualHermano === 'completados') {
+      // Deslizar a la derecha -> Abre Pendientes
+      if (diferenciaX > umbralDistancia && vistaActual === 'completados') {
         cambiarVistaHermano('pendientes');
       }
-      // Deslizar de derecha a izquierda -> Ir a Completados
-      else if (diferenciaX < -umbralDistancia && vistaActualHermano === 'pendientes') {
+      // Deslizar a la izquierda -> Abre Completados
+      else if (diferenciaX < -umbralDistancia && vistaActual === 'pendientes') {
         cambiarVistaHermano('completados');
       }
     }
 
-  function inyectarTarjetasHermano() {
-  const contenedor = document.getElementById("contenedor-hermano-grid");
-  contenedor.innerHTML = "";
+    function inyectarTarjetasHermano() {
+      const contenedor = document.getElementById("contenedor-hermano-grid");
+      contenedor.innerHTML = "";
 
-  // Filtrar según la pestaña seleccionada
-  const mapasFiltrados = datosLocalesHermano.filter(mapa => 
-    vistaActualHermano === 'pendientes' ? !mapa.trabajado : mapa.trabajado
-  );
+      // Filtrado según la pestaña seleccionada
+      const filtrados = datosLocalesHermano.filter(mapa => {
+        return vistaActual === 'pendientes' ? !mapa.trabajado : mapa.trabajado;
+      });
 
-  if (mapasFiltrados.length === 0) {
-    contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
-      <h3>No hay territorios ${vistaActualHermano}</h3>
-    </div>`;
-    return;
-  }
+      if (filtrados.length === 0) {
+        contenedor.innerHTML = `<p style="text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas en esta sección.</p>`;
+        return;
+      }
 
-  mapasFiltrados.forEach(mapa => {
-    // Definimos los textos y clases fuera del HTML dinámico para evitar errores de sintaxis con los dos puntos (:)
-    let textoBadge = "";
-    let claseBadge = "";
-    let textoBoton = "";
-    let claseBoton = "";
-    let modoAccion = "";
+      filtrados.forEach(mapa => {
+        const div = document.createElement("div");
+        div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
 
-    if (!mapa.trabajado) {
-      textoBadge = "● PENDIENTE";
-      claseBadge = "badge-pendiente";
-      textoBoton = "Marcar como completado (PENDIENTES)";
-      claseBoton = "btn-completar";
-      modoAccion = "completar";
-    } else {
-      textoBadge = "✓ TRABAJADO";
-      claseBadge = "badge-completado";
-      textoBoton = "Reactivar territorio (EN COMPLETADOS)";
-      claseBoton = "btn-reactivar";
-      modoAccion = "desmarcar";
+        // Solución definitiva al error de sintaxis: se preparan los botones en variables HTML limpias e independientes
+        let botonHTML = "";
+        if (!mapa.trabajado) {
+          botonHTML = `<button class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado (PENDIENTES)</button>`;
+        } else {
+          botonHTML = `<button class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio (EN COMPLETADOS)</button>`;
+        }
+
+        div.innerHTML = `
+          <div class="contenedor-imagen">
+            <div class="marca-agua-trabajado">TRABAJADO</div>
+            <img src="${mapa.rutaMapa}" class="imagen-mapa">
+          </div>
+          <div class="detalles-mapa">
+            <div style="display:flex; justify-content:space-between;">
+              <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
+              <span class="numero-territorio-grande">${mapa.id}</span>
+            </div>
+            ${botonHTML}
+          </div>
+        `;
+        contenedor.appendChild(div);
+      });
     }
 
-    const div = document.createElement("div");
-    div.className = "tarjeta-mapa";
-    div.innerHTML = `
-      <div class="contenedor-imagen">
-        <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')">
-      </div>
-      <div class="detalles-mapa" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
-          <span class="numero-territorio-grande">${mapa.id}</span>
-        </div>
-        <div style="margin-top:12px;">
-          <span class="badge-estado ${claseBadge}">${textoBadge}</span>
-          <button class="btn-accion ${claseBoton}" onclick="cambiarEstadoTerritorio('${mapa.id}', '${modoAccion}')">${textoBoton}</button>
-        </div>
-      </div>
-    `;
-    contenedor.appendChild(div);
-  });
-}
-    // Funciones auxiliares de UI[cite: 8]
+    async function cambiarEstadoTerritorio(idMapa, modo) {
+      const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
+      if (indice === -1) return;
+
+      datosLocalesHermano[indice].trabajado = (modo === "completar");
+      inyectarTarjetasHermano();
+
+      const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
+      fetch(`${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`, { mode: 'no-cors' });
+    }
+
     function conmutarTema() {
-      const nuevo = document.documentElement.getAttribute("data-theme") === "oscuro" ? "claro" : "oscuro";
-      document.documentElement.setAttribute("data-theme", nuevo);
-      localStorage.setItem("tema-preferido", nuevo);
+      const nuevoTema = document.documentElement.getAttribute("data-theme") === "oscuro" ? "claro" : "oscuro";
+      document.documentElement.setAttribute("data-theme", nuevoTema);
+      localStorage.setItem("tema-preferido", nuevoTema);
     }
+
     function configurarTemaInicial() {
-      document.documentElement.setAttribute("data-theme", localStorage.getItem("tema-preferido") || "oscuro");
-    }
-    function abrirVisorPantallaCompleta(src, titulo) {
-      document.getElementById("img-visor-completa").src = src;
-      document.getElementById("titulo-visor-completo").innerText = titulo;
-      document.getElementById("modal-visor-pantalla-completa").style.display = "flex";
-    }
-    function cerrarVisorPantallaCompleta() {
-      document.getElementById("modal-visor-pantalla-completa").style.display = "none";
+      const tema = localStorage.getItem("tema-preferido") || "oscuro";
+      document.documentElement.setAttribute("data-theme", tema);
     }
   </script>
 </body>
