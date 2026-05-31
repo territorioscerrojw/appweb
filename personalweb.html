@@ -209,58 +209,47 @@
       }
     }
 
-    function inyectarTarjetasHermano() {
-      const contenedor = document.getElementById("contenedor-hermano-grid");
-      contenedor.innerHTML = "";[cite: 5]
+   function inyectarTarjetasHermano() {
+  const contenedor = document.getElementById("contenedor-hermano-grid");
+  contenedor.innerHTML = "";
 
-      const mapasFiltrados = datosLocalesHermano.filter(mapa => 
-        vistaActualHermano === 'pendientes' ? !mapa.trabajado : mapa.trabajado[cite: 5]
-      );
+  // FILTRO CORREGIDO (Sin residuos de sintaxis)
+  const mapasFiltrados = datosLocalesHermano.filter(mapa => 
+    vistaActualHermano === 'pendientes' ? !mapa.trabajado : mapa.trabajado
+  );
 
-      if (mapasFiltrados.length === 0) {
-        contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
-          <h3>No hay territorios ${vistaActualHermano}</h3>
-        </div>`;
-        return;
-      }
+  if (mapasFiltrados.length === 0) {
+    contenedor.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">
+      <h3>No hay territorios ${vistaActualHermano}</h3>
+    </div>`;
+    return;
+  }
 
-      mapasFiltrados.forEach(mapa => {
-        const div = document.createElement("div");
-        div.className = "tarjeta-mapa";
-        div.innerHTML = `
-          <div class="contenedor-imagen">
-            <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')">
-          </div>
-          <div class="detalles-mapa" style="padding:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
-              <span class="numero-territorio-grande">${mapa.id}</span>
-            </div>
-            <div style="margin-top:12px;">
-              ${!mapa.trabajado 
-                ? `<span class="badge-estado badge-pendiente">● PENDIENTE</span>
-                   <button class="btn-accion btn-completar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado</button>`[cite: 7]
-                : `<span class="badge-estado badge-completado">✓ TRABAJADO</span>
-                   <button class="btn-accion btn-reactivar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio</button>`[cite: 7]
-              }
-            </div>
-          </div>
-        `;
-        contenedor.appendChild(div);
-      });
-    }
-
-    async function cambiarEstadoTerritorio(idMapa, modo) {
-      const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
-      if (indice === -1) return;
-      
-      datosLocalesHermano[indice].trabajado = (modo === "completar");[cite: 5]
-      inyectarTarjetasHermano();
-
-      const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
-      await fetch(`${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`, { mode: 'no-cors' });
-    }
-
+  mapasFiltrados.forEach(mapa => {
+    const div = document.createElement("div");
+    div.className = "tarjeta-mapa";
+    div.innerHTML = `
+      <div class="contenedor-imagen">
+        <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', 'Territorio ${mapa.id}')">
+      </div>
+      <div class="detalles-mapa" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
+          <span class="numero-territorio-grande">${mapa.id}</span>
+        </div>
+        <div style="margin-top:12px;">
+          ${!mapa.trabajado 
+            ? `<span class="badge-estado badge-pendiente">● PENDIENTE</span>
+               <button class="btn-accion btn-completar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado (PENDIENTES)</button>`
+            : `<span class="badge-estado badge-completado">✓ TRABAJADO</span>
+               <button class="btn-accion btn-reactivar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio (EN COMPLETADOS)</button>`
+          }
+        </div>
+      </div>
+    `;
+    contenedor.appendChild(div);
+  });
+}
     // Funciones auxiliares de UI[cite: 8]
     function conmutarTema() {
       const nuevo = document.documentElement.getAttribute("data-theme") === "oscuro" ? "claro" : "oscuro";
