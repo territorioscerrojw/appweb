@@ -67,7 +67,7 @@ body {
   z-index: -1;
   pointer-events: none;
   /* Referencia a tu archivo local */
-  background-image: url('imagen-fondo.png'); 
+  background-image: url('mapa-fondo.png'); 
   background-size: cover;
   background-position: center;
   filter: blur(45px) saturate(0.8);
