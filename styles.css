@@ -27,9 +27,6 @@
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
   --apple-azul: #007aff;
-  --apple-verde: #34c759;
-  --apple-naranja: #ff9500;
-  --apple-rojo: #ff3b30;
   
   /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
@@ -93,15 +90,16 @@ body {
   border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 50% !important;
+  border-radius: 50% !important; /* Totalmente redondo */
   cursor: pointer;
   color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--btn-tema-sombra) !important;
+  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
+  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
@@ -112,18 +110,21 @@ body {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
   width: 20px;
   height: 20px;
   display: block;
   background-color: currentColor;
-  text-indent: 0 !important;
+  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
 }
+/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
+/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
@@ -265,92 +266,124 @@ body {
 .grid-territorios {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
 }
 
 /* ==========================================================================
-   NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
+   TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
    ========================================================================== */
 .tarjeta-apple {
-  background: rgba(28, 28, 30, 0.7) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
   border-radius: 16px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-  transition: all 0.25s ease;
+  padding: 12px;
+  transition: all 0.2s ease;
   width: 100%;
   box-sizing: border-box;
 }
-
-[data-theme="claro"] .tarjeta-apple {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.7);
+  background-color: rgba(39, 174, 96, 0.06);
+}
+.tarjeta-apple.prioritaria-row {
+  border-left: 4px solid var(--apple-naranja);
 }
 
-.fila-tarjeta-superior,
-.fila-tarjeta-inferior {
+/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
+.tarjeta-apple .cabecera-tarjeta {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center; /* Alineación perfecta al centro real */
+  min-height: 28px;
+  margin-bottom: 8px;
   width: 100%;
 }
-
-.num-mapa-gigante {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--texto-principal);
+/* El número grande se ancla fijo en la izquierda */
+.tarjeta-apple .num-mapa { 
+  position: absolute;
+  left: 4px;
+  font-size: 24px; 
+  font-weight: 800; 
   line-height: 1;
 }
-
-.barriada-derecha {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--texto-secundario);
-  text-align: right;
-  max-width: 70%;
+/* La barriada se auto-centra al medio sin importar el número */
+.tarjeta-apple .nombre-barrio { 
+  font-size: 14px; 
+  font-weight: 600; 
+  text-align: center;
+  max-width: 65%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Checkbox anclado fijo a la derecha */
+.tarjeta-apple .contenedor-check {
+  position: absolute;
+  right: 4px;
+}
 
-.tarjeta-apple .imagen-mapa-wrapper {
-  position: relative !important;
+.check-apple-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+[data-theme="claro"] .check-apple-custom {
+  border: 2px solid rgba(0,0,0,0.2);
+}
+.check-apple-custom.checked {
+  background-color: var(--apple-verde);
+  border-color: var(--apple-verde);
+  position: relative;
+}
+.check-apple-custom.checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
+.imagen-mapa-wrapper {
+  position: relative !important; /* Estricto para contener la lupa flotante */
   width: 100%;
-  height: 160px;
+  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
   border-radius: 10px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  background-color: transparent !important; /* Sin fondo gris */
+  
+  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
   border: 1px solid var(--glass-borde);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
-
-.tarjeta-apple .imagen-mapa-asset {
+.imagen-mapa-asset { 
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Centrada y sin cortarse */
+  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
+  border-radius: 10px;
+  display: block;
 }
 
-/* Lupa flotante perfectamente adaptada al diseño centralizado */
-.tarjeta-apple .btn-lupa-flotante {
+/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
+.btn-lupa-flotante {
   position: absolute !important;
-  bottom: 8px !important;
-  left: 8px !important;
-  background: rgba(0, 0, 0, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-  width: 28px !important;
-  height: 28px !important;
-  border-radius: 50% !important;
+  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   cursor: pointer;
   z-index: 10;
   display: flex;
@@ -361,62 +394,18 @@ body {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-.tarjeta-apple .btn-lupa-flotante:hover { opacity: 1; }
-.tarjeta-apple .btn-lupa-flotante:active { transform: scale(0.9); }
+.btn-lupa-flotante:hover { opacity: 1; }
+.btn-lupa-flotante:active { transform: scale(0.9); }
+.ico-minimalista { opacity: 0.9; stroke: #ffffff; }
 
-.tag-prioritario-esquina {
-  background-color: rgba(242, 153, 74, 0.15);
-  color: #f2994a !important;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 11px;
+.tag-prioritario-abajo {
+  display: inline-block;
+  color: var(--apple-naranja);
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.btn-check-rectangular {
-  width: 65px;
-  height: 36px;
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
-[data-theme="claro"] .btn-check-rectangular {
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.4) !important;
-  background: rgba(39, 174, 96, 0.05) !important;
-}
-
-.tarjeta-apple.seleccionada .btn-check-rectangular {
-  background-color: var(--apple-verde) !important;
-  border-color: var(--apple-verde) !important;
-}
-
-.btn-check-rectangular .check-icon {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0;
-  transform: scale(0.6);
-  transition: all 0.2s ease;
-}
-
-.tarjeta-apple.seleccionada .btn-check-rectangular .check-icon {
-  opacity: 1;
-  transform: scale(1);
+  margin-top: 6px;
+  text-align: center;
+  width: 100%;
 }
 
 /* ==========================================================================
@@ -437,6 +426,7 @@ body {
   border-left: 4px solid var(--apple-naranja);
 }
 
+/* Contenedor miniatura lateral izquierdo */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -452,27 +442,27 @@ body {
   object-fit: cover;
 }
 
+/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
 .tarjeta-apple-horizontal .btn-lupa-flotante {
-  position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   bottom: auto !important;
   right: auto !important;
-  transform: translate(-50%, -50%) !important;
-  background: rgba(0, 0, 0, 0.25) !important;
+  transform: translate(-50%, -50%) !important; /* Centrado matemático */
+  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  opacity: 0.5 !important;
-  width: 24px !important;
+  opacity: 0.5 !important; /* Menor opacidad inicial */
+  width: 24px !important; /* Formato más compacto */
   height: 24px !important;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 .tarjeta-apple-horizontal .btn-lupa-flotante:hover {
   opacity: 0.85 !important;
 }
+.tarjeta-apple-horizontal .btn-lupa-flotante:active {
+  transform: translate(-50%, -50%) scale(0.9) !important;
+}
 
+/* Columna de datos en asignados (Compacta y controlada) */
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
@@ -481,6 +471,7 @@ body {
   overflow: hidden;
 }
 
+/* Fila superior con número chico de corrido y barriada */
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
@@ -502,6 +493,7 @@ body {
   flex-grow: 1;
 }
 
+/* Fila de información del hermano asignado */
 .info-hermano-linea {
   display: flex;
   justify-content: space-between;
@@ -553,11 +545,11 @@ body {
 .tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
 /* ==========================================================================
-   PANELES INFERIORES Fijos Al Fondo (Look Apple Original)
+   PANELES INFERIORES SÓLIDOS Y LISOS
    ========================================================================== */
 #panel-asignacion-unico,
 .panel-inferior-flotante,
-.panel-inferior-flotante .contenido-panel-flotante {
+.panel-inferior-flotante * .contenido-panel-flotante {
   background: var(--glass-fondo) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -604,14 +596,11 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
+   FOOTER (BARRA DE PROGRESO DE TIEMPO)
    ========================================================================== */
 .barra-tiempo-footer {
   position: fixed;
-  bottom: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 48px;
+  bottom: 0; left: 0; width: 100%; height: 48px;
   background: var(--glass-fondo) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -679,35 +668,4 @@ body {
 [data-theme="claro"] .select-apple option {
   background-color: #ffffff !important;
   color: #18181b !important;
-}
-/* ==========================================================================
-   ICONOS MINIMALISTAS (Reemplazo de Emoticonos)
-   ========================================================================== */
-
-/* Esto asegura que si el JS inyecta el texto con el icono, se vea elegante */
-.txt-horizontal-hermano::before {
-  content: "👤 ";
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-.txt-horizontal-fecha::before {
-  content: "📅 ";
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-/* Si tu JS tiene una clase para la hora, añade esto: */
-.txt-horizontal-hora::before {
-  content: "🕒 ";
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-/* Ajuste fino para que no se peguen al texto */
-.txt-horizontal-hermano, 
-.txt-horizontal-fecha {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
 }
