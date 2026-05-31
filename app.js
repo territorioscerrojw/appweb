@@ -6,7 +6,7 @@ const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtL
 
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
-let territoriosSeleccionados = [];
+let territoriosSeleccionados = []; 
 let vistaActual = "disponibles"; 
 let tipoUsuario = ""; 
 let grupoFiltro = null;
@@ -170,7 +170,9 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
+  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
+  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
@@ -191,7 +193,6 @@ function inyectarArcoProgreso(idPath, valor, total) {
 }
 
 function cambiarCriterioAsignados(criterio) {
-  criterioOrdenacionAsignados = criterion;
   criterioOrdenacionAsignados = criterio;
   filtrarYRenderizar();
 }
@@ -286,7 +287,6 @@ function filtrarYRenderizar() {
       `;
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
-      div.setAttribute("data-id-mapa", mapa.id);
       
       let rawFecha = mapa.fechaEntrega;
       let fechaFormateada = "Sin fecha";
@@ -299,308 +299,291 @@ function filtrarYRenderizar() {
         }
       }
 
+      // NUEVA LÓGICA VISUAL: Si m.trabajado es falso, significa Pendiente (en la calle). Si es verdadero, Hecho.
       div.innerHTML = `
-        <div class="contenido-deslizable" id="capa-swipe-${mapa.id}">
-          <div class="img-lateral-wrapper-rectangular">
-            <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </button>
-            <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
-          </div>
-          <div class="contenido-lateral-datos">
-            <div class="cabecera-datos-linea">
-              <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-              <span class="nombre-barrio-chico">${mapa.barriada}</span>
-            </div>
-            <div class="info-hermano-linea">
-              <span class="txt-horizontal-hermano">
-                <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                ${mapa.hermano || 'No asignado'}
-              </span>
-            </div>
-            <div class="pie-fechas-horizontal">
-              <span class="txt-horizontal-fecha">Entrega: ${fechaFormateada}</span>
-              <div class="contenedor-estado-pill">
-                ${mapa.trabajado === true 
-                  ? `<span class="pill-estado terminado">Hecho</span>` 
-                  : `<span class="pill-estado pendiente">Calle</span>`
-                }
-              </div>
-            </div>
-          </div>
+        <div class="img-lateral-wrapper-rectangular">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
         </div>
-        <div class="acciones-deslizable-derecha">
-          <button class="btn-accion-swipe desasignar" onclick="cambiarEstadoTerritorioDirecto('${mapa.id}', 'desasignar')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            <span>Quitar</span>
-          </button>
-          <button class="btn-accion-swipe completar" onclick="cambiarEstadoTerritorioDirecto('${mapa.id}', 'completar')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>${mapa.trabajado === true ? 'Deshacer' : 'Hecho'}</span>
-          </button>
+        <div class="contenido-lateral-datos">
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
+          <div class="info-hermano-linea">
+            <span class="txt-horizontal-hermano">
+              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              ${mapa.hermano || 'No asignado'}
+            </span>
+            <span class="txt-horizontal-fecha">
+              <svg class="svg-icono-chico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              ${fechaFormateada}
+            </span>
+          </div>
+          <div class="estado-badge-linea">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
+              <svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              ${!mapa.trabajado ? "Pendiente" : "Hecho"}
+            </span>
+            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
+          </div>
         </div>
       `;
-      
-      asociarGestosDeslizamiento(div, mapa.id);
     }
     grid.appendChild(div);
   });
 }
 
-function asociarGestosDeslizamiento(elementoTarjeta, idMapa) {
-  let xInicial = null;
-  let yInicial = null;
-  let desplazado = false;
-  const capaMovil = elementoTarjeta.querySelector('.contenido-deslizable');
-  const anchoMaximoBotones = 140;
-
-  elementoTarjeta.addEventListener('touchstart', (e) => {
-    xInicial = e.touches[0].clientX;
-    yInicial = e.touches[0].clientY;
-  }, { passive: true });
-
-  elementoTarjeta.addEventListener('touchmove', (e) => {
-    if (!xInicial || !yInicial) return;
-    
-    let xActual = e.touches[0].clientX;
-    let yActual = e.touches[0].clientY;
-    
-    let diferenciaX = xInicial - xActual;
-    let diferenciaY = yInicial - yActual;
-
-    if (Math.abs(diferenciaX) > Math.abs(diferenciaY)) {
-      if (diferenciaX > 35 && !desplazado) {
-        capaMovil.style.transform = `translateX(-${anchoMaximoBotones}px)`;
-        desplazado = true;
-      } else if (diferenciaX < -35 && desplazado) {
-        capaMovil.style.transform = 'translateX(0px)';
-        desplazado = false;
-      }
-    }
-  }, { passive: true });
+function inyectarSelectorDeAgrupacionAsignados() {
+  if (document.getElementById("contenedor-agrupador-asignados")) {
+    actualizarEstadosBotonesFiltro();
+    return;
+  }
+  const mainContenido = document.getElementById("contenedor-principal-grid");
+  if (!mainContenido) return;
+  
+  const navAgrupador = document.createElement("div");
+  navAgrupador.id = "contenedor-agrupador-asignados";
+  navAgrupador.style = "display: flex; gap: 6px; padding: 10px 0; width: 100%; overflow-x: auto;";
+  mainContenido.parentNode.insertBefore(navAgrupador, mainContenido);
+  
+  actualizarEstadosBotonesFiltro();
 }
 
-async function cambiarEstadoTerritorioDirecto(idMapa, accion) {
-  const indice = baseDatosCompleta.findIndex(m => m.id.toString() === idMapa.toString());
-  if (indice === -1) return;
-
-  const capaMovil = document.getElementById(`capa-swipe-${idMapa}`);
-  if (capaMovil) capaMovil.style.transform = 'translateX(0px)';
-
-  const originalEntregado = baseDatosCompleta[indice].entregado;
-  const originalTrabajado = baseDatosCompleta[indice].trabajado;
-  const originalHermano = baseDatosCompleta[indice].hermano;
-  const originalFecha = baseDatosCompleta[indice].fechaEntrega;
-
-  let urlPeticion = "";
-
-  if (accion === 'desasignar') {
-    baseDatosCompleta[indice].entregado = false;
-    baseDatosCompleta[indice].trabajado = false;
-    baseDatosCompleta[indice].hermano = "";
-    baseDatosCompleta[indice].fechaEntrega = "Sin fecha";
-    urlPeticion = `${URL_API_SHEETS}?accion=desasignar&id=${encodeURIComponent(idMapa)}`;
-  } else if (accion === 'completar') {
-    baseDatosCompleta[indice].trabajado = !baseDatosCompleta[indice].trabajado;
-    const modoApi = baseDatosCompleta[indice].trabajado ? "completar" : "deshacer";
-    urlPeticion = `${URL_API_SHEETS}?accion=${modoApi}&id=${encodeURIComponent(idMapa)}`;
-  }
-
-  actualizarAnillosEstadisticos();
-  filtrarYRenderizar();
-
-  try {
-    await fetch(urlPeticion, { method: "GET", mode: "no-cors" });
-    console.log(`Sincronización exitosa: ${accion} - #${idMapa}`);
-  } catch (error) {
-    console.error("Fallo de conexión diferida:", error);
-    alert("Error de red. Revirtiendo cambio...");
-    baseDatosCompleta[indice].entregado = originalEntregado;
-    baseDatosCompleta[indice].trabajado = originalTrabajado;
-    baseDatosCompleta[indice].hermano = originalHermano;
-    baseDatosCompleta[indice].fechaEntrega = originalFecha;
-    actualizarAnillosEstadisticos();
-    filtrarYRenderizar();
-  }
+function actualizarEstadosBotonesFiltro() {
+  const contenedor = document.getElementById("contenedor-agrupador-asignados");
+  if (!contenedor) return;
+  
+  contenedor.innerHTML = `
+    <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px; white-space: nowrap;">Ordenar por:</span>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
+  `;
 }
 
-function alternarSeleccionTarjeta(idMapa, event) {
-  if (event && event.target.closest(".btn-lupa-flotante")) return;
+function eliminarSelectorDeAgrupacionAsignados() {
+  const el = document.getElementById("contenedor-agrupador-asignados");
+  if (el) el.remove();
+}
+
+function alternarSeleccionTarjeta(idMapa, evento) {
+  if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
   const index = territoriosSeleccionados.indexOf(idStr);
+  const card = document.getElementById(`tarjeta-real-${idMapa}`);
+  const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
-  if (index > -1) {
-    territoriosSeleccionados.splice(index, 1);
-  } else {
+  if (index === -1) {
     territoriosSeleccionados.push(idStr);
+    if (card) card.classList.add("seleccionada");
+    if (customCheck) customCheck.classList.add("checked");
+  } else {
+    territoriosSeleccionados.splice(index, 1);
+    if (card) card.classList.remove("seleccionada");
+    if (customCheck) customCheck.classList.remove("checked");
   }
   
-  const tarjeta = document.getElementById(`tarjeta-real-${idStr}`);
-  const circulo = document.getElementById(`circulo-check-${idStr}`);
-  
-  if (tarjeta && circulo) {
-    if (territoriosSeleccionados.includes(idStr)) {
-      tarjeta.classList.add("seleccionada");
-      circulo.classList.add("checked");
-    } else {
-      tarjeta.classList.remove("seleccionada");
-      circulo.classList.remove("checked");
-    }
-  }
   actualizarPanelAsignacionFlotante();
-}
-
-function conmutarVista(vista) {
-  vistaActual = vista;
-  document.getElementById("tab-disponibles").classList.toggle("activa", vista === "disponibles");
-  document.getElementById("tab-asignados").classList.toggle("activa", vista === "asignados");
-  filtrarYRenderizar();
 }
 
 function actualizarPanelAsignacionFlotante() {
   const panel = document.getElementById("panel-asignacion-unico");
+  const textContador = document.getElementById("txt-contador-seleccionados");
+  
   if (!panel) return;
   
-  if (vistaActual === "disponibles" && territoriosSeleccionados.length > 0) {
+  if (territoriosSeleccionados.length > 0 && vistaActual === "disponibles") {
+    if (textContador) textContador.innerText = `${territoriosSeleccionados.length} seleccionado(s)`;
     panel.style.display = "flex";
-    const txtContador = document.getElementById("txt-contador-seleccionados");
-    if (txtContador) {
-      txtContador.innerText = `${territoriosSeleccionados.length} select.`;
-    }
+    panel.classList.add("visible");
+    evaluarEstadoBotonAsignar();
   } else {
+    panel.classList.remove("visible");
     panel.style.display = "none";
   }
 }
 
-async function ejecutarAsignacionMasivaEncargado() {
+function evaluarEstadoBotonAsignar() {
   const selector = document.getElementById("sel-hermano-unico");
-  if (!selector) return;
+  const btn = document.getElementById("btn-asignar-multiple");
+  if (!selector || !btn) return;
   
-  const hermanoDestino = selector.value;
-  if (!hermanoDestino || hermanoDestino.trim() === "") {
-    alert("Por favor, selecciona un hermano de la lista.");
-    return;
+  if (selector.value !== "" && territoriosSeleccionados.length > 0) {
+    btn.disabled = false;
+    btn.className = "btn-apple-verde-activo";
+  } else {
+    btn.disabled = true;
+    btn.className = "btn-apple-bloqueado";
   }
+}
+
+function procesarAsignacionMultiple() {
+  const selector = document.getElementById("sel-hermano-unico");
+  const nombreH = selector.value;
   
-  if (territoriosSeleccionados.length === 0) return;
-  
-  const totalAsignar = territoriesSeleccionados.length;
-  const listadoIdsCopia = [...territoriosSeleccionados];
-  
-  const btnCarga = document.getElementById("btn-confirmar-asignacion-masiva");
-  let textoOriginalBtn = btnCarga ? btnCarga.innerHTML : "Asignar";
-  if (btnCarga) {
-    btnCarga.disabled = true;
-    btnCarga.innerText = "Sincronizando...";
+  if (!nombreH || territoriosSeleccionados.length === 0) return;
+
+  const opcionSeleccionada = selector.options[selector.selectedIndex];
+  const textoVisible = opcionSeleccionada.innerText; 
+  const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
+
+  if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
+    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+
+    const enlaceFantasma = document.createElement("a");
+    enlaceFantasma.href = urlWhatsApp;
+    enlaceFantasma.target = "_blank";
+    enlaceFantasma.rel = "noopener noreferrer";
+    document.body.appendChild(enlaceFantasma);
+    enlaceFantasma.click();
+    enlaceFantasma.remove();
   }
 
-  // Actualización local UI optimista
-  listadoIdsCopia.forEach(idMapa => {
-    const idx = baseDatosCompleta.findIndex(m => m.id.toString() === idMapa.toString());
-    if (idx !== -1) {
-      baseDatosCompleta[idx].entregado = true;
-      baseDatosCompleta[idx].trabajado = false;
-      baseDatosCompleta[idx].hermano = hermanoDestino;
-      baseDatosCompleta[idx].fechaEntrega = new Date().toISOString();
+  const copiaSeleccionados = [...territoriosSeleccionados];
+
+  baseDatosCompleta.forEach(mapa => {
+    if (copiaSeleccionados.includes(mapa.id.toString())) {
+      mapa.entregado = true;
+      mapa.hermano = nombreH;
+      mapa.fechaEntrega = new Date().toISOString();
+      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
     }
   });
 
   territoriosSeleccionados = [];
   actualizarPanelAsignacionFlotante();
   actualizarAnillosEstadisticos();
-  filtrarYRenderizar();
-  extraerNombresDeHermanos();
+  filtrarYRenderizar(); 
 
+  ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
+}
+
+async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   try {
-    const idsString = listadoIdsCopia.join(",");
-    const url = `${URL_API_SHEETS}?accion=asignarMasivo&ids=${encodeURIComponent(idsString)}&hermano=${encodeURIComponent(hermanoDestino)}`;
-    
-    await fetch(url, { method: "GET", mode: "no-cors" });
-    console.log("Asignación masiva completada correctamente.");
-  } catch (err) {
-    console.error("Error de red masivo:", err);
-    alert("Ocurrió un inconveniente al conectar con el servidor.");
+    const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
+    await Promise.all(promesas); 
     await descargarDatosDesdeSheets();
-  } finally {
-    if (btnCarga) {
-      btnCarga.disabled = false;
-      btnCarga.innerHTML = textoOriginalBtn;
+  } catch (e) {
+    console.error("Error al guardar en background", e);
+  }
+}
+
+function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
+  return new Promise((resolve) => {
+    const scriptTag = document.createElement("script");
+    scriptTag.src = `${URL_API_SHEETS}?accion=asignar&id=${idMapa}&hermano=${encodeURIComponent(hermanoNombre)}`;
+    scriptTag.onload = () => { scriptTag.remove(); resolve(); };
+    scriptTag.onerror = () => { scriptTag.remove(); resolve(); };
+    document.body.appendChild(scriptTag);
+  });
+}
+
+function filtrarYRenderizarHermano() {
+  const grid = document.getElementById("contenedor-hermano-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  
+  const asignadosHermano = baseDatosCompleta.filter(m => m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
+  
+  if (asignadosHermano.length === 0) {
+    grid.innerHTML = "<p style='padding:50px; text-align:center; color:var(--texto-secundario); font-size:14px;'>No tienes mapas asignados.</p>";
+    return;
+  }
+  
+  // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
+  asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
+  
+  asignadosHermano.forEach(mapa => {
+    const div = document.createElement("div");
+    // NUEVA LÓGICA: Si ya está trabajado (true), se le añade la opacidad visual de 'terminado'
+    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
+    
+    // NUEVA LÓGICA: Si NO está trabajado (false), se le ofrece el botón para completarlo
+    let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
+    if (mapa.trabajado) {
+      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
     }
-  }
+    
+    div.innerHTML = `
+      <div class="cabecera-tarjeta">
+        <div class="bloque-id">
+          <span class="num-mapa">${parseInt(mapa.id)}</span>
+          <span class="nombre-barrio">${mapa.barriada}</span>
+        </div>
+      </div>
+      <div class="imagen-mapa-wrapper">
+        <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+      </div>
+      <div style="margin-top:4px;">${accionBotonHTML}</div>
+    `;
+    grid.appendChild(div);
+  });
 }
 
-function inyectarSelectorDeAgrupacionAsignados() {
-  if (document.getElementById("contenedor-sub-filtros-asignados")) return;
-  const cabeceraGrid = document.getElementById("contenedor-principal-grid");
-  if (!cabeceraGrid) return;
-  
-  const contenedorFiltros = document.createElement("div");
-  contenedorFiltros.id = "contenedor-sub-filtros-asignados";
-  contenedorFiltros.className = "contenedor-sub-filtros";
-  contenedorFiltros.innerHTML = `
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Nº Mapa</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha</button>
-  `;
-  cabeceraGrid.parentNode.insertBefore(contenedorFiltros, cabeceraGrid);
+function ejecutarHechoHermano(idMapa, btn) {
+  btn.disabled = true;
+  btn.innerText = "Guardando...";
+  const sCompletar = document.createElement("script");
+  sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
+  sCompletar.onload = async () => { sCompletar.remove(); await descargarDatosDesdeSheets(); };
+  document.body.appendChild(sCompletar);
 }
 
-function eliminarSelectorDeAgrupacionAsignados() {
-  const el = document.getElementById("contenedor-sub-filtros-asignados");
-  if (el) el.remove();
-}
-
-function abrirVisorPantallaCompleta(src, titulo, event) {
-  if (event) event.stopPropagation();
+function abrirVisorPantallaCompleta(src, descrip, evento) {
+  if (evento) evento.stopPropagation();
   const modal = document.getElementById("modal-visor-pantalla-completa");
-  const img = document.getElementById("img-visor-completa");
-  const txt = document.getElementById("titulo-visor-completo");
+  const imgTarget = document.getElementById("img-visor-completa");
+  const tituloTarget = document.getElementById("titulo-visor-completo");
   
-  if (modal && img) {
-    img.src = src;
-    if (txt) txt.innerText = titulo;
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  }
+  if (!modal || !imgTarget) return;
+  
+  tituloTarget.innerText = descrip;
+  imgTarget.src = src;
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
 }
 
 function cerrarVisorPantallaCompleta() {
   const modal = document.getElementById("modal-visor-pantalla-completa");
-  if (modal) {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  }
+  if (modal) modal.style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+function cambiarPestana(vista, btn) {
+  vistaActual = vista;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
+  btn.classList.add("activa");
+  filtrarYRenderizar();
 }
 
 function configurarTemaInicial() {
-  const temaGuardado = localStorage.getItem("tema-premium") || "oscuro";
-  document.documentElement.setAttribute("data-theme", temaGuardado);
+  const t = localStorage.getItem("tema_app") || "oscuro";
+  document.documentElement.setAttribute("data-theme", t);
 }
 
 function conmutarTema() {
   const actual = document.documentElement.getAttribute("data-theme");
-  const nuevo = actual === "claro" ? "oscuro" : "claro";
+  const nuevo = actual === "oscuro" ? "claro" : "oscuro";
   document.documentElement.setAttribute("data-theme", nuevo);
-  localStorage.setItem("tema-premium", nuevo);
+  localStorage.setItem("tema_app", nuevo);
 }
 
 function inyectarEstilosCorreccionSelector() {
-  const idStyle = "estilo-correccion-select-flotante";
-  if (document.getElementById(idStyle)) return;
+  if (document.getElementById("hoja-estilos-dinamica-selector")) return;
   const style = document.createElement("style");
-  style.id = idStyle;
+  style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: 84px;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      z-index: 1500;
-      background-color: rgba(18, 18, 20, 0.95) !important;
+      background-color: rgba(28, 28, 30, 0.85) !important;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -626,6 +609,58 @@ function inyectarEstilosCorreccionSelector() {
       border: 1px solid rgba(0, 0, 0, 0.15) !important;
     }
     [data-theme="claro"] #sel-hermano-unico option { background-color: #ffffff !important; color: #1c1c1e !important; }
+    [data-theme="claro"] .btn-apple-bloqueado { background-color: rgba(0, 0, 0, 0.05) !important; color: rgba(0, 0, 0, 0.3) !important; }
+    [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
   `;
   document.head.appendChild(style);
-}
+
+// ==========================================================================
+// CAPA AUTÓNOMA PARA SOPORTE DE ARRASTRE TÁCTIL (SWIPE) ENTRE PESTAÑAS
+// NO MODIFICA NINGUNA FUNCIÓN INTERNA NATIVA DE LA APP
+// ==========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
+  // Captura el inicio del toque en la pantalla
+  document.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  // Captura el final del toque en la pantalla
+  document.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    
+    // Validar que el movimiento sea principalmente horizontal y no un scroll vertical
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Umbral mínimo de 70 píxeles para detectar el gesto como un deslizamiento intencionado
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 70) {
+      
+      // Intentar localizar los botones de pestañas del Panel Segmentado nativo del HTML
+      const tabs = Array.from(document.querySelectorAll(".control-segmentado .tab"));
+      if (tabs.length < 2) return; // Si no existen o no se han cargado, no hace nada
+
+      // Encontrar cuál es el índice de la pestaña que está activa en este momento
+      const indiceActivo = tabs.findIndex(tab => tab.classList.contains("activa"));
+      if (indiceActivo === -1) return;
+
+      if (diffX < 0) {
+        // SWIPE HACIA LA IZQUIERDA -> Avanzar a la siguiente pestaña (Moverse a la derecha)
+        if (indiceActivo < tabs.length - 1) {
+          tabs[indiceActivo + 1].click();
+        }
+      } else {
+        // SWIPE HACIA LA DERECHA -> Retroceder a la pestaña anterior (Moverse a la izquierda)
+        if (indiceActivo > 0) {
+          tabs[indiceActivo - 1].click();
+        }
+      }
+    }
+  }, { passive: true });
+});}
