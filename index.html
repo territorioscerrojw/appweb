@@ -6,39 +6,6 @@
   <title>Subpanel de Territorios Premium</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
-    }
-
-    /* CONTENEDORES ADAPTADOS PARA EL EFECTO DE ARRASTRE TIPO APPLE */
-    .viewport-deslizable {
-      width: 100%;
-      overflow: hidden;
-      touch-action: pan-y; /* Permite scroll vertical libre pero bloquea el horizontal nativo */
-    }
-
-    .carrete-panoramico {
-      display: flex;
-      width: 200%; /* Dos pestañas = 200% del ancho de pantalla */
-      will-change: transform;
-    }
-
-    .carrete-panoramico.con-transicion {
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Curva suave de desaceleración Apple */
-    }
-
-    .seccion-tab-contenido {
-      width: 50%; /* Cada sección ocupa exactamente el 100% de la pantalla */
-      flex-shrink: 0;
-    }
-
-    /* Forzamos que los grids ocupen todo el ancho dentro de su sección */
-    .grid-mapas {
-      width: 100% !important;
-      box-sizing: border-box;
-    }
-  </style>
 </head>
 <body>
 
@@ -101,8 +68,8 @@
 
     <div class="contenedor-tabs">
       <div class="control-segmentado">
-        <button id="tab-disponibles" class="tab activa" onclick="moverAColumnaEncargado(0)">Disponibles</button>
-        <button id="tab-asignados" class="tab" onclick="moverAColumnaEncargado(1)">Asignados</button>
+        <button id="tab-disponibles" class="tab activa" onclick="sincronizarColumnaDesdeBoton(0)">Disponibles</button>
+        <button id="tab-asignados" class="tab" onclick="sincronizarColumnaDesdeBoton(1)">Asignados</button>
       </div>
     </div>
 
@@ -155,35 +122,29 @@
 
   <script src="app.js"></script>
   <script>
-    // Variables de control de arrastre mecánico para la vista de encargado
+    // Variables mecánicas de arrastre táctil Apple
     let columnaEncargado = 0; // 0: Disponibles, 1: Asignados
-    let inicioX = 0;
-    let inicioY = 0;
-    let cambioX = 0;
-    let arrastrando = false;
-    let esScrollVertical = false;
+    let inicioX = 0, inicioY = 0, cambioX = 0;
+    let arrastrando = false, esScrollVertical = false;
 
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
-      
-      // Si se abre la vista filtrada por un ID de hermano específico desde fuera, ocultamos la navegación por gestos
       if (params.get("id")) {
+        // Modo auditoría hermano desde enlace externo: Desactivamos carrusel
         document.getElementById("contenedor-principal-grid").style.display = "none";
-        document.getElementById("contenedor-hermano-grid").style.display = "flex";
+        document.getElementById("contenedor-hermano-grid").style.display = "grid";
         document.querySelector(".seccion-anillos").style.display = "none";
         document.querySelector(".contenedor-tabs").style.display = "none";
         document.querySelector(".contenedor-busqueda").style.display = "none";
-        document.getElementById("viewport-tactil-encargado").classList.remove("viewport-deslizable");
-        document.getElementById("carrete-encargado").classList.remove("carrete-panoramico", "con-transicion");
+        document.getElementById("viewport-tactil-encargado").style.overflow = "visible";
+        document.getElementById("carrete-encargado").className = "";
         inicializarPantalla("hermano");
       } else {
-        // Inicialización normal de encargado con soporte táctil
         inicializarPantalla("encargado");
         configurarArrastreEncargado();
       }
     });
 
-    /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo index.html) */
     function configurarArrastreEncargado() {
       const viewport = document.getElementById("viewport-tactil-encargado");
       const carrete = document.getElementById("carrete-encargado");
@@ -193,74 +154,60 @@
         inicioY = e.touches[0].clientY;
         arrastrando = true;
         esScrollVertical = false;
-        // Quitamos animación temporal para respuesta instantánea al dedo
         carrete.classList.remove("con-transicion");
       }, { passive: true });
 
       viewport.addEventListener("touchmove", (e) => {
         if (!arrastrando) return;
+        let cambioY = e.touches[0].clientY - inicioY;
+        cambioX = e.touches[0].clientX - inicioX;
 
-        let actualX = e.touches[0].clientX;
-        let actualY = e.touches[0].clientY;
-
-        cambioX = actualX - inicioX;
-        let cambioY = actualY - inicioY;
-
-        // Validar si el usuario solo quiere hacer scroll vertical normal en la lista
         if (!esScrollVertical && Math.abs(cambioY) > Math.abs(cambioX) && Math.abs(cambioY) > 10) {
           esScrollVertical = true;
           arrastrando = false;
           return;
         }
-
         if (esScrollVertical) return;
 
-        let anchoPantalla = viewport.clientWidth;
-        let posicionBase = -columnaEncargado * anchoPantalla;
-        let nuevaPosicionPixels = posicionBase + cambioX;
+        let ancho = viewport.clientWidth;
+        let posBase = -columnaEncargado * ancho;
+        let nuevaPos = posBase + cambioX;
 
-        // Efecto elástico Apple en los extremos
-        if (nuevaPosicionPixels > 0) {
-          nuevaPosicionPixels = cambioX * 0.25;
-        } else if (nuevaPosicionPixels < -anchoPantalla) {
-          nuevaPosicionPixels = posicionBase + (cambioX * 0.25);
-        }
+        // Efecto muelle elástico en los bordes
+        if (nuevaPos > 0) nuevaPos = cambioX * 0.22;
+        else if (nuevaPos < -ancho) nuevaPos = posBase + (cambioX * 0.22);
 
-        carrete.style.transform = `translateX(${nuevaPosicionPixels}px)`;
+        carrete.style.transform = `translateX(${nuevaPos}px)`;
       }, { passive: true });
 
       viewport.addEventListener("touchend", () => {
         if (!arrastrando || esScrollVertical) return;
         arrastrando = false;
+        let ancho = viewport.clientWidth;
+        let umbral = ancho * 0.22;
 
-        let anchoPantalla = viewport.clientWidth;
-        let umbralCambio = anchoPantalla * 0.20; // 20% de arrastre para confirmar cambio
-
-        carrete.classList.add("con-transicion");
-
-        if (cambioX < -umbralCambio && columnaEncargado === 0) {
-          moverAColumnaEncargado(1); // Ir a Asignados
-        } else if (cambioX > umbralCambio && columnaEncargado === 1) {
-          moverAColumnaEncargado(0); // Volver a Disponibles
-        } else {
-          moverAColumnaEncargado(columnaEncargado); // Rebote elástico de cancelación
-        }
+        if (cambioX < -umbral && columnaEncargado === 0) moverAColumnaEncargado(1);
+        else if (cambioX > umbral && columnaEncargado === 1) moverAColumnaEncargado(0);
+        else moverAColumnaEncargado(columnaEncargado);
         cambioX = 0;
       });
+    }
+
+    function sincronizarColumnaDesdeBoton(index) {
+      // Forzar cambio visual en app.js usando su función nativa cambiada de contexto
+      cambiarVista(index === 0 ? 'disponibles' : 'asignados');
+      moverAColumnaEncargado(index);
     }
 
     function moverAColumnaEncargado(index) {
       columnaEncargado = index;
       const carrete = document.getElementById("carrete-encargado");
-      
-      carrete.classList.add("con-transicion");
-      carrete.style.transform = `translateX(-${index * 50}%)`;
-
-      // Sincronizar clases activas en los botones de pestañas superiores
+      if(carrete) {
+        carrete.classList.add("con-transicion");
+        carrete.style.transform = `translateX(-${index * 50}%)`;
+      }
       document.getElementById('tab-disponibles').classList.toggle('activa', index === 0);
       document.getElementById('tab-asignados').classList.toggle('activa', index === 1);
-
-      // Cambiar la variable de estado interna de app.js para mantener la coherencia de negocio si se requiere
       vistaActual = index === 0 ? "disponibles" : "asignados";
     }
   </script>
