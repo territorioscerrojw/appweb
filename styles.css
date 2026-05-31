@@ -1,4 +1,4 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Soporte Táctil Apple */
 
 :root {
   --fondo-base: #09090b;
@@ -66,7 +66,41 @@ body {
 }
 
 /* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
+   ESTRUCTURA DE ARRASTRE TÁCTIL PANORÁMICO HORIZONTAL
+   ========================================================================== */
+.viewport-deslizable {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y; /* Habilita el scroll vertical y delega el horizontal a JS */
+}
+
+.carrete-panoramico {
+  display: flex;
+  width: 200%; /* Dos pestañas en paralelo: 100% + 100% */
+  will-change: transform;
+}
+
+.carrete-panoramico.con-transicion {
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); /* Curva de inercia Apple */
+}
+
+.seccion-tab-contenido {
+  width: 50%; /* Cada columna abarca la totalidad del ancho móvil */
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* Forzar que los grids mantengan su comportamiento nativo a lo ancho del carrete */
+.seccion-tab-contenido .grid-mapas {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL
    ========================================================================== */
 .cabecera-apple {
   display: flex;
@@ -90,16 +124,15 @@ body {
   border: none !important;
   width: 40px;
   height: 40px;
-  border-radius: 50% !important; /* Totalmente redondo */
+  border-radius: 50% !important;
   cursor: pointer;
   color: var(--btn-tema-color) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--btn-tema-sombra) !important; /* Efecto relieve físico */
+  box-shadow: var(--btn-tema-sombra) !important;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
-  /* Fuerza a desaparecer cualquier texto o emoticono viejo residual del HTML */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
@@ -110,21 +143,18 @@ body {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Dibujo de los símbolos Sol/Luna mediante máscaras CSS vectoriales minimalistas */
 #btn-cambiar-tema::before {
   content: "";
   width: 20px;
   height: 20px;
   display: block;
   background-color: currentColor;
-  text-indent: 0 !important; /* Reactiva la visibilidad del pseudo-elemento */
+  text-indent: 0 !important;
 }
-/* SI ESTÁ EN MODO OSCURO: Muestra un SOL minimalista */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
 }
-/* SI ESTÁ EN MODO CLARO: Muestra una LUNA minimalista */
 [data-theme="claro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
@@ -169,17 +199,17 @@ body {
   stroke: var(--anillo-vacio);
   stroke-width: 3.5;
 }
-.anillo-linea {
+.anillo-relleno {
   fill: none;
   stroke-width: 3.5;
   stroke-linecap: round;
 }
-.color-totales .anillo-linea { stroke: var(--apple-azul); }
-.color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
-.color-asignados .anillo-linea { stroke: var(--apple-rojo); }
-.color-completados .anillo-linea { stroke: var(--apple-verde); }
+.color-totales .anillo-relleno { stroke: var(--apple-azul); }
+.color-prioritarios .anillo-relleno { stroke: var(--apple-naranja); }
+.color-asignados .anillo-relleno { stroke: var(--apple-rojo); }
+.color-completados .anillo-relleno { stroke: var(--apple-verde); }
 
-.anillo-numero {
+.anillo-porcentaje {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -191,12 +221,15 @@ body {
 /* ==========================================================================
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
+.contenedor-tabs {
+  width: 100%;
+  margin-bottom: 14px;
+}
 .control-segmentado {
   background: rgba(0, 0, 0, 0.1);
   padding: 3px;
   border-radius: 12px;
   display: flex;
-  margin-bottom: 14px;
   border: 1px solid var(--glass-borde);
 }
 [data-theme="claro"] .control-segmentado {
@@ -239,6 +272,7 @@ body {
   padding: 4px;
   border-radius: 10px;
   border: 1px solid var(--glass-borde);
+  width: 100%;
 }
 [data-theme="claro"] .contenedor-sub-filtros {
   background: rgba(0,0,0,0.04);
@@ -263,13 +297,6 @@ body {
   box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
 }
 
-.grid-territorios {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
 /* ==========================================================================
    TARJETAS PESTAÑA: DISPONIBLES (DISEÑO VERTICAL FIJO PROTEGIDO)
    ========================================================================== */
@@ -289,18 +316,19 @@ body {
 .tarjeta-apple.prioritaria-row {
   border-left: 4px solid var(--apple-naranja);
 }
+.tarjeta-apple.terminado {
+  opacity: 0.4;
+}
 
-/* Cabecera balanceada exclusiva de Disponibles: Número a la izq y barriada centrada */
 .tarjeta-apple .cabecera-tarjeta {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center; /* Alineación perfecta al centro real */
+  justify-content: center;
   min-height: 28px;
   margin-bottom: 8px;
   width: 100%;
 }
-/* El número grande se ancla fijo en la izquierda */
 .tarjeta-apple .num-mapa { 
   position: absolute;
   left: 4px;
@@ -308,7 +336,6 @@ body {
   font-weight: 800; 
   line-height: 1;
 }
-/* La barriada se auto-centra al medio sin importar el número */
 .tarjeta-apple .nombre-barrio { 
   font-size: 14px; 
   font-weight: 600; 
@@ -318,7 +345,6 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Checkbox anclado fijo a la derecha */
 .tarjeta-apple .contenedor-check {
   position: absolute;
   right: 4px;
@@ -348,37 +374,33 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* CORREGIDO: Mantiene el ancho estético estrecho original, no se corta por arriba y añade resalte moderno */
 .imagen-mapa-wrapper {
-  position: relative !important; /* Estricto para contener la lupa flotante */
+  position: relative !important;
   width: 100%;
-  aspect-ratio: 16 / 9; /* Reemplaza el alto estático: evita que la imagen se mutile o corte arriba */
+  aspect-ratio: 16 / 9;
   border-radius: 10px;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  background-color: transparent !important; /* Sin fondo gris */
-  
-  /* Resalte minimalista moderno para separarlo físicamente del color de la tarjeta */
+  background-color: transparent !important;
   border: 1px solid var(--glass-borde);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 .imagen-mapa-asset { 
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Ajusta el mapa de forma íntegra y proporcionada en su espacio */
+  object-fit: contain;
   border-radius: 10px;
   display: block;
 }
 
-/* CORREGIDO: Lupa flotando de forma limpia sobre la esquina inferior izquierda de la imagen */
 .btn-lupa-flotante {
   position: absolute !important;
-  bottom: 8px; /* Margen integrado dentro del recuadro del mapa */
+  bottom: 8px;
   left: 8px;
-  background: rgba(0, 0, 0, 0.6) !important; /* Look premium translúcido */
+  background: rgba(0, 0, 0, 0.6) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   width: 28px;
@@ -408,6 +430,19 @@ body {
   width: 100%;
 }
 
+.btn-completar-hermano {
+  width: 100%;
+  background: var(--apple-azul);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
 /* ==========================================================================
    TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
    ========================================================================== */
@@ -426,7 +461,6 @@ body {
   border-left: 4px solid var(--apple-naranja);
 }
 
-/* Contenedor miniatura lateral izquierdo */
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
@@ -442,27 +476,21 @@ body {
   object-fit: cover;
 }
 
-/* Lupa colocada exactamente al centro, más chica y muy transparente en ASIGNADOS */
 .tarjeta-apple-horizontal .btn-lupa-flotante {
   top: 50% !important;
   left: 50% !important;
   bottom: auto !important;
   right: auto !important;
-  transform: translate(-50%, -50%) !important; /* Centrado matemático */
-  background: rgba(0, 0, 0, 0.25) !important; /* Alta transparencia */
+  transform: translate(-50%, -50%) !important;
+  background: rgba(0, 0, 0, 0.35) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  opacity: 0.5 !important; /* Menor opacidad inicial */
-  width: 24px !important; /* Formato más compacto */
+  opacity: 0.6 !important;
+  width: 24px !important;
   height: 24px !important;
 }
-.tarjeta-apple-horizontal .btn-lupa-flotante:hover {
-  opacity: 0.85 !important;
-}
-.tarjeta-apple-horizontal .btn-lupa-flotante:active {
-  transform: translate(-50%, -50%) scale(0.9) !important;
-}
+.tarjeta-apple-horizontal .btn-lupa-flotante:hover { opacity: 0.9 !important; }
+.tarjeta-apple-horizontal .btn-lupa-flotante:active { transform: translate(-50%, -50%) scale(0.9) !important; }
 
-/* Columna de datos en asignados (Compacta y controlada) */
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
@@ -471,7 +499,6 @@ body {
   overflow: hidden;
 }
 
-/* Fila superior con número chico de corrido y barriada */
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
@@ -493,7 +520,6 @@ body {
   flex-grow: 1;
 }
 
-/* Fila de información del hermano asignado */
 .info-hermano-linea {
   display: flex;
   justify-content: space-between;
@@ -513,7 +539,7 @@ body {
   text-overflow: ellipsis;
 }
 .txt-horizontal-hermano { 
-  max-width: 130px; 
+  max-width: 120px; 
   font-weight: 500; 
 }
 
@@ -547,71 +573,70 @@ body {
 /* ==========================================================================
    PANELES INFERIORES SÓLIDOS Y LISOS
    ========================================================================== */
-#panel-asignacion-unico,
-.panel-inferior-flotante,
-.panel-inferior-flotante * .contenido-panel-flotante {
-  background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-.panel-inferior-flotante {
+#panel-asignacion-unico {
   position: fixed;
-  bottom: 48px; 
+  bottom: 48px;
   left: 50%;
-  transform: translateX(-50%) translateY(200%);
+  transform: translateX(-50%) translateY(150%);
   width: 100%;
   max-width: 480px;
-  border-top: 1px solid var(--glass-borde) !important;
-  border-left: 1px solid var(--glass-borde) !important;
-  border-right: 1px solid var(--glass-borde) !important;
+  background: var(--glass-fondo) !important;
+  border-top: 1px solid var(--glass-borde);
+  border-left: 1px solid var(--glass-borde);
+  border-right: 1px solid var(--glass-borde);
   border-radius: 20px 20px 0 0;
   padding: 14px 16px 20px 16px;
   z-index: 99;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+  display: none; 
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
-.contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
-#txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
-.controles-asignacion { display: flex; gap: 8px; background: transparent !important; }
+#panel-asignacion-unico.visible {
+  transform: translateX(-50%) translateY(0);
+}
 
-.select-apple {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.1) !important;
+#sel-hermano-unico {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.15) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
 }
+
 .btn-apple-bloqueado {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.2);
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: rgba(255,255,255,0.05) !important;
+  color: rgba(255,255,255,0.2) !important;
+  border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; width: 100%; cursor: not-allowed;
 }
 .btn-apple-verde-activo {
-  background: var(--apple-verde); color: white;
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: var(--apple-verde) !important; color: white !important;
+  border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; width: 100%; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
 }
 
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO)
    ========================================================================== */
-.barra-tiempo-footer {
+.pie-progreso-tiempo {
   position: fixed;
   bottom: 0; left: 0; width: 100%; height: 48px;
   background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
+.pie-textos { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 4px; font-weight: 500; }
 .linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
-.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
+.linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; transition: width 0.4s ease; }
 
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
@@ -619,10 +644,7 @@ body {
 .visor-pantalla-completa {
   display: none; 
   position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   background-color: #000000;
   z-index: 2000; 
   flex-direction: column;
@@ -634,32 +656,22 @@ body {
   align-items: center; 
   background-color: rgba(20, 20, 25, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff !important;
 }
-.cabecera-visor-completo * { color: #ffffff !important; }
+.cabecera-visor-completo span { color: #ffffff !important; font-weight: 600; font-size: 15px; }
 .btn-cerrar-visor { 
   background: rgba(255, 255, 255, 0.15); 
-  border: none; 
-  color: #ffffff !important; 
-  width: 32px; 
-  height: 32px; 
-  border-radius: 50%; 
-  font-weight: bold;
-  cursor: pointer;
+  border: none; color: #ffffff !important; 
+  width: 32px; height: 32px; border-radius: 50%; 
+  font-weight: bold; cursor: pointer;
 }
 .zona-scroll-zoom { 
-  flex: 1; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  flex: 1; display: flex; align-items: center; justify-content: center; 
 }
 .zona-scroll-zoom img { 
-  max-width: 100%; 
-  max-height: 85vh; 
-  object-fit: contain; 
+  max-width: 100%; max-height: 85vh; object-fit: contain; 
 }
 
-/* FORZAR COMPORTAMIENTO SELECCIONES EN MODO CLARO */
+/* COMPORTAMIENTO EXCLUSIVO EN MODO CLARO */
 [data-theme="claro"] .select-apple {
   background-color: #ffffff !important;
   color: #18181b !important;
