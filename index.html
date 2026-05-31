@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Subpanel de Territorios Premium</title>
+  <title>Territorios de grupo para la compaña</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,90 +17,100 @@
         <h1 id="txt-campana-titulo">Cargando Campaña...</h1>
         <h2 id="txt-grupo-sub">Grupo...</h2>
       </div>
-     <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
+      <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
 
     <section class="seccion-anillos">
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-totales">
-            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-totales" class="anillo-linea" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
           </svg>
-          <div id="w-totales" class="anillo-numero">0</div>
+          <div class="texto-dentro-anillo">
+            <span id="w-totales" class="cifra-anillo">0</span>
+            <span class="lbl-anillo">Totales</span>
+          </div>
         </div>
-        <span>Totales</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-prioritarios">
-            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-prioritarios" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            <path id="progreso-prioritarios" class="anillo-progreso" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
           </svg>
-          <div id="w-prioritarios" class="anillo-numero">0</div>
+          <div class="texto-dentro-anillo">
+            <span id="w-prioritarios" class="cifra-anillo">0</span>
+            <span class="lbl-anillo">Prio</span>
+          </div>
         </div>
-        <span>Prioritarios</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-asignados">
-            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-asignados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            <path id="progreso-asignados" class="anillo-progreso" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
           </svg>
-          <div id="w-asignados" class="anillo-numero">0</div>
+          <div class="texto-dentro-anillo">
+            <span id="w-asignados" class="cifra-anillo">0</span>
+            <span class="lbl-anillo">Calle</span>
+          </div>
         </div>
-        <span>Asignados</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-completados">
-            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-completados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            <path id="progreso-completados" class="anillo-progreso" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
           </svg>
-          <div id="w-completados" class="anillo-numero">0</div>
+          <div class="texto-dentro-anillo">
+            <span id="w-completados" class="cifra-anillo">0</span>
+            <span class="lbl-anillo">Hechos</span>
+          </div>
         </div>
-        <span>Completados</span>
       </div>
     </section>
 
-    <div class="contenedor-tabs">
+    <nav class="contenedor-tabs">
       <div class="control-segmentado">
         <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
         <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
       </div>
-    </div>
+    </nav>
 
     <div class="contenedor-busqueda">
-      <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
-    </div>
-
-    <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
-      <button class="btn-sub-filtro activa" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
-      <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
-      <button class="btn-sub-filtro" id="btn-ord-fecha" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
-    </div>
-
-    <main id="contenedor-principal-grid" class="grid-territorios"></main>
-    <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
-  </div>
-
-  <div id="panel-asignacion-unico" class="panel-inferior-flotante">
-    <div class="contenido-panel-flotante">
-      <span id="txt-contador-seleccionados">0 mapas seleccionados</span>
-      <div class="controles-asignacion">
-        <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
-          <option value="">Seleccionar Hermano...</option>
-        </select>
-        <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
+      <div class="caja-input-icon">
+        <svg class="ico-buscar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="input-busqueda" placeholder="Buscar por número o barriada..." oninput="filtrarYRenderizar()">
       </div>
     </div>
+
+    <div id="carrusel-pantallas-contenedor" class="contenedor-tabs-carrusel">
+      
+      <div class="pantalla-pestana-slide" id="slide-pestana-disponibles">
+        <div id="contenedor-principal-grid" class="grid-apple"></div>
+      </div>
+      
+      <div class="pantalla-pestana-slide" id="slide-pestana-asignados">
+        </div>
+
+    </div>
+
+    <div id="contenedor-hermano-grid" class="grid-apple" style="display: none;"></div>
+
+    <div id="panel-asignacion-unico" class="panel-asignacion-flotante">
+      <div class="columna-panel-izquierda">
+        <span id="txt-contador-seleccionados">0 seleccionados</span>
+        <select id="sel-hermano-unico" onchange="evaluarEstadoBotonAsignar()"></select>
+      </div>
+      <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
+    </div>
   </div>
 
-  <footer class="barra-tiempo-footer">
-    <div class="info-tiempo-texto">
+  <footer class="pie-tiempo-campana">
+    <div class="datos-texto-pie">
       <span id="lbl-tiempo-restante">Calculando campaña...</span>
       <span id="lbl-porcentaje-tiempo">0%</span>
     </div>
@@ -124,12 +134,15 @@
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get("id")) {
-        document.getElementById("contenedor-principal-grid").style.display = "none";
+        const gridPrincipal = document.getElementById("contenedor-principal-grid");
+        const carruselContenedor = document.getElementById("carrusel-pantallas-contenedor");
+        if (gridPrincipal) gridPrincipal.style.display = "none";
+        if (carruselContenedor) carruselContenedor.style.display = "none";
+        
         document.getElementById("contenedor-hermano-grid").style.display = "flex";
         document.querySelector(".seccion-anillos").style.display = "none";
         document.querySelector(".contenedor-tabs").style.display = "none";
         document.querySelector(".contenedor-busqueda").style.display = "none";
-        document.getElementById("panel-asignacion-unico").style.display = "none";
         inicializarPantalla("hermano");
       } else {
         inicializarPantalla("encargado");
