@@ -320,25 +320,30 @@ body {
   text-overflow: ellipsis;
 }
 
+/* 1. Hacemos que el contenedor sea invisible y sin restricciones */
 .tarjeta-apple .imagen-mapa-wrapper {
   position: relative !important;
   width: 100%;
-  height: 160px;
+  height: auto !important; /* Cambiado de 160px a auto para que se ajuste a la imagen */
   border-radius: 10px;
   overflow: hidden;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--glass-borde);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background-color: transparent !important; 
+  display: block; /* Para que no fuerce alineaciones de panel */
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
+/* 2. La imagen ahora define el tamaño */
 .tarjeta-apple .imagen-mapa-asset {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain; /* Centrada y sin cortarse */
+  height: auto; /* Esto hará que el contenedor crezca o decrezca según el alto de la imagen */
+  object-fit: contain; /* Garantiza que no se corte nada */
+  margin: 0;
 }
+
 
 /* Lupa flotante perfectamente adaptada al diseño centralizado */
 .tarjeta-apple .btn-lupa-flotante {
