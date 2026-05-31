@@ -30,8 +30,7 @@
     body {
       background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
-      /* Previene rebotes incómodos al usar el deslizamiento horizontal */
-      overscroll-behavior-x: none;
+      overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
     }
 
     /* Estilos para las pestañas (Tabs) similares a index.html */
@@ -71,10 +70,26 @@
       box-shadow: var(--sombra-tarjeta);
     }
 
-    /* Contenedor táctil para capturar deslizamientos sin afectar al scroll vertical */
-    .zona-deslizable {
+    /* CONTENEDORES PARA EL EFECTO DE ARRASTRE TIPO APPLE */
+    .viewport-deslizable {
       width: 100%;
-      min-height: calc(100vh - 180px);
+      overflow: hidden;
+      touch-action: pan-y; /* Permite scroll vertical libre pero bloquea el horizontal nativo */
+    }
+
+    .carrete-panoramico {
+      display: flex;
+      width: 200%; /* Dos pestañas = 200% del ancho */
+      will-change: transform;
+    }
+
+    .carrete-panoramico.con-transicion {
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Curva suave de desaceleración Apple */
+    }
+
+    .seccion-tab-contenido {
+      width: 50%; /* Cada sección ocupa exactamente la mitad del carrete (100% de la pantalla) */
+      flex-shrink: 0;
     }
 
     .grid-mapas {
@@ -162,13 +177,23 @@
 
     <div class="contenedor-tabs">
       <div class="control-segmentado">
-        <button id="tab-pendientes" class="tab activa" onclick="cambiarVistaHermano('pendientes')">Pendientes</button>
-        <button id="tab-completados" class="tab" onclick="cambiarVistaHermano('completados')">Completados</button>
+        <button id="tab-pendientes" class="tab activa" onclick="moverAColumna(0)">Pendientes</button>
+        <button id="tab-completados" class="tab" onclick="moverAColumna(1)">Completados</button>
       </div>
     </div>
 
-    <div id="zona-tactil" class="zona-deslizable">
-      <main class="grid-mapas" id="contenedor-hermano-grid"></main>
+    <div class="viewport-deslizable" id="viewport-tactil">
+      <div class="carrete-panoramico con-transicion" id="carrete">
+        
+        <div class="seccion-tab-contenido">
+          <main class="grid-mapas" id="grid-pendientes"></main>
+        </div>
+
+        <div class="seccion-tab-contenido">
+          <main class="grid-mapas" id="grid-completados"></main>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -176,11 +201,14 @@
     const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
     let datosLocalesHermano = [];
     let idHermanoUrl = null;
-    let vistaActual = 'pendientes'; // Estado inicial
 
-    // Coordenadas globales para controlar el deslizamiento
-    let toqueInicioX = 0;
-    let toqueFinX = 0;
+    // Variables de control de arrastre mecánico (Física estilo Apple)
+    let columnaActual = 0; // 0: Pendientes, 1: Completados
+    let inicioX = 0;
+    let inicioY = 0;
+    let cambioX = 0;
+    let arrastrando = false;
+    let esScrollVertical = false;
 
     window.addEventListener("DOMContentLoaded", () => {
       configurarTemaInicial();
@@ -188,7 +216,7 @@
       idHermanoUrl = params.get("id");
       if (!idHermanoUrl) return;
       cargarDatosFlujoHermano();
-      configurarGestoDeslizar(); // Inicializa los gestos sin romper nada
+      configurarArrastreMecanico();
     });
 
     async function cargarDatosFlujoHermano() {
@@ -203,84 +231,57 @@
       } catch (err) { console.error(err); }
     }
 
-    // Función para cambiar de pestaña
-    function cambiarVistaHermano(nuevaVista) {
-      if (vistaActual === nuevaVista) return;
-      vistaActual = nuevaVista;
-      document.getElementById('tab-pendientes').classList.toggle('activa', vistaActual === 'pendientes');
-      document.getElementById('tab-completados').classList.toggle('activa', vistaActual === 'completados');
-      inyectarTarjetasHermano();
-    }
-
-    // Lógica nativa de captura de deslizamiento (Swipe)
-    function configurarGestoDeslizar() {
-      const zonaTactil = document.getElementById("zona-tactil");
-
-      zonaTactil.addEventListener("touchstart", (e) => {
-        toqueInicioX = e.changedTouches[0].screenX;
-      }, { passive: true });
-
-      zonaTactil.addEventListener("touchend", (e) => {
-        toqueFinX = e.changedTouches[0].screenX;
-        evaluarGesto();
-      }, { passive: true });
-    }
-
-    function evaluarGesto() {
-      const umbralDistancia = 75; // Distancia mínima en píxeles requerida
-      const diferenciaX = toqueFinX - toqueInicioX;
-
-      // Deslizar a la derecha -> Abre Pendientes
-      if (diferenciaX > umbralDistancia && vistaActual === 'completados') {
-        cambiarVistaHermano('pendientes');
-      }
-      // Deslizar a la izquierda -> Abre Completados
-      else if (diferenciaX < -umbralDistancia && vistaActual === 'pendientes') {
-        cambiarVistaHermano('completados');
-      }
-    }
-
     function inyectarTarjetasHermano() {
-      const contenedor = document.getElementById("contenedor-hermano-grid");
-      contenedor.innerHTML = "";
+      const contenedorPendientes = document.getElementById("grid-pendientes");
+      const contenedorCompletados = document.getElementById("grid-completados");
+      
+      contenedorPendientes.innerHTML = "";
+      contenedorCompletados.innerHTML = "";
 
-      // Filtrado según la pestaña seleccionada
-      const filtrados = datosLocalesHermano.filter(mapa => {
-        return vistaActual === 'pendientes' ? !mapa.trabajado : mapa.trabajado;
-      });
+      const pendientes = datosLocalesHermano.filter(m => !m.trabajado);
+      const completados = datosLocalesHermano.filter(m => m.trabajado);
 
-      if (filtrados.length === 0) {
-        contenedor.innerHTML = `<p style="text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas en esta sección.</p>`;
-        return;
+      // Renderizar Pendientes
+      if (pendientes.length === 0) {
+        contenedorPendientes.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas pendientes.</p>`;
+      } else {
+        pendientes.forEach(mapa => contenedorPendientes.appendChild(crearTarjetaDOM(mapa)));
       }
 
-      filtrados.forEach(mapa => {
-        const div = document.createElement("div");
-        div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
+      // Renderizar Completados
+      if (completados.length === 0) {
+        contenedorCompletados.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas completados.</p>`;
+      } else {
+        completados.forEach(mapa => contenedorCompletados.appendChild(crearTarjetaDOM(mapa)));
+      }
+    }
 
-        // Solución definitiva al error de sintaxis: se preparan los botones en variables HTML limpias e independientes
-        let botonHTML = "";
-        if (!mapa.trabajado) {
-          botonHTML = `<button class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado (PENDIENTES)</button>`;
-        } else {
-          botonHTML = `<button class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio (EN COMPLETADOS)</button>`;
-        }
+    function crearTarjetaDOM(mapa) {
+      const div = document.createElement("div");
+      div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
 
-        div.innerHTML = `
-          <div class="contenedor-imagen">
-            <div class="marca-agua-trabajado">TRABAJADO</div>
-            <img src="${mapa.rutaMapa}" class="imagen-mapa">
+      // Botones corregidos sin paréntesis
+      let botonHTML = "";
+      if (!mapa.trabajado) {
+        botonHTML = `<button class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado</button>`;
+      } else {
+        botonHTML = `<button class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio</button>`;
+      }
+
+      div.innerHTML = `
+        <div class="contenedor-imagen">
+          <div class="marca-agua-trabajado">TRABAJADO</div>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa">
+        </div>
+        <div class="detalles-mapa">
+          <div style="display:flex; justify-content:space-between;">
+            <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
+            <span class="numero-territorio-grande">${mapa.id}</span>
           </div>
-          <div class="detalles-mapa">
-            <div style="display:flex; justify-content:space-between;">
-              <h3 style="margin:0; font-size:16px;">${mapa.barriada}</h3>
-              <span class="numero-territorio-grande">${mapa.id}</span>
-            </div>
-            ${botonHTML}
-          </div>
-        `;
-        contenedor.appendChild(div);
-      });
+          ${botonHTML}
+        </div>
+      `;
+      return div;
     }
 
     async function cambiarEstadoTerritorio(idMapa, modo) {
@@ -292,6 +293,87 @@
 
       const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
       fetch(`${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`, { mode: 'no-cors' });
+    }
+
+    /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo Apple) */
+    function configurarArrastreMecanico() {
+      const viewport = document.getElementById("viewport-tactil");
+      const carrete = document.getElementById("carrete");
+
+      viewport.addEventListener("touchstart", (e) => {
+        inicioX = e.touches[0].clientX;
+        inicioY = e.touches[0].clientY;
+        arrastrando = true;
+        esScrollVertical = false;
+        // Quitamos la transición temporalmente para que responda instantáneamente al dedo
+        carrete.classList.remove("con-transicion");
+      }, { passive: true });
+
+      viewport.addEventListener("touchmove", (e) => {
+        if (!arrastrando) return;
+
+        let actualX = e.touches[0].clientX;
+        let actualY = e.touches[0].clientY;
+
+        cambioX = actualX - inicioX;
+        let cambioY = actualY - inicioY;
+
+        // Detectar si el usuario quiere hacer scroll hacia abajo en vez de deslizar lateralmente
+        if (!esScrollVertical && Math.abs(cambioY) > Math.abs(cambioX) && Math.abs(cambioY) > 10) {
+          esScrollVertical = true;
+          arrastrando = false;
+          return;
+        }
+
+        if (esScrollVertical) return;
+
+        // Calcular la posición base en píxeles de la pestaña actual
+        let anchoPantalla = viewport.clientWidth;
+        let posicionBase = -columnaActual * anchoPantalla;
+        let nuevaPosicionPixels = posicionBase + cambioX;
+
+        // Límites elásticos estilo resistencia iOS en los extremos
+        if (nuevaPosicionPixels > 0) {
+          nuevaPosicionPixels = cambioX * 0.25; // Resistencia al arrastrar más a la izquierda de 'Pendientes'
+        } else if (nuevaPosicionPixels < -anchoPantalla) {
+          nuevaPosicionPixels = posicionBase + (cambioX * 0.25); // Resistencia al arrastrar más a la derecha de 'Completados'
+        }
+
+        // Mover el carrete exactamente junto al dedo en tiempo real
+        carrete.style.transform = `translateX(${nuevaPosicionPixels}px)`;
+      }, { passive: true });
+
+      viewport.addEventListener("touchend", () => {
+        if (!arrastrando || esScrollVertical) return;
+        arrastrando = false;
+
+        let anchoPantalla = viewport.clientWidth;
+        let umbralCambio = anchoPantalla * 0.20; // Si arrastra más del 20% de la pantalla, cambia de pestaña
+
+        carrete.classList.add("con-transicion");
+
+        if (cambioX < -umbralCambio && columnaActual === 0) {
+          moverAColumna(1); // Cambia a Completados
+        } else if (cambioX > umbralCambio && columnaActual === 1) {
+          moverAColumna(0); // Vuelve a Pendientes
+        } else {
+          moverAColumna(columnaActual); // Rebota y vuelve a su posición original
+        }
+        cambioX = 0;
+      });
+    }
+
+    function moverAColumna(index) {
+      columnaActual = index;
+      const carrete = document.getElementById("carrete");
+      
+      // Activar animación suave
+      carrete.classList.add("con-transicion");
+      carrete.style.transform = `translateX(-${index * 50}%)`;
+
+      // Sincronizar visualmente los botones superiores (Pestañas)
+      document.getElementById('tab-pendientes').classList.toggle('activa', index === 0);
+      document.getElementById('tab-completados').classList.toggle('activa', index === 1);
     }
 
     function conmutarTema() {
