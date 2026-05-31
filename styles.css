@@ -1,8 +1,8 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Fondo Satelital Blur */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Fondo Urbano */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(18, 18, 20, 0.75); /* Fondo liso translúcido para tarjetas en modo oscuro */
+  --glass-fondo: rgba(18, 18, 20, 0.75);
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -10,22 +10,16 @@
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
-  
-  /* Línea de fondo vacía de los contadores visible en modo oscuro */
   --anillo-vacio: rgba(255, 255, 255, 0.12);
-  
-  /* Estilos para el botón de tema en modo oscuro */
   --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  
-  /* Capa de tinte sobre el mapa satelital */
-  --filtro-mapa: rgba(9, 9, 11, 0.82);
+  --filtro-mapa: rgba(9, 9, 11, 0.85);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.8); /* Fondo liso translúcido para tarjetas en modo claro */
+  --glass-fondo: rgba(255, 255, 255, 0.85);
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
@@ -33,17 +27,11 @@
   --apple-verde: #34c759;
   --apple-naranja: #ff9500;
   --apple-rojo: #ff3b30;
-  
-  /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
-  
-  /* Estilos para el botón de tema en modo claro */
   --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
-
-  /* Capa de tinte sobre el mapa satelital (Modo Claro) */
-  --filtro-mapa: rgba(244, 244, 247, 0.85);
+  --filtro-mapa: rgba(244, 244, 247, 0.88);
 }
 
 * {
@@ -60,12 +48,11 @@ body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  letter-spacing: -0.2px;
   position: relative;
 }
 
 /* ==========================================================================
-   FONDO DE MAPA SATELITAL DE CIUDAD CON BLUR ULTRA-PREMIUM
+   FONDO DE MAPA URBANO (VISTA CALLES)
    ========================================================================== */
 .fondo-mapa-blur {
   display: block;
@@ -76,21 +63,19 @@ body {
   height: 100vh;
   z-index: -1;
   pointer-events: none;
-  /* Imagen de satélite urbana abstracta y limpia */
-  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80');
+  /* Imagen de plano urbano de ciudad (streets/grid) */
+  background-image: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80');
   background-size: cover;
   background-position: center;
-  filter: blur(40px) scale(1.1); /* Sube el blur para simular un mapa desenfocado elegante */
-  transform: scale(1.05);
+  filter: blur(45px) saturate(0.8);
+  transform: scale(1.1);
 }
 
-/* Capa de tinte para matizar el fondo y asegurar legibilidad */
 .fondo-mapa-blur::before {
   content: "";
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   background: var(--filtro-mapa);
-  transition: background 0.3s ease;
 }
 
 .contenedor-app {
