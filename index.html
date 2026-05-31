@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Subpanel de Territorios Premium</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,83 +25,82 @@
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-totales">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-totales" class="anillo-relleno" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-totales" class="anillo-linea" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div class="anillo-porcentaje" id="w-totales">0</div>
+          <div id="w-totales" class="anillo-numero">0</div>
         </div>
-        <span class="anillo-etiqueta">Totales</span>
+        <span>Totales</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-prioritarios">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-prioritarios" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-prioritarios" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div class="anillo-porcentaje" id="w-prioritarios">0</div>
+          <div id="w-prioritarios" class="anillo-numero">0</div>
         </div>
-        <span class="anillo-etiqueta">Prio</span>
+        <span>Prioritarios</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-asignados">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-asignados" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-asignados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div class="anillo-porcentaje" id="w-asignados">0</div>
+          <div id="w-asignados" class="anillo-numero">0</div>
         </div>
-        <span class="anillo-etiqueta">Asignados</span>
+        <span>Asignados</span>
       </div>
 
       <div class="tarjeta-anillo">
         <div class="anillo-svg-wrapper">
           <svg viewBox="0 0 36 36" class="anillo-circular color-completados">
             <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path id="progreso-completados" class="anillo-relleno" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-completados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
-          <div class="anillo-porcentaje" id="w-completados">0</div>
+          <div id="w-completados" class="anillo-numero">0</div>
         </div>
-        <span class="anillo-etiqueta">Hechos</span>
+        <span>Completados</span>
       </div>
     </section>
 
     <div class="contenedor-tabs">
       <div class="control-segmentado">
-        <button id="tab-disponibles" class="tab activa" onclick="sincronizarColumnaDesdeBoton(0)">Disponibles</button>
-        <button id="tab-asignados" class="tab" onclick="sincronizarColumnaDesdeBoton(1)">Asignados</button>
+        <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
+        <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
       </div>
     </div>
 
     <div class="contenedor-busqueda">
-      <input type="text" id="input-busqueda-global" placeholder="Buscar por territorio, barrio o hermano..." oninput="filtrarBusquedaGlobal()">
+      <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
     </div>
 
-    <div class="viewport-deslizable" id="viewport-tactil-encargado">
-      <div class="carrete-panoramico con-transicion" id="carrete-encargado">
-        
-        <div class="seccion-tab-contenido">
-          <main class="grid-mapas" id="contenedor-principal-grid"></main>
-        </div>
+    <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
+      <button class="btn-sub-filtro activa" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
+      <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
+      <button class="btn-sub-filtro" id="btn-ord-fecha" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
+    </div>
 
-        <div class="seccion-tab-contenido">
-          <main class="grid-mapas" id="contenedor-hermano-grid"></main>
-        </div>
+    <main id="contenedor-principal-grid" class="grid-territorios"></main>
+    <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
+  </div>
 
+  <div id="panel-asignacion-unico" class="panel-inferior-flotante">
+    <div class="contenido-panel-flotante">
+      <span id="txt-contador-seleccionados">0 mapas seleccionados</span>
+      <div class="controles-asignacion">
+        <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
+          <option value="">Seleccionar Hermano...</option>
+        </select>
+        <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
       </div>
-    </div>
-
-    <div id="panel-asignacion-unico" style="display: none;">
-      <span id="txt-contador-seleccionados">0 seleccionados</span>
-      <select id="sel-hermano-unico">
-        <option value="">Seleccionar Hermano...</option>
-      </select>
-      <button id="btn-confirmar-asignacion-unica" onclick="procesarAsignacionMasivaUnica()">Asignar</button>
     </div>
   </div>
 
-  <footer class="pie-progreso-tiempo">
-    <div class="pie-textos">
+  <footer class="barra-tiempo-footer">
+    <div class="info-tiempo-texto">
       <span id="lbl-tiempo-restante">Calculando campaña...</span>
       <span id="lbl-porcentaje-tiempo">0%</span>
     </div>
@@ -122,94 +121,20 @@
 
   <script src="app.js"></script>
   <script>
-    // Variables mecánicas de arrastre táctil Apple
-    let columnaEncargado = 0; // 0: Disponibles, 1: Asignados
-    let inicioX = 0, inicioY = 0, cambioX = 0;
-    let arrastrando = false, esScrollVertical = false;
-
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get("id")) {
-        // Modo auditoría hermano desde enlace externo: Desactivamos carrusel
         document.getElementById("contenedor-principal-grid").style.display = "none";
-        document.getElementById("contenedor-hermano-grid").style.display = "grid";
+        document.getElementById("contenedor-hermano-grid").style.display = "flex";
         document.querySelector(".seccion-anillos").style.display = "none";
         document.querySelector(".contenedor-tabs").style.display = "none";
         document.querySelector(".contenedor-busqueda").style.display = "none";
-        document.getElementById("viewport-tactil-encargado").style.overflow = "visible";
-        document.getElementById("carrete-encargado").className = "";
+        document.getElementById("panel-asignacion-unico").style.display = "none";
         inicializarPantalla("hermano");
       } else {
         inicializarPantalla("encargado");
-        configurarArrastreEncargado();
       }
     });
-
-    function configurarArrastreEncargado() {
-      const viewport = document.getElementById("viewport-tactil-encargado");
-      const carrete = document.getElementById("carrete-encargado");
-
-      viewport.addEventListener("touchstart", (e) => {
-        inicioX = e.touches[0].clientX;
-        inicioY = e.touches[0].clientY;
-        arrastrando = true;
-        esScrollVertical = false;
-        carrete.classList.remove("con-transicion");
-      }, { passive: true });
-
-      viewport.addEventListener("touchmove", (e) => {
-        if (!arrastrando) return;
-        let cambioY = e.touches[0].clientY - inicioY;
-        cambioX = e.touches[0].clientX - inicioX;
-
-        if (!esScrollVertical && Math.abs(cambioY) > Math.abs(cambioX) && Math.abs(cambioY) > 10) {
-          esScrollVertical = true;
-          arrastrando = false;
-          return;
-        }
-        if (esScrollVertical) return;
-
-        let ancho = viewport.clientWidth;
-        let posBase = -columnaEncargado * ancho;
-        let nuevaPos = posBase + cambioX;
-
-        // Efecto muelle elástico en los bordes
-        if (nuevaPos > 0) nuevaPos = cambioX * 0.22;
-        else if (nuevaPos < -ancho) nuevaPos = posBase + (cambioX * 0.22);
-
-        carrete.style.transform = `translateX(${nuevaPos}px)`;
-      }, { passive: true });
-
-      viewport.addEventListener("touchend", () => {
-        if (!arrastrando || esScrollVertical) return;
-        arrastrando = false;
-        let ancho = viewport.clientWidth;
-        let umbral = ancho * 0.22;
-
-        if (cambioX < -umbral && columnaEncargado === 0) moverAColumnaEncargado(1);
-        else if (cambioX > umbral && columnaEncargado === 1) moverAColumnaEncargado(0);
-        else moverAColumnaEncargado(columnaEncargado);
-        cambioX = 0;
-      });
-    }
-
-    function sincronizarColumnaDesdeBoton(index) {
-      // Forzar cambio visual en app.js usando su función nativa cambiada de contexto
-      cambiarVista(index === 0 ? 'disponibles' : 'asignados');
-      moverAColumnaEncargado(index);
-    }
-
-    function moverAColumnaEncargado(index) {
-      columnaEncargado = index;
-      const carrete = document.getElementById("carrete-encargado");
-      if(carrete) {
-        carrete.classList.add("con-transicion");
-        carrete.style.transform = `translateX(-${index * 50}%)`;
-      }
-      document.getElementById('tab-disponibles').classList.toggle('activa', index === 0);
-      document.getElementById('tab-asignados').classList.toggle('activa', index === 1);
-      vistaActual = index === 0 ? "disponibles" : "asignados";
-    }
   </script>
 </body>
 </html>
