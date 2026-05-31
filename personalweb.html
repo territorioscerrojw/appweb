@@ -209,11 +209,11 @@
       }
     }
 
-   function inyectarTarjetasHermano() {
+  function inyectarTarjetasHermano() {
   const contenedor = document.getElementById("contenedor-hermano-grid");
   contenedor.innerHTML = "";
 
-  // FILTRO CORREGIDO (Sin residuos de sintaxis)
+  // Filtrar según la pestaña seleccionada
   const mapasFiltrados = datosLocalesHermano.filter(mapa => 
     vistaActualHermano === 'pendientes' ? !mapa.trabajado : mapa.trabajado
   );
@@ -226,6 +226,27 @@
   }
 
   mapasFiltrados.forEach(mapa => {
+    // Definimos los textos y clases fuera del HTML dinámico para evitar errores de sintaxis con los dos puntos (:)
+    let textoBadge = "";
+    let claseBadge = "";
+    let textoBoton = "";
+    let claseBoton = "";
+    let modoAccion = "";
+
+    if (!mapa.trabajado) {
+      textoBadge = "● PENDIENTE";
+      claseBadge = "badge-pendiente";
+      textoBoton = "Marcar como completado (PENDIENTES)";
+      claseBoton = "btn-completar";
+      modoAccion = "completar";
+    } else {
+      textoBadge = "✓ TRABAJADO";
+      claseBadge = "badge-completado";
+      textoBoton = "Reactivar territorio (EN COMPLETADOS)";
+      claseBoton = "btn-reactivar";
+      modoAccion = "desmarcar";
+    }
+
     const div = document.createElement("div");
     div.className = "tarjeta-mapa";
     div.innerHTML = `
@@ -238,12 +259,8 @@
           <span class="numero-territorio-grande">${mapa.id}</span>
         </div>
         <div style="margin-top:12px;">
-          ${!mapa.trabajado 
-            ? `<span class="badge-estado badge-pendiente">● PENDIENTE</span>
-               <button class="btn-accion btn-completar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado (PENDIENTES)</button>`
-            : `<span class="badge-estado badge-completado">✓ TRABAJADO</span>
-               <button class="btn-accion btn-reactivar" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio (EN COMPLETADOS)</button>`
-          }
+          <span class="badge-estado ${claseBadge}">${textoBadge}</span>
+          <button class="btn-accion ${claseBoton}" onclick="cambiarEstadoTerritorio('${mapa.id}', '${modoAccion}')">${textoBoton}</button>
         </div>
       </div>
     `;
