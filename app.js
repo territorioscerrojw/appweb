@@ -246,17 +246,16 @@ function filtrarYRenderizar() {
     });
   }
   
-  dataset.forEach(mapa => {
+ dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
-    const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
     
     if (vistaActual === "disponibles") {
-      // --- FORMATO DISPONIBLES ORIGINAL RESTAURADO ---
+      // --- ESTE BLOQUE MANTIENE TU FORMATO ORIGINAL DISPONIBLES ---
+      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-      
       div.innerHTML = `
         <div class="fila-tarjeta-superior">
           <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
@@ -272,30 +271,30 @@ function filtrarYRenderizar() {
           <div class="bloque-prio-izq">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular" aria-label="Seleccionar">
+          <button class="btn-check-rectangular">
             <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </button>
         </div>`;
     } else {
-      // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
+      // --- AQUÍ HE RESTAURADO EL FORMATO ASIGNADOS (HORIZONTAL) QUE QUERÍAS ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
           <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
         </div>
         <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea"><span class="num-mapa-chico">${parseInt(mapa.id)}</span><span class="nombre-barrio-chico">${mapa.barriada}</span></div>
-          <div class="info-hermano-linea">
-            <span class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</span>
-            <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
           </div>
-          <div class="estado-badge-linea">
-            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Hecho"}</span>
-            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
+          <div class="info-asignacion-bloque">
+            <div class="item-info-linea"><span>👤</span> ${mapa.hermano || 'No asignado'}</div>
+            <div class="item-info-linea"><span>📅</span> ${fechaFormateada}</div>
+            <div class="item-info-linea"><span>🕒</span> ${mapa.trabajado ? 'Terminado' : 'Pendiente'}</div>
           </div>
+          <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')">✕</button>
         </div>`;
     }
     grid.appendChild(div);
