@@ -1,8 +1,8 @@
-/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido con Fondo Satelital Blur */
+/* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
 
 :root {
   --fondo-base: #09090b;
-  --glass-fondo: rgba(18, 18, 20, 0.75); /* Fondo liso translúcido para tarjetas en modo oscuro */
+  --glass-fondo: #121214; /* Fondo liso para tarjetas en modo oscuro */
   --glass-borde: rgba(255, 255, 255, 0.08);
   --texto-principal: #f4f4f5;
   --texto-secundario: #a1a1aa;
@@ -18,14 +18,11 @@
   --btn-tema-bg: linear-gradient(135deg, #1e1e20, #09090b);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  
-  /* Capa de tinte sobre el mapa satelital */
-  --filtro-mapa: rgba(9, 9, 11, 0.82);
 }
 
 [data-theme="claro"] {
   --fondo-base: #f4f4f7;
-  --glass-fondo: rgba(255, 255, 255, 0.8); /* Fondo liso translúcido para tarjetas en modo claro */
+  --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
   --texto-secundario: #71717a;
@@ -41,9 +38,6 @@
   --btn-tema-bg: linear-gradient(135deg, #ffffff, #e5e5ea);
   --btn-tema-color: var(--texto-principal);
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
-
-  /* Capa de tinte sobre el mapa satelital (Modo Claro) */
-  --filtro-mapa: rgba(244, 244, 247, 0.85);
 }
 
 * {
@@ -61,36 +55,10 @@ body {
   width: 100%;
   overflow-x: hidden;
   letter-spacing: -0.2px;
-  position: relative;
 }
 
-/* ==========================================================================
-   FONDO DE MAPA SATELITAL DE CIUDAD CON BLUR ULTRA-PREMIUM
-   ========================================================================== */
 .fondo-mapa-blur {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-  /* Imagen de satélite urbana abstracta y limpia */
-  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80');
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px) scale(1.1); /* Sube el blur para simular un mapa desenfocado elegante */
-  transform: scale(1.05);
-}
-
-/* Capa de tinte para matizar el fondo y asegurar legibilidad */
-.fondo-mapa-blur::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--filtro-mapa);
-  transition: background 0.3s ease;
+  display: none;
 }
 
 .contenedor-app {
@@ -98,8 +66,6 @@ body {
   max-width: 480px;
   margin: 0 auto;
   padding: 20px 14px 170px 14px;
-  position: relative;
-  z-index: 1;
 }
 
 /* ==========================================================================
@@ -164,7 +130,7 @@ body {
 }
 
 /* ==========================================================================
-   ANILLOS Y CONTADORES (GLASSMORPHISM)
+   ANILLOS Y CONTADORES
    ========================================================================== */
 .seccion-anillos {
   display: grid;
@@ -174,8 +140,6 @@ body {
 }
 .tarjeta-anillo {
   background: var(--glass-fondo);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
   padding: 14px 2px;
@@ -227,14 +191,15 @@ body {
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
 .control-segmentado {
-  background: var(--glass-fondo);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.1);
   padding: 3px;
   border-radius: 12px;
   display: flex;
   margin-bottom: 14px;
   border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .control-segmentado {
+  background: rgba(0, 0, 0, 0.05);
 }
 .tab {
   flex: 1;
@@ -248,20 +213,14 @@ body {
   cursor: pointer;
 }
 .tab.activa {
-  background: var(--fondo-base);
+  background: var(--glass-fondo);
   color: var(--texto-principal);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-}
-[data-theme="claro"] .tab.activa {
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .contenedor-busqueda input {
   width: 100%;
   background: var(--glass-fondo);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-borde);
   color: var(--texto-principal);
   padding: 12px 14px;
@@ -275,12 +234,13 @@ body {
   display: flex;
   gap: 6px;
   margin-bottom: 16px;
-  background: var(--glass-fondo);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.06);
   padding: 4px;
   border-radius: 10px;
   border: 1px solid var(--glass-borde);
+}
+[data-theme="claro"] .contenedor-sub-filtros {
+  background: rgba(0,0,0,0.04);
 }
 .btn-sub-filtro {
   flex: 1;
@@ -313,7 +273,7 @@ body {
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
    ========================================================================== */
 .tarjeta-apple {
-  background: rgba(28, 28, 30, 0.75) !important;
+  background: rgba(28, 28, 30, 0.7) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -329,7 +289,7 @@ body {
 }
 
 [data-theme="claro"] .tarjeta-apple {
-  background: rgba(255, 255, 255, 0.78) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
@@ -377,10 +337,10 @@ body {
 .tarjeta-apple .imagen-mapa-asset {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: contain; /* Centrada y sin cortarse */
 }
 
-/* Lupa flotante perfectamente adaptada */
+/* Lupa flotante perfectamente adaptada al diseño centralizado */
 .tarjeta-apple .btn-lupa-flotante {
   position: absolute !important;
   bottom: 8px !important;
@@ -464,8 +424,6 @@ body {
    ========================================================================== */
 .tarjeta-apple-horizontal {
   background: var(--glass-fondo);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-borde);
   border-radius: 14px;
   padding: 10px;
@@ -595,14 +553,14 @@ body {
 .tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
 /* ==========================================================================
-   PANELES INFERIORES FIJOS AL FONDO
+   PANELES INFERIORES Fijos Al Fondo (Look Apple Original)
    ========================================================================== */
 #panel-asignacion-unico,
 .panel-inferior-flotante,
 .panel-inferior-flotante .contenido-panel-flotante {
   background: var(--glass-fondo) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .panel-inferior-flotante {
@@ -619,7 +577,7 @@ body {
   padding: 14px 16px 20px 16px;
   z-index: 99;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
 }
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
@@ -628,7 +586,7 @@ body {
 
 .select-apple {
   flex: 1;
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(0, 0, 0, 0.1) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
   padding: 8px;
@@ -655,8 +613,8 @@ body {
   width: 100%; 
   height: 48px;
   background: var(--glass-fondo) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
