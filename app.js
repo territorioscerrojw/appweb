@@ -413,7 +413,7 @@ function alternarSeleccionTarjeta(idMapa, evento) {
   if (evento.target.closest('.btn-lupa-flotante')) return;
   
   const idStr = idMapa.toString();
-  const index = territoriesSeleccionados.indexOf(idStr);
+  const index = territoriosSeleccionados.indexOf(idStr);
   const card = document.getElementById(`tarjeta-real-${idMapa}`);
   const customCheck = document.getElementById(`circulo-check-${idMapa}`);
   
