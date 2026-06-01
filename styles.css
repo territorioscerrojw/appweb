@@ -96,7 +96,7 @@ body {
 }
 
 .cabecera-titulos h2 {
-  font-size: 16px;      /* Texto un poco mayor como pediste */
+  font-size: 18px;      /* Texto un poco mayor como pediste */
   color: var(--apple-azul);
   font-weight: 600;
   margin-top: 0;        /* Eliminado el margen superior */
@@ -166,7 +166,7 @@ body {
   align-items: center;
 }
 .tarjeta-anillo span {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--texto-secundario);
   margin-top: 8px;
   font-weight: 600;
