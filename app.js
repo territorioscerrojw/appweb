@@ -576,7 +576,7 @@ function inyectarEstilosCorreccionSelector() {
     [data-theme="claro"] #panel-asignacion-unico {
       background-color: transparent !important;
       backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: none !important;
+      -webkit-backdrop-filter: blur(20px) !important;
       border: none !important;
       border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
