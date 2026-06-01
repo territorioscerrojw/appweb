@@ -440,12 +440,22 @@ body {
 }
 
 /* Eliminar absolutamente cualquier rastro del icono anterior */
+/* Eliminar el icono viejo totalmente */
 .btn-check-rectangular .check-icon {
   display: none !important;
+  visibility: hidden !important;
   width: 0 !important;
   height: 0 !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Forzar que el botón sea solo el track del interruptor */
+.btn-check-rectangular {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important; /* Esto corta cualquier cosa que se salga del botón */
 }
 
 /* 6. Estilos de Resaltado Prioritario */
