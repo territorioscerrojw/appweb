@@ -318,23 +318,6 @@ body {
   width: 100%;
   min-height: 40px; /* Asegura que la fila tenga espacio suficiente */
 }
-
-.btn-check-rectangular {
-  width: 50px;
-  height: 28px;
-  border-radius: 14px;
-  background: #3a3a3c;
-  position: relative;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  padding: 0; /* Asegúrate de que esto sea 0 para que no crezca */
-  display: flex;
-  align-items: center;
-  flex-shrink: 0; /* IMPORTANTE: esto evita que el botón se deforme o se agrande */
-}
-
-
 .num-mapa-gigante {
   font-size: 28px;
   font-weight: 800;
@@ -416,32 +399,54 @@ body {
   background: #e5e5ea; /* Gris claro para modo claro */
 }
 
-/* 2. El círculo interior (Thumb) */
-.btn-check-rectangular::after {
-  content: "";
-  width: 24px;
-  height: 24px;
-  background: #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  left: 2px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+/* Limpieza total del botón interruptor */
+.btn-check-rectangular {
+  width: 50px !important;
+  height: 28px !important;
+  border-radius: 14px !important;
+  background: #3a3a3c !important;
+  position: relative !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important; /* Esto oculta cualquier cosa que se desborde */
 }
 
-/* 3. Cuando la tarjeta está seleccionada: Fondo Verde */
+/* El círculo deslizante */
+.btn-check-rectangular::after {
+  content: "" !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
+  position: absolute !important;
+  left: 2px !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* Estado activo */
 .tarjeta-apple.seleccionada .btn-check-rectangular {
   background: var(--apple-verde) !important;
-  border-color: var(--apple-verde) !important;
 }
 
-/* 4. Desplazar el círculo a la derecha cuando esté seleccionado */
 .tarjeta-apple.seleccionada .btn-check-rectangular::after {
-  transform: translateX(22px);
+  transform: translateX(22px) !important;
 }
 
-/* 5. Eliminamos el icono de check anterior (ya no es necesario) */
-.btn-check-rectangular .check-icon { display: none !important; }
+/* Eliminar absolutamente cualquier rastro del icono anterior */
+.btn-check-rectangular .check-icon {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
 
 /* 6. Estilos de Resaltado Prioritario */
 .tarjeta-apple.prioritaria {
