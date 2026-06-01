@@ -487,7 +487,10 @@ body {
   font-weight: 800 !important; /* Un poco más grueso para que destaque más */
 }
 
-
+.tarjeta-apple.seleccionada.prioritaria {
+  border-left: 4px solid var(--apple-verde) !important;
+  background: linear-gradient(90deg, rgba(39, 174, 96, 0.05) 0%, rgba(28, 28, 30, 0.7) 10%) !important;
+}
 
 /* ==========================================================================
    TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
