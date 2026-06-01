@@ -280,17 +280,14 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
-             <div class="fila-tarjeta-inferior">
+                  <div class="fila-tarjeta-inferior">
           <div class="bloque-prio-izq">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular" aria-label="Seleccionar"></button>
-        </div>
+          <button class="btn-check-rectangular"></button>
+        </div>;
 
 
-            <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </button>
-        </div>`;
     } else {
       // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
