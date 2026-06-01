@@ -49,6 +49,9 @@
   letter-spacing: -0.2px;
   /* Esto asegura que el color de fondo sea gestionado por el contenedor principal */
   background-attachment: fixed;
+padding: 0; box-sizing: border-box;
+font-family: 'Inter', -apple-system, sans-serif;
+-webkit-tap-highlight-color: transparent;
 }
 
 
