@@ -565,7 +565,7 @@ function inyectarEstilosCorreccionSelector() {
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      background-color: transparent !important;
+      background-color: rgba(28, 28, 30, 0.70) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
       /* Eliminamos el borde sólido si es lo que genera la línea blanca */
@@ -574,7 +574,7 @@ function inyectarEstilosCorreccionSelector() {
     }
 
     [data-theme="claro"] #panel-asignacion-unico {
-      background-color: transparent !important;
+      background-color: rgba(255, 255, 255, 0.75) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
       border: none !important;
@@ -588,4 +588,3 @@ function inyectarEstilosCorreccionSelector() {
   `;
   document.head.appendChild(style);
 }
- 
