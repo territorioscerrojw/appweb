@@ -285,7 +285,7 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
           <button class="btn-check-rectangular" type="button"></button>
-        </div>
+        </div>;
 
 
 
