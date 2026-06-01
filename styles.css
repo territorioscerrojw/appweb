@@ -640,7 +640,7 @@ body {
   color: var(--texto-principal) !important;
   padding: 8px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
 }
 /* Botón bloqueado - Adaptable a modo claro y oscuro */
 .btn-apple-bloqueado {
