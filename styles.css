@@ -63,7 +63,7 @@ body {
 
 .contenedor-app {
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px 14px 60px 14px;
   background: transparent !important;
