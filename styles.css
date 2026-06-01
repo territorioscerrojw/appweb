@@ -69,30 +69,46 @@ body {
 }
 
 /* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
+   CABECERA PRINCIPAL REESTRUCTURADA
    ========================================================================== */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+  align-items: center; /* Alinea todo verticalmente al centro */
+  margin-bottom: 16px; /* Reducido para subir los anillos */
+  padding-top: 5px;
 }
+
+.cabecera-titulos {
+  display: flex;
+  align-items: baseline; /* Alinea los textos por su base inferior */
+  gap: 10px;            /* Espacio entre el título y el grupo */
+  overflow: hidden;
+}
+
 .cabecera-titulos h1 {
-  font-size: 24px;
+  font-size: 20px;      /* Ajustado para caber mejor */
   font-weight: 800;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
 }
+
 .cabecera-titulos h2 {
-  font-size: 14px;
+  font-size: 16px;      /* Texto un poco mayor como pediste */
   color: var(--apple-azul);
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 0;        /* Eliminado el margen superior */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 #btn-cambiar-tema {
+  /* Mantenemos el tamaño, pero al estar en el mismo flex que los títulos, subirá automáticamente */
   background: var(--btn-tema-bg) !important;
   border: none !important;
-  width: 40px;
-  height: 40px;
+  width: 36px;  /* Ligeramente más compacto */
+  height: 36px;
   border-radius: 50% !important;
   cursor: pointer;
   color: var(--btn-tema-color) !important;
@@ -101,25 +117,9 @@ body {
   justify-content: center;
   box-shadow: var(--btn-tema-sombra) !important;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
-  position: relative;
-  font-size: 0 !important;
-  line-height: 0 !important;
-  text-indent: -9999px !important;
-  overflow: hidden;
-}
-#btn-cambiar-tema:active {
-  transform: scale(0.94);
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
+  flex-shrink: 0; /* Evita que el botón se aplaste */
 }
 
-#btn-cambiar-tema::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  display: block;
-  background-color: currentColor;
-  text-indent: 0 !important;
-}
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
@@ -136,7 +136,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 .tarjeta-anillo {
   background: var(--glass-fondo);
@@ -195,7 +195,7 @@ body {
   padding: 3px;
   border-radius: 12px;
   display: flex;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   border: 1px solid var(--glass-borde);
 }
 [data-theme="claro"] .control-segmentado {
@@ -227,13 +227,13 @@ body {
   border-radius: 12px;
   font-size: 14px;
   outline: none;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .contenedor-sub-filtros {
   display: flex;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   background: rgba(0,0,0,0.06);
   padding: 4px;
   border-radius: 10px;
@@ -303,14 +303,14 @@ body {
 }
 
 .num-mapa-gigante {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--texto-principal);
   line-height: 1;
 }
 
 .barriada-derecha {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--texto-secundario);
   text-align: right;
