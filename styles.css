@@ -693,7 +693,7 @@ body {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   
-  border-top: 1px solid var(--glass-borde);
+  border-top: none !important;
   padding: 8px 16px;
   z-index: 100;
 }
