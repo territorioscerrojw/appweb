@@ -299,10 +299,10 @@ body {
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 16px;
-  padding: 14px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   position: relative;
   transition: all 0.25s ease;
   width: 100%;
@@ -321,7 +321,7 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  min-height: 40px; /* Asegura que la fila tenga espacio suficiente */
+  min-height: 30px; /* Asegura que la fila tenga espacio suficiente */
 }
 .num-mapa-gigante {
   font-size: 28px;
