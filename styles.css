@@ -237,7 +237,7 @@ body {
 }
 
 .contenedor-busqueda input {
-  display: none
+  display: none !important
   width: 100%;
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
