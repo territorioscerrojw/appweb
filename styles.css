@@ -209,7 +209,7 @@ body {
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
 .control-segmentado {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.3);
   padding: 3px;
   border-radius: 12px;
   display: flex;
@@ -224,8 +224,8 @@ body {
   background: transparent;
   border: none;
   color: var(--texto-secundario);
-  padding: 10px 0;
-  font-size: 13px;
+  padding: 8px 0;
+  font-size: 15px;
   font-weight: 600;
   border-radius: 9px;
   cursor: pointer;
