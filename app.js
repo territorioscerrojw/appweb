@@ -566,17 +566,17 @@ function inyectarEstilosCorreccionSelector() {
   style.innerHTML = `
     #panel-asignacion-unico {
       background-color: transparent !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
       /* Eliminamos el borde sólido si es lo que genera la línea blanca */
       border: none !important; 
       border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
     [data-theme="claro"] #panel-asignacion-unico {
-      background-color: rgba(255, 255, 255, 0.75) !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+      background-color: transparent !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
       border: none !important;
       border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
