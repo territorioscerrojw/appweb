@@ -40,7 +40,7 @@
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
 }
 
-body {
+.body {
  background-color: var(--fondo-base);
   color: var(--texto-principal);
   min-height: 100vh;
