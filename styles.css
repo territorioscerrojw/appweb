@@ -394,61 +394,68 @@ body {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
+/* 1. Contenedor del interruptor (Track) */
 .btn-check-rectangular {
-  width: 65px;
-  height: 36px;
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  background: transparent;
+  width: 50px;
+  height: 28px;
+  border-radius: 14px;
+  background: #3a3a3c; /* Gris oscuro para el modo apagado */
+  position: relative;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 [data-theme="claro"] .btn-check-rectangular {
-  border-color: rgba(0, 0, 0, 0.15);
+  background: #e5e5ea; /* Gris claro para modo claro */
 }
 
-.tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.4) !important;
-  background: rgba(39, 174, 96, 0.05) !important;
+/* 2. El círculo interior (Thumb) */
+.btn-check-rectangular::after {
+  content: "";
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  left: 2px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+/* 3. Cuando la tarjeta está seleccionada: Fondo Verde */
 .tarjeta-apple.seleccionada .btn-check-rectangular {
-  background-color: var(--apple-verde) !important;
+  background: var(--apple-verde) !important;
   border-color: var(--apple-verde) !important;
 }
 
-.btn-check-rectangular .check-icon {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0;
-  transform: scale(0.6);
-  transition: all 0.2s ease;
+/* 4. Desplazar el círculo a la derecha cuando esté seleccionado */
+.tarjeta-apple.seleccionada .btn-check-rectangular::after {
+  transform: translateX(22px);
 }
 
-.tarjeta-apple.seleccionada .btn-check-rectangular .check-icon {
-  opacity: 1;
-  transform: scale(1);
-}
-/* Clase para identificar tarjetas prioritarias */
+/* 5. Eliminamos el icono de check anterior (ya no es necesario) */
+.btn-check-rectangular .check-icon { display: none !important; }
+
+/* 6. Estilos de Resaltado Prioritario */
 .tarjeta-apple.prioritaria {
   border-left: 4px solid var(--apple-naranja) !important;
-  /* Opcional: un fondo muy sutil con el color naranja para resaltar más */
   background: linear-gradient(90deg, rgba(242, 153, 74, 0.05) 0%, rgba(28, 28, 30, 0.7) 10%) !important;
 }
 
 [data-theme="claro"] .tarjeta-apple.prioritaria {
   background: linear-gradient(90deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 255, 255, 0.75) 10%) !important;
 }
+
+/* 7. Mantenemos el borde de selección de tarjeta */
+.tarjeta-apple.seleccionada {
+  border-color: rgba(39, 174, 96, 0.4) !important;
+}
+
 
 /* ==========================================================================
    TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
