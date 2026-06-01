@@ -1,3 +1,4 @@
+
 /* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
 
 :root {
@@ -63,36 +64,52 @@ body {
 
 .contenedor-app {
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto;
-  padding: 20px 14px 170px 14px;
+  padding: 20px 14px 60px 14px;
+  background: transparent !important;
 }
 
 /* ==========================================================================
-   CABECERA PRINCIPAL Y BOTÓN LUNA/SOL (SÍMBOLO REAL)
+   CABECERA PRINCIPAL REESTRUCTURADA
    ========================================================================== */
 .cabecera-apple {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+  align-items: center; /* Alinea todo verticalmente al centro */
+  margin-bottom: 16px; /* Reducido para subir los anillos */
+  padding-top: 5px;
 }
+
+.cabecera-titulos {
+  display: flex;
+  align-items: baseline; /* Alinea los textos por su base inferior */
+  gap: 10px;            /* Espacio entre el título y el grupo */
+  overflow: hidden;
+}
+
 .cabecera-titulos h1 {
-  font-size: 24px;
+  font-size: 20px;      /* Ajustado para caber mejor */
   font-weight: 800;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
 }
+
 .cabecera-titulos h2 {
-  font-size: 14px;
+  font-size: 16px;      /* Texto un poco mayor como pediste */
   color: var(--apple-azul);
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 0;        /* Eliminado el margen superior */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 #btn-cambiar-tema {
   background: var(--btn-tema-bg) !important;
   border: none !important;
-  width: 40px;
-  height: 40px;
+  width: 36px;  /* Tamaño compacto */
+  height: 36px;
   border-radius: 50% !important;
   cursor: pointer;
   color: var(--btn-tema-color) !important;
@@ -101,25 +118,25 @@ body {
   justify-content: center;
   box-shadow: var(--btn-tema-sombra) !important;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
   position: relative;
-  font-size: 0 !important;
-  line-height: 0 !important;
-  text-indent: -9999px !important;
-  overflow: hidden;
-}
-#btn-cambiar-tema:active {
-  transform: scale(0.94);
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden; /* Mantiene el icono dentro */
 }
 
+/* Forzamos el tamaño del icono para que no se pierda al achicar el botón */
 #btn-cambiar-tema::before {
   content: "";
-  width: 20px;
+  width: 20px;  /* Tamaño fijo del icono */
   height: 20px;
   display: block;
   background-color: currentColor;
-  text-indent: 0 !important;
+  position: absolute; /* Asegura que el icono quede centrado en el botón */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
 }
+
+/* Aseguramos que los SVGs sigan cargando bien con el tamaño nuevo */
 [data-theme="oscuro"] #btn-cambiar-tema::before {
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>') no-repeat center / contain;
@@ -129,6 +146,7 @@ body {
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>') no-repeat center / contain;
 }
 
+
 /* ==========================================================================
    ANILLOS Y CONTADORES
    ========================================================================== */
@@ -136,7 +154,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 .tarjeta-anillo {
   background: var(--glass-fondo);
@@ -183,7 +201,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
 }
 
@@ -195,7 +213,7 @@ body {
   padding: 3px;
   border-radius: 12px;
   display: flex;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   border: 1px solid var(--glass-borde);
 }
 [data-theme="claro"] .control-segmentado {
@@ -227,13 +245,13 @@ body {
   border-radius: 12px;
   font-size: 14px;
   outline: none;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .contenedor-sub-filtros {
   display: flex;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   background: rgba(0,0,0,0.06);
   padding: 4px;
   border-radius: 10px;
@@ -300,17 +318,17 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  min-height: 40px; /* Asegura que la fila tenga espacio suficiente */
 }
-
 .num-mapa-gigante {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--texto-principal);
   line-height: 1;
 }
 
 .barriada-derecha {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--texto-secundario);
   text-align: right;
@@ -320,25 +338,30 @@ body {
   text-overflow: ellipsis;
 }
 
+/* 1. Hacemos que el contenedor sea invisible y sin restricciones */
 .tarjeta-apple .imagen-mapa-wrapper {
   position: relative !important;
   width: 100%;
-  height: 160px;
+  height: auto !important; /* Cambiado de 160px a auto para que se ajuste a la imagen */
   border-radius: 10px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--glass-borde);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background-color: transparent !important; 
+  display: block; /* Para que no fuerce alineaciones de panel */
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
+/* 2. La imagen ahora define el tamaño */
 .tarjeta-apple .imagen-mapa-asset {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain; /* Centrada y sin cortarse */
+  height: auto; /* Esto hará que el contenedor crezca o decrezca según el alto de la imagen */
+  object-fit: contain; /* Garantiza que no se corte nada */
+  margin: 0;
 }
+
 
 /* Lupa flotante perfectamente adaptada al diseño centralizado */
 .tarjeta-apple .btn-lupa-flotante {
@@ -374,50 +397,70 @@ body {
   letter-spacing: 0.5px;
 }
 
-.btn-check-rectangular {
-  width: 65px;
-  height: 36px;
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
 [data-theme="claro"] .btn-check-rectangular {
-  border-color: rgba(0, 0, 0, 0.15);
+  background: #e5e5ea; /* Gris claro para modo claro */
 }
 
+.btn-check-rectangular {
+  width: 50px !important;
+  height: 28px !important;
+  border-radius: 14px !important;
+  background: #d1d1d6 !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-left: auto !important; /* Fuerza el botón a la derecha */
+  display: block !important;    /* Cambiado de flex a block para evitar rellenos */
+  position: relative !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+}
+
+/* El círculo deslizante */
+.btn-check-rectangular::after {
+  content: "" !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
+  position: absolute !important;
+  top: 2px !important; /* Centrado vertical */
+  left: 2px !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* Estado seleccionado: Verde */
+.tarjeta-apple.seleccionada .btn-check-rectangular {
+  background: var(--apple-verde) !important;
+}
+
+.tarjeta-apple.seleccionada .btn-check-rectangular::after {
+  transform: translateX(22px) !important;
+}
+
+/* Bloqueo total de cualquier elemento hijo */
+.btn-check-rectangular * {
+  display: none !important;
+}
+
+
+/* 6. Estilos de Resaltado Prioritario */
+.tarjeta-apple.prioritaria {
+  border-left: 4px solid var(--apple-naranja) !important;
+  background: linear-gradient(90deg, rgba(242, 153, 74, 0.05) 0%, rgba(28, 28, 30, 0.7) 10%) !important;
+}
+
+[data-theme="claro"] .tarjeta-apple.prioritaria {
+  background: linear-gradient(90deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 255, 255, 0.75) 10%) !important;
+}
+
+/* 7. Mantenemos el borde de selección de tarjeta */
 .tarjeta-apple.seleccionada {
   border-color: rgba(39, 174, 96, 0.4) !important;
-  background: rgba(39, 174, 96, 0.05) !important;
 }
 
-.tarjeta-apple.seleccionada .btn-check-rectangular {
-  background-color: var(--apple-verde) !important;
-  border-color: var(--apple-verde) !important;
-}
-
-.btn-check-rectangular .check-icon {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0;
-  transform: scale(0.6);
-  transition: all 0.2s ease;
-}
-
-.tarjeta-apple.seleccionada .btn-check-rectangular .check-icon {
-  opacity: 1;
-  transform: scale(1);
-}
 
 /* ==========================================================================
    TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
@@ -558,7 +601,7 @@ body {
 #panel-asignacion-unico,
 .panel-inferior-flotante,
 .panel-inferior-flotante .contenido-panel-flotante {
-  background: var(--glass-fondo) !important;
+  background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -570,6 +613,12 @@ body {
   transform: translateX(-50%) translateY(200%);
   width: 100%;
   max-width: 480px;
+  
+  /* CAMBIOS PARA EL EFECTO VIDRIO */
+  background: rgba(28, 28, 30, 0.75) !important; /* Opacidad al 75% */
+  backdrop-filter: blur(20px) !important;       /* El desenfoque */
+  -webkit-backdrop-filter: blur(20px) !important;
+  
   border-top: 1px solid var(--glass-borde) !important;
   border-left: 1px solid var(--glass-borde) !important;
   border-right: 1px solid var(--glass-borde) !important;
@@ -579,6 +628,7 @@ body {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
 }
+
 .panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
 .contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
 #txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
@@ -591,36 +641,82 @@ body {
   color: var(--texto-principal) !important;
   padding: 8px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 15px;
 }
+/* Botón bloqueado - Adaptable a modo claro y oscuro */
 .btn-apple-bloqueado {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.2);
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: var(--apple-gris-fondo); /* Asegúrate de tener esta variable o usa un gris seguro */
+  color: #98989d; /* Gris Apple estándar, visible en ambos modos */
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
+
+/* Forzar colores específicos si no tienes variables definidas */
+[data-theme="claro"] .btn-apple-bloqueado {
+  background: #e5e5ea; /* Gris claro para modo claro */
+  color: #8e8e93;
+}
+
+[data-theme="oscuro"] .btn-apple-bloqueado, 
+:root:not([data-theme="claro"]) .btn-apple-bloqueado {
+  background: rgba(255, 255, 255, 0.08); /* Gris muy oscuro para modo oscuro */
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Botón activo - Se mantiene igual */
 .btn-apple-verde-activo {
-  background: var(--apple-verde); color: white;
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: var(--apple-verde);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
 }
+
+
 
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
    ========================================================================== */
+/* Asegura que el footer responda exclusivamente a las variables del tema */
 .barra-tiempo-footer {
   position: fixed;
-  bottom: 0; 
-  left: 0; 
-  width: 100%; 
+  bottom: 0;
+  left: 0;
+  width: 100%;
   height: 48px;
-  background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-top: 1px solid var(--glass-borde);
-  padding: 8px 16px;
+  /* Fondo dinámico basado en tema */
+  background: rgba(28, 28, 30, 0.75) !important; 
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
   z-index: 100;
+  border-top: none !important;
+  padding: 8px 16px;
 }
-.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
-.linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+
+[data-theme="claro"] .barra-tiempo-footer {
+  background: rgba(255, 255, 255, 0.75) !important;
+}
+
+[data-theme="oscuro"] .barra-tiempo-footer,
+:root:not([data-theme="claro"]) .barra-tiempo-footer {
+  background: rgba(28, 28, 30, 0.75) !important;
+}
+
+/* Añade esto para el modo claro */
+[data-theme="claro"] .barra-tiempo-footer {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.info-tiempo-texto { display: flex; justify-content: space-between; font-size: 14px; color: var(--texto-secundario); margin-bottom: 2px; }
+.linea-progreso-fondo { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
 .linea-progreso-relleno { height: 100%; width: 0%; background-color: var(--apple-azul); border-radius: 2px; }
 
@@ -680,3 +776,26 @@ body {
   background-color: #ffffff !important;
   color: #18181b !important;
 }
+/* Iconos Minimalistas SVG */
+.icon-svg { 
+  display: inline-block; 
+  width: 14px; 
+  height: 14px; 
+  background-color: var(--texto-secundario); 
+  -webkit-mask-repeat: no-repeat; 
+  mask-repeat: no-repeat; 
+  -webkit-mask-size: contain; 
+  mask-size: contain; 
+  vertical-align: middle;
+}
+
+/* Silueta (Persona) */
+.ico-user { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'); }
+
+/* Calendario */
+.ico-date { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'); }
+
+/* Reloj (Tiempo/Estado) */
+.ico-clock { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'); }
+
+

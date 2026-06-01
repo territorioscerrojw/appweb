@@ -170,20 +170,30 @@ function actualizarAnillosEstadisticos() {
   const total = grupoMapas.length;
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
-  // NUEVA LÓGICA: En la calle (pendiente) significa entregado y NO trabajado
+  
+  // CORRECCIÓN AQUÍ:
+  // 'asignados' ahora cuenta todos los que tienen entregado = true (sin importar el estado de trabajo)
+  const asignadosTotales = grupoMapas.filter(m => m.entregado === true).length;
+  
+  // 'calle' (pendientes) sigue siendo entregado = true Y trabajado = false
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
-  // NUEVA LÓGICA: Hechos (completados) significa entregado y SÍ trabajado
+  
+  // 'hechos' (completados) sigue siendo entregado = true Y trabajado = true
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
   if (document.getElementById("w-prioritarios")) document.getElementById("w-prioritarios").innerText = prio;
-  if (document.getElementById("w-asignados")) document.getElementById("w-asignados").innerText = calle;
+  
+  // Cambiamos el valor de w-asignados para mostrar el total de asignados
+  if (document.getElementById("w-asignados")) document.getElementById("w-asignados").innerText = asignadosTotales;
   if (document.getElementById("w-completados")) document.getElementById("w-completados").innerText = hechos;
   
+  // Actualizamos los arcos (puedes ajustar el valor de asignados a 'asignadosTotales' o 'calle' según prefieras mostrar)
   inyectarArcoProgreso("progreso-prioritarios", prio, total);
-  inyectarArcoProgreso("progreso-asignados", calle, total);
+  inyectarArcoProgreso("progreso-asignados", asignadosTotales, total); 
   inyectarArcoProgreso("progreso-completados", hechos, total);
 }
+
 
 function inyectarArcoProgreso(idPath, valor, total) {
   const el = document.getElementById(idPath);
@@ -231,37 +241,31 @@ function filtrarYRenderizar() {
     );
   }
   
+  // Lógica de ordenación
   if (vistaActual === "disponibles") {
     dataset.sort((a, b) => {
       let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
       let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
-      if (aPrio && !bPrio) return -1;
-      if (!aPrio && bPrio) return 1;
-      return parseInt(a.id) - parseInt(b.id);
+      return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
     });
   } else {
-    if (criterioOrdenacionAsignados === "territorio") {
-      dataset.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-    } else if (criterioOrdenacionAsignados === "hermano") {
-      dataset.sort((a, b) => (a.hermano || "").localeCompare(b.hermano || "") || parseInt(a.id) - parseInt(b.id));
-    } else if (criterioOrdenacionAsignados === "fecha") {
-      dataset.sort((a, b) => {
-        let fA = a.fechaEntrega || 0;
-        let fB = b.fechaEntrega || 0;
-        if (fA === "Sin fecha" || !fA) return 1;
-        if (fB === "Sin fecha" || !fB) return -1;
-        return new Date(fB) - new Date(fA);
-      });
-    }
+    dataset.sort((a, b) => {
+      if (criterioOrdenacionAsignados === "territorio") return parseInt(a.id) - parseInt(b.id);
+      if (criterioOrdenacionAsignados === "hermano") return (a.hermano || "").localeCompare(b.hermano || "");
+      if (criterioOrdenacionAsignados === "fecha") return new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
+    });
   }
   
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
+    const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
     
     if (vistaActual === "disponibles") {
-      const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+      // --- FORMATO DISPONIBLES ORIGINAL RESTAURADO ---
+  
+div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
@@ -270,76 +274,50 @@ function filtrarYRenderizar() {
           <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
           <span class="barriada-derecha">${mapa.barriada}</span>
         </div>
-
         <div class="imagen-mapa-wrapper">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
-
-        <div class="fila-tarjeta-inferior">
-          <div class="bloque-prio-izq">
+                          <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular" aria-label="Seleccionar territorio">
-            <svg class="check-icon" viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </button>
-        </div>
-      `;
+          <button class="btn-check-rectangular" type="button"></button>
+         </div>`;
     } else {
-      // Mantiene el diseño horizontal original e intacto para la pestaña "Asignados"
+      // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
+      let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
-      let rawFecha = mapa.fechaEntrega;
-      let fechaFormateada = "Sin fecha";
-      if (rawFecha && rawFecha !== "Sin fecha") {
-        const f = new Date(rawFecha);
-        if (!isNaN(f.getTime())) {
-          fechaFormateada = f.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: '2-digit' });
-        } else {
-          fechaFormateada = rawFecha;
-        }
-      }
-
       div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect" onerror="this.src='https://placehold.co/150x100?text=Mapa'">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
         </div>
         <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea">
-            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          <div class="cabecera-datos-linea"><span class="num-mapa-chico">${parseInt(mapa.id)}</span><span class="nombre-barrio-chico">${mapa.barriada}</span></div>
+          <div class="info-hermano-linea">
+            <span class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</span>
+            <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
           </div>
-          <div class="info-asignacion-bloque">
-            <div class="item-info-linea">
-              <span class="ico-gris">👤</span>
-              <span class="txt-valor-negro">${mapa.hermano || 'No asignado'}</span>
-            </div>
-            <div class="item-info-linea">
-              <span class="ico-gris">📅</span>
-              <span class="txt-valor-gris">${fechaFormateada}</span>
-            </div>
+          <div class="estado-badge-linea">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
+  ${!mapa.trabajado 
+    ? `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>` 
+    : `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+  }
+  
+  ${!mapa.trabajado ? "Pendiente" : "Completo"}
+</span>
+            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <div class="fila-acciones-horizontal">
-            ${mapa.trabajado === true 
-              ? `<span class="badge-estado badge-hecho">✓ Terminado</span>`
-              : `<span class="badge-estado badge-pendiente">⏳ Pendiente</span>`
-            }
-            <button class="btn-circular-rojo-retirar" onclick="solicitarRetornoTerritorio('${mapa.id}')" title="Quitar asignación">✕</button>
-          </div>
-        </div>
-      `;
+        </div>`;
     }
     grid.appendChild(div);
   });
 }
-
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
     actualizarEstadosBotonesFiltro();
@@ -587,34 +565,26 @@ function inyectarEstilosCorreccionSelector() {
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      background-color: rgba(28, 28, 30, 0.85) !important;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      /* Eliminamos el borde sólido si es lo que genera la línea blanca */
+      border: none !important; 
+      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
-    #txt-contador-seleccionados { color: #ffffff !important; font-weight: 600; }
-    #sel-hermano-unico {
-      background-color: rgba(255, 255, 255, 0.08) !important;
-      color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      font-size: 14px !important;
-    }
-    #sel-hermano-unico option { background-color: #1c1c1e !important; color: #ffffff !important; }
 
     [data-theme="claro"] #panel-asignacion-unico {
-      background-color: rgba(242, 242, 247, 0.9) !important;
-      border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+      background-color: rgba(255, 255, 255, 0.75) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border: none !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
-    [data-theme="claro"] #txt-contador-seleccionados { color: #1c1c1e !important; }
-    [data-theme="claro"] #sel-hermano-unico {
-      background-color: #ffffff !important;
-      color: #1c1c1e !important;
-      border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    
+    /* Aseguramos que el contenido interno no tenga fondo opaco */
+    .contenido-panel-flotante {
+      background: transparent !important;
     }
-    [data-theme="claro"] #sel-hermano-unico option { background-color: #ffffff !important; color: #1c1c1e !important; }
-    [data-theme="claro"] .btn-apple-bloqueado { background-color: rgba(0, 0, 0, 0.05) !important; color: rgba(0, 0, 0, 0.3) !important; }
-    [data-theme="claro"] .btn-apple-verde-activo { background-color: #34c759 !important; color: #ffffff !important; }
   `;
   document.head.appendChild(style);
 }
