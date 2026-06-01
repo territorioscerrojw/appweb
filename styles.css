@@ -350,7 +350,7 @@ body {
   overflow: hidden;
   background-color: transparent !important; 
   display: block; /* Para que no fuerce alineaciones de panel */
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   box-shadow: none !important;
   padding: 0 !important;
   margin: 0 !important;
