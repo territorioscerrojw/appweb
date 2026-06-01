@@ -237,7 +237,6 @@ body {
 }
 
 .contenedor-busqueda input {
-  display: none !important
   width: 100%;
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
@@ -247,6 +246,9 @@ body {
   font-size: 14px;
   outline: none;
   margin-bottom: 14px;
+}
+.contenedor-busqueda {
+  display: none !important;
 }
 
 .contenedor-sub-filtros {
