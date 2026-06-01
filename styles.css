@@ -60,6 +60,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+* {
+  touch-action: manipulation;
+}
+
 body {
   background-color: var(--fondo-base);
   color: var(--texto-principal);
