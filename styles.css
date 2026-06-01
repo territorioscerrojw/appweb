@@ -399,22 +399,20 @@ body {
   background: #e5e5ea; /* Gris claro para modo claro */
 }
 
-/* Limpieza total del botón interruptor */
 .btn-check-rectangular {
   width: 50px !important;
   height: 28px !important;
   border-radius: 14px !important;
   background: #3a3a3c !important;
-  position: relative !important;
   border: none !important;
   cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  display: flex !important;
-  align-items: center !important;
   padding: 0 !important;
   margin: 0 !important;
+  margin-left: auto !important; /* Fuerza el botón a la derecha */
+  display: block !important;    /* Cambiado de flex a block para evitar rellenos */
+  position: relative !important;
   flex-shrink: 0 !important;
-  overflow: hidden !important; /* Esto oculta cualquier cosa que se desborde */
+  overflow: hidden !important;
 }
 
 /* El círculo deslizante */
@@ -425,12 +423,13 @@ body {
   background: #ffffff !important;
   border-radius: 50% !important;
   position: absolute !important;
+  top: 2px !important; /* Centrado vertical */
   left: 2px !important;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
-/* Estado activo */
+/* Estado seleccionado: Verde */
 .tarjeta-apple.seleccionada .btn-check-rectangular {
   background: var(--apple-verde) !important;
 }
@@ -439,29 +438,11 @@ body {
   transform: translateX(22px) !important;
 }
 
-/* Limpieza absoluta: desactiva cualquier contenido hijo del botón */
-.btn-check-rectangular, 
+/* Bloqueo total de cualquier elemento hijo */
 .btn-check-rectangular * {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background-image: none !important;
-  content: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
+  display: none !important;
 }
 
-/* Ocultar cualquier resto de iconos antiguos */
-.btn-check-rectangular svg, 
-.btn-check-rectangular .check-icon {
-  display: none !important;
-  visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-  opacity: 0 !important;
-}
 
 /* 6. Estilos de Resaltado Prioritario */
 .tarjeta-apple.prioritaria {
