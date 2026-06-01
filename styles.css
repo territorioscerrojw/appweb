@@ -470,27 +470,41 @@ body {
   background: linear-gradient(90deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 255, 255, 0.75) 10%) !important;
 }
 
-/* 1. Borde de la tarjeta más destacado */
+/* ==========================================================================
+   LÓGICA DE SELECCIÓN (MODO OSCURO Y CLARO)
+   ========================================================================== */
+
+/* 1. Selección para Tarjetas NO prioritarias (Base) */
 .tarjeta-apple.seleccionada {
-  border: 2px solid var(--apple-verde) !important; /* Más grueso y sólido */
-  box-shadow: 0 4px 20px rgba(39, 174, 96, 0.25) !important; /* Sombra verde suave para resaltar */
+  border: 2px solid var(--apple-verde) !important;
+  box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2) !important;
 }
 
-/* 2. Colorear el número de mapa de verde al seleccionar */
-.tarjeta-apple.seleccionada .num-mapa-gigante {
-  color: var(--apple-verde) !important;
-}
-
-/* 3. Colorear la barriada de verde al seleccionar */
-.tarjeta-apple.seleccionada .barriada-derecha {
-  color: var(--apple-verde) !important;
-  font-weight: 800 !important; /* Un poco más grueso para que destaque más */
-}
-
+/* 2. Selección para Tarjetas PRIORITARIAS (Sobrescribe borde izquierdo) */
 .tarjeta-apple.seleccionada.prioritaria {
   border-left: 4px solid var(--apple-verde) !important;
-  background: linear-gradient(90deg, rgba(39, 174, 96, 0.05) 0%, rgba(28, 28, 30, 0.7) 10%) !important;
+  border-right: 2px solid var(--apple-verde) !important;
+  border-top: 2px solid var(--apple-verde) !important;
+  border-bottom: 2px solid var(--apple-verde) !important;
 }
+
+/* 3. Colorear textos internos al seleccionar (Funciona para ambos temas) */
+.tarjeta-apple.seleccionada .num-mapa-gigante,
+.tarjeta-apple.seleccionada .barriada-derecha {
+  color: var(--apple-verde) !important;
+  font-weight: 800 !important;
+}
+
+/* 4. MODO CLARO: Ajuste de fondo para tarjeta seleccionada prioritaria */
+[data-theme="claro"] .tarjeta-apple.seleccionada.prioritaria {
+  background: linear-gradient(90deg, rgba(52, 199, 89, 0.1) 0%, rgba(255, 255, 255, 0.9) 10%) !important;
+}
+
+/* 5. MODO OSCURO: Ajuste de fondo para tarjeta seleccionada prioritaria */
+[data-theme="oscuro"] .tarjeta-apple.seleccionada.prioritaria {
+  background: linear-gradient(90deg, rgba(39, 174, 96, 0.1) 0%, rgba(28, 28, 30, 0.9) 10%) !important;
+}
+
 
 /* ==========================================================================
    TARJETAS PESTAÑA: ASIGNADOS (DISEÑO HORIZONTAL PROTEGIDO)
