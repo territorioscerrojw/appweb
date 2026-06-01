@@ -564,63 +564,26 @@ function inyectarEstilosCorreccionSelector() {
   const style = document.createElement("style");
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
-    /* Panel principal con efecto vidrio */
     #panel-asignacion-unico {
       background-color: rgba(28, 28, 30, 0.70) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    #txt-contador-seleccionados { 
-      color: #ffffff !important; 
-      font-weight: 600; 
-    }
-    
-    #sel-hermano-unico {
-      background-color: rgba(255, 255, 255, 0.08) !important;
-      color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      font-size: 14px !important;
-    }
-    
-    #sel-hermano-unico option { 
-      background-color: #1c1c1e !important; 
-      color: #ffffff !important; 
+      /* Eliminamos el borde sólido si es lo que genera la línea blanca */
+      border: none !important; 
+      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
-    /* Modo Claro con efecto vidrio */
     [data-theme="claro"] #panel-asignacion-unico {
-      background-color: rgba(242, 242, 247, 0.75) !important;
+      background-color: rgba(255, 255, 255, 0.75) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
-      border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+      border: none !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
     
-    [data-theme="claro"] #txt-contador-seleccionados { 
-      color: #1c1c1e !important; 
-    }
-    
-    [data-theme="claro"] #sel-hermano-unico {
-      background-color: #ffffff !important;
-      color: #1c1c1e !important;
-      border: 1px solid rgba(0, 0, 0, 0.15) !important;
-    }
-    
-    [data-theme="claro"] #sel-hermano-unico option { 
-      background-color: #ffffff !important; 
-      color: #1c1c1e !important; 
-    }
-    
-    [data-theme="claro"] .btn-apple-bloqueado { 
-      background-color: rgba(0, 0, 0, 0.05) !important; 
-      color: rgba(0, 0, 0, 0.3) !important; 
-    }
-    
-    [data-theme="claro"] .btn-apple-verde-activo { 
-      background-color: #34c759 !important; 
-      color: #ffffff !important; 
+    /* Aseguramos que el contenido interno no tenga fondo opaco */
+    .contenido-panel-flotante {
+      background: transparent !important;
     }
   `;
   document.head.appendChild(style);
