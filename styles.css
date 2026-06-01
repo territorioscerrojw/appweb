@@ -470,10 +470,23 @@ body {
   background: linear-gradient(90deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 255, 255, 0.75) 10%) !important;
 }
 
-/* 7. Mantenemos el borde de selección de tarjeta */
+/* 1. Borde de la tarjeta más destacado */
 .tarjeta-apple.seleccionada {
-  border-color: rgba(39, 174, 96, 0.4) !important;
+  border: 2px solid var(--apple-verde) !important; /* Más grueso y sólido */
+  box-shadow: 0 4px 20px rgba(39, 174, 96, 0.25) !important; /* Sombra verde suave para resaltar */
 }
+
+/* 2. Colorear el número de mapa de verde al seleccionar */
+.tarjeta-apple.seleccionada .num-mapa-gigante {
+  color: var(--apple-verde) !important;
+}
+
+/* 3. Colorear la barriada de verde al seleccionar */
+.tarjeta-apple.seleccionada .barriada-derecha {
+  color: var(--apple-verde) !important;
+  font-weight: 800 !important; /* Un poco más grueso para que destaque más */
+}
+
 
 
 /* ==========================================================================
