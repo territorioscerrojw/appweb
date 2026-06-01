@@ -641,15 +641,41 @@ body {
   border-radius: 8px;
   font-size: 13px;
 }
+/* Botón bloqueado - Adaptable a modo claro y oscuro */
 .btn-apple-bloqueado {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.2);
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: var(--apple-gris-fondo); /* Asegúrate de tener esta variable o usa un gris seguro */
+  color: #98989d; /* Gris Apple estándar, visible en ambos modos */
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
+
+/* Forzar colores específicos si no tienes variables definidas */
+[data-theme="claro"] .btn-apple-bloqueado {
+  background: #e5e5ea; /* Gris claro para modo claro */
+  color: #8e8e93;
+}
+
+[data-theme="oscuro"] .btn-apple-bloqueado, 
+:root:not([data-theme="claro"]) .btn-apple-bloqueado {
+  background: rgba(255, 255, 255, 0.08); /* Gris muy oscuro para modo oscuro */
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Botón activo - Se mantiene igual */
 .btn-apple-verde-activo {
-  background: var(--apple-verde); color: white;
-  border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: var(--apple-verde);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
 }
+
 
 
 /* ==========================================================================
