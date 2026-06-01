@@ -280,12 +280,13 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
-                  <div class="fila-tarjeta-inferior">
-          <div class="bloque-prio-izq">
+                          <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular"></button>
-        </div>;
+          <button class="btn-check-rectangular" type="button"></button>
+        </div>
+
 
 
     } else {
