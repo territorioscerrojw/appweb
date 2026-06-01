@@ -565,7 +565,7 @@ function inyectarEstilosCorreccionSelector() {
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      background-color: rgba(0, 0, 0, 0) !important;
+      background-color: rgba(0, 0, 0, 0.75) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
       /* Eliminamos el borde sólido si es lo que genera la línea blanca */
