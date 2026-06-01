@@ -650,6 +650,13 @@ body {
   background: var(--apple-verde); color: white;
   border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
 }
+/* Fuerza la transparencia en los contenedores del panel */
+#panel-asignacion-unico, 
+.panel-inferior-flotante, 
+.contenido-panel-flotante {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
