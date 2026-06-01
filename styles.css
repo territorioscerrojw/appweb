@@ -40,21 +40,18 @@
   --btn-tema-sombra: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff;
 }
 
-* {
+body {
+ background-color: var(--fondo-base);
+  color: var(--texto-principal);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  letter-spacing: -0.2px;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', -apple-system, sans-serif;
   -webkit-tap-highlight-color: transparent;
-}
-
-body {
- background-color: var(--fondo-base);
-  color: var(--texto-principal);
-  min-height: 100vh;
-  width: 150%;
-  overflow-x: hidden;
-  letter-spacing: -0.2px;
 }
 
 .fondo-mapa-blur {
