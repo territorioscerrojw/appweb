@@ -565,11 +565,27 @@ function inyectarEstilosCorreccionSelector() {
   style.id = "hoja-estilos-dinamica-selector";
   style.innerHTML = `
     #panel-asignacion-unico {
-      background-color: rgba(28, 28, 30, 0.4) !important; /* Opacidad reducida */
+      background-color: rgba(28, 28, 30, 0.70) !important;
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
+      /* Eliminamos el borde sólido si es lo que genera la línea blanca */
+      border: none !important; 
       border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    [data-theme="claro"] #panel-asignacion-unico {
+      background-color: rgba(255, 255, 255, 0.75) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border: none !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    /* Aseguramos que el contenido interno no tenga fondo opaco */
+    .contenido-panel-flotante {
+      background: transparent !important;
     }
   `;
   document.head.appendChild(style);
 }
+ 
