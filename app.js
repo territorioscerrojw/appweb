@@ -263,7 +263,9 @@ function filtrarYRenderizar() {
     
     if (vistaActual === "disponibles") {
       // --- FORMATO DISPONIBLES ORIGINAL RESTAURADO ---
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria-row' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+  
+div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
       
