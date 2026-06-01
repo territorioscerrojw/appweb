@@ -793,27 +793,5 @@ body, #app, .contenedor-principal {
   background: transparent !important;
 }
 
-/* Limpieza radical de fondos sólidos en la estructura */
-body, 
-#app, 
-.app-container, 
-.main-wrapper, 
-.page-content {
-  background-color: transparent !important;
-  background: transparent !important;
-}
 
-/* Forzamos que la capa base de la app sea el fondo real (ej. oscuro) */
-/* Si tu app es oscura, pon aquí tu color de fondo principal */
-body {
-  background-color: #000000 !important; 
-}
-
-/* Aseguramos que el pie de página ignore cualquier fondo del padre */
-.barra-tiempo-footer {
-  background: rgba(28, 28, 30, 0.75) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: none !important;
-}
 
