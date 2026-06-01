@@ -220,10 +220,6 @@ body {
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
 .control-segmentado {
-  position: fixed;
-  
-  top: 5px
-  z-index: 1000; /* Asegura que pase por encima de las tarjetas */
   background: rgba(0, 0, 0, 0.3);
   padding: 3px;
   border-radius: 12px;
