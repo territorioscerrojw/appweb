@@ -690,7 +690,7 @@ body {
   height: 48px;
   
   /* CAMBIA ESTO: eliminamos la variable sólida y el filtro desactivado */
-  background: rgba(28, 28, 30, 0.75) !important; 
+  background: rgba(28, 28, 30, 0.1) !important; 
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   
