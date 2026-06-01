@@ -687,13 +687,24 @@ body {
   left: 0; 
   width: 100%; 
   height: 48px;
-  background: var(--glass-fondo) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  
+  /* CAMBIA ESTO: eliminamos la variable sólida y el filtro desactivado */
+  background: rgba(28, 28, 30, 0.75) !important; 
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  
   border-top: 1px solid var(--glass-borde);
   padding: 8px 16px;
   z-index: 100;
 }
+
+/* Añade esto para el modo claro */
+[data-theme="claro"] .barra-tiempo-footer {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
 .info-tiempo-texto { display: flex; justify-content: space-between; font-size: 11px; color: var(--texto-secundario); margin-bottom: 2px; }
 .linea-progreso-fondo { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
 [data-theme="claro"] .linea-progreso-fondo { background: rgba(0, 0, 0, 0.06); }
