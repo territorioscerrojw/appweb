@@ -285,10 +285,7 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
           <button class="btn-check-rectangular" type="button"></button>
-        </div>;
-
-
-
+         </div>`;
     } else {
       // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
