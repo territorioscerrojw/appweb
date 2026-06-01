@@ -220,7 +220,7 @@ body {
    CONTROLES, SELECTORES Y BUSCADOR
    ========================================================================== */
 .control-segmentado {
-  position: sticky;
+  position: fixed;
   position: -webkit-sticky; /* Para compatibilidad con Safari */
   top: 5px
   z-index: 1000; /* Asegura que pase por encima de las tarjetas */
