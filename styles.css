@@ -221,7 +221,7 @@ body {
    ========================================================================== */
 .control-segmentado {
   position: fixed;
-  position: -webkit-sticky; /* Para compatibilidad con Safari */
+  
   top: 5px
   z-index: 1000; /* Asegura que pase por encima de las tarjetas */
   background: rgba(0, 0, 0, 0.3);
