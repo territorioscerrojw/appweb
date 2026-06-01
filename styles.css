@@ -439,23 +439,28 @@ body {
   transform: translateX(22px) !important;
 }
 
-/* Eliminar absolutamente cualquier rastro del icono anterior */
-/* Eliminar el icono viejo totalmente */
+/* Limpieza absoluta: desactiva cualquier contenido hijo del botón */
+.btn-check-rectangular, 
+.btn-check-rectangular * {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-image: none !important;
+  content: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ocultar cualquier resto de iconos antiguos */
+.btn-check-rectangular svg, 
 .btn-check-rectangular .check-icon {
   display: none !important;
   visibility: hidden !important;
   width: 0 !important;
   height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Forzar que el botón sea solo el track del interruptor */
-.btn-check-rectangular {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important; /* Esto corta cualquier cosa que se salga del botón */
+  opacity: 0 !important;
 }
 
 /* 6. Estilos de Resaltado Prioritario */
