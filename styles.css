@@ -2,11 +2,16 @@
 /* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
 
 :root {
-  --fondo-base: #09090b;
-  --glass-fondo: #121214; /* Fondo liso para tarjetas en modo oscuro */
-  --glass-borde: rgba(255, 255, 255, 0.08);
+
+  /* Fondo base un poco más profundo para que las tarjetas resalten */
+  --fondo-base: #070708; 
+  /* Tarjetas: un gris más azulado y ligeramente más claro para mayor contraste */
+  --glass-fondo: #1a1a1f; 
+  /* Borde: ligeramente más visible (12% en lugar de 8%) */
+  --glass-borde: rgba(255, 255, 255, 0.12);
+  /* Texto secundario: un poco más blanco para legibilidad */
+  --texto-secundario: #b4b4be; 
   --texto-principal: #f4f4f5;
-  --texto-secundario: #a1a1aa;
   --apple-azul: #2f80ed;
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
@@ -31,7 +36,13 @@
   --apple-verde: #34c759;
   --apple-naranja: #ff9500;
   --apple-rojo: #ff3b30;
-  
+  [data-theme="oscuro"] .tarjeta-apple,
+[data-theme="oscuro"] .tarjeta-anillo,
+[data-theme="oscuro"] .tarjeta-apple-horizontal {
+  /* Sombra sutil que despega la tarjeta del fondo */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
   /* Línea de fondo vacía de los contadores visible en modo claro */
   --anillo-vacio: rgba(0, 0, 0, 0.1);
   
