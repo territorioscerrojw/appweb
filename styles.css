@@ -225,7 +225,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 1000;
 }
 
 /* ==========================================================================
@@ -348,7 +348,7 @@ body {
 }
 .num-mapa-gigante {
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 1000;
   color: var(--texto-principal);
   line-height: 1;
 }
