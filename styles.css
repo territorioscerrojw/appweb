@@ -578,7 +578,7 @@ body {
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
   gap: 6px;
   overflow: hidden;
-  padding-left: 12px;       /* Un poco de aire extra respecto a la imagen */
+  padding-left: 20px;       /* Un poco de aire extra respecto a la imagen */
 }
 
 .cabecera-datos-linea {
