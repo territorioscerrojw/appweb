@@ -531,7 +531,8 @@ function filtrarYRenderizarHermano() {
   if (!grid) return;
   
   // Aseguramos visibilidad
-  grid.style.display = "flex";
+grid.style.display = "flex"; 
+  grid.style.flexWrap = "wrap";
   grid.innerHTML = "";
   
   const asignadosHermano = baseDatosCompleta.filter(m => 
