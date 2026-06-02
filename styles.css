@@ -704,7 +704,7 @@ body {
   flex-shrink: 0;
   padding: 8px 16px;
   border-radius: 20px; /* <--- Esto le da la forma redondeada */
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -726,7 +726,7 @@ body {
   display: block; /* Obliga a que ocupe su propia línea */
   text-align: center;
   font-weight: 700; /* Negrita */
-  font-size: 12px;
+  font-size: 16px;
   color: var(--apple-verde, #34c759);
   margin-bottom: 12px; /* <--- Esto crea el espacio entre el contador y el selector */
   margin-top: 4px;
