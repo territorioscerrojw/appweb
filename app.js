@@ -679,8 +679,14 @@ function limpiarSeleccionYEsconder() {
 // 1. Función que lanza la confirmación
 function solicitarConfirmacion(idMapa) {
   if (confirm("¿Marcar este territorio como completado?")) {
-    // Si dice sí, procedemos a marcarlo
-    ejecutarHechoHermanoDirecto(idMapa);
+    const sCompletar = document.createElement("script");
+    sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
+    sCompletar.onload = async () => { 
+      sCompletar.remove(); 
+      await descargarDatosDesdeSheets(); // Esto refresca la base de datos
+      filtrarYRenderizarHermano();      // Esto repinta la lista y el botón desaparecerá
+    };
+    document.body.appendChild(sCompletar);
   }
 }
 
