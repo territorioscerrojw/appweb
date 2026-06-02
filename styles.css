@@ -27,7 +27,7 @@
 }
 
 [data-theme="claro"] {
-  --fondo-base: #f4f4f7;
+  --fondo-base: #f2f2f7;
   --glass-fondo: #ffffff; /* Fondo liso para tarjetas en modo claro */
   --glass-borde: rgba(0, 0, 0, 0.07);
   --texto-principal: #18181b;
