@@ -136,34 +136,35 @@
       line-height: 1;
     }
 
-    .marca-agua-trabajado {
-  display: none;
+  /* 1. Mantenemos el contenedor de la marca de agua oculto por defecto */
+.marca-agua-trabajado {
+  display: none; 
   position: absolute;
   top: 0; 
   left: 0;
   width: 100%;
   height: 100%;
-  /* Flexbox para centrar el texto exactamente en el medio */
-  display: flex;
   align-items: center;
   justify-content: center;
-  /* Rotación diagonal de esquina a esquina */
-  transform: rotate(-30deg); 
-  color: rgba(255, 255, 255, 0.7); /* Blanco con un poco de transparencia */
+  transform: rotate(-30deg);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 1.8rem;
   font-weight: 900;
   z-index: 10;
-  pointer-events: none; /* Para que no interfiera con clicks */
+  pointer-events: none;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
 
-/* Ajuste para que se muestre como flex al estar terminado */
-.tarjeta-mapa.terminado .marca-agua-trabajado { display: flex; }
+/* 2. Solo cuando la tarjeta tiene la clase 'terminado', mostramos el bloque */
+.tarjeta-mapa.terminado .marca-agua-trabajado {
+  display: flex; /* Esto activa el centrado y la visibilidad */
+}
 
-    
-    .tarjeta-mapa.terminado .imagen-mapa { filter: brightness(1.2) opacity(0.4); }
-
+/* 3. Aseguramos que la imagen se atenúe solo en las terminadas */
+.tarjeta-mapa.terminado .imagen-mapa {
+  filter: brightness(0.6) opacity(0.8);
+}
     .btn-completar-accion {
       width: 100%; margin-top: 14px; padding: 12px;
       background: #27ae60; color: #fff; border: none;
