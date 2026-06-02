@@ -541,34 +541,35 @@ function filtrarYRenderizarHermano() {
   // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
   asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
   
-  asignadosHermano.forEach(mapa => {
-    const div = document.createElement("div");
-    // NUEVA LÓGICA: Si ya está trabajado (true), se le añade la opacidad visual de 'terminado'
-    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
-    
-    // NUEVA LÓGICA: Si NO está trabajado (false), se le ofrece el botón para completarlo
-    let accionBotonHTML = `<button class="btn-completar-hermano" onclick="ejecutarHechoHermano(${mapa.id}, this)">Completado</button>`;
-    if (mapa.trabajado) {
-      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
-    }
-    
-    div.innerHTML = `
-      <div class="cabecera-tarjeta">
-        <div class="bloque-id">
-          <span class="num-mapa">${parseInt(mapa.id)}</span>
-          <span class="nombre-barrio">${mapa.barriada}</span>
-        </div>
+ asignadosHermano.forEach(mapa => {
+  const div = document.createElement("div");
+  div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
+  
+  // LÓGICA NUEVA: Botón condicional con confirmación
+  let accionBotonHTML = "";
+  if (mapa.trabajado) {
+    accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
+  } else {
+    accionBotonHTML = `<button class="btn-marcar-completado" onclick="solicitarConfirmacion(${mapa.id})">Marcar como completado</button>`;
+  }
+  
+  div.innerHTML = `
+    <div class="cabecera-tarjeta">
+      <div class="bloque-id">
+        <span class="num-mapa">${parseInt(mapa.id)}</span>
+        <span class="nombre-barrio">${mapa.barriada}</span>
       </div>
-      <div class="imagen-mapa-wrapper">
-        <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-      </div>
-      <div style="margin-top:4px;">${accionBotonHTML}</div>
-    `;
-    grid.appendChild(div);
-  });
+    </div>
+    <div class="imagen-mapa-wrapper">
+      <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+    </div>
+    <div style="margin-top:4px;">${accionBotonHTML}</div>
+  `;
+  grid.appendChild(div);
+});
 }
 
 function ejecutarHechoHermano(idMapa, btn) {
@@ -677,4 +678,21 @@ function limpiarSeleccionYEsconder() {
   // 5. Actualizar botón
   evaluarEstadoBotonAsignar();
 }
+// 1. Función que lanza la confirmación
+function solicitarConfirmacion(idMapa) {
+  if (confirm("¿Marcar este territorio como completado?")) {
+    // Si dice sí, procedemos a marcarlo
+    ejecutarHechoHermanoDirecto(idMapa);
+  }
+}
 
+// 2. Función adaptada para no requerir un botón existente en el DOM
+async function ejecutarHechoHermanoDirecto(idMapa) {
+  const sCompletar = document.createElement("script");
+  sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
+  sCompletar.onload = async () => { 
+    sCompletar.remove(); 
+    await descargarDatosDesdeSheets(); // Esto refresca la lista y hará desaparecer el botón
+  };
+  document.body.appendChild(sCompletar);
+}
