@@ -169,7 +169,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
     barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
     
     // Aplicamos clase según los días restantes
-    if (diasRestantes <= 2) {
+    if (diasRestantes <= 3) {
       barra.classList.add("neon-rojo");
     } else if (diasRestantes <= 7) {
       barra.classList.add("neon-naranja");
