@@ -809,6 +809,22 @@ body {
   border-radius: 3px;
   transition: width 0.5s ease-out; /* Animación suave */
 }
+/* Efectos Neón */
+.neon-verde {
+  background-color: var(--apple-verde);
+  box-shadow: 0 0 10px var(--apple-verde), 0 0 20px var(--apple-verde);
+}
+
+.neon-naranja {
+  background-color: var(--apple-naranja);
+  box-shadow: 0 0 10px var(--apple-naranja), 0 0 20px var(--apple-naranja);
+}
+
+.neon-rojo {
+  background-color: var(--apple-rojo);
+  box-shadow: 0 0 10px var(--apple-rojo), 0 0 20px var(--apple-rojo);
+}
+
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
    ========================================================================== */
