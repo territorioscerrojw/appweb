@@ -17,6 +17,7 @@
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
   
+  
   /* Línea de fondo vacía de los contadores visible en modo oscuro */
   --anillo-vacio: rgba(255, 255, 255, 0.12);
   
@@ -56,8 +57,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: 'Varela Round', -apple-system, sans-serif;
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased; 
 }
 
 * {
