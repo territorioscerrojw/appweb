@@ -529,6 +529,8 @@ function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
 function filtrarYRenderizarHermano() {
   const grid = document.getElementById("contenedor-hermano-grid");
   if (!grid) return;
+  grid.style.display = "flex"; 
+  grid.style.flexWrap = "wrap";
   grid.innerHTML = "";
   
   const asignadosHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
