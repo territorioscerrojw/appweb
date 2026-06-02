@@ -31,7 +31,7 @@
       background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
-    }
+        }
 
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
@@ -180,6 +180,33 @@
       font-weight: 600; cursor: pointer;
       font-size: 16px
     }
+.visor-oculto {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#imagen-ampliada {
+  max-width: 90%;
+  max-height: 80%;
+  object-fit: contain;
+  border-radius: 8px;
+  /* Esto permite el zoom nativo en móviles con los dedos */
+}
+
+.btn-cerrar-visor {
+  position: absolute;
+  top: 20px; right: 30px;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+}
+    
   </style>
 </head>
 <body>
@@ -405,5 +432,9 @@
       document.documentElement.setAttribute("data-theme", tema);
     }
   </script>
+  <div id="visor-mapa" class="visor-oculto" onclick="cerrarVisor()">
+  <img id="imagen-ampliada" src="" alt="Mapa ampliado">
+  <span class="btn-cerrar-visor">&times;</span>
+</div>
 </body>
 </html>
