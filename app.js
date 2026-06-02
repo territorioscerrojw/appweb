@@ -150,14 +150,32 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const fin = new Date(finStr);
   const inicio = new Date(inicioStr);
   
+  // Calcular porcentaje de tiempo transcurrido
   const tiempoTotal = fin - inicio;
   const tiempoTranscurrido = ahora - inicio;
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
-  const diasRestantes = Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
-  const msgTiempo = diasRestantes > 0 ? `Quedan ${diasRestantes} días de campaña` : "Campaña concluida";
+  // Lógica de textos según el momento
+  let msgTiempo = "";
+  let dias = 0;
+
+  if (ahora < inicio) {
+    // Aún no ha empezado
+    dias = Math.ceil((inicio - ahora) / (1000 * 60 * 60 * 24));
+    msgTiempo = `Faltan ${dias} días para empezar la campaña`;
+    porcentaje = 0; // Barra vacía si no ha empezado
+  } else if (ahora > fin) {
+    // Ya terminó
+    msgTiempo = "Campaña concluida";
+    porcentaje = 100;
+  } else {
+    // Durante la campaña
+    dias = Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
+    msgTiempo = `Quedan ${dias} días de campaña`;
+  }
   
+  // Actualizar etiquetas
   if (document.getElementById("lbl-tiempo-restante")) document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
   if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
   
@@ -165,16 +183,18 @@ function procesarFechasYBarras(inicioStr, finStr) {
   if (barra) {
     barra.style.width = `${porcentaje}%`;
     
-    // Eliminamos clases previas para evitar conflictos
+    // Limpiar clases
     barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
     
-    // Aplicamos clase según los días restantes
-    if (diasRestantes <= 3) {
-      barra.classList.add("neon-rojo");
-    } else if (diasRestantes <= 7) {
-      barra.classList.add("neon-naranja");
-    } else {
-      barra.classList.add("neon-verde");
+    // Asignar color solo si la campaña está en curso (o cerca de terminar)
+    if (ahora >= inicio && ahora <= fin) {
+        if (dias <= 2) {
+            barra.classList.add("neon-rojo");
+        } else if (dias <= 7) {
+            barra.classList.add("neon-naranja");
+        } else {
+            barra.classList.add("neon-verde");
+        }
     }
   }
 }
