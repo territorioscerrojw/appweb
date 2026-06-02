@@ -531,45 +531,45 @@ function filtrarYRenderizarHermano() {
   if (!grid) return;
   grid.innerHTML = "";
   
-  const asignadosHermano = baseDatosCompleta.filter(m => m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
+  const asignadosHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
   
   if (asignadosHermano.length === 0) {
     grid.innerHTML = "<p style='padding:50px; text-align:center; color:var(--texto-secundario); font-size:14px;'>No tienes mapas asignados.</p>";
     return;
   }
   
-  // Ordenar para que los pendientes (trabajado === false) aparezcan al principio
   asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
   
- asignadosHermano.forEach(mapa => {
-  const div = document.createElement("div");
-  div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
-  console.log(`Procesando tarjeta ${mapa.id}. ¿Está trabajado?: ${mapa.trabajado}`);
-  // LÓGICA NUEVA: Botón condicional con confirmación
-  let accionBotonHTML = "";
-  if (mapa.trabajado) {
-    accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
-  } else {
-    accionBotonHTML = `<button class="btn-marcar-completado" onclick="solicitarConfirmacion(${mapa.id})">Marcar como completado</button>`;
-  }
-  console.log("HTML del botón generado:", accionBotonHTML);
-  div.innerHTML = `
-    <div class="cabecera-tarjeta">
-      <div class="bloque-id">
-        <span class="num-mapa">${parseInt(mapa.id)}</span>
-        <span class="nombre-barrio">${mapa.barriada}</span>
+  asignadosHermano.forEach(mapa => {
+    const div = document.createElement("div");
+    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
+    
+    // FORZAMOS LA CREACIÓN DEL BOTÓN PARA DEPURAR
+    let accionBotonHTML = "";
+    
+    if (mapa.trabajado === true) {
+      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
+    } else {
+      // Si llega aquí y no ves el botón, es que el DOM no lo está insertando
+      accionBotonHTML = `<button class="btn-marcar-completado" onclick="solicitarConfirmacion(${mapa.id})" style="display:block; width:100%; padding:10px; background:blue; color:white;">PRUEBA BOTÓN</button>`;
+    }
+    
+    div.innerHTML = `
+      <div class="cabecera-tarjeta">
+        <div class="bloque-id">
+          <span class="num-mapa">${parseInt(mapa.id)}</span>
+          <span class="nombre-barrio">${mapa.barriada}</span>
+        </div>
       </div>
-    </div>
-    <div class="imagen-mapa-wrapper">
-      <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ico-minimalista"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </button>
-      <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-    </div>
-    <div style="margin-top:4px;">${accionBotonHTML}</div>
-  `;
-  grid.appendChild(div);
-});
+      <div class="imagen-mapa-wrapper">
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+      </div>
+      <div class="contenedor-acciones" style="padding:10px;">
+        ${accionBotonHTML}
+      </div>
+    `;
+    grid.appendChild(div);
+  });
 }
 
 function ejecutarHechoHermano(idMapa, btn) {
