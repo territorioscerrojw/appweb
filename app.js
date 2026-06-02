@@ -533,40 +533,39 @@ function filtrarYRenderizarHermano() {
   
   const asignadosHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
   
-  if (asignadosHermano.length === 0) {
-    grid.innerHTML = "<p style='padding:50px; text-align:center; color:var(--texto-secundario); font-size:14px;'>No tienes mapas asignados.</p>";
-    return;
-  }
-  
-  asignadosHermano.sort((a,b) => a.trabajado - b.trabajado);
+  console.log("Total tarjetas encontradas para este hermano:", asignadosHermano.length);
   
   asignadosHermano.forEach(mapa => {
+    // DIAGNÓSTICO: Mostramos en consola el estado de cada mapa
+    console.log(`Mapa ${mapa.id} -> trabajado: ${mapa.trabajado}, entregado: ${mapa.entregado}`);
+
     const div = document.createElement("div");
     div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
     
-    // FORZAMOS LA CREACIÓN DEL BOTÓN PARA DEPURAR
-    let accionBotonHTML = "";
+    // FORZADO: Si no ves el botón, aquí veremos si al menos aparece el contenedor
+    let contenidoAccion = "";
     
-    if (mapa.trabajado === true) {
-      accionBotonHTML = `<p style='color:var(--apple-verde); text-align:center; font-weight:700; font-size:14px; margin-top:8px;'>✅ Terminado</p>`;
+    if (mapa.trabajado === false || mapa.trabajado === "false" || !mapa.trabajado) {
+       // FORZAMOS EL BOTÓN DIRECTAMENTE
+       contenidoAccion = `
+         <button class="btn-marcar-completado" 
+                 onclick="solicitarConfirmacion('${mapa.id}')" 
+                 style="display:block !important; width:100%; padding:15px; background:var(--apple-verde); color:white; border-radius:20px; border:none; margin-top:10px; cursor:pointer;">
+           MARCAR COMO COMPLETADO (FORZADO)
+         </button>`;
     } else {
-      // Si llega aquí y no ves el botón, es que el DOM no lo está insertando
-      accionBotonHTML = `<button class="btn-marcar-completado" onclick="solicitarConfirmacion(${mapa.id})" style="display:block; width:100%; padding:10px; background:blue; color:white;">PRUEBA BOTÓN</button>`;
+       contenidoAccion = `<p style='color:var(--apple-verde); text-align:center;'>✅ Terminado</p>`;
     }
     
     div.innerHTML = `
       <div class="cabecera-tarjeta">
-        <div class="bloque-id">
-          <span class="num-mapa">${parseInt(mapa.id)}</span>
-          <span class="nombre-barrio">${mapa.barriada}</span>
-        </div>
+        <span class="num-mapa">${parseInt(mapa.id)}</span>
+        <span class="nombre-barrio">${mapa.barriada}</span>
       </div>
       <div class="imagen-mapa-wrapper">
         <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
       </div>
-      <div class="contenedor-acciones" style="padding:10px;">
-        ${accionBotonHTML}
-      </div>
+      <div class="debug-acciones">${contenidoAccion}</div>
     `;
     grid.appendChild(div);
   });
