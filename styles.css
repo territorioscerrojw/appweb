@@ -681,13 +681,21 @@ body {
   border: 1px solid var(--glass-borde);
   background: rgba(0,0,0,0.2);
   color: var(--texto-principal);
+  font-size: 14px !important
 }
-
+/* Contador de seleccionados (Texto pequeño superior) */
+#txt-contador-seleccionados {
+  font-size: 12px !important; /* Ajusta según prefieras: 11px, 12px, 13px */
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--apple-verde, #34c759) !important; 
+}
 /* Forzamos el tamaño del botón para que no se encoja */
 #btn-asignar-multiple {
   padding: 10px 20px;
   border-radius: 8px;
   border: none;
+  font-size: 14px !important
   font-weight: 600;
   cursor: pointer;
   min-width: 90px; /* Ancho mínimo para que no se vea pequeño */
