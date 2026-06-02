@@ -724,13 +724,27 @@ body {
 
 .btn-cerrar-panel {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
+  top: 10px; /* Un poco más abajo */
+  right: 12px;
+  background: rgba(255, 255, 255, 0.1); /* Fondo sutil para que se vea el área */
   border: none;
-  color: #888;
+  color: var(--texto-secundario);
+  width: 32px;  /* Más grande */
+  height: 32px; /* Más grande */
+  border-radius: 50%;
   cursor: pointer;
+  font-size: 20px; /* X más grande */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
+
+.btn-cerrar-panel:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--texto-principal);
+}
+
 .contenido-panel-flotante {
   display: flex;
   flex-direction: column;
