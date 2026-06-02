@@ -6,7 +6,7 @@
   /* Fondo base un poco más profundo para que las tarjetas resalten */
   --fondo-base: #070708; 
   /* Tarjetas: un gris más azulado y ligeramente más claro para mayor contraste */
-  --glass-fondo: #1a1a1f; 
+  --glass-fondo: #2d2d35; 
   /* Borde: ligeramente más visible (12% en lugar de 8%) */
   --glass-borde: rgba(255, 255, 255, 0.12);
   /* Texto secundario: un poco más blanco para legibilidad */
