@@ -645,14 +645,14 @@ body {
 
 
 
-/* --- ESTILOS DEL PANEL SUPERIOR --- */
+/* Corrección del Panel Superior */
 #panel-asignacion-unico {
   position: fixed !important;
   top: 15px;
   left: 50%;
-  transform: translateX(-50%) translateY(-200%); /* Oculto arriba */
+  transform: translateX(-50%) translateY(-200%);
   width: 90%;
-  max-width: 480px;
+  max-width: 450px;
   z-index: 1000;
   background: rgba(28, 28, 30, 0.85) !important;
   backdrop-filter: blur(20px) !important;
@@ -663,43 +663,56 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-#panel-asignacion-unico.visible {
-  transform: translateX(-50%) translateY(0); /* Desliza hacia abajo */
+/* El botón cerrar ahora vive dentro del padding del panel */
+.btn-cerrar-panel {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* El contenido interno */
 .contenido-panel-flotante { 
   display: flex; 
   flex-direction: column; 
   gap: 8px; 
+  width: 100%;
 }
 
-/* Selector y Botón */
 .controles-asignacion { 
   display: flex; 
   gap: 8px; 
-  width: 100%; 
+  width: 100%;
+  align-items: center;
 }
 
+/* El selector ocupa el espacio restante, el botón tiene un ancho fijo */
 .select-apple {
-  flex: 1;
+  flex: 1; /* Ocupa todo el espacio posible */
+  min-width: 0; /* Necesario para que el flex no se desborde */
   background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: 8px;
   font-size: 14px;
 }
 
-.btn-apple-bloqueado {
-  background: rgba(255, 255, 255, 0.08);
-  color: #98989d;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+.btn-apple-bloqueado, .btn-apple-verde-activo {
+  flex-shrink: 0; /* Evita que el botón se encoja */
+  padding: 8px 16px;
   font-size: 13px;
-  font-weight: 600;
+  white-space: nowrap; /* Evita que el texto del botón se rompa */
 }
+
 
 .btn-apple-verde-activo {
   background: var(--apple-verde);
