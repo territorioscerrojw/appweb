@@ -204,8 +204,12 @@ function inyectarArcoProgreso(idPath, valor, total) {
 
 function cambiarCriterioAsignados(criterio) {
   criterioOrdenacionAsignados = criterio;
-  filtrarYRenderizar();
+  // Actualiza los botones activos visualmente
+  actualizarEstadosBotonesFiltro();
+  // Vuelve a filtrar y pintar todo con el nuevo orden
+  filtrarYRenderizar(); 
 }
+
 
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
@@ -248,13 +252,27 @@ function filtrarYRenderizar() {
       let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
       return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
     });
+    // Lógica de ordenación corregida
   } else {
     dataset.sort((a, b) => {
-      if (criterioOrdenacionAsignados === "territorio") return parseInt(a.id) - parseInt(b.id);
-      if (criterioOrdenacionAsignados === "hermano") return (a.hermano || "").localeCompare(b.hermano || "");
-      if (criterioOrdenacionAsignados === "fecha") return new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
+      if (criterioOrdenacionAsignados === "territorio") {
+        return parseInt(a.id) - parseInt(b.id);
+      } 
+      if (criterioOrdenacionAsignados === "hermano") {
+        return (a.hermano || "").localeCompare(b.hermano || "");
+      }
+      if (criterioOrdenacionAsignados === "fecha") {
+        return new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
+      }
+      // NUEVA LÓGICA: Filtro por pendientes primero
+      if (criterioOrdenacionAsignados === "pendiente") {
+        // Si a es pendiente (trabajado = false) y b no, a va primero (-1)
+        return (a.trabajado === b.trabajado) ? 0 : (a.trabajado ? 1 : -1);
+      }
+      return 0;
     });
   }
+
   
   dataset.forEach(mapa => {
     const div = document.createElement("div");
@@ -340,11 +358,17 @@ function actualizarEstadosBotonesFiltro() {
   
   contenedor.innerHTML = `
     <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px; white-space: nowrap;">Ordenar por:</span>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
-    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
+    <button class="btn-sub-filtro btn-pendientes ${criterioOrdenacionAsignados === 'pendiente' ? 'activo' : ''}" 
+            onclick="cambiarCriterioAsignados('pendiente')">Pendientes</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'territorio' ? 'activo' : ''}" 
+            onclick="cambiarCriterioAsignados('territorio')">Territorio</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'hermano' ? 'activo' : ''}" 
+            onclick="cambiarCriterioAsignados('hermano')">Hermano</button>
+    <button class="btn-sub-filtro ${criterioOrdenacionAsignados === 'fecha' ? 'activo' : ''}" 
+            onclick="cambiarCriterioAsignados('fecha')">Fecha Entrega</button>
   `;
 }
+
 
 function eliminarSelectorDeAgrupacionAsignados() {
   const el = document.getElementById("contenedor-agrupador-asignados");
