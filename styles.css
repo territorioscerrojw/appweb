@@ -619,6 +619,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: clamp(10px, 2.5vw, 13px); /* Se ajusta entre 10px y 13px según el ancho */
 }
 .txt-horizontal-hermano { 
   max-width: 130px; 
