@@ -150,19 +150,29 @@ function procesarFechasYBarras(inicioStr, finStr) {
   const fin = new Date(finStr);
   const inicio = new Date(inicioStr);
   
+  // Calcular milisegundos restantes
   const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = ahora - inicio;
-  let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
+  const tiempoRestante = fin - ahora;
+  
+  // Calcular porcentaje (invertido para que la barra se llene hacia el final)
+  let porcentaje = Math.floor(100 - (tiempoRestante / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
-  const diasRestantes = Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
-  const msgTiempo = diasRestantes > 0 ? `Quedan ${diasRestantes} días de campaña` : "Campaña concluida";
-  
-  if (document.getElementById("lbl-tiempo-restante")) document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
-  if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
-  
   const barra = document.getElementById("barra-progreso-elemento");
-  if (barra) barra.style.width = `${porcentaje}%`;
+  const diasRestantes = tiempoRestante / (1000 * 60 * 60 * 24);
+
+  if (barra) {
+    barra.style.width = `${porcentaje}%`;
+    
+    // Lógica de colores según tiempo restante
+    if (diasRestantes <= 2) {
+      barra.className = "linea-progreso-relleno neon-rojo";
+    } else if (diasRestantes <= 7) {
+      barra.className = "linea-progreso-relleno neon-naranja";
+    } else {
+      barra.className = "linea-progreso-relleno neon-verde";
+    }
+  }
 }
 
 function actualizarAnillosEstadisticos() {
