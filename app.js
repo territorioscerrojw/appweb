@@ -309,29 +309,32 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
-      div.innerHTML = `
+              div.innerHTML = `
         <div class="img-lateral-wrapper-rectangular">
           <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
           <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
         </div>
         <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea"><span class="num-mapa-chico">${parseInt(mapa.id)}</span><span class="nombre-barrio-chico">${mapa.barriada}</span></div>
-          <div class="info-hermano-linea">
-            <span class="txt-horizontal-hermano">👤 ${mapa.hermano || 'No asignado'}</span>
-            <span class="txt-horizontal-fecha">📅 ${fechaFormateada}</span>
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
           </div>
+          
+          <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
+          <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
+          
           <div class="estado-badge-linea">
             <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
-  ${!mapa.trabajado 
-    ? `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>` 
-    : `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
-  }
-  
-  ${!mapa.trabajado ? "Pendiente" : "Completado"}
-</span>
+              ${!mapa.trabajado 
+                ? `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>` 
+                : `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+              }
+              ${!mapa.trabajado ? "Pendiente" : "Completo"}
+            </span>
             ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
           </div>
         </div>`;
+
     }
     grid.appendChild(div);
   });
