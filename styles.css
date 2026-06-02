@@ -657,13 +657,20 @@ body {
   max-width: 450px;
   box-sizing: border-box; /* CLAVE: El padding no añade ancho extra */
   z-index: 1000;
-  background: rgba(28, 28, 30, 0.70) !important;
-  backdrop-filter: blur(20px) !important;
+  background: rgba(255, 255, 255, 0.6) !important; 
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
   border-radius: 18px;
   padding: 12px;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
 }
-
+/* Ajuste específico para el modo oscuro para que no pierda contraste */
+[data-theme="oscuro"] #panel-asignacion-unico {
+  background: rgba(40, 40, 40, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
 /* 2. El contenedor de controles debe ser un bloque de ancho completo y contenido fijo */
 .controles-asignacion {
   display: flex;
