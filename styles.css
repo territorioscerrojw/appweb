@@ -669,20 +669,36 @@ body {
 
 .controles-asignacion {
   display: flex;
-  gap: 10px;
-  margin-top: 8px;
+  flex-direction: row; /* Asegura que estén en una fila */
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 4px; /* Un poco de margen para no tocar los bordes */
 }
 
-/* El select toma el espacio, el botón tiene tamaño fijo */
 .select-apple {
-  flex: 1;
-  padding: 10px;
+  flex: 1; /* El selector crece para llenar todo el espacio disponible */
+  min-width: 0; /* IMPRESCINDIBLE: permite que el select se encoja si es necesario */
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--glass-borde) !important;
+  color: var(--texto-principal) !important;
+  padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid var(--glass-borde);
-  background: rgba(0,0,0,0.2);
-  color: var(--texto-principal);
-  font-size: 14px !important
+  font-size: 15px; /* Tamaño de fuente solicitado */
+  outline: none;
 }
+
+#btn-asignar-multiple {
+  flex-shrink: 0; /* EL BOTÓN NUNCA SE ENCOGE */
+  width: auto; /* Tamaño según su contenido */
+  padding: 10px 20px; /* Tamaño fijo de clic */
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap; /* Impide que el texto "Asignar" se parta */
+}
+
 /* Contador de seleccionados (Texto pequeño superior) */
 #txt-contador-seleccionados {
   font-size: 12px !important; /* Ajusta según prefieras: 11px, 12px, 13px */
@@ -690,16 +706,7 @@ body {
   letter-spacing: 0.2px;
   color: var(--apple-verde, #34c759) !important; 
 }
-/* Forzamos el tamaño del botón para que no se encoja */
-#btn-asignar-multiple {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px !important
-  font-weight: 600;
-  cursor: pointer;
-  min-width: 90px; /* Ancho mínimo para que no se vea pequeño */
-}
+
 
 /* Clases que usa tu app.js */
 .btn-apple-bloqueado { background: #ccc; color: #666; }
