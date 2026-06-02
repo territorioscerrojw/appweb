@@ -530,39 +530,46 @@ function filtrarYRenderizarHermano() {
   const grid = document.getElementById("contenedor-hermano-grid");
   if (!grid) return;
   
-  // Aseguramos visibilidad
-grid.style.display = "flex"; 
+  // 1. Forzamos visibilidad total
+  grid.style.display = "flex";
   grid.style.flexWrap = "wrap";
   grid.innerHTML = "";
   
+  // 2. Filtramos con seguridad (evitamos el error de 'null')
   const asignadosHermano = baseDatosCompleta.filter(m => 
-  m.hermano && 
-  m.hermano.toString().toLowerCase() === idHermanoUrl.toLowerCase() && 
-  m.entregado === true
-);
+    m.hermano && 
+    m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && 
+    m.entregado === true
+  );
   
   if (asignadosHermano.length === 0) {
-    grid.innerHTML = "<p style='padding:50px; text-align:center;'>No hay mapas.</p>";
+    grid.innerHTML = "<p style='padding:20px; text-align:center;'>No hay mapas asignados.</p>";
     return;
   }
   
+  // 3. Pintamos
   asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
     div.className = "tarjeta-apple";
     
-    let botonHTML = mapa.trabajado 
-      ? "<p style='color:green;'>✅ Terminado</p>" 
+    // Si NO está trabajado, sale el botón. Si SÍ está trabajado, sale el texto verde.
+    let accion = mapa.trabajado 
+      ? `<p style='color:var(--apple-verde); text-align:center; font-weight:bold;'>✅ Terminado</p>`
       : `<button class="btn-marcar-completado" onclick="solicitarConfirmacion('${mapa.id}')">Marcar como completado</button>`;
     
     div.innerHTML = `
-      <div class="cabecera-tarjeta"><span>${mapa.id}</span></div>
-      <div class="imagen-mapa-wrapper"><img src="${mapa.rutaMapa}"></div>
-      ${botonHTML}
+      <div class="cabecera-tarjeta">
+        <span class="num-mapa">${parseInt(mapa.id)}</span>
+        <span class="nombre-barrio">${mapa.barriada}</span>
+      </div>
+      <div class="imagen-mapa-wrapper">
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+      </div>
+      <div class="contenedor-acciones">${accion}</div>
     `;
     grid.appendChild(div);
   });
 }
-
 function ejecutarHechoHermano(idMapa, btn) {
   btn.disabled = true;
   btn.innerText = "Guardando...";
