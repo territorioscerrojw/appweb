@@ -657,7 +657,7 @@ body {
   max-width: 450px;
   box-sizing: border-box; /* CLAVE: El padding no añade ancho extra */
   z-index: 1000;
-  background: rgba(28, 28, 30, 0.85) !important;
+  background: rgba(28, 28, 30, 0.70) !important;
   backdrop-filter: blur(20px) !important;
   border-radius: 18px;
   padding: 12px;
