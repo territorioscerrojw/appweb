@@ -163,7 +163,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   if (ahora < inicio) {
     // Aún no ha empezado
     dias = Math.ceil((inicio - ahora) / (1000 * 60 * 60 * 24));
-    msgTiempo = `Faltan ${dias} días para empezar la campaña`;
+    msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
     porcentaje = 0; // Barra vacía si no ha empezado
   } else if (ahora > fin) {
     // Ya terminó
