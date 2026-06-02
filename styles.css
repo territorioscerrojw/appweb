@@ -652,6 +652,23 @@ body {
 .svg-icono-mini { width: 10px; height: 10px; }
 .tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
+.btn-marcar-completado {
+  background-color: transparent;
+  color: var(--apple-verde);
+  border: 1px solid var(--apple-verde);
+  padding: 6px 12px;
+  border-radius: 20px; /* Bordes redondeados */
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-marcar-completado:hover {
+  background-color: var(--apple-verde);
+  color: white;
+}
+
 /* ==========================================================================
    PANEL SUPERIOR FLOTANTE
    ========================================================================== */
