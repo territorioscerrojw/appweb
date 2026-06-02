@@ -316,7 +316,7 @@
       div.innerHTML = `
         <div class="contenedor-imagen">
           <div class="marca-agua-trabajado">TRABAJADO</div>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa">
+          <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisor('${mapa.rutaMapa}')" style="cursor: pointer;">
         </div>
         <div class="detalles-mapa">
           <div style="display:flex; justify-content:space-between;">
@@ -431,6 +431,18 @@
       const tema = localStorage.getItem("tema-preferido") || "oscuro";
       document.documentElement.setAttribute("data-theme", tema);
     }
+
+    function abrirVisor(ruta) {
+  const visor = document.getElementById("visor-mapa");
+  const imgAmpliada = document.getElementById("imagen-ampliada");
+  imgAmpliada.src = ruta;
+  visor.style.display = "flex";
+}
+
+function cerrarVisor() {
+  const visor = document.getElementById("visor-mapa");
+  visor.style.display = "none";
+}
   </script>
   <div id="visor-mapa" class="visor-oculto" onclick="cerrarVisor()">
   <img id="imagen-ampliada" src="" alt="Mapa ampliado">
