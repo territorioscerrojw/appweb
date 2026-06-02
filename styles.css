@@ -647,46 +647,57 @@ body {
    PANEL SUPERIOR FLOTANTE
    ========================================================================== */
 
+/* 1. Aseguramos que el panel no permita que nada se desborde */
 #panel-asignacion-unico {
   position: fixed !important;
   top: 15px;
   left: 50%;
   transform: translateX(-50%) translateY(-200%);
-  width: 90%;
-  max-width: 400px;
-  z-index: 9999;
-  background: rgba(28, 28, 30, 0.9) !important;
+  width: calc(100% - 32px); /* Un poco de aire lateral */
+  max-width: 450px;
+  box-sizing: border-box; /* CLAVE: El padding no añade ancho extra */
+  z-index: 1000;
+  background: rgba(28, 28, 30, 0.85) !important;
   backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--glass-borde) !important;
-  border-radius: 16px;
-  padding: 15px;
+  border-radius: 18px;
+  padding: 12px;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
+
+/* 2. El contenedor de controles debe ser un bloque de ancho completo y contenido fijo */
+.controles-asignacion {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box; /* El padding no romperá el ancho */
+  overflow: hidden; /* Corta cualquier cosa que intente salirse */
+}
+
+/* 3. Selector flexible que solo ocupa el hueco que sobre */
+.select-apple {
+  flex: 1;
+  min-width: 0; /* Permite que se encoja para dejar espacio al botón */
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 14px;
+}
+
+/* 4. Botón rígido que nunca se deforma ni se sale */
+#btn-asignar-multiple {
+  flex-shrink: 0; /* NO permite que el botón se encoja */
+  box-sizing: border-box;
+  padding: 8px 16px;
+  font-size: 13px;
+  white-space: nowrap; /* Evita que el texto se salte de línea */
+}
+
 
 #panel-asignacion-unico.visible {
   transform: translateX(-50%) translateY(0);
 }
 
-.controles-asignacion {
-  display: flex;
-  flex-direction: row; /* Asegura que estén en una fila */
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 0 4px; /* Un poco de margen para no tocar los bordes */
-}
-
-.select-apple {
-  flex: 1; /* El selector crece para llenar todo el espacio disponible */
-  min-width: 0; /* IMPRESCINDIBLE: permite que el select se encoja si es necesario */
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid var(--glass-borde) !important;
-  color: var(--texto-principal) !important;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 15px; /* Tamaño de fuente solicitado */
-  outline: none;
-}
 
 #btn-asignar-multiple {
   flex-shrink: 0; /* EL BOTÓN NUNCA SE ENCOGE */
