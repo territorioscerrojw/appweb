@@ -699,16 +699,7 @@ body {
 }
 
 
-#btn-asignar-multiple {
-  flex-shrink: 0; /* EL BOTÓN NUNCA SE ENCOGE */
-  width: auto; /* Tamaño según su contenido */
-  padding: 10px 20px; /* Tamaño fijo de clic */
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap; /* Impide que el texto "Asignar" se parta */
-}
+
 
 /* Contador de seleccionados (Texto pequeño superior) */
 #txt-contador-seleccionados {
