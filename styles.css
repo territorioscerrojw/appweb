@@ -835,6 +835,7 @@ body {
   border-radius: 50%; 
   font-weight: bold;
   cursor: pointer;
+  font-size: 13px;
 }
 .zona-scroll-zoom { 
   flex: 1; 
