@@ -534,7 +534,11 @@ function filtrarYRenderizarHermano() {
   grid.style.display = "flex";
   grid.innerHTML = "";
   
-  const asignadosHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
+  const asignadosHermano = baseDatosCompleta.filter(m => 
+  m.hermano && 
+  m.hermano.toString().toLowerCase() === idHermanoUrl.toLowerCase() && 
+  m.entregado === true
+);
   
   if (asignadosHermano.length === 0) {
     grid.innerHTML = "<p style='padding:50px; text-align:center;'>No hay mapas.</p>";
