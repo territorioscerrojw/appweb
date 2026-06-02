@@ -1,6 +1,9 @@
 
 /* styles.css - Diseño Minimalista Liso, Visible, Optimizado y Corregido */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
 :root {
 --fuente-principal: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* Fondo base un poco más profundo para que las tarjetas resalten */
