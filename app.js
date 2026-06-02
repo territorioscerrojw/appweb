@@ -529,45 +529,30 @@ function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
 function filtrarYRenderizarHermano() {
   const grid = document.getElementById("contenedor-hermano-grid");
   if (!grid) return;
-  grid.style.display = "flex"; 
-  grid.style.flexWrap = "wrap";
+  
+  // Aseguramos visibilidad
+  grid.style.display = "flex";
   grid.innerHTML = "";
   
   const asignadosHermano = baseDatosCompleta.filter(m => m.hermano && m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && m.entregado === true);
   
-  console.log("Total tarjetas encontradas para este hermano:", asignadosHermano.length);
+  if (asignadosHermano.length === 0) {
+    grid.innerHTML = "<p style='padding:50px; text-align:center;'>No hay mapas.</p>";
+    return;
+  }
   
   asignadosHermano.forEach(mapa => {
-    // DIAGNÓSTICO: Mostramos en consola el estado de cada mapa
-    console.log(`Mapa ${mapa.id} -> trabajado: ${mapa.trabajado}, entregado: ${mapa.entregado}`);
-
     const div = document.createElement("div");
-    div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
+    div.className = "tarjeta-apple";
     
-    // FORZADO: Si no ves el botón, aquí veremos si al menos aparece el contenedor
-    let contenidoAccion = "";
-    
-    if (mapa.trabajado === false || mapa.trabajado === "false" || !mapa.trabajado) {
-       // FORZAMOS EL BOTÓN DIRECTAMENTE
-       contenidoAccion = `
-         <button class="btn-marcar-completado" 
-                 onclick="solicitarConfirmacion('${mapa.id}')" 
-                 style="display:block !important; width:100%; padding:15px; background:var(--apple-verde); color:white; border-radius:20px; border:none; margin-top:10px; cursor:pointer;">
-           MARCAR COMO COMPLETADO (FORZADO)
-         </button>`;
-    } else {
-       contenidoAccion = `<p style='color:var(--apple-verde); text-align:center;'>✅ Terminado</p>`;
-    }
+    let botonHTML = mapa.trabajado 
+      ? "<p style='color:green;'>✅ Terminado</p>" 
+      : `<button class="btn-marcar-completado" onclick="solicitarConfirmacion('${mapa.id}')">Marcar como completado</button>`;
     
     div.innerHTML = `
-      <div class="cabecera-tarjeta">
-        <span class="num-mapa">${parseInt(mapa.id)}</span>
-        <span class="nombre-barrio">${mapa.barriada}</span>
-      </div>
-      <div class="imagen-mapa-wrapper">
-        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-      </div>
-      <div class="debug-acciones">${contenidoAccion}</div>
+      <div class="cabecera-tarjeta"><span>${mapa.id}</span></div>
+      <div class="imagen-mapa-wrapper"><img src="${mapa.rutaMapa}"></div>
+      ${botonHTML}
     `;
     grid.appendChild(div);
   });
