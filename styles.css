@@ -662,6 +662,9 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .btn-marcar-completado:hover {
