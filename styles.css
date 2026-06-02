@@ -643,79 +643,64 @@ body {
 .svg-icono-mini { width: 10px; height: 10px; }
 .tag-prio-mini { font-size: 9px; color: var(--apple-naranja); font-weight: 700; }
 
-/* ==========================================================================
-   PANELES INFERIORES Fijos Al Fondo (Look Apple Original)
-   ========================================================================== */
-#panel-asignacion-unico,
-.panel-inferior-flotante,
-.panel-inferior-flotante .contenido-panel-flotante {
-  background: blur(20px) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
 
-.panel-inferior-flotante {
-  position: relative !important;
-  bottom: 48px; 
+
+/* --- ESTILOS DEL PANEL SUPERIOR --- */
+#panel-asignacion-unico {
+  position: fixed !important;
+  top: 15px;
   left: 50%;
-  transform: translateX(-50%) translateY(200%);
-  width: 100%;
+  transform: translateX(-50%) translateY(-200%); /* Oculto arriba */
+  width: 90%;
   max-width: 480px;
-  
-  /* CAMBIOS PARA EL EFECTO VIDRIO */
-  background: rgba(28, 28, 30, 0.75) !important; /* Opacidad al 75% */
-  backdrop-filter: blur(20px) !important;       /* El desenfoque */
-  -webkit-backdrop-filter: blur(20px) !important;
-  
-  border-top: 1px solid var(--glass-borde) !important;
-  border-left: 1px solid var(--glass-borde) !important;
-  border-right: 1px solid var(--glass-borde) !important;
-  border-radius: 20px 20px 0 0;
-  padding: 14px 16px 20px 16px;
-  z-index: 99;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  background: rgba(28, 28, 30, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-borde) !important;
+  border-radius: 18px;
+  padding: 12px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.panel-inferior-flotante.visible { transform: translateX(-50%) translateY(0); }
-.contenido-panel-flotante { display: flex; flex-direction: column; gap: 6px; border: none !important; }
-#txt-contador-seleccionados { font-size: 11px; font-weight: 700; color: var(--apple-verde); text-align: center; background: transparent !important; }
-.controles-asignacion { display: flex; gap: 8px; background: transparent !important; }
+#panel-asignacion-unico.visible {
+  transform: translateX(-50%) translateY(0); /* Desliza hacia abajo */
+}
+
+/* El contenido interno */
+.contenido-panel-flotante { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+
+/* Selector y Botón */
+.controles-asignacion { 
+  display: flex; 
+  gap: 8px; 
+  width: 100%; 
+}
 
 .select-apple {
   flex: 1;
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid var(--glass-borde) !important;
   color: var(--texto-principal) !important;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
 }
-/* Botón bloqueado - Adaptable a modo claro y oscuro */
+
 .btn-apple-bloqueado {
-  background: var(--apple-gris-fondo); /* Asegúrate de tener esta variable o usa un gris seguro */
-  color: #98989d; /* Gris Apple estándar, visible en ambos modos */
+  background: rgba(255, 255, 255, 0.08);
+  color: #98989d;
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.2s ease;
 }
 
-/* Forzar colores específicos si no tienes variables definidas */
-[data-theme="claro"] .btn-apple-bloqueado {
-  background: #e5e5ea; /* Gris claro para modo claro */
-  color: #8e8e93;
-}
-
-[data-theme="oscuro"] .btn-apple-bloqueado, 
-:root:not([data-theme="claro"]) .btn-apple-bloqueado {
-  background: rgba(255, 255, 255, 0.08); /* Gris muy oscuro para modo oscuro */
-  color: rgba(255, 255, 255, 0.3);
-}
-
-/* Botón activo - Se mantiene igual */
 .btn-apple-verde-activo {
   background: var(--apple-verde);
   color: white;
@@ -725,6 +710,13 @@ body {
   font-size: 13px;
   font-weight: 600;
 }
+
+[data-theme="claro"] .btn-apple-bloqueado {
+  background: #e5e5ea;
+  color: #8e8e93;
+}
+
+
 
 
 
