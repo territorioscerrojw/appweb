@@ -112,14 +112,14 @@ body {
 }
 
 .cabecera-titulos h1 {
-  font-size: 20px;      /* Ajustado para caber mejor */
+  font-size: 24px;      /* Ajustado para caber mejor */
   font-weight: 800;
   letter-spacing: -0.5px;
   white-space: nowrap;
 }
 
 .cabecera-titulos h2 {
-  font-size: 18px;      /* Texto un poco mayor como pediste */
+  font-size: 20px;      /* Texto un poco mayor como pediste */
   color: var(--apple-azul);
   font-weight: 600;
   margin-top: 0;        /* Eliminado el margen superior */
@@ -225,7 +225,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 22px;
-  font-weight: 1000;
+  font-weight: 1000 !important;
 }
 
 /* ==========================================================================
@@ -348,7 +348,7 @@ body {
 }
 .num-mapa-gigante {
   font-size: 28px;
-  font-weight: 1000;
+  font-weight: 1000 !important;
   color: var(--texto-principal);
   line-height: 1;
 }
