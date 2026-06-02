@@ -544,7 +544,7 @@ function filtrarYRenderizarHermano() {
  asignadosHermano.forEach(mapa => {
   const div = document.createElement("div");
   div.className = `tarjeta-apple ${mapa.trabajado ? 'terminado' : ''}`;
-  
+  console.log(`Procesando tarjeta ${mapa.id}. ¿Está trabajado?: ${mapa.trabajado}`);
   // LÓGICA NUEVA: Botón condicional con confirmación
   let accionBotonHTML = "";
   if (mapa.trabajado) {
@@ -552,7 +552,7 @@ function filtrarYRenderizarHermano() {
   } else {
     accionBotonHTML = `<button class="btn-marcar-completado" onclick="solicitarConfirmacion(${mapa.id})">Marcar como completado</button>`;
   }
-  
+  console.log("HTML del botón generado:", accionBotonHTML);
   div.innerHTML = `
     <div class="cabecera-tarjeta">
       <div class="bloque-id">
