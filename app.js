@@ -590,24 +590,31 @@ function inyectarEstilosCorreccionSelector() {
 }
 
 function limpiarSeleccionYEsconder() {
-  // 1. Limpiar el array de seleccionados
+  console.log("Limpiando selección...");
+
+  // 1. Vaciar el array principal
   territoriosSeleccionados = [];
   
-  // 2. Desmarcar visualmente los elementos (ajusta '.tarjeta' según tu clase)
-  document.querySelectorAll('.tarjeta-seleccionada').forEach(el => {
-    el.classList.remove('tarjeta-seleccionada');
+  // 2. BUSCAR Y DESMARCAR: 
+  // Aquí debes usar el nombre de la clase que aplicas cuando seleccionas un territorio.
+  // Si en tu código usas '.seleccionada', asegúrate de que sea ese nombre.
+  const seleccionados = document.querySelectorAll('.seleccionada'); 
+  
+  console.log("Elementos encontrados para desmarcar: " + seleccionados.length);
+  
+  seleccionados.forEach(el => {
+    el.classList.remove('seleccionada');
   });
   
-  // 3. Esconder el panel quitando la clase 'visible'
+  // 3. Esconder el panel
   const panel = document.getElementById("panel-asignacion-unico");
-  if (panel) {
-    panel.classList.remove("visible");
-  }
-
-  // 4. Resetear el selector de hermanos
+  if (panel) panel.classList.remove("visible");
+  
+  // 4. Resetear el selector
   const selector = document.getElementById("sel-hermano-unico");
   if (selector) selector.value = "";
   
-  // 5. Actualizar el estado del botón
+  // 5. Actualizar botón
   evaluarEstadoBotonAsignar();
 }
+
