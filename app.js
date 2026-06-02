@@ -588,3 +588,26 @@ function inyectarEstilosCorreccionSelector() {
   `;
   document.head.appendChild(style);
 }
+
+function limpiarSeleccionYEsconder() {
+  // 1. Limpiar el array de seleccionados
+  territoriosSeleccionados = [];
+  
+  // 2. Desmarcar visualmente los elementos (ajusta '.tarjeta' según tu clase)
+  document.querySelectorAll('.tarjeta-seleccionada').forEach(el => {
+    el.classList.remove('tarjeta-seleccionada');
+  });
+  
+  // 3. Esconder el panel quitando la clase 'visible'
+  const panel = document.getElementById("panel-asignacion-unico");
+  if (panel) {
+    panel.classList.remove("visible");
+  }
+
+  // 4. Resetear el selector de hermanos
+  const selector = document.getElementById("sel-hermano-unico");
+  if (selector) selector.value = "";
+  
+  // 5. Actualizar el estado del botón
+  evaluarEstadoBotonAsignar();
+}
