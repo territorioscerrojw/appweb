@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mis Territorios de campaña</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
   <link rel="stylesheet" href="styles.css">
   
   <style>
@@ -137,17 +137,31 @@
     }
 
     .marca-agua-trabajado {
-      display: none;
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) rotate(-20deg);
-      color: #27ae60;
-      font-size: 2rem;
-      font-weight: 800;
-      z-index: 10;
-    }
+  display: none;
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Flexbox para centrar el texto exactamente en el medio */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Rotación diagonal de esquina a esquina */
+  transform: rotate(-30deg); 
+  color: rgba(255, 255, 255, 0.7); /* Blanco con un poco de transparencia */
+  font-size: 1.8rem;
+  font-weight: 900;
+  z-index: 10;
+  pointer-events: none; /* Para que no interfiera con clicks */
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
 
-    .tarjeta-mapa.terminado .marca-agua-trabajado { display: block; }
+/* Ajuste para que se muestre como flex al estar terminado */
+.tarjeta-mapa.terminado .marca-agua-trabajado { display: flex; }
+
+    
     .tarjeta-mapa.terminado .imagen-mapa { filter: brightness(1.2) opacity(0.4); }
 
     .btn-completar-accion {
