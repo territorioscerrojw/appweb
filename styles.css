@@ -575,18 +575,20 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
+  gap: 6px;
   overflow: hidden;
+  padding-left: 4px;       /* Un poco de aire extra respecto a la imagen */
 }
 
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   width: 100%;
 }
 .num-mapa-chico { 
-  font-size: 16px; 
+  font-size: 18px; 
   font-weight: 800; 
   line-height: 1;
   flex-shrink: 0;
