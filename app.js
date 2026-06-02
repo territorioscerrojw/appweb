@@ -528,31 +528,34 @@ function lanzarPeticionGoogleAsincrona(idMapa, hermanoNombre) {
 
 function filtrarYRenderizarHermano() {
   const grid = document.getElementById("contenedor-hermano-grid");
-  if (!grid) return;
+  if (!grid) {
+    console.error("El contenedor 'contenedor-hermano-grid' no existe en el HTML.");
+    return;
+  }
   
-  // 1. Forzamos visibilidad total
-  grid.style.display = "flex";
+  // 1. Forzamos la visibilidad del contenedor ignorando el CSS previo
+  grid.style.setProperty("display", "flex", "important");
   grid.style.flexWrap = "wrap";
   grid.innerHTML = "";
   
-  // 2. Filtramos con seguridad (evitamos el error de 'null')
+  // 2. Filtro seguro: 'm.hermano &&' evita el error de 'null'
   const asignadosHermano = baseDatosCompleta.filter(m => 
     m.hermano && 
-    m.hermano.toLowerCase() === idHermanoUrl.toLowerCase() && 
+    m.hermano.toString().toLowerCase() === String(idHermanoUrl).toLowerCase() && 
     m.entregado === true
   );
   
   if (asignadosHermano.length === 0) {
-    grid.innerHTML = "<p style='padding:20px; text-align:center;'>No hay mapas asignados.</p>";
+    grid.innerHTML = "<p style='padding:20px; text-align:center;'>No hay mapas asignados a este nombre.</p>";
     return;
   }
   
-  // 3. Pintamos
+  // 3. Pintamos las tarjetas
   asignadosHermano.forEach(mapa => {
     const div = document.createElement("div");
     div.className = "tarjeta-apple";
     
-    // Si NO está trabajado, sale el botón. Si SÍ está trabajado, sale el texto verde.
+    // Si NO está trabajado, se añade el botón.
     let accion = mapa.trabajado 
       ? `<p style='color:var(--apple-verde); text-align:center; font-weight:bold;'>✅ Terminado</p>`
       : `<button class="btn-marcar-completado" onclick="solicitarConfirmacion('${mapa.id}')">Marcar como completado</button>`;
@@ -563,9 +566,9 @@ function filtrarYRenderizarHermano() {
         <span class="nombre-barrio">${mapa.barriada}</span>
       </div>
       <div class="imagen-mapa-wrapper">
-        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+        <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300'">
       </div>
-      <div class="contenedor-acciones">${accion}</div>
+      <div class="contenedor-acciones" style="margin-top:10px;">${accion}</div>
     `;
     grid.appendChild(div);
   });
