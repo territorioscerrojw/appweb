@@ -803,6 +803,12 @@ body {
   border-radius: 3px;
   overflow: hidden;
 }
+.linea-progreso-relleno {
+  height: 100%;
+  background-color: var(--apple-verde); /* O el color que prefieras */
+  border-radius: 3px;
+  transition: width 0.5s ease-out; /* Animación suave */
+}
 /* ==========================================================================
    VISOR MULTIMEDIA INTERNO (LIGHTBOX)
    ========================================================================== */
