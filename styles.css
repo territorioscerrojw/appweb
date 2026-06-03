@@ -574,6 +574,7 @@ body {
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
+  position: relative
   flex-direction: column;
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
   gap: 6px;
@@ -601,7 +602,15 @@ body {
     border-color: #34c759;
     color: white;
 }
-
+.btn-check-apple {
+    z-index: 10;
+    position: relative;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    /* Aseguramos que sea un círculo perfecto */
+    border-radius: 50% !important;
+    transition: background 0.2s ease;
+}
 .cabecera-datos-linea {
   display: flex;
   align-items: center;
