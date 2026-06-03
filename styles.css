@@ -319,7 +319,7 @@ body {
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
    ========================================================================== */
 .tarjeta-apple {
-  background: var(--glass-fondo) !important;
+  background: #27ae60 !important;
   
   border: 1px solid var(--glass-borde) !important;
   border-radius: 16px;
