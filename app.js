@@ -389,29 +389,26 @@ div.innerHTML = `
 }
 
 async function toggleEstadoTrabajo(idMapa, event) {
-  // 1. Evitar que el clic haga cosas raras
   event.preventDefault();
-  
-  // 2. Buscamos el estado actual en nuestra base de datos local
-  const mapa = baseDatosCompleta.find(m => m.id.toString() === idMapa.toString());
-  const nuevoEstado = !mapa.trabajado; // Si era true, ahora será false (y viceversa)
-  
-  // 3. Feedback visual inmediato (opcional pero recomendado)
   const btn = event.currentTarget;
-  btn.style.opacity = "0.5";
-  btn.disabled = true;
-
-  // 4. Llamada al servidor pasando el nuevo estado calculado
+  
+  // 1. CAMBIO VISUAL INMEDIATO (Optimista)
+  const estaActivo = btn.classList.contains('activo');
+  const nuevoEstado = !estaActivo;
+  
+  btn.classList.toggle('activo', nuevoEstado);
+  btn.style.background = nuevoEstado ? '#34c759' : 'transparent';
+  btn.innerHTML = nuevoEstado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
+  
+  // 2. LLAMADA AL SERVIDOR (En segundo plano)
   const s = document.createElement("script");
-  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=callback_${Date.now()}`;
+  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=c_${Date.now()}`;
   
-  window["callback_" + Date.now()] = async () => {
-    s.remove();
-    // 5. Refrescamos para que la tabla se pinte con el nuevo valor
-    await descargarDatosDesdeSheets();
-  };
-  
+  // No bloqueamos la interfaz, simplemente dejamos que trabaje en silencio
   document.body.appendChild(s);
+  
+  // Nota: Ya no hace falta llamar a 'descargarDatosDesdeSheets()' aquí,
+  // porque el usuario ya vio el cambio visual.
 }
 
 
