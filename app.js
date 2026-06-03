@@ -632,13 +632,23 @@ function filtrarYRenderizarHermano() {
   });
 }
 
-function ejecutarHechoHermano(idMapa, btn) {
-  btn.disabled = true;
-  btn.innerText = "Guardando...";
-  const sCompletar = document.createElement("script");
-  sCompletar.src = `${URL_API_SHEETS}?accion=completar&id=${idMapa}`;
-  sCompletar.onload = async () => { sCompletar.remove(); await descargarDatosDesdeSheets(); };
-  document.body.appendChild(sCompletar);
+function alternarEstadoTrabajo(idMapa, checkbox) {
+  // Desactivamos el checkbox mientras se procesa
+  checkbox.disabled = true;
+  
+  // Usamos el estado actual del checkbox (true o false)
+  const nuevoEstado = checkbox.checked;
+  
+  const s = document.createElement("script");
+  // Llamamos a la nueva acción 'actualizarTrabajo' que creamos en el paso anterior
+  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}`;
+  
+  s.onload = async () => { 
+    s.remove(); 
+    await descargarDatosDesdeSheets(); // Refresca los datos
+  };
+  
+  document.body.appendChild(s);
 }
 
 function abrirVisorPantallaCompleta(src, descrip, evento) {
