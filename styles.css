@@ -580,6 +580,27 @@ body {
   overflow: hidden;
   padding-left: 20px;       /* Un poco de aire extra respecto a la imagen */
 }
+/* Añade esto a tu hoja de estilos o en un tag <style> */
+.checkbox-apple {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.checkbox-apple.checked {
+    background: #34c759; /* Verde Apple */
+    border-color: #34c759;
+    color: white;
+}
 
 .cabecera-datos-linea {
   display: flex;
