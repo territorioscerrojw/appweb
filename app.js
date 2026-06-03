@@ -389,42 +389,30 @@ div.innerHTML = `
 }
 
 async function toggleEstadoTrabajo(idMapa, event) {
-  event.stopPropagation();
+  // 1. Evitar que el clic haga cosas raras
+  event.preventDefault();
   
-  if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
-
-  const mapa = baseDatosCompleta.find(m => m.id == idMapa);
-  if (!mapa) return;
-
-  // 1. UI INSTANTÁNEA (Anillos y visual)
-  mapa.trabajado = !mapa.trabajado;
+  // 2. Buscamos el estado actual en nuestra base de datos local
+  const mapa = baseDatosCompleta.find(m => m.id.toString() === idMapa.toString());
+  const nuevoEstado = !mapa.trabajado; // Si era true, ahora será false (y viceversa)
   
-  // Actualizar UI
+  // 3. Feedback visual inmediato (opcional pero recomendado)
   const btn = event.currentTarget;
-  btn.classList.toggle('activo', mapa.trabajado);
-  btn.style.background = mapa.trabajado ? '#34c759' : 'transparent';
-  btn.innerHTML = mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
+  btn.style.opacity = "0.5";
+  btn.disabled = true;
+
+  // 4. Llamada al servidor pasando el nuevo estado calculado
+  const s = document.createElement("script");
+  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=callback_${Date.now()}`;
   
-  if (typeof actualizarAnillosEstadisticos === 'function') {
-    actualizarAnillosEstadisticos();
-  }
-
-  // 2. SINCRONIZACIÓN REAL CON SHEETS (Usando fetch)
-  const accion = mapa.trabajado ? "completar" : "pendiente";
-  const url = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
-
-  try {
-    const respuesta = await fetch(url);
-    if (respuesta.ok) {
-      console.log("Servidor actualizado correctamente");
-    } else {
-      console.error("Error al conectar con el servidor");
-    }
-  } catch (error) {
-    console.error("Fallo de red:", error);
-  }
+  window["callback_" + Date.now()] = async () => {
+    s.remove();
+    // 5. Refrescamos para que la tabla se pinte con el nuevo valor
+    await descargarDatosDesdeSheets();
+  };
+  
+  document.body.appendChild(s);
 }
-
 
 
 function inyectarSelectorDeAgrupacionAsignados() {
@@ -633,21 +621,21 @@ function filtrarYRenderizarHermano() {
 }
 
 function alternarEstadoTrabajo(idMapa, checkbox) {
-  // Desactivamos el checkbox mientras se procesa
-  checkbox.disabled = true;
+  const nuevoEstado = checkbox.checked; // true o false
   
-  // Usamos el estado actual del checkbox (true o false)
-  const nuevoEstado = checkbox.checked;
+  // Feedback visual rápido
+  console.log("Cambiando ID " + idMapa + " a: " + nuevoEstado);
   
   const s = document.createElement("script");
-  // Llamamos a la nueva acción 'actualizarTrabajo' que creamos en el paso anterior
-  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}`;
+  // La URL debe ser exacta. Verifica que URL_API_SHEETS esté bien definida al inicio
+  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=callback_${new Date().getTime()}`;
   
-  s.onload = async () => { 
-    s.remove(); 
-    await descargarDatosDesdeSheets(); // Refresca los datos
+  // Creamos un callback único para esta petición
+  window["callback_" + new Date().getTime()] = () => {
+    s.remove();
+    descargarDatosDesdeSheets(); // Recarga la vista
   };
-  
+
   document.body.appendChild(s);
 }
 
