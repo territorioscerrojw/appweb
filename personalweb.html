@@ -228,6 +228,15 @@
       </div>
       <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
     </header>
+<footer class="barra-tiempo-footer">
+  <div class="info-tiempo-texto">
+    <span id="lbl-tiempo-restante">Calculando progreso...</span>
+    <span id="lbl-porcentaje-tiempo">0%</span>
+  </div>
+  <div class="linea-progreso-fondo">
+    <div id="barra-progreso-elemento" class="linea-progreso-relleno"></div>
+  </div>
+</footer>
 
     <div class="contenedor-tabs">
       <div class="control-segmentado">
@@ -281,6 +290,7 @@
           document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
           datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
           inyectarTarjetasHermano();
+          actualizarBarraProgreso(); 
         }
       } catch (err) { console.error(err); }
     }
@@ -344,6 +354,7 @@
 
       datosLocalesHermano[indice].trabajado = (modo === "completar");
       inyectarTarjetasHermano();
+      actualizarBarraProgreso(); 
 
       const accionUrl = modo === "completar" ? "completar" : `asignar&hermano=${encodeURIComponent(idHermanoUrl)}`;
       fetch(`${URL_API_SHEETS}?accion=${accionUrl}&id=${encodeURIComponent(idMapa)}`, { mode: 'no-cors' });
@@ -452,6 +463,27 @@ function cerrarVisor() {
   const visor = document.getElementById("visor-mapa");
   visor.style.display = "none";
 }
+
+function actualizarBarraProgreso() {
+  const totales = datosLocalesHermano.length;
+  const completados = datosLocalesHermano.filter(m => m.trabajado).length;
+  
+  if (totales === 0) return;
+
+  const porcentaje = Math.round((completados / totales) * 100);
+  const barra = document.getElementById("barra-progreso-elemento");
+  const textoPorc = document.getElementById("lbl-porcentaje-tiempo");
+  const textoRest = document.getElementById("lbl-tiempo-restante");
+
+  barra.style.width = porcentaje + "%";
+  textoPorc.innerText = porcentaje + "%";
+  textoRest.innerText = `${completados} de ${totales} territorios trabajados`;
+
+  // Añadir clase de color según el progreso
+  barra.className = "linea-progreso-relleno " + 
+    (porcentaje < 30 ? "neon-rojo" : porcentaje < 70 ? "neon-naranja" : "neon-verde");
+}
+
   </script>
   <div id="visor-mapa" class="visor-oculto" onclick="cerrarVisor()">
   <img id="imagen-ampliada" src="" alt="Mapa ampliado">
