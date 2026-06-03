@@ -534,6 +534,14 @@ body {
   border-left: 4px solid var(--apple-naranja);
 }
 
+.contenedor-columna-imagen {
+  display: flex;
+  flex-direction: column; /* Esto pone el texto arriba y la imagen debajo */
+  align-items: flex-start; /* Alinea ambos a la izquierda */
+  gap: 5px; /* Espacio entre el texto y la imagen */
+  width: auto;
+}
+
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
