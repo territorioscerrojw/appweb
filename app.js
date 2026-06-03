@@ -12,7 +12,7 @@ let tipoUsuario = "";
 let grupoFiltro = null;
 let idHermanoUrl = null;
 let diccionarioGruposHermanos = {};
-let criterioOrdenacionAsignados = "territorio"; 
+let criterioOrdenacionAsignados = "pendiente"; 
 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
@@ -288,7 +288,7 @@ function filtrarYRenderizar() {
     // Lógica de ordenación corregida
   } else {
     dataset.sort((a, b) => {
-      if (criterioOrdenacionAsignados === "pendiente") {
+      if (criterioOrdenacionAsignados === "territorio") {
         return parseInt(a.id) - parseInt(b.id);
       } 
       if (criterioOrdenacionAsignados === "hermano") {
