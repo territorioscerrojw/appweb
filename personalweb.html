@@ -283,17 +283,22 @@
     });
 
     async function cargarDatosFlujoHermano() {
-      try {
-        const respuesta = await fetch(`${URL_API_SHEETS}?accion=leerDatos`);
-        const data = await respuesta.json();
-        if (data && data.length > 0) {
-          document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
-          datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
-          inyectarTarjetasHermano();
-          procesarFechasYBarras(baseDatosCompleta[0].inicio, baseDatosCompleta[0].fin); 
-        }
-      } catch (err) { console.error(err); }
+  try {
+    const respuesta = await fetch(`${URL_API_SHEETS}?accion=leerDatos`);
+    const data = await respuesta.json();
+    if (data && data.length > 0) {
+      document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
+      
+      // CAMBIO AQUÍ: Pasamos los valores que vienen en el JSON
+      // Asegúrate de que 'inicio' y 'fin' coincidan con los nombres de tus columnas en Sheets
+      procesarFechasYBarras(data[0].f.inicio, data[0].f.fin); 
+      
+      datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
+      inyectarTarjetasHermano();
     }
+  } catch (err) { console.error(err); }
+}
+
 
     function inyectarTarjetasHermano() {
       const contenedorPendientes = document.getElementById("grid-pendientes");
