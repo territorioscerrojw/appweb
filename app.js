@@ -392,32 +392,34 @@ async function toggleEstadoTrabajo(idMapa, event) {
   event.preventDefault();
   const btn = event.currentTarget;
   
-  // 1. Encontrar el objeto en nuestra base de datos local
+  // 1. Encontrar el mapa
   const mapa = baseDatosCompleta.find(m => m.id.toString() === idMapa.toString());
   if (!mapa) return;
 
-  // 2. Calcular el nuevo estado
-  const nuevoEstado = !mapa.trabajado;
+  // 2. Invertir estado en la "Fuente de la Verdad" (baseDatosCompleta)
+  mapa.trabajado = !mapa.trabajado; 
+  const nuevoEstado = mapa.trabajado;
   
-  // 3. ACTUALIZACIÓN VISUAL INMEDIATA (Optimista)
+  // 3. ACTUALIZAR INTERFAZ INMEDIATAMENTE
+  // Actualizamos los números (estadísticas)
+  actualizarAnillosEstadisticos();
+  
+  // Actualizamos el botón visualmente
   btn.classList.toggle('activo', nuevoEstado);
   btn.style.background = nuevoEstado ? '#34c759' : 'transparent';
   btn.innerHTML = nuevoEstado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
- actualizarAnillosEstadisticos()
-  // 4. ACTUALIZAR BASE DE DATOS LOCAL (¡Esto es lo que faltaba!)
-  mapa.trabajado = nuevoEstado;
-  
-  // 5. RE-RENDERIZAR (Actualiza los contadores y las listas)
-  // Llamamos a la función que redibuja las tarjetas y los totales
+
+  // 4. SI NECESITAS REDIBUJAR LA LISTA:
+  // Si filtrarYRenderizar() borra todo el HTML, es probable que pierdas el estado.
+  // Solo llámala si es estrictamente necesario o si tu app cambia de tab.
   filtrarYRenderizar(); 
   
-  // 6. LLAMADA AL SERVIDOR (En segundo plano)
+  // 5. LLAMADA AL SERVIDOR (Asíncrona, no bloquea)
   const s = document.createElement("script");
   s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}`;
   s.onload = () => s.remove();
   document.body.appendChild(s);
 }
-
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
     actualizarEstadosBotonesFiltro();
