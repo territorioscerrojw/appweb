@@ -392,34 +392,42 @@ async function toggleEstadoTrabajo(idMapa, event) {
   event.preventDefault();
   const btn = event.currentTarget;
   
-  // 1. Encontrar el mapa
   const mapa = baseDatosCompleta.find(m => m.id.toString() === idMapa.toString());
   if (!mapa) return;
 
-  // 2. Invertir estado en la "Fuente de la Verdad" (baseDatosCompleta)
-  mapa.trabajado = !mapa.trabajado; 
-  const nuevoEstado = mapa.trabajado;
+  // 1. Determinar la acción y el mensaje
+  const nuevoEstado = !mapa.trabajado;
+  const mensaje = nuevoEstado 
+    ? `¿Marcar como terminado el territorio ${mapa.id}?` 
+    : `¿Reactivar el territorio ${mapa.id}?`;
+
+  // 2. Mostrar la ventana de confirmación
+  if (!confirm(mensaje)) {
+    // Si el usuario presiona "Cancelar", no hacemos nada y salimos
+    return;
+  }
+
+  // 3. SI EL USUARIO ACEPTÓ, procedemos con la lógica:
   
-  // 3. ACTUALIZAR INTERFAZ INMEDIATAMENTE
-  // Actualizamos los números (estadísticas)
+  // Actualizar la "Fuente de la Verdad"
+  mapa.trabajado = nuevoEstado;
+  
+  // Actualizar Interfaz (Visual + Contadores)
   actualizarAnillosEstadisticos();
   
-  // Actualizamos el botón visualmente
   btn.classList.toggle('activo', nuevoEstado);
   btn.style.background = nuevoEstado ? '#34c759' : 'transparent';
   btn.innerHTML = nuevoEstado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
-
-  // 4. SI NECESITAS REDIBUJAR LA LISTA:
-  // Si filtrarYRenderizar() borra todo el HTML, es probable que pierdas el estado.
-  // Solo llámala si es estrictamente necesario o si tu app cambia de tab.
+  
   filtrarYRenderizar(); 
   
-  // 5. LLAMADA AL SERVIDOR (Asíncrona, no bloquea)
+  // 4. Llamada al servidor
   const s = document.createElement("script");
   s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}`;
   s.onload = () => s.remove();
   document.body.appendChild(s);
 }
+
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
     actualizarEstadosBotonesFiltro();
