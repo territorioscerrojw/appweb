@@ -290,7 +290,7 @@
           document.getElementById("txt-campana-hermano").innerText = data[0].campana || "Campaña Activa";
           datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
           inyectarTarjetasHermano();
-          procesarFechasYBarras(data[0].fechaInicio, data[0].fechaFin); 
+          procesarFechasYBarras(baseDatosCompleta[0].inicio, baseDatosCompleta[0].fin); 
         }
       } catch (err) { console.error(err); }
     }
