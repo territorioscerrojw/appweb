@@ -621,7 +621,7 @@ body {
 
 .checkbox-apple.checked {
     background: #34c759; /* Verde Apple */
-    border-color: #34c759;
+    border-color: #34c759 !important;
     color: white;
 }
 .btn-check-apple {
