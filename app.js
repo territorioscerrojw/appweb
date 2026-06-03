@@ -388,35 +388,35 @@ function toggleEstadoTrabajo(idMapa, event) {
   const mapa = baseDatosCompleta.find(m => m.id == idMapa);
   if (!mapa) return;
 
-  // 1. Cambiar estado LOCAL inmediatamente (Para que no se resetee)
+  // 1. ACTUALIZACIÓN LOCAL INSTANTÁNEA (Igual que en asignaciones)
   mapa.trabajado = !mapa.trabajado;
   
-  // 2. Actualizar interfaz visual (Botón y Badge)
+  // Refrescar el botón visualmente
   const btn = event.currentTarget;
   btn.classList.toggle('activo', mapa.trabajado);
   btn.style.background = mapa.trabajado ? '#34c759' : 'transparent';
   btn.innerHTML = mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
 
+  // Refrescar badge de texto
   const tarjeta = btn.closest('.tarjeta-apple-horizontal') || btn.closest('.tarjeta-apple');
   const badge = tarjeta.querySelector('.badge-estado-pill');
   if (badge) {
-    badge.className = `badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}`;
-    badge.innerText = !mapa.trabajado ? "Pendiente" : "Completado";
+    badge.innerText = mapa.trabajado ? "Completado" : "Pendiente";
+    badge.className = `badge-estado-pill ${mapa.trabajado ? 'estado-hecho' : 'estado-calle'}`;
   }
 
-  // 3. Enviar al Servidor y Refrescar contadores
+  // 2. RECALCULAR CONTADORES/ANILLOS AL INSTANTE
+  // Aquí llamamos a la función que actualiza los anillos (debe existir en tu app.js)
+  if (typeof actualizarAnillosEstadisticos === 'function') {
+    actualizarAnillosEstadisticos();
+  }
+
+  // 3. ENVÍO A GOOGLE SHEETS (En segundo plano)
   const accion = mapa.trabajado ? "completar" : "pendiente";
-  
   const s = document.createElement("script");
+  // IMPORTANTE: Asegúrate de que esta URL sea la misma que usas para asignar
   s.src = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
-  
-  s.onload = () => { 
-    s.remove(); 
-    // Al terminar la carga, refrescamos los anillos estadísticos
-    actualizarAnillosEstadisticos(); 
-    console.log("Cambio guardado y contadores refrescados");
-  };
-  
+  s.onload = () => { s.remove(); console.log("Sync con Sheets completada"); };
   document.body.appendChild(s);
 }
 
