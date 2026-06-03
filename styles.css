@@ -574,7 +574,6 @@ body {
 .contenido-lateral-datos {
   flex: 1;
   display: flex;
-  position: relative
   flex-direction: column;
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
   gap: 6px;
