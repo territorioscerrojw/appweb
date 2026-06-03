@@ -291,7 +291,7 @@
       
       // CAMBIO AQUÍ: Pasamos los valores que vienen en el JSON
       // Asegúrate de que 'inicio' y 'fin' coincidan con los nombres de tus columnas en Sheets
-      procesarFechasYBarras(data[0].f.inicio, data[0].f.fin); 
+      procesarFechasYBarras(data[0].inicio, data[0].fin); 
       
       datosLocalesHermano = data.filter(item => item.hermano.toLowerCase().trim() === idHermanoUrl.toLowerCase().trim());
       inyectarTarjetasHermano();
