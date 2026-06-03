@@ -392,25 +392,31 @@ async function toggleEstadoTrabajo(idMapa, event) {
   event.preventDefault();
   const btn = event.currentTarget;
   
-  // 1. CAMBIO VISUAL INMEDIATO (Optimista)
-  const estaActivo = btn.classList.contains('activo');
-  const nuevoEstado = !estaActivo;
+  // 1. Encontrar el objeto en nuestra base de datos local
+  const mapa = baseDatosCompleta.find(m => m.id.toString() === idMapa.toString());
+  if (!mapa) return;
+
+  // 2. Calcular el nuevo estado
+  const nuevoEstado = !mapa.trabajado;
   
+  // 3. ACTUALIZACIÓN VISUAL INMEDIATA (Optimista)
   btn.classList.toggle('activo', nuevoEstado);
   btn.style.background = nuevoEstado ? '#34c759' : 'transparent';
   btn.innerHTML = nuevoEstado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
   
-  // 2. LLAMADA AL SERVIDOR (En segundo plano)
+  // 4. ACTUALIZAR BASE DE DATOS LOCAL (¡Esto es lo que faltaba!)
+  mapa.trabajado = nuevoEstado;
+  
+  // 5. RE-RENDERIZAR (Actualiza los contadores y las listas)
+  // Llamamos a la función que redibuja las tarjetas y los totales
+  filtrarYRenderizar(); 
+  
+  // 6. LLAMADA AL SERVIDOR (En segundo plano)
   const s = document.createElement("script");
-  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=c_${Date.now()}`;
-  
-  // No bloqueamos la interfaz, simplemente dejamos que trabaje en silencio
+  s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}`;
+  s.onload = () => s.remove();
   document.body.appendChild(s);
-  
-  // Nota: Ya no hace falta llamar a 'descargarDatosDesdeSheets()' aquí,
-  // porque el usuario ya vio el cambio visual.
 }
-
 
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
