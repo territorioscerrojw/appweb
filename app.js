@@ -347,7 +347,7 @@ div.innerHTML = `
  <div class="contenedor-columna-imagen">
     ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
     <div class="img-lateral-wrapper-rectangular">
-      // Asegúrate de incluir el onclick completo con sus parámetros
+      
 <button class="btn-lupa-flotante" 
         onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
