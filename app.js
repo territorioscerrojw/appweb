@@ -344,14 +344,12 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
       
               // Dentro de la sección 'else' de filtrarYRenderizar:
 div.innerHTML = `
- ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
-  <div class="img-lateral-wrapper-rectangular">
-    
-    <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    </button>
-   
-    <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+ <div class="contenedor-columna-imagen">
+    ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
+    <div class="img-lateral-wrapper-rectangular">
+       <button class="btn-lupa-flotante" onclick="...">...</button>
+       <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+    </div>
   </div>
   <div class="contenido-lateral-datos">
     <div class="cabecera-datos-linea">
