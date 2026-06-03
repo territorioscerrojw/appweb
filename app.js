@@ -380,29 +380,45 @@ div.innerHTML = `
 }
 
 function toggleEstadoTrabajo(idMapa, event) {
-  event.stopPropagation(); // Evita que se disparen otros eventos
+  event.stopPropagation();
   
-  // Feedback háptico (iPhone)
+  // 1. Feedback háptico
   if (window.navigator && window.navigator.vibrate) {
     window.navigator.vibrate(10);
   }
 
+  // 2. Buscamos el mapa y el botón en el DOM
   const mapa = baseDatosCompleta.find(m => m.id == idMapa);
+  const btn = event.currentTarget; // El botón que disparó el evento
+  
   if (!mapa) return;
 
-  // Invertir estado
+  // 3. ACTUALIZACIÓN INSTANTÁNEA (UI Optimista)
   mapa.trabajado = !mapa.trabajado;
+  
+  // Cambiamos clases y estilos del botón inmediatamente
+  btn.classList.toggle('activo', mapa.trabajado);
+  btn.style.background = mapa.trabajado ? '#34c759' : 'transparent';
+  btn.innerHTML = mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
 
-  // Ejecutar petición al servidor (reutilizando tu lógica de scripts)
+  // También actualizamos el texto de "Pendiente/Completado" si lo tienes visible
+  const tarjeta = btn.closest('.tarjeta-apple-horizontal') || btn.closest('.tarjeta-apple');
+  const badge = tarjeta.querySelector('.badge-estado-pill');
+  if (badge) {
+    badge.className = `badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}`;
+    badge.innerText = !mapa.trabajado ? "Pendiente" : "Completado";
+  }
+
+  // 4. Guardar en el servidor (en segundo plano)
   const accion = mapa.trabajado ? "completar" : "pendiente";
   const s = document.createElement("script");
   s.src = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
-  s.onload = () => { 
-    s.remove(); 
-    filtrarYRenderizar(); // Refresca solo la vista sin recargar todo
-  };
+  
+  // No necesitamos refrescar toda la pantalla, el servidor hará el trabajo sucio
+  s.onload = () => { s.remove(); console.log("Servidor actualizado"); };
   document.body.appendChild(s);
 }
+
 
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
