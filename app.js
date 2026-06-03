@@ -696,8 +696,8 @@ function inyectarEstilosCorreccionSelector() {
       background: var(--glass-fondo) !important; /* Ajusta este color */
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
+    
     /* Aseguramos que el contenido interno no tenga fondo opaco */
     .contenido-panel-flotante {
       background: transparent !important;
