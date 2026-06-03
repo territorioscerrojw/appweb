@@ -342,36 +342,68 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
-              div.innerHTML = `
-        <div class="img-lateral-wrapper-rectangular">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-          <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
-        </div>
-        <div class="contenido-lateral-datos">
-          <div class="cabecera-datos-linea">
-            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-            <span class="nombre-barrio-chico">${mapa.barriada}</span>
-          </div>
-          
-          <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
-          <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
-          
-          <div class="estado-badge-linea">
-            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
-              ${!mapa.trabajado 
-                ? `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>` 
-                : `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
-              }
-              ${!mapa.trabajado ? "Pendiente" : "Completado"}
-            </span>
-            ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
-          </div>
-        </div>`;
+              // Dentro de la sección 'else' de filtrarYRenderizar:
+div.innerHTML = `
+  <div class="img-lateral-wrapper-rectangular">
+    <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+  </div>
+  <div class="contenido-lateral-datos">
+    <div class="cabecera-datos-linea">
+      <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+      <span class="nombre-barrio-chico">${mapa.barriada}</span>
+    </div>
+    
+    <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
+    <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
+    
+    <div class="estado-badge-linea" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+      <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
+        ${!mapa.trabajado ? "Pendiente" : "Completado"}
+      </span>
+      
+      <button class="btn-check-apple ${mapa.trabajado ? 'activo' : ''}" 
+              onclick="toggleEstadoTrabajo(${mapa.id}, event)"
+              style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #34c759; background: ${mapa.trabajado ? '#34c759' : 'transparent'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
+        ${mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : ''}
+      </button>
+    </div>
+    ${esPrio ? `<span class="tag-prio-mini">⚠️ PRIORITARIO</span>` : ''}
+  </div>`;
+
 
     }
     grid.appendChild(div);
   });
 }
+
+function toggleEstadoTrabajo(idMapa, event) {
+  event.stopPropagation(); // Evita que se disparen otros eventos
+  
+  // Feedback háptico (iPhone)
+  if (window.navigator && window.navigator.vibrate) {
+    window.navigator.vibrate(10);
+  }
+
+  const mapa = baseDatosCompleta.find(m => m.id == idMapa);
+  if (!mapa) return;
+
+  // Invertir estado
+  mapa.trabajado = !mapa.trabajado;
+
+  // Ejecutar petición al servidor (reutilizando tu lógica de scripts)
+  const accion = mapa.trabajado ? "completar" : "pendiente";
+  const s = document.createElement("script");
+  s.src = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
+  s.onload = () => { 
+    s.remove(); 
+    filtrarYRenderizar(); // Refresca solo la vista sin recargar todo
+  };
+  document.body.appendChild(s);
+}
+
 function inyectarSelectorDeAgrupacionAsignados() {
   if (document.getElementById("contenedor-agrupador-asignados")) {
     actualizarEstadosBotonesFiltro();
