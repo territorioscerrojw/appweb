@@ -552,6 +552,8 @@ body {
   font-weight: 700;
   text-align: center; /* Centrado dentro de su bloque */
   text-transform: uppercase;
+  z-index: 10;
+  pointer-events: none
 }
 .img-lateral-wrapper-rectangular {
   position: relative;
@@ -585,6 +587,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 20;
 }
 .tarjeta-apple-horizontal .btn-lupa-flotante:hover {
   opacity: 0.85 !important;
