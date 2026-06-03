@@ -288,7 +288,7 @@ function filtrarYRenderizar() {
     // Lógica de ordenación corregida
   } else {
     dataset.sort((a, b) => {
-      if (criterioOrdenacionAsignados === "pendientes") {
+      if (criterioOrdenacionAsignados === "pendiente") {
         return parseInt(a.id) - parseInt(b.id);
       } 
       if (criterioOrdenacionAsignados === "hermano") {
