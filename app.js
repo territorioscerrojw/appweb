@@ -379,46 +379,43 @@ div.innerHTML = `
   });
 }
 
-function toggleEstadoTrabajo(idMapa, event) {
+async function toggleEstadoTrabajo(idMapa, event) {
   event.stopPropagation();
   
-  // Feedback háptico
   if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
 
   const mapa = baseDatosCompleta.find(m => m.id == idMapa);
   if (!mapa) return;
 
-  // 1. ACTUALIZACIÓN LOCAL INSTANTÁNEA (Igual que en asignaciones)
+  // 1. UI INSTANTÁNEA (Anillos y visual)
   mapa.trabajado = !mapa.trabajado;
   
-  // Refrescar el botón visualmente
+  // Actualizar UI
   const btn = event.currentTarget;
   btn.classList.toggle('activo', mapa.trabajado);
   btn.style.background = mapa.trabajado ? '#34c759' : 'transparent';
   btn.innerHTML = mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
-
-  // Refrescar badge de texto
-  const tarjeta = btn.closest('.tarjeta-apple-horizontal') || btn.closest('.tarjeta-apple');
-  const badge = tarjeta.querySelector('.badge-estado-pill');
-  if (badge) {
-    badge.innerText = mapa.trabajado ? "Completado" : "Pendiente";
-    badge.className = `badge-estado-pill ${mapa.trabajado ? 'estado-hecho' : 'estado-calle'}`;
-  }
-
-  // 2. RECALCULAR CONTADORES/ANILLOS AL INSTANTE
-  // Aquí llamamos a la función que actualiza los anillos (debe existir en tu app.js)
+  
   if (typeof actualizarAnillosEstadisticos === 'function') {
     actualizarAnillosEstadisticos();
   }
 
-  // 3. ENVÍO A GOOGLE SHEETS (En segundo plano)
+  // 2. SINCRONIZACIÓN REAL CON SHEETS (Usando fetch)
   const accion = mapa.trabajado ? "completar" : "pendiente";
-  const s = document.createElement("script");
-  // IMPORTANTE: Asegúrate de que esta URL sea la misma que usas para asignar
-  s.src = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
-  s.onload = () => { s.remove(); console.log("Sync con Sheets completada"); };
-  document.body.appendChild(s);
+  const url = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
+
+  try {
+    const respuesta = await fetch(url);
+    if (respuesta.ok) {
+      console.log("Servidor actualizado correctamente");
+    } else {
+      console.error("Error al conectar con el servidor");
+    }
+  } catch (error) {
+    console.error("Fallo de red:", error);
+  }
 }
+
 
 
 function inyectarSelectorDeAgrupacionAsignados() {
