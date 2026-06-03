@@ -632,7 +632,7 @@ body {
     /* Aseguramos que sea un círculo perfecto */
     border-radius: 50% !important;
     transition: background 0.2s ease;
-    border: 2px solid #8e8e93 !important; 
+    border: 2px solid rgba(142, 142, 147, 0.4); 
     background: transparent;
 }
   
