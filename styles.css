@@ -541,7 +541,18 @@ body {
   gap: 5px; /* Espacio entre el texto y la imagen */
   width: auto;
 }
-
+.tag-prio-bloque {
+  display: block;
+  width: 100%; /* Para que ocupe el ancho y se vea como un encabezado */
+  background-color: var(--apple-naranja);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center; /* Centrado dentro de su bloque */
+  text-transform: uppercase;
+}
 .img-lateral-wrapper-rectangular {
   position: relative;
   width: 105px; 
