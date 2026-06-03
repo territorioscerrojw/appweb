@@ -599,9 +599,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
-  gap: 6px;
+  gap: 4px;
   overflow: hidden;
-  padding-left: 20px;       /* Un poco de aire extra respecto a la imagen */
+  padding-left: 16px;       /* Un poco de aire extra respecto a la imagen */
 }
 /* Añade esto a tu hoja de estilos o en un tag <style> */
 .checkbox-apple {
