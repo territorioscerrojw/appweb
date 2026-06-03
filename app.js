@@ -379,53 +379,45 @@ div.innerHTML = `
   });
 }
 
-async function toggleEstadoTrabajo(idMapa, event) {
+function toggleEstadoTrabajo(idMapa, event) {
   event.stopPropagation();
   
-  // 1. Feedback háptico
-  if (window.navigator && window.navigator.vibrate) {
-    window.navigator.vibrate(10);
-  }
+  // Feedback háptico
+  if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
 
   const mapa = baseDatosCompleta.find(m => m.id == idMapa);
-  const btn = event.currentTarget;
-  
   if (!mapa) return;
 
-  // 2. UI Optimista (cambio visual inmediato)
+  // 1. Cambiar estado LOCAL inmediatamente (Para que no se resetee)
   mapa.trabajado = !mapa.trabajado;
   
-  // Actualizar visual del botón
+  // 2. Actualizar interfaz visual (Botón y Badge)
+  const btn = event.currentTarget;
   btn.classList.toggle('activo', mapa.trabajado);
   btn.style.background = mapa.trabajado ? '#34c759' : 'transparent';
   btn.innerHTML = mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
 
-  // Actualizar el Badge de texto
   const tarjeta = btn.closest('.tarjeta-apple-horizontal') || btn.closest('.tarjeta-apple');
   const badge = tarjeta.querySelector('.badge-estado-pill');
   if (badge) {
     badge.className = `badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}`;
-    badge.innerHTML = !mapa.trabajado 
-      ? `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Pendiente` 
-      : `<svg class="svg-icono-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Completado`;
+    badge.innerText = !mapa.trabajado ? "Pendiente" : "Completado";
   }
 
-  // 3. ACTUALIZACIÓN DEL SERVIDOR Y ESTADÍSTICAS
-  // Llamamos a la API y esperamos a que termine para refrescar contadores
+  // 3. Enviar al Servidor y Refrescar contadores
   const accion = mapa.trabajado ? "completar" : "pendiente";
   
-  try {
-    const response = await fetch(`${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`);
-    
-    // Una vez guardado en el servidor, refrescamos los datos maestros 
-    // y los anillos estadísticos (ya que 'descargarDatosDesdeSheets' vuelve a llamar a 'actualizarAnillosEstadisticos')
-    await descargarDatosDesdeSheets();
-    
-    console.log("Servidor y contadores actualizados.");
-  } catch (e) {
-    console.error("Error al sincronizar:", e);
-    // Opcional: revertir visualmente si hay error
-  }
+  const s = document.createElement("script");
+  s.src = `${URL_API_SHEETS}?accion=${accion}&id=${idMapa}`;
+  
+  s.onload = () => { 
+    s.remove(); 
+    // Al terminar la carga, refrescamos los anillos estadísticos
+    actualizarAnillosEstadisticos(); 
+    console.log("Cambio guardado y contadores refrescados");
+  };
+  
+  document.body.appendChild(s);
 }
 
 
