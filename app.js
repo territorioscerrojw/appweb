@@ -403,7 +403,7 @@ async function toggleEstadoTrabajo(idMapa, event) {
   btn.classList.toggle('activo', nuevoEstado);
   btn.style.background = nuevoEstado ? '#34c759' : 'transparent';
   btn.innerHTML = nuevoEstado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : '';
-  actualizarContadoresUI();
+ 
   // 4. ACTUALIZAR BASE DE DATOS LOCAL (¡Esto es lo que faltaba!)
   mapa.trabajado = nuevoEstado;
   
