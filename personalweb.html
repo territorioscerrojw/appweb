@@ -34,6 +34,21 @@
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
         }
+    .cabecera-apple {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: var(--fondo-cabecera) !important;
+  padding-top: env(safe-area-inset-top); 
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 16px;
+  padding-left: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--borde-tarjeta);
+}
     .cabecera-titulos {
       font-size: 22px
       font-weight: 800;
