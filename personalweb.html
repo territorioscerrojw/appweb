@@ -327,8 +327,10 @@ function inyectarTarjetasHermano() {
   const gP = document.getElementById("grid-pendientes");
   const gC = document.getElementById("grid-completados");
 
-  // En lugar de borrar todo de golpe, creamos un documento fragmento
-  // Esto es más eficiente y evita el parpadeo del navegador
+  // 1. ORDENAR: Aseguramos que siempre estén por ID (numérico)
+  datosLocalesHermano.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+  // 2. Fragmentos para mantener el orden
   const fragmentoP = document.createDocumentFragment();
   const fragmentoC = document.createDocumentFragment();
 
@@ -338,7 +340,7 @@ function inyectarTarjetasHermano() {
     else fragmentoC.appendChild(tarjeta);
   });
 
-  // Actualizamos el DOM
+  // 3. Limpiar y rellenar
   gP.innerHTML = "";
   gP.appendChild(fragmentoP);
   gC.innerHTML = "";
