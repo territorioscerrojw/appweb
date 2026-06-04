@@ -173,6 +173,12 @@ body {
 /* ==========================================================================
    ANILLOS Y CONTADORES
    ========================================================================== */
+
+/* Animación para que el gradiente parezca que fluye */
+@keyframes rotarDegradado {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 .seccion-anillos {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -215,6 +221,12 @@ body {
   fill: none;
   stroke-width: 3.5;
   stroke-linecap: round;
+  transition: stroke 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+}
+/* Opcional: Si quieres que el anillo tenga un efecto de pulso suave */
+.tarjeta-anillo:hover .anillo-linea {
+  filter: brightness(1.2) drop-shadow(0 0 8px currentColor);
 }
 .color-totales .anillo-linea { stroke: var(--apple-azul); }
 .color-prioritarios .anillo-linea { stroke: var(--apple-naranja); }
