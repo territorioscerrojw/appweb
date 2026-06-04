@@ -92,13 +92,11 @@
       width: 50%; /* Cada sección ocupa exactamente la mitad del carrete (100% de la pantalla) */
       flex-shrink: 0;
     }
-
- .grid-mapas {
+.grid-mapas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
-  padding: 16px;
-  /* Esto habilita que el grid mueva las tarjetas suavemente */
+  /* Esto permite que los elementos se deslicen cuando su posición cambia */
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .tarjeta-mapa {
@@ -389,40 +387,42 @@ function renderizarLista(contenedor, lista, msgVacio) {
       return div;
     }
 
-    async function cambiarEstadoTerritorio(idMapa, modo) {
+    async function cambiarEstadoTerritorio(btn, idMapa, modo) {
   const esCompletar = (modo === "completar");
-  
-  // 1. Encontrar la tarjeta física en el DOM
-  const botones = document.querySelectorAll(`button[onclick*="${idMapa}"]`);
-  const tarjeta = Array.from(botones).find(btn => btn.closest('.tarjeta-mapa'))?.closest('.tarjeta-mapa');
-  
-  if (!tarjeta) return;
+  const tarjeta = btn.closest('.tarjeta-mapa');
+  const contenedorDestino = esCompletar 
+    ? document.getElementById("grid-completados") 
+    : document.getElementById("grid-pendientes");
 
-  // 2. Iniciar animación de salida
+  // 1. Animación de salida (desvanecimiento y escala)
   tarjeta.classList.add('saliendo');
   
-  // 3. Esperar a que la animación termine (400ms)
-  await new Promise(resolve => setTimeout(resolve, 400));
+  // 2. Esperamos a que la animación termine
+  await new Promise(r => setTimeout(r, 400));
   
-  // 4. Actualizar el estado en los datos locales
-  const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
-  if (indice !== -1) {
-    datosLocalesHermano[indice].trabajado = esCompletar;
-  }
+  // 3. ACTUALIZACIÓN DEL DOM SIN RECONSTRUIR:
+  // Movemos el nodo físicamente al nuevo grid
+  // Esto mantiene la referencia del elemento y permite la transición suave
+  tarjeta.classList.remove('saliendo');
+  tarjeta.classList.toggle('terminado', esCompletar);
   
-  // 5. EFECTO SUAVE: En lugar de inyectar todo, ocultamos la tarjeta 
-  // y permitimos que el grid se reajuste antes de refrescar
-  tarjeta.style.display = 'none'; 
+  // Actualizamos el botón dentro de la tarjeta
+  const btnDiv = tarjeta.querySelector('button');
+  btnDiv.innerText = esCompletar ? 'Reactivar territorio' : 'Marcar como completado';
+  btnDiv.className = esCompletar ? 'btn-desmarcar-accion' : 'btn-completar-accion';
+  btnDiv.onclick = () => cambiarEstadoTerritorio(btnDiv, idMapa, esCompletar ? 'desmarcar' : 'completar');
   
-  // Refrescamos todo el DOM para mover la tarjeta de columna
-  inyectarTarjetasHermano();
-  procesarFechasYBarras(); 
+  // Movemos la tarjeta al nuevo contenedor (esto dispara la animación del Grid)
+  contenedorDestino.appendChild(tarjeta);
 
-  // 6. Enviar a Google Sheets
-  const url = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${encodeURIComponent(idMapa)}&estado=${esCompletar}`;
-  fetch(url, { mode: 'no-cors' }).catch(err => console.error(err));
+  // 4. Actualizamos el estado interno
+  const idx = datosLocalesHermano.findIndex(i => i.id.toString() === idMapa.toString());
+  if (idx !== -1) datosLocalesHermano[idx].trabajado = esCompletar;
+  
+  // 5. Enviamos datos (sin refrescar el DOM)
+  fetch(`${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${esCompletar}`, { mode: 'no-cors' });
+  procesarFechasYBarras();
 }
-
     /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo Apple) */
     function configurarArrastreMecanico() {
       const viewport = document.getElementById("viewport-tactil");
