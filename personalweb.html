@@ -93,17 +93,14 @@
       flex-shrink: 0;
     }
 
-   .grid-mapas {
+ .grid-mapas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 16px;
-  width: 100%;
-  box-sizing: border-box;
-  /* Esto permite que los cambios de posición se animen suavemente */
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Esto habilita que el grid mueva las tarjetas suavemente */
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
 .tarjeta-mapa {
   background-color: var(--fondo-tarjeta) !important;
   border: 1px solid var(--borde-tarjeta) !important;
@@ -318,16 +315,25 @@
  * Se llama cada vez que cambia el estado de un territorio.
  */
 function inyectarTarjetasHermano() {
-  const contenedorPendientes = document.getElementById("grid-pendientes");
-  const contenedorCompletados = document.getElementById("grid-completados");
+  const gP = document.getElementById("grid-pendientes");
+  const gC = document.getElementById("grid-completados");
 
-  // Filtramos los datos actuales
-  const pendientes = datosLocalesHermano.filter(m => !m.trabajado);
-  const completados = datosLocalesHermano.filter(m => m.trabajado);
+  // En lugar de borrar todo de golpe, creamos un documento fragmento
+  // Esto es más eficiente y evita el parpadeo del navegador
+  const fragmentoP = document.createDocumentFragment();
+  const fragmentoC = document.createDocumentFragment();
 
-  // Renderizamos cada lista usando nuestra función reutilizable
-  renderizarLista(contenedorPendientes, pendientes, "No hay mapas pendientes.");
-  renderizarLista(contenedorCompletados, completados, "No hay mapas completados.");
+  datosLocalesHermano.forEach(mapa => {
+    const tarjeta = crearTarjetaDOM(mapa);
+    if (!mapa.trabajado) fragmentoP.appendChild(tarjeta);
+    else fragmentoC.appendChild(tarjeta);
+  });
+
+  // Actualizamos el DOM
+  gP.innerHTML = "";
+  gP.appendChild(fragmentoP);
+  gC.innerHTML = "";
+  gC.appendChild(fragmentoC);
 }
 
 /**
@@ -386,25 +392,29 @@ function renderizarLista(contenedor, lista, msgVacio) {
     async function cambiarEstadoTerritorio(idMapa, modo) {
   const esCompletar = (modo === "completar");
   
-  // 1. Encontrar el elemento visual de la tarjeta
-  // Buscamos todas las tarjetas y filtramos la que tiene el ID correspondiente
+  // 1. Encontrar la tarjeta física en el DOM
   const botones = document.querySelectorAll(`button[onclick*="${idMapa}"]`);
-  const tarjeta = Array.from(botones).find(btn => btn.closest('.tarjeta-mapa')).closest('.tarjeta-mapa');
+  const tarjeta = Array.from(botones).find(btn => btn.closest('.tarjeta-mapa'))?.closest('.tarjeta-mapa');
   
-  // 2. Aplicar clase de animación
-  if (tarjeta) {
-    tarjeta.classList.add('saliendo');
-  }
+  if (!tarjeta) return;
 
-  // 3. Esperar el tiempo de la animación (400ms) antes de procesar el cambio real
+  // 2. Iniciar animación de salida
+  tarjeta.classList.add('saliendo');
+  
+  // 3. Esperar a que la animación termine (400ms)
   await new Promise(resolve => setTimeout(resolve, 400));
-
-  // 4. Lógica de estado igual que antes
-  const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
-  if (indice === -1) return;
-  datosLocalesHermano[indice].trabajado = esCompletar;
   
-  // 5. Refrescar el DOM
+  // 4. Actualizar el estado en los datos locales
+  const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
+  if (indice !== -1) {
+    datosLocalesHermano[indice].trabajado = esCompletar;
+  }
+  
+  // 5. EFECTO SUAVE: En lugar de inyectar todo, ocultamos la tarjeta 
+  // y permitimos que el grid se reajuste antes de refrescar
+  tarjeta.style.display = 'none'; 
+  
+  // Refrescamos todo el DOM para mover la tarjeta de columna
   inyectarTarjetasHermano();
   procesarFechasYBarras(); 
 
