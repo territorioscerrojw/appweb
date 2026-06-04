@@ -470,7 +470,7 @@ animation: pulso 4s infinite ease-in-out !important;
   position: absolute !important;
   top: 2px !important; /* Centrado vertical */
   left: 2px !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
