@@ -308,30 +308,46 @@
 }
 
 
-    function inyectarTarjetasHermano() {
-      const contenedorPendientes = document.getElementById("grid-pendientes");
-      const contenedorCompletados = document.getElementById("grid-completados");
-      
-      contenedorPendientes.innerHTML = "";
-      contenedorCompletados.innerHTML = "";
+    /**
+ * Función principal que filtra los datos y decide qué mostrar en cada contenedor.
+ * Se llama cada vez que cambia el estado de un territorio.
+ */
+function inyectarTarjetasHermano() {
+  const contenedorPendientes = document.getElementById("grid-pendientes");
+  const contenedorCompletados = document.getElementById("grid-completados");
 
-      const pendientes = datosLocalesHermano.filter(m => !m.trabajado);
-      const completados = datosLocalesHermano.filter(m => m.trabajado);
+  // Filtramos los datos actuales
+  const pendientes = datosLocalesHermano.filter(m => !m.trabajado);
+  const completados = datosLocalesHermano.filter(m => m.trabajado);
 
-      // Renderizar Pendientes
-      if (pendientes.length === 0) {
-        contenedorPendientes.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas pendientes.</p>`;
-      } else {
-        pendientes.forEach(mapa => contenedorPendientes.appendChild(crearTarjetaDOM(mapa)));
-      }
+  // Renderizamos cada lista usando nuestra función reutilizable
+  renderizarLista(contenedorPendientes, pendientes, "No hay mapas pendientes.");
+  renderizarLista(contenedorCompletados, completados, "No hay mapas completados.");
+}
 
-      // Renderizar Completados
-      if (completados.length === 0) {
-        contenedorCompletados.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario);">No hay mapas completados.</p>`;
-      } else {
-        completados.forEach(mapa => contenedorCompletados.appendChild(crearTarjetaDOM(mapa)));
-      }
-    }
+/**
+ * Función encargada de pintar el DOM dentro de un contenedor específico.
+ * Utiliza un mensaje de aviso si la lista está vacía.
+ */
+function renderizarLista(contenedor, lista, msgVacio) {
+  // Limpiamos el contenedor actual
+  contenedor.innerHTML = "";
+
+  if (lista.length === 0) {
+    // Si no hay elementos, mostramos el mensaje informativo
+    contenedor.innerHTML = `
+      <p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario); font-style: italic;">
+        ${msgVacio}
+      </p>`;
+    return;
+  }
+
+  // Si hay elementos, creamos y añadimos cada tarjeta individualmente
+  lista.forEach(mapa => {
+    const tarjeta = crearTarjetaDOM(mapa);
+    contenedor.appendChild(tarjeta);
+  });
+}
 
     function crearTarjetaDOM(mapa) {
       const div = document.createElement("div");
