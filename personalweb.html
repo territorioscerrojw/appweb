@@ -42,7 +42,7 @@
   z-index: 999;
   background: var(--fondo-cabecera) !important;
   padding-top: env(safe-area-inset-top); 
-  opacity: 1 !important;
+ 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,6 +50,8 @@
   padding-left: 16px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--borde-tarjeta);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
