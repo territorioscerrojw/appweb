@@ -858,6 +858,7 @@ body {
   background: var(--anillo-vacio); /* Usamos la variable que ya tienes definida en tu :root */
   border-radius: 3px;
   overflow: hidden;
+  position: relative;
 }
 .linea-progreso-relleno {
   height: 100%;
@@ -865,6 +866,7 @@ body {
   border-radius: 3px;
   transition: width 0.5s ease-out; /* Animación suave */
   overflow: hidden;
+  position: relative;
 }
 
 /* Capa de brillo animada */
