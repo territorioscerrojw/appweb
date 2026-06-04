@@ -599,7 +599,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
-  gap: 4px;
+  gap: 5px;
   overflow: hidden;
   padding-left: 16px;       /* Un poco de aire extra respecto a la imagen */
 }
@@ -643,7 +643,7 @@ body {
   width: 100%;
 }
 .num-mapa-chico { 
-  font-size: 18px; 
+  font-size: 22px; 
   font-weight: 800; 
   line-height: 1;
   flex-shrink: 0;
