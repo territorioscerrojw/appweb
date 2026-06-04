@@ -40,15 +40,9 @@
       background-repeat: no-repeat;
       backdrop-filter: blur(12px); /* Crea el efecto de cristal desenfocado */
   -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
-     
+     position: fixed; /* Esto es lo que lo mantiene "pegado" a la pantalla */
         }
-.fondo-con-blur {
-  position: fixed; /* Esto es lo que lo mantiene "pegado" a la pantalla */
-  top: 0;
-  left: 0;
-  width: 100vw;    /* 100% del ancho de la ventana */
-  height: 100vh;   /* 100% del alto de la ventana */
-  z-index: -1;     /* Asegura que esté detrás de todo */
+
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
