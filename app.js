@@ -335,7 +335,7 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular" type="button" onclick="alternarSeleccionTarjeta"></button>
+          <button class="btn-check-rectangular" type="button" onclick="alternarSeleccionTarjeta('${mapa.id}', event)"></button>
          </div>`;
     } else {
       // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
