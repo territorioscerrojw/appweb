@@ -32,7 +32,12 @@
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
         }
-
+.cabecera-apple {
+  position: -webkit-sticky; /* Para compatibilidad con Safari en iPhone */
+  position: sticky;
+  top: 0;
+  z-index: 999; /* Asegura que la cabecera esté siempre por encima de las tarjetas */
+}
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
