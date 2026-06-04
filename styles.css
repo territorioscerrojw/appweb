@@ -845,7 +845,7 @@ body {
 .info-tiempo-texto {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--texto-secundario);
   margin-bottom: 6px;
   font-weight: 500;
