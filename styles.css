@@ -175,9 +175,10 @@ body {
    ========================================================================== */
 
 /* Animación para que el gradiente parezca que fluye */
-@keyframes rotarDegradado {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes pulso {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 .seccion-anillos {
   display: grid;
@@ -221,11 +222,13 @@ body {
   fill: none;
   stroke-width: 3.5;
   stroke-linecap: round;
-  transition: stroke-dasharray 1s ease-in-out, filter 0.3s ease;
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .anillo-svg-wrapper {
-  animation: pulso 4s infinite ease-in-out;
+animation: pulso 4s infinite ease-in-out !important;
+  will-change: transform;
 }
 
 /* Opcional: Si quieres que el anillo tenga un efecto de pulso suave */
