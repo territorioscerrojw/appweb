@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Campañas: Mis Territorios</title>
+  <title>Mis Territorios de campaña</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
   <link rel="stylesheet" href="styles.css">
   
@@ -16,7 +16,6 @@
       --sombra-tarjeta: rgba(0, 0, 0, 0.5) 0px 4px 12px;
       --texto-principal: #ffffff;
       --texto-secundario: #a1a1aa;
-      --fondo-cabecera: rgba(9, 9, 11, 0.85); /* 0.85 es la opacidad */
     }
 
     html[data-theme="claro"] {
@@ -26,33 +25,14 @@
       --sombra-tarjeta: rgba(0, 0, 0, 0.08) 0px 4px 14px;
       --texto-principal: #09090b;
       --texto-secundario: #71717a;
-      --fondo-cabecera: rgba(228, 228, 231, 0.85); /* 0.85 es la opacidad */
     }
 
     body {
-      background-color: var(--fondo-pantalla);
+      background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
         }
-    .cabecera-apple {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: var(--fondo-cabecera) !important;
-  padding-top: env(safe-area-inset-top); 
-   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-right: 16px;
-  padding-left: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--borde-tarjeta);
-}
-    .cabecera-titulos {
-      font-size: 22px
-      font-weight: 800;
-    }
+
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
@@ -112,32 +92,6 @@
       width: 50%; /* Cada sección ocupa exactamente la mitad del carrete (100% de la pantalla) */
       flex-shrink: 0;
     }
-
-    .btn-estilo-apple {
-  background: var(--fondo-tarjeta) !important;
-  border: 1px solid var(--borde-tarjeta) !important;
-  width: 36px;
-  height: 36px;
-  border-radius: 50% !important;
-  cursor: pointer;
-  color: var(--texto-principal) !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--sombra-tarjeta) !important;
-  transition: transform 0.1s ease, background 0.2s ease;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.btn-estilo-apple:active {
-  transform: scale(0.9);
-}
-
-.btn-estilo-apple svg {
-  width: 20px;
-  height: 20px;
-}
 .grid-mapas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -276,22 +230,12 @@
 
   <div class="contenedor-app">
     <header class="cabecera-apple">
-  <div class="cabecera-titulos">
-    <h1>Campaña</h1>
-    <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
-  </div>
-  
-  <div class="cabecera-acciones" style="display: flex; gap: 10px;">
-    <button id="btn-refresh" class="btn-estilo-apple" onclick="recargarApp()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-      </svg>
-    </button>
-    
-    <button id="btn-cambiar-tema" class="btn-estilo-apple" onclick="conmutarTema()">
-  </button>
-  </div>
-</header>
+      <div class="cabecera-titulos">
+        <h1>Campaña</h1>
+        <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
+      </div>
+      <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
+    </header>
 <footer class="barra-tiempo-footer">
   <div class="info-tiempo-texto">
     <span id="lbl-tiempo-restante">Calculando progreso...</span>
@@ -649,7 +593,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
     
     // Asignar color solo si la campaña está en curso (o cerca de terminar)
     if (ahora >= inicio && ahora <= fin) {
-        if (dias <= 3) {
+        if (dias <= 2) {
             barra.classList.add("neon-rojo");
         } else if (dias <= 7) {
             barra.classList.add("neon-naranja");
@@ -659,22 +603,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
     }
   }
 }
-async function recargarApp() {
-  const btn = document.getElementById("btn-refresh");
-  const svg = btn.querySelector("svg");
-  
-  // Animación de giro
-  svg.style.transition = "transform 0.6s ease";
-  svg.style.transform = "rotate(360deg)";
-  
-  // Recargamos los datos
-  await cargarDatosFlujoHermano();
-  
-  // Resetear tras un momento
-  setTimeout(() => {
-    svg.style.transform = "rotate(0deg)";
-  }, 600);
-}
+
   </script>
   <div id="visor-mapa" class="visor-oculto" onclick="cerrarVisor()">
   <img id="imagen-ampliada" src="" alt="Mapa ampliado">
