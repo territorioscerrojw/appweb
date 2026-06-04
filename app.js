@@ -767,3 +767,17 @@ function alternarSwitchHaptico(element) {
   // 3. Si necesitas que esto también actualice tu array territoriosSeleccionados:
   // (Esto depende de cómo hayas implementado la selección en tu HTML)
 }
+async function recargarApp() {
+  const svg = document.querySelector("#btn-refresh svg");
+  
+  // Efecto de giro mientras carga
+  svg.style.transform = "rotate(360deg)";
+  
+  // Recarga los datos
+  await descargarDatosDesdeSheets();
+  
+  // Quitamos la rotación tras un momento para que pueda volver a girar
+  setTimeout(() => {
+    svg.style.transform = "rotate(0deg)";
+  }, 600);
+}
