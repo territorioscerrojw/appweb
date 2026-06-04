@@ -51,6 +51,25 @@
   padding-bottom: 10px;
   border-bottom: 1px solid var(--borde-tarjeta);
 }
+    .cabecera-titulos {
+  flex: 1; /* Ocupa el espacio restante */
+  min-width: 0; /* Vital para permitir el encogimiento */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden; /* Evita que el contenido se salga */
+}
+
+#txt-campana-hermano {
+  margin: 0;
+  /* Usamos clamp para que el tamaño cambie según el espacio disponible */
+  /* Sintaxis: clamp(tamaño_minimo, tamaño_ideal, tamaño_maximo) */
+  font-size: clamp(0.7rem, 2.5vw, 1rem); 
+  
+  white-space: nowrap; /* Evita que salte de línea */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Si aun así no cabe, pone los puntos */
+}
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
