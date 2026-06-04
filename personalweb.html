@@ -92,6 +92,32 @@
       width: 50%; /* Cada sección ocupa exactamente la mitad del carrete (100% de la pantalla) */
       flex-shrink: 0;
     }
+
+    .btn-estilo-apple {
+  background: var(--fondo-tarjeta) !important;
+  border: 1px solid var(--borde-tarjeta) !important;
+  width: 36px;
+  height: 36px;
+  border-radius: 50% !important;
+  cursor: pointer;
+  color: var(--texto-principal) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-tarjeta) !important;
+  transition: transform 0.1s ease, background 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.btn-estilo-apple:active {
+  transform: scale(0.9);
+}
+
+.btn-estilo-apple svg {
+  width: 20px;
+  height: 20px;
+}
 .grid-mapas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -230,12 +256,29 @@
 
   <div class="contenedor-app">
     <header class="cabecera-apple">
-      <div class="cabecera-titulos">
-        <h1>Campaña</h1>
-        <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
-      </div>
-      <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
-    </header>
+  <div class="cabecera-titulos">
+    <h1>Campaña</h1>
+    <h2 id="txt-campana-hermano">Cargando Campaña...</h2>
+  </div>
+  
+  <div class="cabecera-acciones" style="display: flex; gap: 10px;">
+    <button id="btn-refresh" class="btn-estilo-apple" onclick="recargarApp()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+      </svg>
+    </button>
+    
+    <button id="btn-cambiar-tema" class="btn-estilo-apple" onclick="conmutarTema()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      </svg>
+    </button>
+  </div>
+</header>
 <footer class="barra-tiempo-footer">
   <div class="info-tiempo-texto">
     <span id="lbl-tiempo-restante">Calculando progreso...</span>
@@ -603,7 +646,22 @@ function procesarFechasYBarras(inicioStr, finStr) {
     }
   }
 }
-
+async function recargarApp() {
+  const btn = document.getElementById("btn-refresh");
+  const svg = btn.querySelector("svg");
+  
+  // Animación de giro
+  svg.style.transition = "transform 0.6s ease";
+  svg.style.transform = "rotate(360deg)";
+  
+  // Recargamos los datos
+  await cargarDatosFlujoHermano();
+  
+  // Resetear tras un momento
+  setTimeout(() => {
+    svg.style.transform = "rotate(0deg)";
+  }, 600);
+}
   </script>
   <div id="visor-mapa" class="visor-oculto" onclick="cerrarVisor()">
   <img id="imagen-ampliada" src="" alt="Mapa ampliado">
