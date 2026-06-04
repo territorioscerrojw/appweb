@@ -864,6 +864,29 @@ body {
   background-color: var(--apple-verde); /* O el color que prefieras */
   border-radius: 3px;
   transition: width 0.5s ease-out; /* Animación suave */
+  overflow: hidden;
+}
+
+/* Capa de brillo animada */
+.linea-progreso-relleno::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(50%); }
 }
 /* Efecto Neón Intenso: Brillo con capas de sombra */
 .neon-verde {
