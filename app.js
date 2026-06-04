@@ -109,7 +109,7 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no" data-telefono="">Seleccionar Hermano...</option>';
+  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no" data-telefono="">Seleccionar Hermano/a...</option>';
   
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
@@ -537,7 +537,7 @@ function procesarAsignacionMultiple() {
 
   if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
     const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
-    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios para la campaña. 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
     const enlaceFantasma = document.createElement("a");
