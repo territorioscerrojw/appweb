@@ -399,14 +399,14 @@ function renderizarLista(contenedor, lista, msgVacio) {
   return div;
 }
 
-    async function cambiarEstadoTerritorio(btn, idMapa, modo) {
+   async function cambiarEstadoTerritorio(btn, idMapa, modo) {
   const tarjeta = btn.closest('.tarjeta-mapa');
   const esCompletar = (modo === "completar");
   const contenedorDestino = esCompletar 
     ? document.getElementById("grid-completados") 
     : document.getElementById("grid-pendientes");
 
-  // 1. Animación
+  // 1. Animación de salida
   tarjeta.classList.add('saliendo');
   await new Promise(r => setTimeout(r, 400));
   
@@ -414,17 +414,32 @@ function renderizarLista(contenedor, lista, msgVacio) {
   const idx = datosLocalesHermano.findIndex(i => i.id.toString() === idMapa.toString());
   if (idx !== -1) datosLocalesHermano[idx].trabajado = esCompletar;
 
-  // 3. Modificar visualmente la tarjeta (Sin innerHTML)
+  // 3. Modificar visualmente la tarjeta
   tarjeta.classList.remove('saliendo');
   tarjeta.classList.toggle('terminado', esCompletar);
-  
-  // Actualizar el botón
   btn.innerText = esCompletar ? 'Reactivar territorio' : 'Marcar como completado';
   btn.className = esCompletar ? 'btn-desmarcar-accion' : 'btn-completar-accion';
   btn.dataset.modo = esCompletar ? 'desmarcar' : 'completar';
 
-  // 4. Mover físicamente al nuevo contenedor
-  contenedorDestino.appendChild(tarjeta);
+  // 4. INSERCIÓN ORDENADA (La clave para mantener el 101, 102, 103...)
+  // Buscamos todas las tarjetas existentes en el contenedor de destino
+  const tarjetasEnDestino = Array.from(contenedorDestino.querySelectorAll('.tarjeta-mapa'));
+  
+  // Buscamos la primera tarjeta que tenga un ID mayor al nuestro para insertar antes de ella
+  let insertada = false;
+  for (let t of tarjetasEnDestino) {
+    const idExistente = parseInt(t.querySelector('.numero-territorio-grande').innerText);
+    if (parseInt(idMapa) < idExistente) {
+      contenedorDestino.insertBefore(tarjeta, t);
+      insertada = true;
+      break;
+    }
+  }
+
+  // Si no encontramos una mayor, es que somos el ID más alto, vamos al final
+  if (!insertada) {
+    contenedorDestino.appendChild(tarjeta);
+  }
   
   // 5. Sincronizar servidor
   fetch(`${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${esCompletar}`, { mode: 'no-cors' });
