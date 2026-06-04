@@ -11,9 +11,8 @@
     /* Variables de alto contraste */
     html[data-theme="oscuro"] {
       --fondo-pantalla: #09090b;
-      --imagen-fondo: url('mapa-fondo-oscuro.png');
-      --fondo-tarjeta: rgba(45, 45, 53, 0.7); /* Transparencia añadida (0.7) */
-      --borde-tarjeta: rgba(255, 255, 255, 0.1);
+      --fondo-tarjeta: #2d2d35;
+      --borde-tarjeta: rgba(255, 255, 255, 0.15);
       --sombra-tarjeta: rgba(0, 0, 0, 0.5) 0px 4px 12px;
       --texto-principal: #ffffff;
       --texto-secundario: #a1a1aa;
@@ -21,9 +20,8 @@
 
     html[data-theme="claro"] {
       --fondo-pantalla: #e4e4e7;
-      --imagen-fondo: url('mapa-fondo-claro.png');
-      --fondo-tarjeta: rgba(255, 255, 255, 0.7); /* Transparencia añadida (0.7) */
-      --borde-tarjeta: rgba(0, 0, 0, 0.1);
+      --fondo-tarjeta: #ffffff;
+      --borde-tarjeta: rgba(0, 0, 0, 0.12);
       --sombra-tarjeta: rgba(0, 0, 0, 0.08) 0px 4px 14px;
       --texto-principal: #09090b;
       --texto-secundario: #71717a;
@@ -31,16 +29,8 @@
 
     body {
       background-color: var(--fondo-pantalla) !important;
-      background-image: var(--imagen-fondo);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed; /* Esto mantiene la imagen fija al hacer scroll */
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
-      background-repeat: no-repeat;
-      backdrop-filter: blur(12px); /* Crea el efecto de cristal desenfocado */
-  -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
-     position: fixed; /* Esto es lo que lo mantiene "pegado" a la pantalla */
         }
 
     /* Estilos para las pestañas (Tabs) similares a index.html */
@@ -111,9 +101,6 @@
 }
 .tarjeta-mapa {
   background-color: var(--fondo-tarjeta) !important;
-  border: 1px solid var(--borde-tarjeta) !important;
-  backdrop-filter: blur(12px); /* Crea el efecto de cristal desenfocado */
-  -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
   border: 1px solid var(--borde-tarjeta) !important;
   box-shadow: var(--sombra-tarjeta) !important;
   border-radius: 14px;
