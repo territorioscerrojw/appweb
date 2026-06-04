@@ -226,7 +226,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 25px;
+  font-size: 28px;
   font-weight: 1000 !important;
 }
 
@@ -294,7 +294,7 @@ body {
   border: none;
   color: var(--texto-secundario);
   padding: 8px 2px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   border-radius: 7px;
   cursor: pointer;
