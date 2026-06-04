@@ -52,31 +52,31 @@
   border-bottom: 1px solid var(--borde-tarjeta);
 }
     .cabecera-titulos {
-  flex: 1; /* Ocupa el espacio disponible */
-  min-width: 0; /* Permite que se encoja */
-  display: flex; /* Cambiamos a flex para alinear en fila */
-  align-items: baseline; /* Alinea los textos por su línea base */
-  gap: 10px; /* Espacio entre la palabra "Campaña" y el nombre */
-  overflow: hidden;
+  display: flex;
+  align-items: baseline; /* Alinea "Campaña" y el nombre por la base */
+  gap: 10px;             /* Separación entre los dos textos */
+  flex: 1;               /* Ocupa el espacio disponible */
+  min-width: 0;          /* Vital para que no empuje los botones */
+  overflow: hidden;      /* Prepara para el corte de texto */
 }
 
 .cabecera-titulos h1 {
-  font-size: 1.2rem;
   margin: 0;
-  white-space: nowrap; /* Evita que el título principal se corte */
+  font-size: 1.5rem;     /* Mantén el tamaño que tenías para "Campaña" */
+  white-space: nowrap;   /* No permite que "Campaña" salte de línea */
 }
 
 #txt-campana-hermano {
   margin: 0;
-  font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-  color: var(--texto-secundario);
-  font-weight: 400;
+  font-size: 1.1rem;     /* Mantén tu tamaño original aquí */
+  color: #3498db;        /* EL FORMATO AZUL QUE QUERÍAS */
+  font-weight: 600;
   
-  /* Comportamiento de ajuste si es muy largo */
+  /* Esto hace que si el nombre es largo, se ajuste al hueco */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1; /* Esto hace que el nombre se lleve todo el hueco restante hasta los botones */
+  flex: 1;               /* El nombre toma todo el espacio restante */
 }
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
