@@ -188,7 +188,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
     
     // Asignar color solo si la campaña está en curso (o cerca de terminar)
     if (ahora >= inicio && ahora <= fin) {
-        if (dias <= 2) {
+        if (dias <= 3) {
             barra.classList.add("neon-rojo");
         } else if (dias <= 7) {
             barra.classList.add("neon-naranja");
