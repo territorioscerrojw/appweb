@@ -468,7 +468,7 @@ function eliminarSelectorDeAgrupacionAsignados() {
 }
 
 function alternarSeleccionTarjeta(idMapa, evento) {
-  if (evento.target.closest('.btn-lupa-flotante')) return;
+  if (evento.target.closest('btn-check-rectangular')) return;
    // --- INICIO DE LA PULSACIÓN HÁPTICA ---
   // Vibrar 10ms (muy breve y sutil, ideal para interfaces)
   if (window.navigator && window.navigator.vibrate) {
