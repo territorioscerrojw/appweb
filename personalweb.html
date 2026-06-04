@@ -136,7 +136,15 @@
       font-weight: 800;
       line-height: 1;
     }
+/* Animación de salida */
+.tarjeta-mapa.saliendo {
+  animation: animacionSalida 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
 
+@keyframes animacionSalida {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9); }
+}
   /* 1. Mantenemos el contenedor de la marca de agua oculto por defecto */
 .marca-agua-trabajado {
   display: none; 
@@ -355,26 +363,33 @@
     }
 
     async function cambiarEstadoTerritorio(idMapa, modo) {
-  // 1. Definimos el estado booleano
   const esCompletar = (modo === "completar");
   
-  // 2. Actualizamos la interfaz localmente
+  // 1. Encontrar el elemento visual de la tarjeta
+  // Buscamos todas las tarjetas y filtramos la que tiene el ID correspondiente
+  const botones = document.querySelectorAll(`button[onclick*="${idMapa}"]`);
+  const tarjeta = Array.from(botones).find(btn => btn.closest('.tarjeta-mapa')).closest('.tarjeta-mapa');
+  
+  // 2. Aplicar clase de animación
+  if (tarjeta) {
+    tarjeta.classList.add('saliendo');
+  }
+
+  // 3. Esperar el tiempo de la animación (400ms) antes de procesar el cambio real
+  await new Promise(resolve => setTimeout(resolve, 400));
+
+  // 4. Lógica de estado igual que antes
   const indice = datosLocalesHermano.findIndex(item => item.id.toString() === idMapa.toString());
   if (indice === -1) return;
   datosLocalesHermano[indice].trabajado = esCompletar;
+  
+  // 5. Refrescar el DOM
   inyectarTarjetasHermano();
   procesarFechasYBarras(); 
 
-  // 3. Enviamos la petición con los nombres de parámetros que espera tu GAS
-  // Cambiamos 'accion' a 'actualizarTrabajo' y añadimos 'estado'
+  // 6. Enviar a Google Sheets
   const url = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${encodeURIComponent(idMapa)}&estado=${esCompletar}`;
-  
-  try {
-    await fetch(url, { mode: 'no-cors' });
-    console.log("Cambio enviado correctamente a Sheets");
-  } catch (err) {
-    console.error("Error al conectar con Sheets:", err);
-  }
+  fetch(url, { mode: 'no-cors' }).catch(err => console.error(err));
 }
 
     /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo Apple) */
