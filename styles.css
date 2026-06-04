@@ -221,9 +221,13 @@ body {
   fill: none;
   stroke-width: 3.5;
   stroke-linecap: round;
-  transition: stroke 0.3s ease;
+  transition: stroke-dasharray 1s ease-in-out, filter 0.3s ease;
   filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
 }
+.anillo-svg-wrapper {
+  animation: pulso 4s infinite ease-in-out;
+}
+
 /* Opcional: Si quieres que el anillo tenga un efecto de pulso suave */
 .tarjeta-anillo:hover .anillo-linea {
   filter: brightness(1.2) drop-shadow(0 0 8px currentColor);
