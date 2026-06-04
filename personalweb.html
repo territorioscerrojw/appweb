@@ -288,6 +288,17 @@
       if (!idHermanoUrl) return;
       cargarDatosFlujoHermano();
       configurarArrastreMecanico();
+      document.addEventListener('click', (e) => {
+  // Comprobamos si el elemento clicado es uno de nuestros botones
+  const btn = e.target.closest('.btn-completar-accion, .btn-desmarcar-accion');
+  if (!btn) return; // Si no es un botón de acción, no hacemos nada
+
+  const idMapa = btn.dataset.id;
+  const modo = btn.dataset.modo;
+  
+  // Llamamos a la función que mueve la tarjeta
+  cambiarEstadoTerritorio(btn, idMapa, modo);
+});
     });
 
     async function cargarDatosFlujoHermano() {
@@ -358,68 +369,62 @@ function renderizarLista(contenedor, lista, msgVacio) {
   });
 }
 
-    function crearTarjetaDOM(mapa) {
-      const div = document.createElement("div");
-      div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
+   function crearTarjetaDOM(mapa) {
+  const div = document.createElement("div");
+  div.className = `tarjeta-mapa ${mapa.trabajado ? 'terminado' : ''}`;
 
-      // Botones corregidos sin paréntesis
-      let botonHTML = "";
-      if (!mapa.trabajado) {
-        botonHTML = `<button class="btn-completar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'completar')">Marcar como completado</button>`;
-      } else {
-        botonHTML = `<button class="btn-desmarcar-accion" onclick="cambiarEstadoTerritorio('${mapa.id}', 'desmarcar')">Reactivar territorio</button>`;
-      }
+  // DEFINICIÓN ÚNICA DEL BOTÓN (Usando data-id y data-modo)
+  const botonHTML = `
+    <button class="${mapa.trabajado ? 'btn-desmarcar-accion' : 'btn-completar-accion'}" 
+            data-id="${mapa.id}" 
+            data-modo="${mapa.trabajado ? 'desmarcar' : 'completar'}">
+      ${mapa.trabajado ? 'Reactivar territorio' : 'Marcar como completado'}
+    </button>`;
 
-      div.innerHTML = `
-        <div class="contenedor-imagen">
-          <div class="marca-agua-trabajado">TRABAJADO</div>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisor('${mapa.rutaMapa}')" style="cursor: pointer;">
-        </div>
-        <div class="detalles-mapa">
-          <div style="display:flex; justify-content:space-between;">
-            <h3 style="margin-top: 5px; margin-bottom: 0; font-size: 20px;">${mapa.barriada}</h3>
-
-            <span class="numero-territorio-grande">${mapa.id}</span>
-          </div>
-          ${botonHTML}
-        </div>
-      `;
-      return div;
-    }
+  div.innerHTML = `
+    <div class="contenedor-imagen">
+      <div class="marca-agua-trabajado">TRABAJADO</div>
+      <img src="${mapa.rutaMapa}" class="imagen-mapa" onclick="abrirVisor('${mapa.rutaMapa}')" style="cursor: pointer;">
+    </div>
+    <div class="detalles-mapa">
+      <div style="display:flex; justify-content:space-between;">
+        <h3 style="margin-top: 5px; margin-bottom: 0; font-size: 20px;">${mapa.barriada}</h3>
+        <span class="numero-territorio-grande">${mapa.id}</span>
+      </div>
+      ${botonHTML}
+    </div>
+  `;
+  return div;
+}
 
     async function cambiarEstadoTerritorio(btn, idMapa, modo) {
-  const esCompletar = (modo === "completar");
   const tarjeta = btn.closest('.tarjeta-mapa');
+  const esCompletar = (modo === "completar");
   const contenedorDestino = esCompletar 
     ? document.getElementById("grid-completados") 
     : document.getElementById("grid-pendientes");
 
-  // 1. Animación de salida (desvanecimiento y escala)
+  // 1. Animación
   tarjeta.classList.add('saliendo');
-  
-  // 2. Esperamos a que la animación termine
   await new Promise(r => setTimeout(r, 400));
   
-  // 3. ACTUALIZACIÓN DEL DOM SIN RECONSTRUIR:
-  // Movemos el nodo físicamente al nuevo grid
-  // Esto mantiene la referencia del elemento y permite la transición suave
+  // 2. Actualizar estado interno
+  const idx = datosLocalesHermano.findIndex(i => i.id.toString() === idMapa.toString());
+  if (idx !== -1) datosLocalesHermano[idx].trabajado = esCompletar;
+
+  // 3. Modificar visualmente la tarjeta (Sin innerHTML)
   tarjeta.classList.remove('saliendo');
   tarjeta.classList.toggle('terminado', esCompletar);
   
-  // Actualizamos el botón dentro de la tarjeta
-  const btnDiv = tarjeta.querySelector('button');
-  btnDiv.innerText = esCompletar ? 'Reactivar territorio' : 'Marcar como completado';
-  btnDiv.className = esCompletar ? 'btn-desmarcar-accion' : 'btn-completar-accion';
-  btnDiv.onclick = () => cambiarEstadoTerritorio(btnDiv, idMapa, esCompletar ? 'desmarcar' : 'completar');
-  
-  // Movemos la tarjeta al nuevo contenedor (esto dispara la animación del Grid)
-  contenedorDestino.appendChild(tarjeta);
+  // Actualizar el botón
+  btn.innerText = esCompletar ? 'Reactivar territorio' : 'Marcar como completado';
+  btn.className = esCompletar ? 'btn-desmarcar-accion' : 'btn-completar-accion';
+  btn.dataset.modo = esCompletar ? 'desmarcar' : 'completar';
 
-  // 4. Actualizamos el estado interno
-  const idx = datosLocalesHermano.findIndex(i => i.id.toString() === idMapa.toString());
-  if (idx !== -1) datosLocalesHermano[idx].trabajado = esCompletar;
+  // 4. Mover físicamente al nuevo contenedor
+  contenedorDestino.appendChild(tarjeta);
   
-  // 5. Enviamos datos (sin refrescar el DOM)
+  // 5. Sincronizar servidor
   fetch(`${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${esCompletar}`, { mode: 'no-cors' });
   procesarFechasYBarras();
 }
