@@ -93,26 +93,29 @@
       flex-shrink: 0;
     }
 
-    .grid-mapas {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 16px;
-      width: 100%;
-      box-sizing: border-box;
-    }
+   .grid-mapas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  /* Esto permite que los cambios de posición se animen suavemente */
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 
-    /* Diseño de tarjeta de alto contraste */
-    .tarjeta-mapa {
-      background-color: var(--fondo-tarjeta) !important;
-      border: 1px solid var(--borde-tarjeta) !important;
-      box-shadow: var(--sombra-tarjeta) !important;
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+.tarjeta-mapa {
+  background-color: var(--fondo-tarjeta) !important;
+  border: 1px solid var(--borde-tarjeta) !important;
+  box-shadow: var(--sombra-tarjeta) !important;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Importante: permite que la tarjeta se mueva suavemente al recolocarse */
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+}
 
     .tarjeta-mapa .contenedor-imagen {
       position: relative;
@@ -138,7 +141,9 @@
     }
 /* Animación de salida */
 .tarjeta-mapa.saliendo {
-  animation: animacionSalida 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none; /* Bloquea clics durante la animación */
 }
 
 @keyframes animacionSalida {
