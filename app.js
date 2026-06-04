@@ -335,7 +335,7 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <button class="btn-check-rectangular" type="button"></button>
+          <button class="btn-check-rectangular" type="button" onclick="alternarSwitchHaptico(this)"></button>
          </div>`;
     } else {
       // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
@@ -754,4 +754,16 @@ function limpiarSeleccionYEsconder() {
   // 5. Actualizar botón
   evaluarEstadoBotonAsignar();
 }
+function alternarSwitchHaptico(element) {
+  // 1. Efecto háptico (vibración de 15ms)
+  if (window.navigator && window.navigator.vibrate) {
+    window.navigator.vibrate(15);
+  }
 
+  // 2. Lógica visual: Cambiar el estado de la tarjeta
+  // Si tu tarjeta tiene el ID asociado, aquí lo manejamos:
+  element.parentElement.parentElement.classList.toggle('seleccionada');
+  
+  // 3. Si necesitas que esto también actualice tu array territoriosSeleccionados:
+  // (Esto depende de cómo hayas implementado la selección en tu HTML)
+}
