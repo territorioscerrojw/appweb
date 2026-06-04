@@ -52,23 +52,31 @@
   border-bottom: 1px solid var(--borde-tarjeta);
 }
     .cabecera-titulos {
-  flex: 1; /* Ocupa el espacio restante */
-  min-width: 0; /* Vital para permitir el encogimiento */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden; /* Evita que el contenido se salga */
+  flex: 1; /* Ocupa el espacio disponible */
+  min-width: 0; /* Permite que se encoja */
+  display: flex; /* Cambiamos a flex para alinear en fila */
+  align-items: baseline; /* Alinea los textos por su línea base */
+  gap: 10px; /* Espacio entre la palabra "Campaña" y el nombre */
+  overflow: hidden;
+}
+
+.cabecera-titulos h1 {
+  font-size: 1.2rem;
+  margin: 0;
+  white-space: nowrap; /* Evita que el título principal se corte */
 }
 
 #txt-campana-hermano {
   margin: 0;
-  /* Usamos clamp para que el tamaño cambie según el espacio disponible */
-  /* Sintaxis: clamp(tamaño_minimo, tamaño_ideal, tamaño_maximo) */
-  font-size: clamp(0.7rem, 2.5vw, 1rem); 
+  font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+  color: var(--texto-secundario);
+  font-weight: 400;
   
-  white-space: nowrap; /* Evita que salte de línea */
+  /* Comportamiento de ajuste si es muy largo */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Si aun así no cabe, pone los puntos */
+  text-overflow: ellipsis;
+  flex: 1; /* Esto hace que el nombre se lleve todo el hueco restante hasta los botones */
 }
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
