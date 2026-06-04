@@ -129,13 +129,13 @@ body {
 }
 
 #btn-cambiar-tema {
-  background: var(--btn-tema-bg) !important;
-  border: none !important;
+  background: var(--glass-fondo) !important;
+  border: 1px solid var(--glass-borde);
   width: 36px;  /* Tamaño compacto */
   height: 36px;
   border-radius: 50% !important;
   cursor: pointer;
-  color: var(--btn-tema-color) !important;
+  color: var(--texto-principal) !important;
   display: flex;
   align-items: center;
   justify-content: center;
