@@ -16,6 +16,7 @@
       --sombra-tarjeta: rgba(0, 0, 0, 0.5) 0px 4px 12px;
       --texto-principal: #ffffff;
       --texto-secundario: #a1a1aa;
+      --fondo-cabecera: rgba(9, 9, 11, 0.85); /* 0.85 es la opacidad */
     }
 
     html[data-theme="claro"] {
@@ -25,6 +26,7 @@
       --sombra-tarjeta: rgba(0, 0, 0, 0.08) 0px 4px 14px;
       --texto-principal: #09090b;
       --texto-secundario: #71717a;
+      --fondo-cabecera: rgba(228, 228, 231, 0.85); /* 0.85 es la opacidad */
     }
 
     body {
@@ -38,13 +40,8 @@
   position: sticky;
   top: 0;
   z-index: 999;
-  
-  /* CAMBIO AQUÍ: Usamos 'background' en lugar de 'background-color' 
-     y añadimos un 'padding-top' para el notch del iPhone */
-  background: var(--fondo-pantalla) !important;
+  background: var(--fondo-cabecera) !important;
   padding-top: env(safe-area-inset-top); 
-  
-  /* Aseguramos que nada del padre afecte a la opacidad */
   opacity: 1 !important;
   display: flex;
   justify-content: space-between;
