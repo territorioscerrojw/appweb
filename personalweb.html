@@ -317,6 +317,9 @@ will-change: background-color, backdrop-filter;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: auto;
+  touch-action: pinch-zoom;
+  
 }
 
 #imagen-ampliada {
@@ -325,6 +328,7 @@ will-change: background-color, backdrop-filter;
   object-fit: contain;
   /* Esto es clave para dispositivos táctiles */
   touch-action: manipulation;
+  pointer-events: auto;
 }
 
 .visor-oculto {
@@ -336,6 +340,7 @@ will-change: background-color, backdrop-filter;
   z-index: 1000;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 
