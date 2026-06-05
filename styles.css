@@ -566,12 +566,12 @@ animation: pulso 4s infinite ease-in-out !important;
 
 /* 4. MODO CLARO: Ajuste de fondo para tarjeta seleccionada prioritaria */
 [data-theme="claro"] .tarjeta-apple.seleccionada.prioritaria {
-  background: linear-gradient(90deg, rgba(52, 199, 89, 0.1) 0%, rgba(255, 255, 255, 0.9) 10%) !important;
+  background: linear-gradient(90deg, rgba(52, 199, 89, 0.1) 0%, rgba(255, 255, 255, 0.9) 10%);
 }
 
 /* 5. MODO OSCURO: Ajuste de fondo para tarjeta seleccionada prioritaria */
 [data-theme="oscuro"] .tarjeta-apple.seleccionada.prioritaria {
-  background: linear-gradient(90deg, rgba(39, 174, 96, 0.1) 0%, rgba(28, 28, 30, 0.9) 10%) !important;
+  background: linear-gradient(90deg, rgba(39, 174, 96, 0.1) 0%, rgba(28, 28, 30, 0.9) 10%);
 }
 
 
