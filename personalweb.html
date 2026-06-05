@@ -29,6 +29,7 @@
 
     body {
       background-color: var(--fondo-pantalla) !important;
+      transition: background-color 0.4s ease, color 0.4s ease;
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
       padding-top: env(safe-area-inset-top); /* Esto es para que no se solape con el "notch" del iPhone */
@@ -94,6 +95,7 @@
   transition: transform 0.1s ease, background 0.2s ease;
   padding: 0;
   flex-shrink: 0;
+    transform: scale(0.95); /* Reduce ligeramente el tamaño al pulsarlo */
 }
 /* Clase que activa el giro constante */
 .girando {
@@ -175,20 +177,13 @@
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* IMPORTANTE: Añade esto para que la cuadrícula gestione el movimiento */
-.tarjeta-mapa {
-  /* ... tus estilos actuales ... */
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  /* Esto evita que se colapsen bruscamente */
-  display: flex;
-  flex-direction: column;
-}
 
 .tarjeta-mapa {
   background-color: var(--fondo-tarjeta) !important;
   border: 1px solid var(--borde-tarjeta) !important;
   box-shadow: var(--sombra-tarjeta) !important;
   border-radius: 14px;
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
