@@ -176,6 +176,15 @@ body {
 #btn-refresh:active {
   transform: scale(0.9);
 }
+/* Clase para la rotación infinita */
+.girando {
+  animation: rotar 1s linear infinite;
+}
+
+@keyframes rotar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 /* Para asegurar que el icono rote al pulsar */
 #btn-refresh svg {
