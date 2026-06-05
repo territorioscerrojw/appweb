@@ -166,12 +166,14 @@
       flex-shrink: 0;
     }
 .grid-mapas {
+
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   /* Esto permite que los elementos se deslicen cuando su posición cambia */
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+
 .tarjeta-mapa {
   background-color: var(--fondo-tarjeta) !important;
   border: 1px solid var(--borde-tarjeta) !important;
@@ -367,13 +369,18 @@
     let esScrollVertical = false;
 
     window.addEventListener("DOMContentLoaded", () => {
+      // ... (Tus otras funciones como cargarDatosFlujoHermano, inyectarTarjetasHermano, etc.)
+
+// --- AÑADE ESTO FUERA DE CUALQUIER FUNCIÓN ---
+
+
       configurarTemaInicial();
       const params = new URLSearchParams(window.location.search);
       idHermanoUrl = params.get("id");
       if (!idHermanoUrl) return;
       cargarDatosFlujoHermano();
       configurarArrastreMecanico();
-      document.addEventListener('click', (e) => {
+     document.addEventListener('click', (e) => {
   // Comprobamos si el elemento clicado es uno de nuestros botones
   const btn = e.target.closest('.btn-completar-accion, .btn-desmarcar-accion');
   if (!btn) return; // Si no es un botón de acción, no hacemos nada
@@ -484,6 +491,7 @@ function renderizarLista(contenedor, lista, msgVacio) {
   return div;
 }
 
+
    async function cambiarEstadoTerritorio(btn, idMapa, modo) {
   const tarjeta = btn.closest('.tarjeta-mapa');
   const esCompletar = (modo === "completar");
@@ -520,6 +528,17 @@ function renderizarLista(contenedor, lista, msgVacio) {
       break;
     }
   }
+
+  // Si no encontramos una mayor, es que somos el ID más alto, vamos al final
+  if (!insertada) {
+    contenedorDestino.appendChild(tarjeta);
+  }
+  
+  // 5. Sincronizar servidor
+  fetch(`${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${esCompletar}`, { mode: 'no-cors' });
+  procesarFechasYBarras();
+}
+
 
   // Si no encontramos una mayor, es que somos el ID más alto, vamos al final
   if (!insertada) {
