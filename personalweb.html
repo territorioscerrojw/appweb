@@ -31,7 +31,31 @@
       background-color: var(--fondo-pantalla) !important;
       color: var(--texto-principal);
       overflow-x: hidden; /* Evita barras de scroll horizontal molestas */
+      padding-top: env(safe-area-inset-top); /* Esto es para que no se solape con el "notch" del iPhone */
         }
+
+.cabecera-apple {
+  /* Mantenemos la cabecera fija */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+
+  /* Aplicamos el fondo dinámico del tema */
+  background: var(--fondo-tarjeta) !important;
+  padding-top: env(safe-area-inset-top); 
+  
+  /* Añadimos transparencia y el efecto blur */
+  /* El 0.8 es la opacidad: cuanto más bajo, más se ve a través */
+  /* Usamos la variable de fondo, pero con transparencia (backdrop-filter) */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  
+  /* Ajustamos el fondo para que sea semitransparente sobre el color base */
+  opacity: 0.95; 
+  
+  /* Borde inferior suave para definir la cabecera */
+  border-bottom: 1px solid var(--borde-tarjeta);
+}
 
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
