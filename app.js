@@ -770,14 +770,15 @@ function alternarSwitchHaptico(element) {
 async function recargarApp() {
   const svg = document.querySelector("#btn-refresh svg");
   
-  // Efecto de giro mientras carga
-  svg.style.transform = "rotate(360deg)";
+  // 1. Añadimos la clase para que empiece a girar infinitamente
+  svg.classList.add("girando");
   
-  // Recarga los datos
+  // 2. Ejecutamos la recarga (await espera a que termine de descargar los datos)
   await descargarDatosDesdeSheets();
   
-  // Quitamos la rotación tras un momento para que pueda volver a girar
-  setTimeout(() => {
-    svg.style.transform = "rotate(0deg)";
-  }, 600);
+  // 3. Cuando termina, quitamos la clase para detener el giro
+  svg.classList.remove("girando");
+  // Opcional: reseteamos la rotación visual
+  svg.style.transform = "rotate(0deg)"; 
 }
+
