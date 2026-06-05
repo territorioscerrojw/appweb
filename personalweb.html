@@ -258,20 +258,45 @@ will-change: background-color, backdrop-filter;
 .tarjeta-mapa.terminado .imagen-mapa {
   filter: brightness(0.6) opacity(0.8);
 }
-    .btn-completar-accion {
-      width: 100%; margin-top: 14px; padding: 12px;
-      background: #27ae60; color: #fff; border: none;
-      border-radius: 8px; font-weight: 700; cursor: pointer;
-      font-size: 20px
-    }
+   /* Botón de Acción (Verde) */
+.btn-completar-accion {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  background: #34c759; /* Verde más vibrante, estándar iOS */
+  color: #fff;
+  border: none;
+  border-radius: 12px; /* Alineado con tus tarjetas */
+  font-weight: 600;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 
-    .btn-desmarcar-accion {
-      width: 100%; margin-top: 14px; padding: 12px;
-      background: transparent; color: var(--texto-secundario);
-      border: 1px solid var(--borde-tarjeta); border-radius: 8px;
-      font-weight: 600; cursor: pointer;
-      font-size: 20px
-    }
+.btn-completar-accion:active {
+  transform: scale(0.97);
+  opacity: 0.8;
+}
+
+/* Botón de Desmarcar (Transparente) */
+.btn-desmarcar-accion {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  background: transparent;
+  color: var(--texto-secundario);
+  border: 1px solid var(--borde-tarjeta);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn-desmarcar-accion:active {
+  transform: scale(0.97);
+  background: rgba(0, 0, 0, 0.05); /* Feedback sutil al pulsar */
+}
 .visor-oculto {
   display: none;
   position: fixed;
