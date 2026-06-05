@@ -628,12 +628,8 @@ function renderizarLista(contenedor, lista, msgVacio) {
   document.documentElement.setAttribute("data-theme", nuevoTema);
   localStorage.setItem("tema-preferido", nuevoTema);
 
-  // --- TRUCO PARA EL STICKY ---
   const cabecera = document.querySelector('.cabecera-apple');
-  cabecera.style.display = 'none'; // Forzamos al navegador a quitar la capa
-  cabecera.offsetHeight;            // Forzamos un reflow (recalculo)
-  cabecera.style.display = '';      // La volvemos a mostrar
-  // ----------------------------
+
 }
 
 
