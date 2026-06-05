@@ -630,9 +630,17 @@ function renderizarLista(contenedor, lista, msgVacio) {
   document.documentElement.setAttribute("data-theme", nuevoTema);
   localStorage.setItem("tema-preferido", nuevoTema);
 
+  // --- FUERZA EL REPINTADO DE LA CAPA STICKY ---
   const cabecera = document.querySelector('.cabecera-apple');
-
+  
+  // Esto obliga al navegador a re-renderizar la cabecera aunque esté en medio de un scroll
+  cabecera.style.visibility = 'hidden';
+  // Pequeño truco para forzar el repintado inmediato
+  requestAnimationFrame(() => {
+    cabecera.style.visibility = 'visible';
+  });
 }
+
 
 
     function configurarTemaInicial() {
