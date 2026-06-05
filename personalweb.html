@@ -44,7 +44,8 @@ transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
 will-change: background-color, backdrop-filter;
   /* Aplicamos el fondo dinámico del tema */
   background: var(--fondo-pantalla);
-  
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   /* Añadimos transparencia y el efecto blur */
