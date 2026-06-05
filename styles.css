@@ -74,6 +74,7 @@ button, input, select, textarea {
 
 body {
   background-color: var(--fondo-base);
+  transition: background-color 0.4s ease, color 0.4s ease;
   color: var(--texto-principal);
   min-height: 100vh;
   width: 100%;
@@ -175,6 +176,7 @@ body {
 
 #btn-refresh:active {
   transform: scale(0.9);
+    transition: transform 0.1s ease;
 }
 /* Clase para la rotación infinita */
 .girando {
@@ -219,6 +221,7 @@ body {
 }
 .tarjeta-anillo {
   background: var(--glass-fondo);
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid var(--glass-borde);
@@ -370,7 +373,7 @@ animation: pulso 4s infinite ease-in-out !important;
    ========================================================================== */
 .tarjeta-apple {
   background: var(--glass-fondo);
-  
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
   border: 1px solid var(--glass-borde) !important;
   border-radius: 16px;
   padding: 10px;
