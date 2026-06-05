@@ -56,7 +56,22 @@
   /* Borde inferior suave para definir la cabecera */
   border-bottom: 1px solid var(--borde-tarjeta);
 }
+.cabecera-titulos h1 {
+  font-size: 20px;      /* Ajustado para caber mejor */
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
 
+.cabecera-titulos h2 {
+  font-size: 14px;      /* Texto un poco mayor como pediste */
+  color: var(--apple-azul);
+  font-weight: 600;
+  margin-top: 0;        /* Eliminado el margen superior */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
     /* Estilos para las pestañas (Tabs) similares a index.html */
     .contenedor-tabs {
       padding: 0 16px;
