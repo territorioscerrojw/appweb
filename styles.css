@@ -548,6 +548,9 @@ animation: pulso 4s infinite ease-in-out !important;
 
 /* 2. Selección para Tarjetas PRIORITARIAS (Sobrescribe borde izquierdo) */
 .tarjeta-apple.seleccionada.prioritaria {
+  background: var(--glass-fondo);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-left: 4px solid var(--apple-verde) !important;
   border-right: 2px solid var(--apple-verde) !important;
   border-top: 2px solid var(--apple-verde) !important;
