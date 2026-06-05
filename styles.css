@@ -525,7 +525,7 @@ animation: pulso 4s infinite ease-in-out !important;
 
 /* 6. Estilos de Resaltado Prioritario */
 .tarjeta-apple.prioritaria {
-  border-left: 4px solid var(--apple-naranja) !important;
+  border-left: 6px solid var(--apple-naranja) !important;
   background: linear-gradient(90deg, rgba(242, 153, 74, 0.05) 0%, rgba(28, 28, 30, 0.7) 10%) !important;
 }
 
@@ -551,7 +551,7 @@ animation: pulso 4s infinite ease-in-out !important;
   background: var(--glass-fondo)!important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border-left: 4px solid var(--apple-verde) !important;
+  border-left: 6px solid var(--apple-verde) !important;
   border-right: 2px solid var(--apple-verde) !important;
   border-top: 2px solid var(--apple-verde) !important;
   border-bottom: 2px solid var(--apple-verde) !important;
