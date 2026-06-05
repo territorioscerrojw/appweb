@@ -6,7 +6,7 @@
   <title>Campaña: Mis Territorios</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
   <link rel="stylesheet" href="styles.css">
-  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     /* Variables de alto contraste */
     html[data-theme="oscuro"] {
@@ -495,7 +495,7 @@ function renderizarLista(contenedor, lista, msgVacio) {
   return div;
 }
 
-   async function cambiarEstadoTerritorio(btn, idMapa, modo) {
+  async function cambiarEstadoTerritorio(btn, idMapa, modo) {
   const tarjeta = btn.closest('.tarjeta-mapa');
   const esCompletar = (modo === "completar");
   const contenedorDestino = esCompletar 
@@ -517,11 +517,22 @@ function renderizarLista(contenedor, lista, msgVacio) {
   btn.className = esCompletar ? 'btn-desmarcar-accion' : 'btn-completar-accion';
   btn.dataset.modo = esCompletar ? 'desmarcar' : 'completar';
 
-  // 4. INSERCIÓN ORDENADA (La clave para mantener el 101, 102, 103...)
-  // Buscamos todas las tarjetas existentes en el contenedor de destino
+  // 4. EFECTO DE CELEBRACIÓN (Confeti y Vibración)
+  if (esCompletar) {
+      confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#3498db', '#27ae60', '#ffffff'] // Colores Apple-style
+      });
+      
+      if (navigator.vibrate) {
+          navigator.vibrate(100);
+      }
+  }
+
+  // 5. INSERCIÓN ORDENADA
   const tarjetasEnDestino = Array.from(contenedorDestino.querySelectorAll('.tarjeta-mapa'));
-  
-  // Buscamos la primera tarjeta que tenga un ID mayor al nuestro para insertar antes de ella
   let insertada = false;
   for (let t of tarjetasEnDestino) {
     const idExistente = parseInt(t.querySelector('.numero-territorio-grande').innerText);
@@ -532,15 +543,15 @@ function renderizarLista(contenedor, lista, msgVacio) {
     }
   }
 
-  // Si no encontramos una mayor, es que somos el ID más alto, vamos al final
   if (!insertada) {
     contenedorDestino.appendChild(tarjeta);
   }
   
-  // 5. Sincronizar servidor
+  // 6. Sincronizar servidor
   fetch(`${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${esCompletar}`, { mode: 'no-cors' });
   procesarFechasYBarras();
 }
+
 
 
     /* LÓGICA DE FÍSICA Y ARRASTRE EN TIEMPO REAL (Estilo Apple) */
