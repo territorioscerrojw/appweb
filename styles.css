@@ -539,6 +539,9 @@ animation: pulso 4s infinite ease-in-out !important;
 
 /* 1. Selección para Tarjetas NO prioritarias (Base) */
 .tarjeta-apple.seleccionada {
+  background: var(--glass-fondo);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border: 2px solid var(--apple-verde) !important;
   box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2) !important;
 }
