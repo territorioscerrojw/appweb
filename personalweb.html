@@ -297,6 +297,36 @@ will-change: background-color, backdrop-filter;
   transform: scale(0.97);
   background: rgba(0, 0, 0, 0.05); /* Feedback sutil al pulsar */
 }
+
+/* Nuevo estilo para el visor */
+#visor-mapa {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  /* Permitimos scroll para que el navegador maneje el zoom */
+  overflow: auto; 
+  -webkit-overflow-scrolling: touch;
+}
+
+#contenedor-zoom {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#imagen-ampliada {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* Esto es clave para dispositivos táctiles */
+  touch-action: manipulation;
+}
+
 .visor-oculto {
   display: none;
   position: fixed;
@@ -308,13 +338,7 @@ will-change: background-color, backdrop-filter;
   align-items: center;
 }
 
-#imagen-ampliada {
-  max-width: 90%;
-  max-height: 80%;
-  object-fit: contain;
-  border-radius: 8px;
-  /* Esto permite el zoom nativo en móviles con los dedos */
-}
+
 
 .btn-cerrar-visor {
   position: absolute;
