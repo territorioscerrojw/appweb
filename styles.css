@@ -347,7 +347,7 @@ animation: pulso 4s infinite ease-in-out !important;
   border: none;
   color: var(--texto-secundario);
   padding: 8px 2px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   border-radius: 7px;
   cursor: pointer;
