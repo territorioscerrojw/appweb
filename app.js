@@ -455,14 +455,19 @@ function actualizarEstadosBotonesFiltro() {
   const contenedor = document.getElementById("contenedor-agrupador-asignados");
   if (!contenedor) return;
   
-  const flecha = direccionOrden === "asc" ? " ▴" : " ▾";
+  // Usamos iconos de flechas más grandes (18px)
+  const flecha = direccionOrden === "asc" 
+    ? '<span style="font-size:18px; margin-left:4px; vertical-align:middle;">▲</span>' 
+    : '<span style="font-size:18px; margin-left:4px; vertical-align:middle;">▼</span>';
   
-  // Función auxiliar para aplicar clase activa y añadir la flecha si está activo
   const getBtn = (nombre, valor) => {
     const esActivo = criterioOrdenacionAsignados === valor;
-    return `<button class="btn-sub-filtro ${esActivo ? 'activo' : ''}" 
-            onclick="cambiarCriterioAsignados('${valor}')">
-            ${nombre}${esActivo ? flecha : ''}</button>`;
+    return `
+      <button class="btn-sub-filtro ${esActivo ? 'activo' : ''}" 
+              onclick="cambiarCriterioAsignados('${valor}')"
+              style="display: flex; align-items: center; justify-content: center;">
+        ${nombre}${esActivo ? flecha : ''}
+      </button>`;
   };
 
   contenedor.innerHTML = `
