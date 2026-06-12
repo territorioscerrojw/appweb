@@ -80,7 +80,7 @@ async function cargarDatos() {
   const params = new URLSearchParams(window.location.search);
   
   // Leemos lo que escribas en la URL (ej: ?hoja=GRUPO 3)
-  const grupo = params.get('hoja'); 
+ const grupo = params.get('grupo') || params.get('hoja') || "GRUPO 1";
 
   // Si no pones nada, avisamos. No forzamos el GRUPO 1.
   if (!grupo) {
