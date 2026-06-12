@@ -66,8 +66,8 @@
 <script>
   const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
   
-  // Variable global única
-  window.appData = { con: [], sin: [] };
+  // Aseguramos que 'datos' sea una propiedad del objeto global window
+  window.datos = { con: [], sin: [] };
   let ultimoCampo = "";
   let esAscendente = true;
 
@@ -79,33 +79,29 @@
     try {
       const url = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_t=${Date.now()}`;
       const res = await fetch(url);
-      const json = await res.json();
-      
-      // Guardamos en la variable global compartida
-      window.appData = json;
-      renderizar(window.appData);
-    } catch(e) { 
-      alert("Error al cargar: " + e.message); 
-    }
+      // Guardamos directamente en window.datos
+      window.datos = await res.json();
+      renderizar();
+    } catch(e) { alert("Error al cargar: " + e.message); }
   }
 
-  function renderizar(datos) {
+  function renderizar() {
     const bodyCon = document.getElementById('body-con');
     const bodySin = document.getElementById('body-sin');
     if (!bodyCon || !bodySin) return;
 
-    bodyCon.innerHTML = datos.con.map((item, i) => `
+    bodyCon.innerHTML = window.datos.con.map((item, i) => `
       <tr onclick='abrirVisor(${i}, "con")'>
         <td>${item.nombre || ""}</td>
         <td>${item.territorio || ""}</td>
         <td>${item.tiempo || ""}</td>
       </tr>`).join('');
 
-    bodySin.innerHTML = datos.sin.map(item => `
+    bodySin.innerHTML = window.datos.sin.map(item => `
       <tr><td>${item.nombre || ""}</td></tr>`).join('');
   }
 
-function ordenar(campo) {
+  function ordenar(campo) {
     if (ultimoCampo === campo) {
       esAscendente = !esAscendente;
     } else {
@@ -113,7 +109,8 @@ function ordenar(campo) {
       ultimoCampo = campo;
     }
 
-    datos.con.sort((a, b) => {
+    // Accedemos a window.datos explícitamente
+    window.datos.con.sort((a, b) => {
       let valA, valB;
       if (campo === 'nombre') {
         valA = (a.nombre || "").toLowerCase();
@@ -137,33 +134,25 @@ function ordenar(campo) {
     });
     renderizar();
   }
-   // Añade esta función de ayuda arriba de tus otras funciones
-function formatearFecha(isoString) {
-  if (!isoString || isoString === "-") return "-";
-  const d = new Date(isoString);
-  if (isNaN(d.getTime())) return isoString; // Si no es una fecha válida, devuelve el original
-  const dia = String(d.getDate()).padStart(2, '0');
-  const mes = String(d.getMonth() + 1).padStart(2, '0');
-  const anio = d.getFullYear();
-  return `${dia}/${mes}/${anio}`;
-}
 
-// Sustituye tu función abrirVisor actual por esta:
-function abrirVisor(i, tipo) {
-  const item = window.appData[tipo][i];
-  if (!item) return;
-  
-  document.getElementById('nom-visor').innerText = item.nombre || "";
-  document.getElementById('img-visor').src = item.img || "";
-  document.getElementById('terr-visor').innerText = item.territorio || "-";
-  document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
-  
-  // Aquí usamos la función de formateo para las fechas
-  document.getElementById('fecha-ini-visor').innerText = formatearFecha(item.fechaInicio);
-  document.getElementById('ult-trab-visor').innerText = formatearFecha(item.ultTrabajo);
-  
-  document.getElementById('visor').style.display = 'block';
-}
+  function abrirVisor(i, tipo) {
+    const item = window.datos[tipo][i];
+    if (!item) return;
+    document.getElementById('nom-visor').innerText = item.nombre || "";
+    document.getElementById('img-visor').src = item.img || "";
+    document.getElementById('terr-visor').innerText = item.territorio || "-";
+    document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
+    document.getElementById('fecha-ini-visor').innerText = formatearFecha(item.fechaInicio);
+    document.getElementById('ult-trab-visor').innerText = formatearFecha(item.ultTrabajo);
+    document.getElementById('visor').style.display = 'block';
+  }
+
+  function formatearFecha(iso) {
+    if (!iso || iso === "-") return "-";
+    const d = new Date(iso);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  }
+
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
   function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? '' : 'dark'); }
   function mostrarTab(t) {
