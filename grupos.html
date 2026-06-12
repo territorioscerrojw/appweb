@@ -77,20 +77,29 @@
  // Cambia la parte final de tu <script> por esto:
 
 async function cargarDatos() {
+  // Esperamos un instante a que el navegador procese la URL
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
   const params = new URLSearchParams(window.location.search);
-  // Aquí SÍ estamos leyendo de la URL. Si no hay nada, por seguridad usa "GRUPO 1"
-  const nombreHoja = params.get('hoja'); 
+  const grupo = params.get('hoja');
 
-  if (!nombreHoja) {
-    alert("Error: No se detectó el nombre del grupo en el enlace.");
-    return;
+  // Si no hay grupo en la URL, por defecto cargamos el 1
+  const grupoFinal = grupo ? grupo : "GRUPO 1";
+  
+  console.log("Cargando grupo: " + grupoFinal); // Mira esto en la consola (F12)
+  document.getElementById('txt-grupo-titulo').innerText = grupoFinal;
+
+  try {
+    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupoFinal)}&_t=${Date.now()}`);
+    const json = await res.json();
+    renderizar(json);
+  } catch(e) { 
+    alert("Error al cargar: " + e.message); 
   }
+}
 
-  // Ahora 'nombreHoja' tiene el valor que viene de la URL (ej: "GRUPO 4")
-  const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(nombreHoja)}`);
-  datos = await res.json();
-  renderizar();
-} 
+// Esto asegura que se ejecute al cargar la página
+window.addEventListener('load', cargarDatos);
   
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `
