@@ -105,17 +105,24 @@
       <tr><td>${item.nombre || ""}</td></tr>`).join('');
   }
 
-  function ordenar(campo) {
+ function ordenar(campo) {
     esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
     ultimoCampo = campo;
     
     window.appData.con.sort((a, b) => {
       let valA = a[campo] || "";
       let valB = b[campo] || "";
+      
+      // Orden personalizado para "tiempo" si es necesario, si no, alfabético
       if (typeof valA === 'string') return esAscendente ? valA.localeCompare(valB) : valB.localeCompare(valA);
       return esAscendente ? valA - valB : valB - valA;
     });
     renderizar(window.appData);
+  }
+  function formatearFecha(fechaStr) {
+    if (!fechaStr || fechaStr === "-") return "-";
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString('es-ES');
   }
 
   function abrirVisor(i, tipo) {
