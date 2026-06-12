@@ -77,19 +77,21 @@
  // Cambia la parte final de tu <script> por esto:
 
 async function cargarDatos() {
-    try {
-      // Obtenemos el nombre de la hoja desde la URL (ej: ?hoja=GRUPO 4)
-      const params = new URLSearchParams(window.location.search);
-      const nombreHoja = params.get('hoja') || "GRUPO 1"; // Si no hay nada, usa GRUPO 1
-      
-      // Actualizamos el título de la página automáticamente
-      document.getElementById('txt-grupo-titulo').innerText = nombreHoja;
+  const params = new URLSearchParams(window.location.search);
+  // Aquí SÍ estamos leyendo de la URL. Si no hay nada, por seguridad usa "GRUPO 1"
+  const nombreHoja = params.get('hoja'); 
 
-      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(nombreHoja)}`);
-      datos = await res.json();
-      renderizar();
-    } catch(e) { alert("Error al cargar datos: " + e.message); }
+  if (!nombreHoja) {
+    alert("Error: No se detectó el nombre del grupo en el enlace.");
+    return;
   }
+
+  // Ahora 'nombreHoja' tiene el valor que viene de la URL (ej: "GRUPO 4")
+  const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(nombreHoja)}`);
+  datos = await res.json();
+  renderizar();
+} 
+  
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `
       <tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
