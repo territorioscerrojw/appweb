@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="oscuro">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Grupo</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap">
+  <!-- Fuente estilo Apple/iOS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #10141d; --panel: #1c222e; --text: #ffffff; --text-dim: #94a3b8; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+    :root { --bg: #f2f2f7; --blanco: #ffffff; --azul: #007aff; --texto: #1c1c1e; --texto-dim: #8e8e93; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--texto); margin: 0; padding: 20px; }
     
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .btn-icon { background: var(--panel); border: none; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+    .btn-icon { background: var(--blanco); border: 1px solid #d1d1d6; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
     
-    .contenedor-tabs { display: flex; background: var(--panel); padding: 4px; border-radius: 12px; margin-bottom: 20px; }
-    .tab-btn { flex: 1; border: none; padding: 10px; background: transparent; color: var(--text-dim); cursor: pointer; border-radius: 8px; font-weight: 600; }
-    .tab-btn.activo { background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .contenedor-tabs { display: flex; border-bottom: 2px solid #e5e5ea; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 10px; background: none; border: none; font-weight: 600; color: var(--texto-dim); cursor: pointer; }
+    .tab-btn.activo { color: var(--azul); border-bottom: 2px solid var(--azul); margin-bottom: -2px; }
 
-    .tabla-container { background: var(--panel); border-radius: 16px; padding: 10px; }
-    .tabla-apple { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-    .tabla-apple th { color: var(--text-dim); font-size: 0.7em; padding: 5px; text-transform: uppercase; cursor: pointer; }
-    .tabla-apple td { background: rgba(255,255,255,0.03); padding: 15px; }
+    .tabla-container { background: var(--blanco); border-radius: 12px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .tabla-apple { width: 100%; border-collapse: collapse; }
+    .tabla-apple th { color: var(--texto-dim); font-size: 0.75em; text-align: left; padding: 10px; }
+    .tabla-apple td { padding: 15px 10px; border-bottom: 1px solid #f2f2f7; font-size: 0.9em; }
 
-    .visor-pantalla-completa { position: fixed; inset: 0; background: var(--bg); padding: 20px; z-index: 100; overflow-y: auto; }
-    .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-    .caja-dato { background: var(--panel); padding: 15px; border-radius: 12px; }
-    .caja-dato small { color: var(--text-dim); font-size: 0.7em; display: block; margin-bottom: 5px; }
-    .btn-final { width: 100%; background: #fff; color: #000; border: none; padding: 15px; border-radius: 25px; margin-top: 20px; font-weight: 700; cursor: pointer; }
+    .visor-pantalla-completa { position: fixed; inset: 0; background: var(--bg); padding: 20px; overflow-y: auto; z-index: 100; }
+    .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .caja-dato { background: var(--blanco); padding: 15px; border-radius: 10px; }
+    .caja-dato small { color: var(--texto-dim); font-size: 0.7em; display: block; }
+    .btn-final { width: 100%; background: var(--texto); color: white; border: none; padding: 15px; border-radius: 12px; margin-top: 20px; font-weight: 700; }
   </style>
 </head>
 <body>
 
 <header class="header-top">
-  <h1 id="txt-grupo-titulo" style="font-size: 1.5em; margin: 0;">GRUPO 1</h1>
+  <h1 id="txt-grupo-titulo" style="font-size: 1.4em; margin: 0;">GRUPO 1</h1>
   <div>
+    <button class="btn-icon" onclick="alternarTema()">◑</button>
     <button class="btn-icon" onclick="location.reload()">↻</button>
   </div>
 </header>
@@ -44,20 +46,14 @@
 
 <div id="seccion-con" class="tabla-container">
   <table class="tabla-apple">
-    <thead>
-      <tr>
-        <th onclick="ordenar('nombre')">Nombre ↕</th>
-        <th onclick="ordenar('territorio')">Nº Terr. ↕</th>
-        <th onclick="ordenar('tiempo')">T. Restante ↕</th>
-      </tr>
-    </thead>
+    <thead><tr><th onclick="ordenar('nombre')">Nombre ↕</th><th onclick="ordenar('territorio')">Nº Terr. ↕</th><th onclick="ordenar('tiempo')">T. Restante ↕</th></tr></thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
 
 <div id="seccion-sin" class="tabla-container" style="display:none;">
   <table class="tabla-apple">
-    <thead><tr><th>Hermanos sin Territorio</th></tr></thead>
+    <thead><tr><th>Nombre</th></tr></thead>
     <tbody id="body-sin"></tbody>
   </table>
 </div>
@@ -67,61 +63,44 @@
     <h3>Ficha Detallada</h3>
     <button class="btn-icon" onclick="cerrarVisor()">✕</button>
   </div>
-  <img id="img-visor" style="width:100%; height: 200px; object-fit: cover; border-radius: 16px; margin-top: 20px;">
-  <h2 id="nom-visor" style="margin: 20px 0;"></h2>
+  <img id="img-visor" style="width:100%; height: 200px; border-radius: 12px; object-fit: cover;">
+  <h2 id="nom-visor"></h2>
   <div class="ficha-grid">
     <div class="caja-dato"><small>Territorio</small><div id="terr-visor"></div></div>
     <div class="caja-dato"><small>Tiempo</small><div id="tiempo-visor"></div></div>
+    <div class="caja-dato"><small>F. Inicio</small><div id="fecha-ini-visor"></div></div>
+    <div class="caja-dato"><small>Últ. Trabajo</small><div id="ult-trab-visor"></div></div>
+    <div class="caja-dato" style="grid-column: span 2;"><small>¿Es del Grupo?</small><div id="es-grupo-visor"></div></div>
   </div>
   <button class="btn-final">ACTUALIZAR DATOS</button>
 </div>
 
 <script>
-  const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
+  // Datos de ejemplo para las columnas extra: F.Inicio (C), EsGrupo (F), UltTrab (G), SinTerritorio (I)
+  const URL_API = "TU_URL_AQUI"; 
   let datos = { con: [], sin: [] };
-  let ultimoCampo = "";
-  let esAscendente = true;
-
-  async function cargarDatos() {
-    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=GRUPO 1`);
-    datos = await res.json();
-    renderizar();
+  
+  function abrirVisor(item) {
+    document.getElementById('nom-visor').innerText = item.nombre;
+    document.getElementById('img-visor').src = item.img;
+    document.getElementById('terr-visor').innerText = item.territorio;
+    document.getElementById('tiempo-visor').innerText = item.tiempo;
+    document.getElementById('fecha-ini-visor').innerText = item.fechaInicio;
+    document.getElementById('ult-trab-visor').innerText = item.ultTrabajo;
+    document.getElementById('es-grupo-visor').innerText = item.esGrupo;
+    document.getElementById('visor').style.display = 'block';
   }
 
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map(item => `
-      <tr onclick="abrirVisor('${item.nombre}', '${item.img}', '${item.territorio}', '${item.tiempo}')">
+      <tr onclick='abrirVisor(${JSON.stringify(item)})'>
         <td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td>
       </tr>`).join('');
-    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `<tr><td>${item.nombre}</td></tr>`).join('');
+    
+    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `
+      <tr><td>${item.nombre}</td></tr>`).join('');
   }
-
-  function ordenar(campo) {
-    if (ultimoCampo === campo) esAscendente = !esAscendente;
-    else { esAscendente = true; ultimoCampo = campo; }
-
-    datos.con.sort((a, b) => {
-      let vA, vB;
-      if (campo === 'nombre') { vA = a.nombre.toLowerCase(); vB = b.nombre.toLowerCase(); return esAscendente ? vA.localeCompare(vB) : vB.localeCompare(vA); }
-      if (campo === 'territorio') { vA = parseInt(a.territorio) || 0; vB = parseInt(b.territorio) || 0; }
-      if (campo === 'tiempo') {
-        const calc = s => (parseInt(s.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s.match(/(\d+)\s*d/i)?.[1]) || 0);
-        vA = calc(a.tiempo); vB = calc(b.tiempo);
-      }
-      return esAscendente ? vA - vB : vB - vA;
-    });
-    renderizar();
-  }
-
-  function abrirVisor(n, i, t, ti) {
-    document.getElementById('nom-visor').innerText = n;
-    document.getElementById('img-visor').src = i;
-    document.getElementById('terr-visor').innerText = t;
-    document.getElementById('tiempo-visor').innerText = ti;
-    document.getElementById('visor').style.display = 'block';
-  }
-
-  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
+  
   function mostrarTab(t) {
     document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
     document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
@@ -129,7 +108,8 @@
     document.getElementById('btn-sin').className = (t === 'sin') ? 'tab-btn activo' : 'tab-btn';
   }
 
-  cargarDatos();
+  function alternarTema() { document.body.style.filter = (document.body.style.filter === 'invert(1)') ? 'invert(0)' : 'invert(1)'; }
+  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
 </script>
 </body>
 </html>
