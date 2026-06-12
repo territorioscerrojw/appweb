@@ -101,11 +101,34 @@ async function cargarDatos() {
 // Esto asegura que se ejecute al cargar la página
 window.addEventListener('load', cargarDatos);
   
-  function renderizar() {
-    document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `
-      <tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
-    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `<tr><td>${item.nombre}</td></tr>`).join('');
+ function renderizar(datos) {
+  console.log("Intentando pintar los datos...");
+  window.datosGlobales = datos;
+
+  const bodyCon = document.getElementById('body-con');
+  const bodySin = document.getElementById('body-sin');
+
+  if (!bodyCon || !bodySin) {
+    console.error("Error: No encuentro los elementos 'body-con' o 'body-sin' en tu HTML.");
+    return;
   }
+
+  // Pintar 'Con Territorio'
+  bodyCon.innerHTML = datos.con.map((item, i) => `
+    <tr onclick='abrirVisor(${i}, "con")'>
+      <td>${item.nombre || ""}</td>
+      <td>${item.territorio || ""}</td>
+      <td>${item.tiempo || ""}</td>
+    </tr>`).join('');
+
+  // Pintar 'Sin Territorio'
+  bodySin.innerHTML = datos.sin.map(item => `
+    <tr>
+      <td>${item.nombre || ""}</td>
+    </tr>`).join('');
+    
+  console.log("Renderizado completado con éxito.");
+}
 
   function abrirVisor(i, tipo) {
     const item = datos[tipo][i];
@@ -150,7 +173,7 @@ window.addEventListener('load', cargarDatos);
       
       const json = JSON.parse(texto);
       console.log("Datos parseados:", json);
-      alert("¡Éxito! Datos cargados: " + json.con.length + " elementos.");
+     
       
     } catch(e) {
       console.error("Error detectado:", e);
