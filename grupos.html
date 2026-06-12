@@ -77,12 +77,19 @@
     document.body.setAttribute('data-theme', isDark ? '' : 'dark');
   }
 
-  async function cargarDatos() {
+ async function cargarDatos() {
     try {
-      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=GRUPO 1`);
+      // Obtenemos el nombre de la hoja desde la URL (ej: ?hoja=GRUPO 4)
+      const params = new URLSearchParams(window.location.search);
+      const nombreHoja = params.get('hoja') || "GRUPO 1"; // Si no hay nada, usa GRUPO 1
+      
+      // Actualizamos el título de la página automáticamente
+      document.getElementById('txt-grupo-titulo').innerText = nombreHoja;
+
+      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(nombreHoja)}`);
       datos = await res.json();
       renderizar();
-    } catch(e) { alert("Error al cargar datos"); }
+    } catch(e) { alert("Error al cargar datos: " + e.message); }
   }
 
   function calcularPesoTiempo(t) {
