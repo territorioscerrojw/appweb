@@ -4,29 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Grupo</title>
-  <!-- Fuente estilo Apple/iOS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root { --bg: #f2f2f7; --blanco: #ffffff; --azul: #007aff; --texto: #1c1c1e; --texto-dim: #8e8e93; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--texto); margin: 0; padding: 20px; }
-    
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: var(--blanco); border: 1px solid #d1d1d6; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
-    
     .contenedor-tabs { display: flex; border-bottom: 2px solid #e5e5ea; margin-bottom: 20px; }
     .tab-btn { flex: 1; padding: 10px; background: none; border: none; font-weight: 600; color: var(--texto-dim); cursor: pointer; }
     .tab-btn.activo { color: var(--azul); border-bottom: 2px solid var(--azul); margin-bottom: -2px; }
-
     .tabla-container { background: var(--blanco); border-radius: 12px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .tabla-apple { width: 100%; border-collapse: collapse; }
-    .tabla-apple th { color: var(--texto-dim); font-size: 0.75em; text-align: left; padding: 10px; }
-    .tabla-apple td { padding: 15px 10px; border-bottom: 1px solid #f2f2f7; font-size: 0.9em; }
-
-    .visor-pantalla-completa { position: fixed; inset: 0; background: var(--bg); padding: 20px; overflow-y: auto; z-index: 100; }
+    .tabla-apple th { color: var(--texto-dim); font-size: 0.75em; text-align: left; padding: 10px; cursor: pointer; }
+    .tabla-apple td { padding: 15px 10px; border-bottom: 1px solid #f2f2f7; font-size: 0.9em; cursor: pointer; }
+    .visor-pantalla-completa { position: fixed; inset: 0; background: var(--bg); padding: 20px; z-index: 100; overflow-y: auto; display: none; }
     .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
     .caja-dato { background: var(--blanco); padding: 15px; border-radius: 10px; }
     .caja-dato small { color: var(--texto-dim); font-size: 0.7em; display: block; }
-    .btn-final { width: 100%; background: var(--texto); color: white; border: none; padding: 15px; border-radius: 12px; margin-top: 20px; font-weight: 700; }
+    .btn-final { width: 100%; background: var(--texto); color: white; border: none; padding: 15px; border-radius: 12px; margin-top: 20px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -35,7 +30,7 @@
   <h1 id="txt-grupo-titulo" style="font-size: 1.4em; margin: 0;">GRUPO 1</h1>
   <div>
     <button class="btn-icon" onclick="alternarTema()">◑</button>
-    <button class="btn-icon" onclick="location.reload()">↻</button>
+    <button class="btn-icon" onclick="cargarDatos()">↻</button>
   </div>
 </header>
 
@@ -46,7 +41,7 @@
 
 <div id="seccion-con" class="tabla-container">
   <table class="tabla-apple">
-    <thead><tr><th onclick="ordenar('nombre')">Nombre ↕</th><th onclick="ordenar('territorio')">Nº Terr. ↕</th><th onclick="ordenar('tiempo')">T. Restante ↕</th></tr></thead>
+    <thead><tr><th>Nombre</th><th>Nº Terr.</th><th>T. Restante</th></tr></thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
@@ -58,7 +53,7 @@
   </table>
 </div>
 
-<div id="visor" class="visor-pantalla-completa" style="display:none;">
+<div id="visor" class="visor-pantalla-completa">
   <div style="display:flex; justify-content: space-between; align-items:center;">
     <h3>Ficha Detallada</h3>
     <button class="btn-icon" onclick="cerrarVisor()">✕</button>
@@ -76,11 +71,30 @@
 </div>
 
 <script>
-  // Datos de ejemplo para las columnas extra: F.Inicio (C), EsGrupo (F), UltTrab (G), SinTerritorio (I)
   const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec"; 
   let datos = { con: [], sin: [] };
-  
-  function abrirVisor(item) {
+
+  async function cargarDatos() {
+    try {
+      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=GRUPO 1`);
+      datos = await res.json();
+      renderizar();
+    } catch(e) { alert("Error al cargar datos"); }
+  }
+
+  function renderizar() {
+    // Usamos un índice para referenciar los datos y evitar problemas con comillas
+    document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `
+      <tr onclick='abrirVisor(${i}, "con")'>
+        <td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td>
+      </tr>`).join('');
+    
+    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `
+      <tr><td>${item.nombre}</td></tr>`).join('');
+  }
+
+  function abrirVisor(index, tipo) {
+    const item = datos[tipo][index];
     document.getElementById('nom-visor').innerText = item.nombre;
     document.getElementById('img-visor').src = item.img;
     document.getElementById('terr-visor').innerText = item.territorio;
@@ -91,16 +105,6 @@
     document.getElementById('visor').style.display = 'block';
   }
 
-  function renderizar() {
-    document.getElementById('body-con').innerHTML = datos.con.map(item => `
-      <tr onclick='abrirVisor(${JSON.stringify(item)})'>
-        <td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td>
-      </tr>`).join('');
-    
-    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `
-      <tr><td>${item.nombre}</td></tr>`).join('');
-  }
-  
   function mostrarTab(t) {
     document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
     document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
@@ -108,8 +112,11 @@
     document.getElementById('btn-sin').className = (t === 'sin') ? 'tab-btn activo' : 'tab-btn';
   }
 
-  function alternarTema() { document.body.style.filter = (document.body.style.filter === 'invert(1)') ? 'invert(0)' : 'invert(1)'; }
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
+  function alternarTema() { document.body.style.filter = (document.body.style.filter === 'invert(1)') ? 'invert(0)' : 'invert(1)'; }
+
+  // Iniciar carga
+  cargarDatos();
 </script>
 </body>
 </html>
