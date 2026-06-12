@@ -2,122 +2,119 @@
 <html lang="es" data-theme="oscuro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gestión de Grupos</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Grupo</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Ajustes específicos para que la tabla sea interactiva */
-    th { cursor: pointer; user-select: none; }
-    th:hover { color: var(--apple-azul); }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: var(--glass-fondo); color: var(--texto-secundario); cursor: pointer; border-radius: 8px; }
-    .tab-btn.activo { background: var(--apple-azul); color: white; }
-    .contenedor-tabs { display: flex; gap: 10px; margin: 20px; }
+    /* Estilo exacto de la imagen */
+    .tabla-apple { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .tabla-apple th { text-align: left; padding: 10px; color: var(--texto-secundario); font-size: 0.8em; }
+    .tabla-apple td { padding: 15px 10px; border-bottom: 1px solid var(--glass-borde); }
+    .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .caja-dato { background: var(--glass-fondo); padding: 10px; border-radius: 8px; }
   </style>
 </head>
 <body>
 
 <div class="contenedor-app">
   <header class="cabecera-apple">
-    <div class="cabecera-titulos">
-      <h1 id="txt-grupo-titulo">Cargando...</h1>
-    </div>
-    <div class="cabecera-acciones">
-      <button onclick="alternarTema()">🌓</button>
-      <button onclick="cargarDatos()">🔄</button>
-    </div>
+    <h1 id="txt-grupo-titulo">Grupo 1</h1>
+    <button onclick="alternarTema()">🌓</button>
   </header>
 
   <div class="contenedor-tabs">
-    <button id="tab-con" class="tab-btn activo" onclick="mostrarSeccion('con')">Con Territorio</button>
-    <button id="tab-sin" class="tab-btn" onclick="mostrarSeccion('sin')">Sin Territorio</button>
+    <button id="btn-con" class="tab-btn activo" onclick="mostrarTab('con')">CON TERRITORIO</button>
+    <button id="btn-sin" class="tab-btn" onclick="mostrarTab('sin')">SIN TERRITORIO</button>
   </div>
 
-  <div id="seccion-con" class="seccion-lista">
+  <div id="seccion-con">
     <table class="tabla-apple">
       <thead>
         <tr>
           <th onclick="ordenar('nombre')">Nombre ↕</th>
-          <th onclick="ordenar('territorio')">Terr. ↕</th>
-          <th onclick="ordenar('tiempo')">Tiempo ↕</th>
+          <th onclick="ordenar('territorio')">Nº Terr. ↕</th>
+          <th onclick="ordenar('tiempo')">T. Restante ↕</th>
         </tr>
       </thead>
-      <tbody id="cuerpo-con"></tbody>
+      <tbody id="body-con"></tbody>
     </table>
   </div>
 
-  <div id="seccion-sin" class="seccion-lista" style="display:none;">
+  <div id="seccion-sin" style="display:none;">
     <table class="tabla-apple">
-      <thead><tr><th>Nombre</th></tr></thead>
-      <tbody id="cuerpo-sin"></tbody>
+      <thead><tr><th>Hermanos sin Territorio</th></tr></thead>
+      <tbody id="body-sin"></tbody>
     </table>
   </div>
 </div>
 
-<div id="visor" class="visor-pantalla-completa" style="display:none;" onclick="cerrarVisor()">
-  <div class="cabecera-visor-completo"><span>Ficha Detallada</span><button>✕</button></div>
+<div id="visor" class="visor-pantalla-completa" style="display:none;">
+  <div class="cabecera-visor-completo">
+    <span>Ficha Detallada</span>
+    <button onclick="cerrarVisor()">✕</button>
+  </div>
   <div class="zona-scroll-zoom" style="padding:20px;">
-    <img id="img-visor" style="width:100%; border-radius:12px; margin-bottom:20px;">
-    <div id="info-visor" style="color:var(--texto-principal);"></div>
+    <img id="img-visor" style="width:100%; border-radius:12px;">
+    <h2 id="nom-visor" style="margin:20px 0;"></h2>
+    <div class="ficha-grid">
+      <div class="caja-dato"><small>Territorio</small><div id="terr-visor"></div></div>
+      <div class="caja-dato"><small>Tiempo</small><div id="tiempo-visor"></div></div>
+    </div>
   </div>
 </div>
 
 <script>
-  const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec"; // Asegúrate de poner tu URL de Script
-  const params = new URLSearchParams(window.location.search);
-  const nombreGrupo = params.get("grupo") || "GRUPO 1";
-  let datosGlobales = { con: [], sin: [] };
-  let ordenActual = { campo: null, asc: true };
+  const URL_API = "TU_URL_AQUI"; // RELLENA ESTO
+  let datos = { con: [], sin: [] };
 
   async function cargarDatos() {
-    document.getElementById('txt-grupo-titulo').innerText = nombreGrupo;
-    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${nombreGrupo}`);
-    datosGlobales = await res.json();
-    renderizarTablas();
-  }
-
-  // Función de ordenación
-  function ordenar(campo) {
-    ordenActual.asc = (ordenActual.campo === campo) ? !ordenActual.asc : true;
-    ordenActual.campo = campo;
+    const params = new URLSearchParams(window.location.search);
+    const grupo = params.get("grupo") || "GRUPO 1";
+    document.getElementById('txt-grupo-titulo').innerText = grupo;
     
-    datosGlobales.con.sort((a, b) => {
-      let valA = a[campo].toString().toLowerCase();
-      let valB = b[campo].toString().toLowerCase();
-      return ordenActual.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-    });
-    renderizarTablas();
+    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${grupo}`);
+    datos = await res.json();
+    renderizar();
   }
 
-  function renderizarTablas() {
-    document.getElementById('cuerpo-con').innerHTML = datosGlobales.con.map(item => `
-      <tr onclick="abrirVisor('${item.nombre}', '${item.img}', '${item.territorio}')">
+  function renderizar() {
+    document.getElementById('body-con').innerHTML = datos.con.map(item => `
+      <tr onclick="abrirVisor('${item.nombre}', '${item.img}', '${item.territorio}', '${item.tiempo}')">
         <td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td>
       </tr>`).join('');
     
-    document.getElementById('cuerpo-sin').innerHTML = datosGlobales.sin.map(item => `
+    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `
       <tr><td>${item.nombre}</td></tr>`).join('');
   }
 
-  function mostrarSeccion(tipo) {
-    document.getElementById('seccion-con').style.display = (tipo === 'con') ? 'block' : 'none';
-    document.getElementById('seccion-sin').style.display = (tipo === 'sin') ? 'block' : 'none';
-    document.getElementById('tab-con').classList.toggle('activo', tipo === 'con');
-    document.getElementById('tab-sin').classList.toggle('activo', tipo === 'sin');
+  function ordenar(campo) {
+    datos.con.sort((a, b) => {
+      // Si es tiempo, convertimos a números para ordenar bien
+      if(campo === 'tiempo') {
+        const valA = parseInt(a.tiempo) || 0;
+        const valB = parseInt(b.tiempo) || 0;
+        return valA - valB;
+      }
+      return a[campo].localeCompare(b[campo]);
+    });
+    renderizar();
   }
 
-  function abrirVisor(nombre, img, terr) {
+  function abrirVisor(nom, img, terr, tiempo) {
+    document.getElementById('nom-visor').innerText = nom;
     document.getElementById('img-visor').src = img;
-    document.getElementById('info-visor').innerHTML = `<h3>${nombre}</h3><p>Territorio: ${terr}</p>`;
+    document.getElementById('terr-visor').innerText = terr;
+    document.getElementById('tiempo-visor').innerText = tiempo;
     document.getElementById('visor').style.display = 'block';
   }
 
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
-
-  function alternarTema() {
-    const html = document.documentElement;
-    html.dataset.theme = (html.dataset.theme === 'oscuro') ? 'claro' : 'oscuro';
+  function mostrarTab(t) {
+    document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
+    document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
   }
+  function alternarTema() { document.documentElement.dataset.theme = (document.documentElement.dataset.theme === 'oscuro') ? 'claro' : 'oscuro'; }
 
   cargarDatos();
 </script>
