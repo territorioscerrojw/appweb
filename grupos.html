@@ -103,10 +103,18 @@
   }
 
   function ordenar(campo) {
-    sortDir = !sortDir;
+    if (ultimoCampo === campo) esAscendente = !esAscendente;
+    else { esAscendente = true; ultimoCampo = campo; }
+
     datos.con.sort((a, b) => {
-      if (campo === 'tiempo') return sortDir ? (calcularPesoTiempo(a.tiempo) - calcularPesoTiempo(b.tiempo)) : (calcularPesoTiempo(b.tiempo) - calcularPesoTiempo(a.tiempo));
-      return sortDir ? (a[campo].toString() > b[campo].toString() ? 1 : -1) : (a[campo].toString() < b[campo].toString() ? 1 : -1);
+      let vA, vB;
+      if (campo === 'nombre') { vA = a.nombre.toLowerCase(); vB = b.nombre.toLowerCase(); return esAscendente ? vA.localeCompare(vB) : vB.localeCompare(vA); }
+      if (campo === 'territorio') { vA = parseInt(a.territorio) || 0; vB = parseInt(b.territorio) || 0; }
+      if (campo === 'tiempo') {
+        const calc = s => (parseInt(s.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s.match(/(\d+)\s*d/i)?.[1]) || 0);
+        vA = calc(a.tiempo); vB = calc(b.tiempo);
+      }
+      return esAscendente ? vA - vB : vB - vA;
     });
     renderizar();
   }
