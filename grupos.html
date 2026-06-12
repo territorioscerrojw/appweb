@@ -88,43 +88,55 @@
       <tr><td>${item.nombre}</td></tr>`).join('');
   }
 
- let ultimoCampo = "";
+// Asegúrate de que estas variables estén fuera de la función
+let ultimoCampo = "";
 let esAscendente = true;
 
 function ordenar(campo) {
-  // Si pulsamos la misma columna, invertimos la dirección. 
-  // Si pulsamos otra, reseteamos a ascendente.
+  // 1. Lógica de cambio de sentido
   if (ultimoCampo === campo) {
     esAscendente = !esAscendente;
   } else {
-    esAscendente = true;
+    esAscendente = true; // Siempre empezamos en ascendente al cambiar de columna
     ultimoCampo = campo;
   }
 
+  // 2. Ejecutar el ordenamiento
   datos.con.sort((a, b) => {
-    let comparacion = 0;
+    let valA, valB;
 
     if (campo === 'nombre') {
-      comparacion = a.nombre.localeCompare(b.nombre);
+      valA = a.nombre.toLowerCase();
+      valB = b.nombre.toLowerCase();
+      return esAscendente ? valA.localeCompare(valB) : valB.localeCompare(valA);
     } 
-    else if (campo === 'territorio') {
-      comparacion = parseInt(a.territorio) - parseInt(b.territorio);
+    
+    if (campo === 'territorio') {
+      valA = parseInt(a.territorio) || 0;
+      valB = parseInt(b.territorio) || 0;
     } 
-    else if (campo === 'tiempo') {
+    
+    if (campo === 'tiempo') {
       const calcularDias = (str) => {
         const meses = parseInt(str.match(/(\d+)\s*mes/i)?.[1]) || 0;
         const dias = parseInt(str.match(/(\d+)\s*d/i)?.[1]) || 0;
         return (meses * 30) + dias;
       };
-      comparacion = calcularDias(a.tiempo) - calcularDias(b.tiempo);
+      valA = calcularDias(a.tiempo);
+      valB = calcularDias(b.tiempo);
     }
 
-    // Si es descendente, multiplicamos por -1 para invertir el resultado
-    return esAscendente ? comparacion : -comparacion;
+    // 3. Aplicar orden para números (Territorio y Tiempo)
+    if (esAscendente) {
+      return valA - valB;
+    } else {
+      return valB - valA;
+    }
   });
 
   renderizar();
 }
+  
   function abrirVisor(nom, img, terr, tiempo) {
     document.getElementById('nom-visor').innerText = nom;
     document.getElementById('img-visor').src = img;
