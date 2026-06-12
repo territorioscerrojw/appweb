@@ -65,77 +65,47 @@
 
 <script>
   const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
-  let datos = { con: [], sin: [] };
+  
+  // Variable global única
+  window.appData = { con: [], sin: [] };
   let ultimoCampo = "";
   let esAscendente = true;
 
-  function toggleTheme() {
-    const isDark = document.body.getAttribute('data-theme') === 'dark';
-    document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+  async function cargarDatos() {
+    const params = new URLSearchParams(window.location.search);
+    const grupo = params.get('grupo') || params.get('hoja') || "GRUPO 1";
+    document.getElementById('txt-grupo-titulo').innerText = grupo;
+
+    try {
+      const url = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_t=${Date.now()}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      
+      // Guardamos en la variable global compartida
+      window.appData = json;
+      renderizar(window.appData);
+    } catch(e) { 
+      alert("Error al cargar: " + e.message); 
+    }
   }
 
- // Cambia la parte final de tu <script> por esto:
+  function renderizar(datos) {
+    const bodyCon = document.getElementById('body-con');
+    const bodySin = document.getElementById('body-sin');
+    if (!bodyCon || !bodySin) return;
 
-async function cargarDatos() {
-  const params = new URLSearchParams(window.location.search);
-  
-  // Leemos lo que escribas en la URL (ej: ?hoja=GRUPO 3)
- const grupo = params.get('grupo') || params.get('hoja') || "GRUPO 1";
+    bodyCon.innerHTML = datos.con.map((item, i) => `
+      <tr onclick='abrirVisor(${i}, "con")'>
+        <td>${item.nombre || ""}</td>
+        <td>${item.territorio || ""}</td>
+        <td>${item.tiempo || ""}</td>
+      </tr>`).join('');
 
-  // Si no pones nada, avisamos. No forzamos el GRUPO 1.
-  if (!grupo) {
-    document.getElementById('txt-grupo-titulo').innerText = "SELECCIONA UN GRUPO";
-    alert("Error: Debes indicar un grupo en el enlace (ej: ?hoja=GRUPO 3)");
-    return;
+    bodySin.innerHTML = datos.sin.map(item => `
+      <tr><td>${item.nombre || ""}</td></tr>`).join('');
   }
 
-  // Actualizamos el título con el grupo que realmente pediste
-  document.getElementById('txt-grupo-titulo').innerText = grupo;
-
-  try {
-    // Usamos el valor de la variable 'grupo' dinámicamente
-    const url = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_t=${Date.now()}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    
-    renderizar(json);
-  } catch(e) { 
-    alert("Error al cargar " + grupo + ": " + e.message); 
-  }
-}
-
-// Esto asegura que se ejecute al cargar la página
-window.addEventListener('load', cargarDatos);
-  
- function renderizar(datos) {
-  console.log("Intentando pintar los datos...");
-  window.datosGlobales = datos;
-
-  const bodyCon = document.getElementById('body-con');
-  const bodySin = document.getElementById('body-sin');
-
-  if (!bodyCon || !bodySin) {
-    console.error("Error: No encuentro los elementos 'body-con' o 'body-sin' en tu HTML.");
-    return;
-  }
-
-  // Pintar 'Con Territorio'
-  bodyCon.innerHTML = datos.con.map((item, i) => `
-    <tr onclick='abrirVisor(${i}, "con")'>
-      <td>${item.nombre || ""}</td>
-      <td>${item.territorio || ""}</td>
-      <td>${item.tiempo || ""}</td>
-    </tr>`).join('');
-
-  // Pintar 'Sin Territorio'
-  bodySin.innerHTML = datos.sin.map(item => `
-    <tr>
-      <td>${item.nombre || ""}</td>
-    </tr>`).join('');
-    
-  console.log("Renderizado completado con éxito.");
-}
-function ordenar(campo) {
+  function ordenar(campo) {
     esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
     ultimoCampo = campo;
     
@@ -147,9 +117,10 @@ function ordenar(campo) {
     });
     renderizar(window.appData);
   }
-function abrirVisor(i, tipo) {
+
+  function abrirVisor(i, tipo) {
     const item = window.appData[tipo][i];
-    if (!item) return; // Protección extra
+    if (!item) return;
     
     document.getElementById('nom-visor').innerText = item.nombre || "";
     document.getElementById('img-visor').src = item.img || "";
@@ -160,6 +131,8 @@ function abrirVisor(i, tipo) {
     document.getElementById('visor').style.display = 'block';
   }
 
+  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
+  function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? '' : 'dark'); }
   function mostrarTab(t) {
     document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
     document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
@@ -167,38 +140,7 @@ function abrirVisor(i, tipo) {
     document.getElementById('tab-sin').className = (t === 'sin') ? 'tab active' : 'tab';
   }
 
-  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
-  cargarDatos();
-</script>
-  <script>
-  async function testCarga() {
-    console.log("Iniciando prueba de carga...");
-    const params = new URLSearchParams(window.location.search);
-    const grupo = params.get('hoja') || "GRUPO 1";
-    console.log("Intentando cargar:", grupo);
-
-    try {
-      const urlCompleta = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}`;
-      console.log("URL de petición:", urlCompleta);
-      
-      const res = await fetch(urlCompleta);
-      console.log("Respuesta recibida, status:", res.status);
-      
-      const texto = await res.text();
-      console.log("Contenido recibido:", texto);
-      
-      const json = JSON.parse(texto);
-      console.log("Datos parseados:", json);
-     
-      
-    } catch(e) {
-      console.error("Error detectado:", e);
-      alert("Error en la consola (F12): " + e.message);
-    }
-  }
-  
-  // Ejecutar al abrir
-  testCarga();
+  window.addEventListener('load', cargarDatos);
 </script>
 </body>
 </html>
