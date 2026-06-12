@@ -119,25 +119,33 @@
     });
     renderizar(window.appData);
   }
-  function formatearFecha(fechaStr) {
-    if (!fechaStr || fechaStr === "-") return "-";
-    const fecha = new Date(fechaStr);
-    return fecha.toLocaleDateString('es-ES');
-  }
+   // Añade esta función de ayuda arriba de tus otras funciones
+function formatearFecha(isoString) {
+  if (!isoString || isoString === "-") return "-";
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return isoString; // Si no es una fecha válida, devuelve el original
+  const dia = String(d.getDate()).padStart(2, '0');
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const anio = d.getFullYear();
+  return `${dia}/${mes}/${anio}`;
+}
 
-  function abrirVisor(i, tipo) {
-    const item = window.appData[tipo][i];
-    if (!item) return;
-    
-    document.getElementById('nom-visor').innerText = item.nombre || "";
-    document.getElementById('img-visor').src = item.img || "";
-    document.getElementById('terr-visor').innerText = item.territorio || "-";
-    document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
-    document.getElementById('fecha-ini-visor').innerText = item.fechaInicio || "-";
-    document.getElementById('ult-trab-visor').innerText = item.ultTrabajo || "-";
-    document.getElementById('visor').style.display = 'block';
-  }
-
+// Sustituye tu función abrirVisor actual por esta:
+function abrirVisor(i, tipo) {
+  const item = window.appData[tipo][i];
+  if (!item) return;
+  
+  document.getElementById('nom-visor').innerText = item.nombre || "";
+  document.getElementById('img-visor').src = item.img || "";
+  document.getElementById('terr-visor').innerText = item.territorio || "-";
+  document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
+  
+  // Aquí usamos la función de formateo para las fechas
+  document.getElementById('fecha-ini-visor').innerText = formatearFecha(item.fechaInicio);
+  document.getElementById('ult-trab-visor').innerText = formatearFecha(item.ultTrabajo);
+  
+  document.getElementById('visor').style.display = 'block';
+}
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
   function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? '' : 'dark'); }
   function mostrarTab(t) {
