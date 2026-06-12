@@ -89,17 +89,31 @@
   }
 
   function ordenar(campo) {
-    datos.con.sort((a, b) => {
-      // Si es tiempo, convertimos a números para ordenar bien
-      if(campo === 'tiempo') {
-        const valA = parseInt(a.tiempo) || 0;
-        const valB = parseInt(b.tiempo) || 0;
-        return valA - valB;
-      }
-      return a[campo].localeCompare(b[campo]);
-    });
-    renderizar();
-  }
+  datos.con.sort((a, b) => {
+    if (campo === 'nombre') {
+      return a.nombre.localeCompare(b.nombre);
+    }
+    
+    if (campo === 'territorio') {
+      // Si el territorio es un número, usamos parseInt
+      return parseInt(a.territorio) - parseInt(b.territorio);
+    }
+    
+    if (campo === 'tiempo') {
+      // Función para convertir "1 mes y 2 días" a total de días
+      const calcularDias = (str) => {
+        let total = 0;
+        const meses = parseInt(str.match(/(\d+)\s*mes/i)?.[1]) || 0;
+        const dias = parseInt(str.match(/(\d+)\s*d/i)?.[1]) || 0;
+        return (meses * 30) + dias;
+      };
+      
+      return calcularDias(a.tiempo) - calcularDias(b.tiempo);
+    }
+    return 0;
+  });
+  renderizar();
+}
 
   function abrirVisor(nom, img, terr, tiempo) {
     document.getElementById('nom-visor').innerText = nom;
