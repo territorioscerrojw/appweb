@@ -76,30 +76,19 @@
 
  // Cambia la parte final de tu <script> por esto:
 
- async function cargarDatos() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const grupo = urlParams.get('hoja') || "GRUPO 1";
-    
-   
-
-    document.getElementById('txt-grupo-titulo').innerText = grupo;
-
-    // CONSTRUCCIÓN AUTOMÁTICA DE LA URL (Esto evita el error de "Acción Inválida")
-    const url = new URL(URL_API);
-    url.searchParams.append('accion', 'leerDatosGrupos');
-    url.searchParams.append('hoja', grupo);
-    url.searchParams.append('_t', Date.now());
-
+async function cargarDatos() {
     try {
-      const res = await fetch(url);
-      const json = await res.json();
+      // Obtenemos el nombre de la hoja desde la URL (ej: ?hoja=GRUPO 4)
+      const params = new URLSearchParams(window.location.search);
+      const nombreHoja = params.get('hoja') || "GRUPO 1"; // Si no hay nada, usa GRUPO 1
       
-      if (json.error) throw new Error(json.mensaje);
-      
-      renderizar(json);
-    } catch(e) { 
-      alert("Error al cargar datos: " + e.message); 
-    }
+      // Actualizamos el título de la página automáticamente
+      document.getElementById('txt-grupo-titulo').innerText = nombreHoja;
+
+      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(nombreHoja)}`);
+      datos = await res.json();
+      renderizar();
+    } catch(e) { alert("Error al cargar datos: " + e.message); }
   }
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `
