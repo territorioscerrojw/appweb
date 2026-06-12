@@ -77,24 +77,30 @@
  // Cambia la parte final de tu <script> por esto:
 
 async function cargarDatos() {
-  // Esperamos un instante a que el navegador procese la URL
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
   const params = new URLSearchParams(window.location.search);
-  const grupo = params.get('hoja');
-
-  // Si no hay grupo en la URL, por defecto cargamos el 1
-  const grupoFinal = grupo ? grupo : "GRUPO 1";
   
-  console.log("Cargando grupo: " + grupoFinal); // Mira esto en la consola (F12)
-  document.getElementById('txt-grupo-titulo').innerText = grupoFinal;
+  // Leemos lo que escribas en la URL (ej: ?hoja=GRUPO 3)
+  const grupo = params.get('hoja'); 
+
+  // Si no pones nada, avisamos. No forzamos el GRUPO 1.
+  if (!grupo) {
+    document.getElementById('txt-grupo-titulo').innerText = "SELECCIONA UN GRUPO";
+    alert("Error: Debes indicar un grupo en el enlace (ej: ?hoja=GRUPO 3)");
+    return;
+  }
+
+  // Actualizamos el título con el grupo que realmente pediste
+  document.getElementById('txt-grupo-titulo').innerText = grupo;
 
   try {
-    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupoFinal)}&_t=${Date.now()}`);
+    // Usamos el valor de la variable 'grupo' dinámicamente
+    const url = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_t=${Date.now()}`;
+    const res = await fetch(url);
     const json = await res.json();
+    
     renderizar(json);
   } catch(e) { 
-    alert("Error al cargar: " + e.message); 
+    alert("Error al cargar " + grupo + ": " + e.message); 
   }
 }
 
