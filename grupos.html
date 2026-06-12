@@ -106,18 +106,36 @@
   }
 
 function ordenar(campo) {
-    esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
-    ultimoCampo = campo;
-    
-    window.appData.con.sort((a, b) => {
-      let valA = a[campo] || "";
-      let valB = b[campo] || "";
-      
-      // Orden personalizado para "tiempo" si es necesario, si no, alfabético
-      if (typeof valA === 'string') return esAscendente ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    if (ultimoCampo === campo) {
+      esAscendente = !esAscendente;
+    } else {
+      esAscendente = true;
+      ultimoCampo = campo;
+    }
+
+    datos.con.sort((a, b) => {
+      let valA, valB;
+      if (campo === 'nombre') {
+        valA = (a.nombre || "").toLowerCase();
+        valB = (b.nombre || "").toLowerCase();
+        return esAscendente ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } 
+      if (campo === 'territorio') {
+        valA = parseInt(a.territorio) || 0;
+        valB = parseInt(b.territorio) || 0;
+      } 
+      if (campo === 'tiempo') {
+        const calcularDias = (str) => {
+          const meses = parseInt(str?.match(/(\d+)\s*mes/i)?.[1]) || 0;
+          const dias = parseInt(str?.match(/(\d+)\s*d/i)?.[1]) || 0;
+          return (meses * 30) + dias;
+        };
+        valA = calcularDias(a.tiempo);
+        valB = calcularDias(b.tiempo);
+      }
       return esAscendente ? valA - valB : valB - valA;
     });
-    renderizar(window.appData);
+    renderizar();
   }
    // Añade esta función de ayuda arriba de tus otras funciones
 function formatearFecha(isoString) {
