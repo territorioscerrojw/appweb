@@ -135,18 +135,28 @@ window.addEventListener('load', cargarDatos);
     
   console.log("Renderizado completado con éxito.");
 }
-
-  function abrirVisor(i, tipo) {
-    const item = datos[tipo][i];
-    document.getElementById('nom-visor').innerText = item.nombre;
-    document.getElementById('img-visor').src = item.img;
-    document.getElementById('terr-visor').innerText = item.territorio;
-    document.getElementById('tiempo-visor').innerText = item.tiempo;
+function ordenar(campo) {
+    esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
+    ultimoCampo = campo;
+    
+    window.appData.con.sort((a, b) => {
+      let valA = a[campo] || "";
+      let valB = b[campo] || "";
+      if (typeof valA === 'string') return esAscendente ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      return esAscendente ? valA - valB : valB - valA;
+    });
+    renderizar(window.appData);
+  }
+function abrirVisor(i, tipo) {
+    const item = window.appData[tipo][i];
+    if (!item) return; // Protección extra
+    
+    document.getElementById('nom-visor').innerText = item.nombre || "";
+    document.getElementById('img-visor').src = item.img || "";
+    document.getElementById('terr-visor').innerText = item.territorio || "-";
+    document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
     document.getElementById('fecha-ini-visor').innerText = item.fechaInicio || "-";
     document.getElementById('ult-trab-visor').innerText = item.ultTrabajo || "-";
-    const boxGrupo = document.getElementById('box-grupo');
-    boxGrupo.style.display = (item.esGrupo && item.esGrupo.toString().toLowerCase() === "si") ? "block" : "none";
-    document.getElementById('es-grupo-visor').innerText = "Es del Grupo";
     document.getElementById('visor').style.display = 'block';
   }
 
