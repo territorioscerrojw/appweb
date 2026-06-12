@@ -80,11 +80,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const grupo = urlParams.get('hoja') || "GRUPO 1";
     
-    // Si no hay hoja en la URL, avisamos
-    if (!urlParams.has('hoja')) {
-      alert("Por favor, usa un enlace tipo: ?hoja=GRUPO 4");
-      return;
-    }
+   
 
     document.getElementById('txt-grupo-titulo').innerText = grupo;
 
