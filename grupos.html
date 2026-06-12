@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gestión de Grupos</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Ajustes específicos para que la tabla sea interactiva */
+    th { cursor: pointer; user-select: none; }
+    th:hover { color: var(--apple-azul); }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: var(--glass-fondo); color: var(--texto-secundario); cursor: pointer; border-radius: 8px; }
+    .tab-btn.activo { background: var(--apple-azul); color: white; }
+    .contenedor-tabs { display: flex; gap: 10px; margin: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="contenedor-app">
+  <header class="cabecera-apple">
+    <div class="cabecera-titulos">
+      <h1 id="txt-grupo-titulo">Cargando...</h1>
+    </div>
+    <div class="cabecera-acciones">
+      <button onclick="alternarTema()">🌓</button>
+      <button onclick="cargarDatos()">🔄</button>
+    </div>
+  </header>
+
+  <div class="contenedor-tabs">
+    <button id="tab-con" class="tab-btn activo" onclick="mostrarSeccion('con')">Con Territorio</button>
+    <button id="tab-sin" class="tab-btn" onclick="mostrarSeccion('sin')">Sin Territorio</button>
+  </div>
+
+  <div id="seccion-con" class="seccion-lista">
+    <table class="tabla-apple">
+      <thead>
+        <tr>
+          <th onclick="ordenar('nombre')">Nombre ↕</th>
+          <th onclick="ordenar('territorio')">Terr. ↕</th>
+          <th onclick="ordenar('tiempo')">Tiempo ↕</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-con"></tbody>
+    </table>
+  </div>
+
+  <div id="seccion-sin" class="seccion-lista" style="display:none;">
+    <table class="tabla-apple">
+      <thead><tr><th>Nombre</th></tr></thead>
+      <tbody id="cuerpo-sin"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="visor" class="visor-pantalla-completa" style="display:none;" onclick="cerrarVisor()">
+  <div class="cabecera-visor-completo"><span>Ficha Detallada</span><button>✕</button></div>
+  <div class="zona-scroll-zoom" style="padding:20px;">
+    <img id="img-visor" style="width:100%; border-radius:12px; margin-bottom:20px;">
+    <div id="info-visor" style="color:var(--texto-principal);"></div>
+  </div>
+</div>
+
+<script>
+  const URL_API = "TU_URL_AQUI"; // Asegúrate de poner tu URL de Script
+  const params = new URLSearchParams(window.location.search);
+  const nombreGrupo = params.get("grupo") || "GRUPO 1";
+  let datosGlobales = { con: [], sin: [] };
+  let ordenActual = { campo: null, asc: true };
+
+  async function cargarDatos() {
+    document.getElementById('txt-grupo-titulo').innerText = nombreGrupo;
+    const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${nombreGrupo}`);
+    datosGlobales = await res.json();
+    renderizarTablas();
+  }
+
+  // Función de ordenación
+  function ordenar(campo) {
+    ordenActual.asc = (ordenActual.campo === campo) ? !ordenActual.asc : true;
+    ordenActual.campo = campo;
+    
+    datosGlobales.con.sort((a, b) => {
+      let valA = a[campo].toString().toLowerCase();
+      let valB = b[campo].toString().toLowerCase();
+      return ordenActual.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    });
+    renderizarTablas();
+  }
+
+  function renderizarTablas() {
+    document.getElementById('cuerpo-con').innerHTML = datosGlobales.con.map(item => `
+      <tr onclick="abrirVisor('${item.nombre}', '${item.img}', '${item.territorio}')">
+        <td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td>
+      </tr>`).join('');
+    
+    document.getElementById('cuerpo-sin').innerHTML = datosGlobales.sin.map(item => `
+      <tr><td>${item.nombre}</td></tr>`).join('');
+  }
+
+  function mostrarSeccion(tipo) {
+    document.getElementById('seccion-con').style.display = (tipo === 'con') ? 'block' : 'none';
+    document.getElementById('seccion-sin').style.display = (tipo === 'sin') ? 'block' : 'none';
+    document.getElementById('tab-con').classList.toggle('activo', tipo === 'con');
+    document.getElementById('tab-sin').classList.toggle('activo', tipo === 'sin');
+  }
+
+  function abrirVisor(nombre, img, terr) {
+    document.getElementById('img-visor').src = img;
+    document.getElementById('info-visor').innerHTML = `<h3>${nombre}</h3><p>Territorio: ${terr}</p>`;
+    document.getElementById('visor').style.display = 'block';
+  }
+
+  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
+
+  function alternarTema() {
+    const html = document.documentElement;
+    html.dataset.theme = (html.dataset.theme === 'oscuro') ? 'claro' : 'oscuro';
+  }
+
+  cargarDatos();
+</script>
+</body>
+</html>
