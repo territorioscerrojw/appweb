@@ -131,5 +131,35 @@ window.addEventListener('load', cargarDatos);
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
   cargarDatos();
 </script>
+  <script>
+  async function testCarga() {
+    console.log("Iniciando prueba de carga...");
+    const params = new URLSearchParams(window.location.search);
+    const grupo = params.get('hoja') || "GRUPO 1";
+    console.log("Intentando cargar:", grupo);
+
+    try {
+      const urlCompleta = `${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}`;
+      console.log("URL de petición:", urlCompleta);
+      
+      const res = await fetch(urlCompleta);
+      console.log("Respuesta recibida, status:", res.status);
+      
+      const texto = await res.text();
+      console.log("Contenido recibido:", texto);
+      
+      const json = JSON.parse(texto);
+      console.log("Datos parseados:", json);
+      alert("¡Éxito! Datos cargados: " + json.con.length + " elementos.");
+      
+    } catch(e) {
+      console.error("Error detectado:", e);
+      alert("Error en la consola (F12): " + e.message);
+    }
+  }
+  
+  // Ejecutar al abrir
+  testCarga();
+</script>
 </body>
 </html>
