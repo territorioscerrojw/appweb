@@ -74,20 +74,40 @@
     document.body.setAttribute('data-theme', isDark ? '' : 'dark');
   }
 
+ // Cambia la parte final de tu <script> por esto:
+
   async function cargarDatos() {
-    // Leemos el parámetro de la URL
-    const params = new URLSearchParams(window.location.search);
-    const grupo = params.get('hoja') || "GRUPO 1";
-    document.getElementById('txt-grupo-titulo').innerText = grupo;
+    // 1. OBTENER EL PARAMETRO DE LA URL DE FORMA EXPLÍCITA
+    const urlParams = new URLSearchParams(window.location.search);
+    const grupoEnUrl = urlParams.get('hoja');
+    
+    // 2. SI NO HAY GRUPO EN EL ENLACE, NO CARGAMOS NADA O DAMOS AVISO
+    if (!grupoEnUrl) {
+      document.getElementById('txt-grupo-titulo').innerText = "GRUPO NO ESPECIFICADO";
+      alert("Por favor, accede mediante un enlace que incluya ?hoja=GRUPO X");
+      return;
+    }
+
+    // 3. ACTUALIZAR TÍTULO Y PETICIÓN
+    document.getElementById('txt-grupo-titulo').innerText = grupoEnUrl;
 
     try {
-      // Añadimos _=${Date.now()} al final para evitar que el navegador guarde en caché el resultado anterior
-      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_=${Date.now()}`);
-      datos = await res.json();
-      renderizar();
-    } catch(e) { alert("Error al cargar datos: " + e.message); }
+      // 4. PETICIÓN REAL AL SERVIDOR
+      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupoEnUrl)}&_t=${Date.now()}`);
+      
+      if (!res.ok) throw new Error("Error en la respuesta del servidor");
+      
+      const json = await res.json();
+      
+      // 5. RENDERIZAR DATOS RECIBIDOS
+      renderizar(json);
+    } catch(e) { 
+      alert("Error al cargar " + grupoEnUrl + ": " + e.message); 
+    }
   }
 
+  // EJECUTAR SOLO CUANDO EL DOM ESTÉ LISTO
+  document.addEventListener('DOMContentLoaded', cargarDatos);
   function ordenar(campo) {
     if (ultimoCampo === campo) { esAscendente = !esAscendente; } else { esAscendente = true; ultimoCampo = campo; }
     datos.con.sort((a, b) => {
