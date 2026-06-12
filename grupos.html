@@ -138,12 +138,25 @@
   function abrirVisor(i, tipo) {
     const item = window.datos[tipo][i];
     if (!item) return;
+    
     document.getElementById('nom-visor').innerText = item.nombre || "";
     document.getElementById('img-visor').src = item.img || "";
     document.getElementById('terr-visor').innerText = item.territorio || "-";
     document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
     document.getElementById('fecha-ini-visor').innerText = formatearFecha(item.fechaInicio);
     document.getElementById('ult-trab-visor').innerText = formatearFecha(item.ultTrabajo);
+    
+    // AQUÍ ESTÁ EL CAMBIO PARA EL CAMPO ESGRUPO
+    const boxGrupo = document.getElementById('box-grupo');
+    const esGrupoDiv = document.getElementById('es-grupo-visor');
+    
+    if (item.esGrupo && item.esGrupo.toString().trim() !== "") {
+      boxGrupo.style.display = "block"; // Lo mostramos
+      esGrupoDiv.innerText = item.esGrupo; // Ponemos el texto (ej: "GRUPO")
+    } else {
+      boxGrupo.style.display = "none"; // Lo ocultamos si está vacío
+    }
+    
     document.getElementById('visor').style.display = 'block';
   }
 
