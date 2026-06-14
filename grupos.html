@@ -15,41 +15,44 @@
   
   body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
 
-  /* Corregido: Mantenemos el display del visor para que el JS lo maneje */
+  /* Visor */
   .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
-
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-  h1 { font-size: 28px; font-weight: 700; margin: 0; }
+  .img-visor { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; }
+  .nom-visor { margin: 20px 0; font-size: 24px; }
   
+  /* Header */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+  .header h1 { font-size: 30px; margin: 0; }
+  .header-actions { display: flex; gap: 10px; }
+  
+  /* Botones redondos */
   .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
-  /* Iconos grandes dentro de los botones */
   .btn-icon svg { width: 28px; height: 28px; }
+  .btn-close { margin-bottom: 20px; }
 
+  /* Tabs */
   .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
   .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
   .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
+  /* Tablas y Tarjetas */
   .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
   table { width: 100%; border-collapse: collapse; }
   th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
   td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; cursor: pointer; }
 
-  /* Flechas minimalistas (usando CSS sin emoticonos) */
-  .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1px solid #fff; border-bottom: 1px solid #fff; transform: rotate(45deg); margin-left: 8px; }
-
+  /* Grid del visor */
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
   .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
   .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
 </style>
 
-
-
 </head>
 <body>
 
 <header class="header">
-  <h1 id="txt-grupo-titulo" style="font-size: 30px; margin: 0;">Cargando...</h1>
-  <div style="display:flex; gap: 10px;">
+  <h1 id="txt-grupo-titulo">Cargando...</h1>
+  <div class="header-actions">
     <button class="btn-icon" onclick="toggleTheme()">◑</button>
     <button class="btn-icon" onclick="location.reload()">↻</button>
   </div>
@@ -62,7 +65,7 @@
 
 <div id="seccion-con" class="card">
   <table>
-    <thead><tr><th onclick="ordenar('nombre')">Nombre ↕</th><th onclick="ordenar('territorio')">Territorio ↕</th><th onclick="ordenar('tiempo')">Tiempo restante↕</th></tr></thead>
+    <thead><tr><th>Nombre</th><th>Territorio</th><th>Tiempo restante</th></tr></thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
@@ -72,9 +75,9 @@
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon" style="margin-bottom: 20px;" onclick="cerrarVisor()">✕</button>
-  <img id="img-visor" style="width:100%; height: 200px; object-fit: cover; border-radius: 12px;">
-  <h2 id="nom-visor" style="margin: 20px 0;"></h2>
+  <button class="btn-icon btn-close" onclick="cerrarVisor()">✕</button>
+  <img id="img-visor" class="img-visor">
+  <h2 id="nom-visor" class="nom-visor"></h2>
   <div class="grid">
     <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
     <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
@@ -83,6 +86,7 @@
     <div id="box-grupo" class="data-box" style="display:none; grid-column: span 2;"><small>Estado</small><div id="es-grupo-visor"></div></div>
   </div>
 </div>
+
 
 <script>
   const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
