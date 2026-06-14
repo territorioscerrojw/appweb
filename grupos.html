@@ -11,32 +11,40 @@
       --font-family: 'Outfit', sans-serif;
       --fs-h1: 28px; --fs-tabs: 16px; --fs-th: 16px; --fs-td: 16px;
       --btn-size: 48px; --icon-size: 24px;
-      /* Colores Modo Oscuro (Por defecto) */
+      /* MODO OSCURO (Default) */
       --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
       --text-dim: #707785; --accent: #3b82f6;
+      /* Colores Cabecera Unificada (Invertidos) */
       --top-bg: #ffffff; --top-text: #0b0f19;
     }
     [data-theme='light'] {
-      /* Colores Modo Claro */
+      /* MODO CLARO */
       --bg: #ffffff; --card-bg: #f4f4f7; --text: #0b0f19;
       --text-dim: #6e6e73; --accent: #0066cc;
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
 
     * { box-sizing: border-box; max-width: 100vw; }
-    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 15px; transition: 0.3s; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; }
 
-    /* Cabecera y pestañas con colores invertidos al modo general */
-    .header, .tabs { background: var(--top-bg); color: var(--top-text); padding: 10px; border-radius: 8px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    
+    /* Nueva área superior unificada */
+    .top-header-area { 
+      background: var(--top-bg); 
+      color: var(--top-text); 
+      padding: 20px 15px 0 15px; 
+    }
+
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     h1 { font-size: var(--fs-h1); margin: 0; }
-    .btn-icon { background: var(--top-bg); border: 1px solid var(--top-text); border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; padding: 0; font-size: var(--icon-size); }
+    
+    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; padding: 0; font-size: var(--icon-size); }
 
-    .tabs { display: flex; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
-    .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); color: var(--top-text); cursor: pointer; border-bottom: 2px solid transparent; }
-    .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+    .tabs { display: flex; margin-top: 10px; }
+    .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; }
+    .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; font-weight: 600; }
 
+    /* Contenido inferior */
+    .main-content { padding: 15px; }
     .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; width: 100%; }
     table { width: 100%; border-collapse: collapse; min-width: 300px; }
     th { font-size: var(--fs-th); color: var(--text-dim); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
@@ -50,36 +58,40 @@
 </head>
 <body>
 
-<header class="header">
-  <h1 id="txt-grupo-titulo">Cargando...</h1>
-  <div style="display:flex; gap: 10px;">
-    <button class="btn-icon" onclick="toggleTheme()">◑</button>
-    <button class="btn-icon" onclick="location.reload()">↻</button>
+<div class="top-header-area">
+  <header class="header">
+    <h1 id="txt-grupo-titulo">Cargando...</h1>
+    <div style="display:flex; gap: 10px;">
+      <button class="btn-icon" onclick="toggleTheme()">◑</button>
+      <button class="btn-icon" onclick="location.reload()">↻</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div id="tab-con" class="tab active" onclick="mostrarTab('con')">CON TERRITORIO</div>
+    <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">SIN TERRITORIO</div>
   </div>
-</header>
-
-<div class="tabs">
-  <div id="tab-con" class="tab active" onclick="mostrarTab('con')">CON TERRITORIO</div>
-  <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">SIN TERRITORIO</div>
 </div>
 
-<div id="seccion-con" class="card">
-  <table>
-    <thead><tr>
-      <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
-      <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
-      <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
-    </tr></thead>
-    <tbody id="body-con"></tbody>
-  </table>
-</div>
+<div class="main-content">
+  <div id="seccion-con" class="card">
+    <table>
+      <thead><tr>
+        <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
+        <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
+        <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
+      </tr></thead>
+      <tbody id="body-con"></tbody>
+    </table>
+  </div>
 
-<div id="seccion-sin" class="card" style="display:none;">
-  <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+  <div id="seccion-sin" class="card" style="display:none;">
+    <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+  </div>
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon" onclick="cerrarVisor()">✕</button>
+  <button class="btn-icon" style="margin-bottom: 15px;" onclick="cerrarVisor()">✕</button>
   <img id="img-visor">
   <h2 id="nom-visor" style="margin: 20px 0;"></h2>
   <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
