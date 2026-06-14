@@ -7,38 +7,20 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-    :root { 
-      --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
-      --text-dim: #707785; --accent: #3b82f6; 
-    }
-    [data-theme='light'] {
-      --bg: #f4f4f7; --card-bg: #ffffff; --text: #000000;
-      --text-dim: #6e6e73; --accent: #0066cc;
-    }
+    :root { --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; --text-dim: #707785; --accent: #3b82f6; }
     
     body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: background 0.3s; }
 
-    /* Visor */
-    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
-    .img-visor { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; }
-    .nom-visor { margin: 20px 0; font-size: 24px; }
-    
-    /* Header */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .header h1 { font-size: 30px; margin: 0; }
-    .header-actions { display: flex; gap: 10px; }
+    h1 { font-size: 30px; margin: 0; }
     
-    /* Botones */
-    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; transition: background 0.2s; }
-    .btn-icon svg { width: 24px; height: 24px; stroke: currentColor; }
-    .btn-close { margin-bottom: 20px; }
-
-    /* Tabs */
+    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; }
+    
     .tabs { display: flex; background: var(--bg); border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
     .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-    /* Tablas */
     .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; }
     th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; user-select: none; }
@@ -46,7 +28,7 @@
     
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; margin-bottom: 2px; }
 
-    /* Grid Visor */
+    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
     .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
@@ -56,9 +38,9 @@
 
 <header class="header">
   <h1 id="txt-grupo-titulo">Cargando...</h1>
-  <div class="header-actions">
-    <button class="btn-icon" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21a9 9 0 1 0 0-18v18z"/></svg></button>
-    <button class="btn-icon" onclick="location.reload()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4v5h5M20 20v-5h-5M4 12a8 8 0 1 1 12 6.5"/></svg></button>
+  <div style="display:flex; gap: 10px;">
+    <button class="btn-icon" onclick="toggleTheme()"><svg viewBox="0 0 24 24"><path d="M12 2v20M12 2a10 10 0 1 0 0 20M12 2a10 10 0 0 1 0 20"/></svg></button>
+    <button class="btn-icon" onclick="location.reload()"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M1 12a11 11 0 1 1 22 0"/></svg></button>
   </div>
 </header>
 
@@ -69,7 +51,11 @@
 
 <div id="seccion-con" class="card">
   <table>
-    <thead><tr><th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th><th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th><th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th></tr></thead>
+    <thead><tr>
+      <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
+      <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
+      <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
+    </tr></thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
@@ -79,59 +65,61 @@
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon btn-close" onclick="cerrarVisor()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-  <img id="img-visor" class="img-visor">
-  <h2 id="nom-visor" class="nom-visor"></h2>
+  <button class="btn-icon" onclick="cerrarVisor()"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <img id="img-visor" style="width:100%; height:200px; object-fit:cover; border-radius:12px;">
+  <h2 id="nom-visor" style="margin:20px 0;"></h2>
   <div class="grid">
     <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
     <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
-    <div class="data-box"><small>F. Inicio</small><div id="fecha-ini-visor"></div></div>
-    <div class="data-box"><small>Últ. vez trabajado</small><div id="ult-trab-visor"></div></div>
-    <div id="box-grupo" class="data-box" style="display:none; grid-column: span 2;"><small>Estado</small><div id="es-grupo-visor"></div></div>
+    <div id="box-grupo" class="data-box" style="display:none; grid-column:span 2;"><small>Estado</small><div id="es-grupo-visor"></div></div>
   </div>
 </div>
 
 <script>
-  const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
-  window.datos = { con: [], sin: [] };
-  let ultimoCampo = "", esAscendente = true;
+  let datos = { con: [], sin: [] };
+  let esAscendente = true;
 
   async function cargarDatos() {
-    const params = new URLSearchParams(window.location.search);
-    const grupo = params.get('grupo') || params.get('hoja') || "GRUPO 1";
+    const grupo = new URLSearchParams(window.location.search).get('grupo') || "GRUPO 1";
     document.getElementById('txt-grupo-titulo').innerText = grupo;
-    try {
-      const res = await fetch(`${URL_API}?accion=leerDatosGrupos&hoja=${encodeURIComponent(grupo)}&_t=${Date.now()}`);
-      window.datos = await res.json();
-      renderizar();
-    } catch(e) { alert("Error: " + e.message); }
+    const res = await fetch(`https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec?accion=leerDatosGrupos&hoja=${grupo}`);
+    datos = await res.json();
+    renderizar();
   }
 
   function renderizar() {
-    document.getElementById('body-con').innerHTML = window.datos.con.map((item, i) => `<tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
-    document.getElementById('body-sin').innerHTML = window.datos.sin.map(item => `<tr><td>${item.nombre}</td></tr>`).join('');
+    document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `<tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
   }
 
-  function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'light' ? '' : 'light'); }
-  function mostrarTab(t) {
-    document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
-    document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
-    document.getElementById('tab-con').className = (t === 'con') ? 'tab active' : 'tab';
-    document.getElementById('tab-sin').className = (t === 'sin') ? 'tab active' : 'tab';
+  function ordenar(campo) {
+    esAscendente = !esAscendente;
+    datos.con.sort((a, b) => {
+      let vA = a[campo], vB = b[campo];
+      if (campo === 'tiempo') {
+        vA = (parseInt(vA?.match(/\d+/)) || 0);
+        vB = (parseInt(vB?.match(/\d+/)) || 0);
+      }
+      return esAscendente ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
+    });
+    renderizar();
   }
+
   function abrirVisor(i, tipo) {
-    const item = window.datos[tipo][i];
+    const item = datos[tipo][i];
     document.getElementById('nom-visor').innerText = item.nombre;
     document.getElementById('img-visor').src = item.img;
     document.getElementById('terr-visor').innerText = item.territorio || "-";
     document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
-    document.getElementById('fecha-ini-visor').innerText = item.fechaInicio;
-    document.getElementById('ult-trab-visor').innerText = item.ultTrabajo;
     document.getElementById('visor').style.display = 'block';
   }
-  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
 
-  window.addEventListener('load', cargarDatos);
+  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
+  function toggleTheme() { document.body.style.filter = document.body.style.filter ? "" : "invert(1) hue-rotate(180deg)"; }
+  function mostrarTab(t) {
+    document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
+    document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
+  }
+  cargarDatos();
 </script>
 </body>
 </html>
