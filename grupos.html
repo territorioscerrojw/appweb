@@ -7,7 +7,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-    /* --- PANEL DE PERSONALIZACIÓN (AJUSTA AQUÍ) --- */
+    /* --- PANEL DE PERSONALIZACIÓN --- */
     :root {
       --font-family: 'Outfit', sans-serif;
       --fs-h1: 28px;
@@ -16,20 +16,25 @@
       --fs-td: 14px;
       --btn-size: 48px;
       --icon-size: 24px;
-      --bg: #0b0f19;
-      --card-bg: #1a202d;
-      --text: #ffffff;
-      --text-dim: #707785;
-      --accent: #3b82f6;
+      
+      /* Colores por defecto (Oscuro) */
+      --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
+      --text-dim: #707785; --accent: #3b82f6;
+    }
+
+    /* Colores para Modo Claro */
+    [data-theme='light'] {
+      --bg: #ffffff; --card-bg: #f4f4f7; --text: #0b0f19;
+      --text-dim: #6e6e73; --accent: #0066cc;
     }
 
     * { box-sizing: border-box; max-width: 100vw; }
-    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 15px; transition: background 0.3s, color 0.3s; }
 
     /* Cabecera y Botones */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     h1 { font-size: var(--fs-h1); margin: 0; }
-    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; font-size: var(--icon-size); }
+    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; font-size: var(--icon-size); transition: background 0.3s; }
 
     /* Pestañas */
     .tabs { display: flex; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
