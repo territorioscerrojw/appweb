@@ -23,7 +23,6 @@
     .top-header-area { background: var(--top-bg); color: var(--top-text); padding: 20px 15px 0 15px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     
-    /* Botones grandes */
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
     
     .tabs { display: flex; margin-top: 10px; }
@@ -36,7 +35,17 @@
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
     
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; color: var(--text); overflow-y: auto; }
-    #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
+    
+    /* Botón de cierre pegajoso en la esquina */
+    .btn-cerrar { 
+      position: sticky; top: 0; float: right;
+      background: var(--card-bg); border: 1px solid var(--text-dim); 
+      border-radius: 50%; width: 56px; height: 56px; cursor: pointer; 
+      color: var(--text); display: flex; align-items: center; 
+      justify-content: center; font-size: 24px; z-index: 101; 
+    }
+    
+    #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
   </style>
 </head>
@@ -75,9 +84,9 @@
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon" onclick="cerrarVisor()" style="margin-bottom: 20px;">✕</button>
-  <img id="img-visor" src="" alt="Mapa">
+  <button class="btn-cerrar" onclick="cerrarVisor()">✕</button>
   <h2 id="nom-visor"></h2>
+  <img id="img-visor" src="" alt="Mapa">
   <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
   <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
   <div class="data-box"><small>Fecha inicio</small><div id="fecha-ini-visor"></div></div>
