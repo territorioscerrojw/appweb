@@ -6,68 +6,42 @@
   <title>Gestión de Grupo</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  /* Importar fuente Outfit */
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
   :root { 
-    --bg: #0b0f19;
-    --card-bg: #1a202d;
-    --text: #ffffff; 
-    --text-dim: #707785; 
-    --accent: #3b82f6;
+    --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
+    --text-dim: #707785; --accent: #3b82f6; 
   }
   
-  body { 
-    font-family: 'Outfit', sans-serif; /* Aplicar fuente global */
-    background: var(--bg); 
-    color: var(--text); 
-    margin: 0; 
-    padding: 20px; 
-  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
 
-  /* Botones redondos con icono grande */
-  .btn-icon { 
-    background: var(--card-bg); 
-    border: 1px solid #2d3748; 
-    border-radius: 50%; 
-    width: 48px; 
-    height: 48px; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    transition: background 0.2s;
-  }
-  
-  /* Iconos dentro de botones (SVG ajustados) */
-  .btn-icon svg { width: 24px; height: 24px; stroke: white; stroke-width: 2px; }
+  /* Corregido: Mantenemos el display del visor para que el JS lo maneje */
+  .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
 
-  /* Flechas de ordenamiento minimalistas */
-  .sort-icon {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-left: 5px;
-    border-right: 1px solid var(--text-dim);
-    border-bottom: 1px solid var(--text-dim);
-    transform: rotate(45deg);
-    position: relative;
-    top: -2px;
-  }
-
-  /* Ajuste de cabecera y tabs */
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-  h1 { font-size: 28px !important; font-weight: 700; }
+  h1 { font-size: 28px; font-weight: 700; margin: 0; }
   
+  .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
+  /* Iconos grandes dentro de los botones */
+  .btn-icon svg { width: 28px; height: 28px; }
+
   .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
   .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
   .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-  /* Tablas */
-  .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; }
-  th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; }
-  td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; font-weight: 400; }
+  .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
+  td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; cursor: pointer; }
+
+  /* Flechas minimalistas (usando CSS sin emoticonos) */
+  .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1px solid #fff; border-bottom: 1px solid #fff; transform: rotate(45deg); margin-left: 8px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+  .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
+  .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
 </style>
+
 
 
 </head>
