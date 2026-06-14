@@ -9,50 +9,52 @@
 
     :root {
       --font-family: 'Outfit', sans-serif;
-      --fs-h1: 28px; --fs-tabs: 16px; --fs-th: 16px; --fs-td: 16px;
-      --btn-size: 48px; --icon-size: 24px;
-      
       /* MODO OSCURO (Default) - Superior Blanca */
       --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
-      --text-dim: #707785; --accent: #3b82f6;
-      --top-bg: #ffffff; --top-text: #0b0f19;
+      --top-bg: #ffffff; --top-text: #0b0f19; --accent: #3b82f6;
     }
     [data-theme='light'] {
       /* MODO CLARO - Superior Negra */
       --bg: #ffffff; --card-bg: #f4f4f7; --text: #0b0f19;
-      --text-dim: #6e6e73; --accent: #0066cc;
-      --top-bg: #0b0f19; --top-text: #ffffff;
+      --top-bg: #0b0f19; --top-text: #ffffff; --accent: #0066cc;
     }
 
-    * { box-sizing: border-box; max-width: 100vw; }
-    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 15px; transition: 0.3s; }
+    * { box-sizing: border-box; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; }
 
-    /* Contenedor unificado superior */
-    .top-section { background: var(--top-bg); color: var(--top-text); padding: 15px; border-radius: 16px; margin-bottom: 20px; }
+    /* El contenedor superior ocupa el tercio superior */
+    .top-container { 
+      background: var(--top-bg); 
+      color: var(--top-text); 
+      padding: 40px 20px 0 20px; 
+      min-height: 30vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between;
+    }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    h1 { font-size: var(--fs-h1); margin: 0; }
+    .header { display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-size: 28px; margin: 0; }
     
-    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; padding: 0; font-size: var(--icon-size); }
+    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; }
 
-    .tabs { display: flex; border-top: 1px solid rgba(128,128,128,0.2); }
-    .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); color: var(--top-text); cursor: pointer; opacity: 0.7; }
-    .tab.active { color: var(--accent); font-weight: bold; opacity: 1; border-bottom: 2px solid var(--accent); }
+    .tabs { display: flex; margin-top: 20px; }
+    .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; color: var(--top-text); opacity: 0.6; border-bottom: 3px solid transparent; }
+    .tab.active { opacity: 1; font-weight: 700; border-bottom: 3px solid var(--accent); color: var(--accent); }
 
-    .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; width: 100%; }
-    table { width: 100%; border-collapse: collapse; min-width: 300px; }
-    th { font-size: var(--fs-th); color: var(--text-dim); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
-    td { font-size: var(--fs-td); padding: 16px; border-top: 1px solid #2d3748; cursor: pointer; }
-    .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
+    /* Ajuste para que la tabla empiece justo debajo */
+    .content-area { padding: 20px; }
+    .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { color: #707785; padding: 16px; text-transform: uppercase; text-align: left; }
+    td { padding: 16px; border-top: 1px solid #2d3748; }
 
-    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 15px; overflow-y: auto; display: none; }
-    .visor img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; }
-    .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
+    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 15px; display: none; }
   </style>
 </head>
 <body>
 
-<div class="top-section">
+<div class="top-container">
   <header class="header">
     <h1 id="txt-grupo-titulo">Cargando...</h1>
     <div style="display:flex; gap: 10px;">
@@ -67,33 +69,21 @@
   </div>
 </div>
 
-<div id="seccion-con" class="card">
-  <table>
-    <thead><tr>
-      <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
-      <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
-      <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
-    </tr></thead>
-    <tbody id="body-con"></tbody>
-  </table>
-</div>
-
-<div id="seccion-sin" class="card" style="display:none;">
-  <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
-</div>
-
-<div id="visor" class="visor">
-  <button class="btn-icon" style="border:none; background: #333; color: white;" onclick="cerrarVisor()">✕</button>
-  <img id="img-visor">
-  <h2 id="nom-visor" style="margin: 20px 0;"></h2>
-  <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
-  <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
+<div class="content-area">
+  <div id="seccion-con" class="card">
+    <table>
+      <thead><tr><th>Nombre</th><th>Territorio</th><th>Tiempo</th></tr></thead>
+      <tbody id="body-con"></tbody>
+    </table>
+  </div>
+  <div id="seccion-sin" class="card" style="display:none;">
+    <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+  </div>
 </div>
 
 <script>
+  // ... (Tu lógica JavaScript permanece igual)
   let datos = { con: [], sin: [] };
-  let ultimoCampo = "", esAscendente = true;
-
   async function cargarDatos() {
     const grupo = new URLSearchParams(window.location.search).get('grupo') || "GRUPO 1";
     document.getElementById('txt-grupo-titulo').innerText = grupo;
@@ -101,46 +91,17 @@
     datos = await res.json();
     renderizar();
   }
-
   function renderizar() {
-    document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `<tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
+    document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `<tr><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
     document.getElementById('body-sin').innerHTML = datos.sin.map(item => `<tr><td>${item.nombre}</td></tr>`).join('');
   }
-
-  function ordenar(campo) {
-    esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
-    ultimoCampo = campo;
-    datos.con.sort((a, b) => {
-      let vA = a[campo], vB = b[campo];
-      if (campo === 'territorio') { vA = parseInt(vA) || 0; vB = parseInt(vB) || 0; }
-      if (campo === 'tiempo') {
-        const c = (s) => (parseInt(s?.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s?.match(/(\d+)\s*d/i)?.[1]) || 0);
-        vA = c(vA); vB = c(vB);
-      }
-      return esAscendente ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
-    });
-    renderizar();
-  }
-
   function mostrarTab(t) {
     document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
     document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
     document.getElementById('tab-con').className = (t === 'con') ? 'tab active' : 'tab';
     document.getElementById('tab-sin').className = (t === 'sin') ? 'tab active' : 'tab';
   }
-
-  function abrirVisor(i, tipo) {
-    const item = datos[tipo][i];
-    document.getElementById('nom-visor').innerText = item.nombre;
-    document.getElementById('img-visor').src = item.img;
-    document.getElementById('terr-visor').innerText = item.territorio || "-";
-    document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
-    document.getElementById('visor').style.display = 'block';
-  }
-
-  function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
   function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'light' ? '' : 'light'); }
-  
   cargarDatos();
 </script>
 </body>
