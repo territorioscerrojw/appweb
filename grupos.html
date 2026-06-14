@@ -6,32 +6,28 @@
   <title>Gestión de Grupo</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
-
     :root { --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; --text-dim: #707785; --accent: #3b82f6; }
     
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: background 0.3s; }
-
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    h1 { font-size: 30px; margin: 0; }
+    h1 { font-size: 28px; margin: 0; }
     
     .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
     .btn-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; }
     
-    .tabs { display: flex; background: var(--bg); border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
+    .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
     .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
     .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; }
-    th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; user-select: none; }
+    th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
     td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; cursor: pointer; }
-    
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; margin-bottom: 2px; }
 
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
-    .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -39,8 +35,8 @@
 <header class="header">
   <h1 id="txt-grupo-titulo">Cargando...</h1>
   <div style="display:flex; gap: 10px;">
-    <button class="btn-icon" onclick="toggleTheme()"><svg viewBox="0 0 24 24"><path d="M12 2v20M12 2a10 10 0 1 0 0 20M12 2a10 10 0 0 1 0 20"/></svg></button>
-    <button class="btn-icon" onclick="location.reload()"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M1 12a11 11 0 1 1 22 0"/></svg></button>
+    <button class="btn-icon" onclick="toggleTheme()">◑</button>
+    <button class="btn-icon" onclick="location.reload()">↻</button>
   </div>
 </header>
 
@@ -65,19 +61,18 @@
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon" onclick="cerrarVisor()"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <button class="btn-icon" onclick="cerrarVisor()">✕</button>
   <img id="img-visor" style="width:100%; height:200px; object-fit:cover; border-radius:12px;">
   <h2 id="nom-visor" style="margin:20px 0;"></h2>
   <div class="grid">
     <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
     <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
-    <div id="box-grupo" class="data-box" style="display:none; grid-column:span 2;"><small>Estado</small><div id="es-grupo-visor"></div></div>
   </div>
 </div>
 
 <script>
   let datos = { con: [], sin: [] };
-  let esAscendente = true;
+  let ultimoCampo = "", esAscendente = true;
 
   async function cargarDatos() {
     const grupo = new URLSearchParams(window.location.search).get('grupo') || "GRUPO 1";
@@ -89,19 +84,29 @@
 
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `<tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
+    document.getElementById('body-sin').innerHTML = datos.sin.map(item => `<tr><td>${item.nombre}</td></tr>`).join('');
   }
 
   function ordenar(campo) {
-    esAscendente = !esAscendente;
+    esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
+    ultimoCampo = campo;
     datos.con.sort((a, b) => {
-      let vA = a[campo], vB = b[campo];
+      let valA = a[campo], valB = b[campo];
+      if (campo === 'territorio') { valA = parseInt(valA) || 0; valB = parseInt(valB) || 0; }
       if (campo === 'tiempo') {
-        vA = (parseInt(vA?.match(/\d+/)) || 0);
-        vB = (parseInt(vB?.match(/\d+/)) || 0);
+        const calc = (s) => (parseInt(s?.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s?.match(/(\d+)\s*d/i)?.[1]) || 0);
+        valA = calc(valA); valB = calc(valB);
       }
-      return esAscendente ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
+      return esAscendente ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
     });
     renderizar();
+  }
+
+  function mostrarTab(t) {
+    document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
+    document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
+    document.getElementById('tab-con').className = (t === 'con') ? 'tab active' : 'tab';
+    document.getElementById('tab-sin').className = (t === 'sin') ? 'tab active' : 'tab';
   }
 
   function abrirVisor(i, tipo) {
@@ -114,11 +119,8 @@
   }
 
   function cerrarVisor() { document.getElementById('visor').style.display = 'none'; }
-  function toggleTheme() { document.body.style.filter = document.body.style.filter ? "" : "invert(1) hue-rotate(180deg)"; }
-  function mostrarTab(t) {
-    document.getElementById('seccion-con').style.display = (t === 'con') ? 'block' : 'none';
-    document.getElementById('seccion-sin').style.display = (t === 'sin') ? 'block' : 'none';
-  }
+  function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'light' ? '' : 'light'); }
+  
   cargarDatos();
 </script>
 </body>
