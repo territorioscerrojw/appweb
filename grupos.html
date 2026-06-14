@@ -23,7 +23,7 @@
     .top-header-area { background: var(--top-bg); color: var(--top-text); padding: 20px 15px 0 15px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     
-    /* Botones más grandes */
+    /* Botones grandes */
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
     
     .tabs { display: flex; margin-top: 10px; }
@@ -32,12 +32,11 @@
     .main-content { padding: 15px; }
     .card { background: var(--card-bg); border-radius: 16px; margin-bottom: 20px; color: var(--text); padding: 15px; }
     table { width: 100%; border-collapse: collapse; }
-    td, th { padding: 12px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
+    td, th { padding: 16px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
+    .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
+    
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; color: var(--text); overflow-y: auto; }
-    
-    /* Estilo para la imagen del mapa */
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
-    
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
   </style>
 </head>
@@ -61,7 +60,11 @@
   <div class="main-content">
     <div id="seccion-con" class="card">
       <table>
-        <thead><tr><th>Nombre</th><th>Territorio</th><th>Tiempo</th></tr></thead>
+        <thead><tr>
+          <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
+          <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
+          <th onclick="ordenar('tiempo')">Tiempo<span class="sort-icon"></span></th>
+        </tr></thead>
         <tbody id="body-con"></tbody>
       </table>
     </div>
@@ -72,10 +75,9 @@
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon" onclick="cerrarVisor()">✕</button>
-  <h2 id="nom-visor" style="margin: 20px 0;"></h2>
-  <img id="img-visor" src="" alt="Mapa del territorio">
-  
+  <button class="btn-icon" onclick="cerrarVisor()" style="margin-bottom: 20px;">✕</button>
+  <img id="img-visor" src="" alt="Mapa">
+  <h2 id="nom-visor"></h2>
   <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
   <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
   <div class="data-box"><small>Fecha inicio</small><div id="fecha-ini-visor"></div></div>
@@ -87,6 +89,7 @@
 
 <script>
   let datos = { con: [], sin: [] };
+  let ultimoCampo = "", esAscendente = true;
 
   async function cargarDatos() {
     const grupo = new URLSearchParams(window.location.search).get('grupo') || "GRUPO 1";
@@ -95,12 +98,26 @@
       const res = await fetch(`https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec?accion=leerDatosGrupos&hoja=${grupo}`);
       datos = await res.json();
       renderizar();
-    } catch (e) { console.error("Error al cargar:", e); }
+    } catch (e) { console.error(e); }
   }
 
   function renderizar() {
     document.getElementById('body-con').innerHTML = datos.con.map((item, i) => `<tr onclick='abrirVisor(${i}, "con")'><td>${item.nombre}</td><td>${item.territorio}</td><td>${item.tiempo}</td></tr>`).join('');
     document.getElementById('body-sin').innerHTML = datos.sin.map((item, i) => `<tr onclick='abrirVisor(${i}, "sin")'><td>${item.nombre}</td></tr>`).join('');
+  }
+
+  function ordenar(campo) {
+    esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
+    ultimoCampo = campo;
+    datos.con.sort((a, b) => {
+      let vA = a[campo] || "", vB = b[campo] || "";
+      if (campo === 'tiempo') {
+        const c = (s) => (parseInt(s?.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s?.match(/(\d+)\s*d/i)?.[1]) || 0);
+        vA = c(vA); vB = c(vB);
+      }
+      return esAscendente ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
+    });
+    renderizar();
   }
 
   function abrirVisor(i, tipo) {
