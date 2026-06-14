@@ -9,11 +9,20 @@
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
   :root { 
-    --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
-    --text-dim: #707785; --accent: #3b82f6; 
+    --bg: #0b0f19; 
+    --card-bg: #1a202d; 
+    --text: #ffffff; 
+    --text-dim: #707785; 
+    --accent: #3b82f6; 
   }
   
-  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+  body { 
+    font-family: 'Outfit', sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 20px; 
+  }
 
   /* Visor */
   .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
@@ -26,20 +35,57 @@
   .header-actions { display: flex; gap: 10px; }
   
   /* Botones redondos */
-  .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
-  .btn-icon svg { width: 28px; height: 28px; }
+  .btn-icon { 
+    background: var(--card-bg); 
+    border: 1px solid #2d3748; 
+    border-radius: 50%; 
+    width: 48px; 
+    height: 48px; 
+    cursor: pointer; 
+    color: var(--text); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 0; 
+    transition: background 0.2s;
+  }
+  .btn-icon:hover { background: #2d3748; }
   .btn-close { margin-bottom: 20px; }
 
   /* Tabs */
   .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
-  .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
   .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
   /* Tablas y Tarjetas */
   .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
   table { width: 100%; border-collapse: collapse; }
-  th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
+  
+  /* Encabezados con flecha minimalista */
+  th { 
+    color: var(--text-dim); 
+    font-size: 11px; 
+    padding: 16px; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    text-align: left; 
+    user-select: none;
+  }
+  th:hover { color: var(--text); }
+  
+  .sort-icon { 
+    display: inline-block; 
+    width: 6px; 
+    height: 6px; 
+    border-right: 1.5px solid var(--text-dim); 
+    border-bottom: 1.5px solid var(--text-dim); 
+    transform: rotate(45deg); 
+    margin-left: 8px; 
+    margin-bottom: 2px;
+  }
+
   td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; cursor: pointer; }
+  td:hover { background: rgba(255,255,255,0.02); }
 
   /* Grid del visor */
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
@@ -47,14 +93,16 @@
   .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
 </style>
 
-</head>
-<body>
 
 <header class="header">
   <h1 id="txt-grupo-titulo">Cargando...</h1>
   <div class="header-actions">
-    <button class="btn-icon" onclick="toggleTheme()">◑</button>
-    <button class="btn-icon" onclick="location.reload()">↻</button>
+    <button class="btn-icon" onclick="toggleTheme()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 1 0 0-18v18z"/></svg>
+    </button>
+    <button class="btn-icon" onclick="location.reload()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h5M20 20v-5h-5M4 12a8 8 0 1 1 12 6.5"/></svg>
+    </button>
   </div>
 </header>
 
@@ -65,17 +113,28 @@
 
 <div id="seccion-con" class="card">
   <table>
-    <thead><tr><th>Nombre</th><th>Territorio</th><th>Tiempo restante</th></tr></thead>
+    <thead>
+      <tr>
+        <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
+        <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
+        <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
+      </tr>
+    </thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
 
 <div id="seccion-sin" class="card" style="display:none;">
-  <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+  <table>
+    <thead><tr><th>Nombre</th></tr></thead>
+    <tbody id="body-sin"></tbody>
+  </table>
 </div>
 
 <div id="visor" class="visor">
-  <button class="btn-icon btn-close" onclick="cerrarVisor()">✕</button>
+  <button class="btn-icon btn-close" onclick="cerrarVisor()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
   <img id="img-visor" class="img-visor">
   <h2 id="nom-visor" class="nom-visor"></h2>
   <div class="grid">
