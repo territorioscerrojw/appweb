@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Gestión de Grupo</title>
   <style>
-    /* --- CONFIGURACIÓN DE TAMAÑOS (PERSONALIZA AQUÍ) --- */
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+    /* --- PANEL DE PERSONALIZACIÓN (AJUSTA AQUÍ) --- */
     :root {
+      --font-family: 'Outfit', sans-serif;
       --fs-h1: 28px;
       --fs-tabs: 14px;
       --fs-th: 11px;
@@ -21,7 +24,7 @@
     }
 
     * { box-sizing: border-box; max-width: 100vw; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
 
     /* Cabecera y Botones */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -33,7 +36,7 @@
     .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-    /* Tablas seguras */
+    /* Tablas */
     .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; width: 100%; }
     table { width: 100%; border-collapse: collapse; min-width: 300px; }
     th { font-size: var(--fs-th); color: var(--text-dim); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
