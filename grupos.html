@@ -5,41 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Gestión de Grupo</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
+<style>
   :root { 
-    --bg: #F5F5F7; --card-bg: #FFFFFF; --text: #1D1D1F; 
-    --text-dim: #86868B; --accent: #0066CC; --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --bg: #0b0f19; /* Color oscuro profundo */
+    --card-bg: #1a202d; /* Color de las tarjetas más diferenciado */
+    --text: #ffffff; 
+    --text-dim: #707785; 
+    --accent: #3b82f6; /* Azul eléctrico */
+    --shadow: none; /* La imagen original no parece usar sombras marcadas, sino contrastes de color */
   }
-  [data-theme='dark'] { 
-    --bg: #121212; --card-bg: #1C1C1E; --text: #FFFFFF; 
-    --text-dim: #98989D; --accent: #0A84FF; --shadow: 0 4px 12px rgba(0,0,0,0.3);
+  
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 20px; 
   }
+
+  /* Cabecera */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+  h1 { font-size: 28px !important; font-weight: 800; letter-spacing: -0.5px; }
   
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: background 0.3s; }
-  
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 5px; }
-  h1 { font-size: 70px; font-weight: 900; letter-spacing: -0.5px; margin: 0; }
-  
-  .btn-icon { background: var(--card-bg); border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; color: var(--text); box-shadow: var(--shadow); transition: transform 0.2s; }
-  
-  .tabs { display: flex; background: #E8E8ED; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
-  [data-theme='dark'] .tabs { background: #000; border: 1px solid #333; }
-  .tab { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-radius: 10px; transition: all 0.2s; }
-  .tab.active { background: var(--card-bg); color: var(--text); box-shadow: var(--shadow); }
-  
-  .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 20px; }
+  .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 12px; width: 40px; height: 40px; cursor: pointer; color: var(--text); }
+
+  /* Pestañas */
+  .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+  /* Tablas */
+  .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; }
   table { width: 100%; border-collapse: collapse; }
-  th { color: var(--text-dim); font-size: 11px; padding: 15px; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; }
-  td { padding: 18px 15px; border-top: 1px solid rgba(128,128,128,0.1); font-size: 15px; font-weight: 500; }
+  th { color: var(--text-dim); font-size: 12px; padding: 16px; text-align: left; text-transform: uppercase; }
+  td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; }
+
+  /* Visor */
+  .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: none; padding: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+  .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
+  .data-box small { color: var(--text-dim); font-size: 11px; display: block; margin-bottom: 4px; }
   
-  /* Estilo visor igual a la imagen */
-  .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: none; padding: 20px; overflow-y: auto; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-  .data-box { background: var(--card-bg); padding: 16px; border-radius: 16px; box-shadow: var(--shadow); }
-  .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; margin-bottom: 5px; display: block; }
-  
-  .btn-main { width: 100%; padding: 16px; margin-top: 20px; border-radius: 16px; border: none; background: var(--card-bg); color: var(--text); font-weight: bold; font-size: 16px; box-shadow: var(--shadow); cursor: pointer; }
+  .btn-main { width: 100%; padding: 18px; margin-top: 20px; border-radius: 14px; border: none; background: #ffffff; color: #000; font-weight: 700; cursor: pointer; }
 </style>
+
 </head>
 <body>
 
