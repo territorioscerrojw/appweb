@@ -14,20 +14,25 @@
       /* MODO OSCURO (Default) */
       --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
       --text-dim: #707785; --accent: #3b82f6;
-      /* Colores Cabecera Unificada (Invertidos) */
+      /* Colores Cabecera (Blanca en oscuro) */
       --top-bg: #ffffff; --top-text: #0b0f19;
     }
     [data-theme='light'] {
       /* MODO CLARO */
       --bg: #ffffff; --card-bg: #f4f4f7; --text: #0b0f19;
       --text-dim: #6e6e73; --accent: #0066cc;
+      /* Colores Cabecera (Negra en claro) */
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
 
     * { box-sizing: border-box; max-width: 100vw; }
-    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; }
+    
+    /* El body ahora tiene el color de la cabecera para cubrir la franja superior */
+    body { font-family: var(--font-family); background: var(--top-bg); margin: 0; transition: 0.3s; }
+    
+    /* Contenedor que da color al resto de la pantalla */
+    .app-wrapper { background: var(--bg); min-height: 100vh; padding-top: 1px; }
 
-    /* Nueva área superior unificada */
     .top-header-area { 
       background: var(--top-bg); 
       color: var(--top-text); 
@@ -43,50 +48,51 @@
     .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; }
     .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; font-weight: 600; }
 
-    /* Contenido inferior */
     .main-content { padding: 15px; }
-    .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; width: 100%; }
+    .card { background: var(--card-bg); border-radius: 16px; overflow-x: auto; margin-bottom: 20px; width: 100%; color: var(--text); }
     table { width: 100%; border-collapse: collapse; min-width: 300px; }
     th { font-size: var(--fs-th); color: var(--text-dim); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
     td { font-size: var(--fs-td); padding: 16px; border-top: 1px solid #2d3748; cursor: pointer; }
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
 
-    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 15px; overflow-y: auto; display: none; }
+    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 15px; overflow-y: auto; display: none; color: var(--text); }
     .visor img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-<div class="top-header-area">
-  <header class="header">
-    <h1 id="txt-grupo-titulo">Cargando...</h1>
-    <div style="display:flex; gap: 10px;">
-      <button class="btn-icon" onclick="toggleTheme()">◑</button>
-      <button class="btn-icon" onclick="location.reload()">↻</button>
+<div class="app-wrapper">
+  <div class="top-header-area">
+    <header class="header">
+      <h1 id="txt-grupo-titulo">Cargando...</h1>
+      <div style="display:flex; gap: 10px;">
+        <button class="btn-icon" onclick="toggleTheme()">◑</button>
+        <button class="btn-icon" onclick="location.reload()">↻</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <div id="tab-con" class="tab active" onclick="mostrarTab('con')">CON TERRITORIO</div>
+      <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">SIN TERRITORIO</div>
     </div>
-  </header>
-
-  <div class="tabs">
-    <div id="tab-con" class="tab active" onclick="mostrarTab('con')">CON TERRITORIO</div>
-    <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">SIN TERRITORIO</div>
-  </div>
-</div>
-
-<div class="main-content">
-  <div id="seccion-con" class="card">
-    <table>
-      <thead><tr>
-        <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
-        <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
-        <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
-      </tr></thead>
-      <tbody id="body-con"></tbody>
-    </table>
   </div>
 
-  <div id="seccion-sin" class="card" style="display:none;">
-    <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+  <div class="main-content">
+    <div id="seccion-con" class="card">
+      <table>
+        <thead><tr>
+          <th onclick="ordenar('nombre')">Nombre<span class="sort-icon"></span></th>
+          <th onclick="ordenar('territorio')">Territorio<span class="sort-icon"></span></th>
+          <th onclick="ordenar('tiempo')">Tiempo restante<span class="sort-icon"></span></th>
+        </tr></thead>
+        <tbody id="body-con"></tbody>
+      </table>
+    </div>
+
+    <div id="seccion-sin" class="card" style="display:none;">
+      <table><thead><tr><th>Nombre</th></tr></thead><tbody id="body-sin"></tbody></table>
+    </div>
   </div>
 </div>
 
