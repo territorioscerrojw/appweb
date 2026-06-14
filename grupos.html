@@ -52,13 +52,13 @@
 </header>
 
 <div class="tabs">
-  <div id="tab-con" class="tab active" onclick="mostrarTab('con')">Con Terr.</div>
-  <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">Sin Terr.</div>
+  <div id="tab-con" class="tab active" onclick="mostrarTab('con')">Con Territorio</div>
+  <div id="tab-sin" class="tab" onclick="mostrarTab('sin')">Sin Territorio</div>
 </div>
 
 <div id="seccion-con" class="card">
   <table>
-    <thead><tr><th onclick="ordenar('nombre')">Nombre ↕</th><th onclick="ordenar('territorio')">Terr. ↕</th><th onclick="ordenar('tiempo')">T. ↕</th></tr></thead>
+    <thead><tr><th onclick="ordenar('nombre')">Nombre ↕</th><th onclick="ordenar('territorio')">Territorio ↕</th><th onclick="ordenar('tiempo')">Tiempo restante↕</th></tr></thead>
     <tbody id="body-con"></tbody>
   </table>
 </div>
@@ -73,9 +73,9 @@
   <h2 id="nom-visor" style="margin: 20px 0;"></h2>
   <div class="grid">
     <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
-    <div class="data-box"><small>Tiempo</small><div id="tiempo-visor"></div></div>
+    <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
     <div class="data-box"><small>F. Inicio</small><div id="fecha-ini-visor"></div></div>
-    <div class="data-box"><small>Últ. Trabajo</small><div id="ult-trab-visor"></div></div>
+    <div class="data-box"><small>Últ. vez trabajado</small><div id="ult-trab-visor"></div></div>
     <div id="box-grupo" class="data-box" style="display:none; grid-column: span 2;"><small>Estado</small><div id="es-grupo-visor"></div></div>
   </div>
 </div>
