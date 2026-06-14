@@ -6,35 +6,55 @@
   <title>Gestión de Grupo</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
-    :root { --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; --text-dim: #707785; --accent: #3b82f6; }
+
+    /* --- PANEL DE CONTROL: MODIFICA TAMAÑOS AQUÍ --- */
+    :root {
+      --font-family: 'Outfit', sans-serif;
+      --font-base: 15px;
+      --font-h1: 30px;
+      --font-th: 11px;
+      --btn-size: 48px;
+      --icon-size: 24px;
+      --card-radius: 16px;
+      
+      --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
+      --text-dim: #707785; --accent: #3b82f6; 
+    }
     
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); font-size: var(--font-base); margin: 0; padding: 20px; }
+
+    /* Header */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    h1 { font-size: 28px; margin: 0; }
+    h1 { font-size: var(--font-h1); margin: 0; }
+    .header-actions { display: flex; gap: 10px; }
     
-    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
-    .btn-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; }
+    .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-icon:hover { background: #2d3748; }
     
-    .tabs { display: flex; background: #0b0f19; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
+    /* Tabs */
+    .tabs { display: flex; background: var(--bg); border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
     .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-    .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+    /* Tables */
+    .card { background: var(--card-bg); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; }
-    th { color: var(--text-dim); font-size: 11px; padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
-    td { padding: 16px; border-top: 1px solid #2d3748; font-size: 14px; cursor: pointer; }
+    th { color: var(--text-dim); font-size: var(--font-th); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; user-select: none; }
+    td { padding: 16px; border-top: 1px solid #2d3748; cursor: pointer; }
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; margin-bottom: 2px; }
 
+    /* Visor */
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
+    .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
   </style>
 </head>
 <body>
 
 <header class="header">
   <h1 id="txt-grupo-titulo">Cargando...</h1>
-  <div style="display:flex; gap: 10px;">
+  <div class="header-actions">
     <button class="btn-icon" onclick="toggleTheme()">◑</button>
     <button class="btn-icon" onclick="location.reload()">↻</button>
   </div>
@@ -91,13 +111,13 @@
     esAscendente = (ultimoCampo === campo) ? !esAscendente : true;
     ultimoCampo = campo;
     datos.con.sort((a, b) => {
-      let valA = a[campo], valB = b[campo];
-      if (campo === 'territorio') { valA = parseInt(valA) || 0; valB = parseInt(valB) || 0; }
+      let vA = a[campo], vB = b[campo];
+      if (campo === 'territorio') { vA = parseInt(vA) || 0; vB = parseInt(vB) || 0; }
       if (campo === 'tiempo') {
-        const calc = (s) => (parseInt(s?.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s?.match(/(\d+)\s*d/i)?.[1]) || 0);
-        valA = calc(valA); valB = calc(valB);
+        const c = (s) => (parseInt(s?.match(/(\d+)\s*mes/i)?.[1]) || 0) * 30 + (parseInt(s?.match(/(\d+)\s*d/i)?.[1]) || 0);
+        vA = c(vA); vB = c(vB);
       }
-      return esAscendente ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+      return esAscendente ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
     });
     renderizar();
   }
