@@ -2,59 +2,59 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Grupo</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-    /* --- PANEL DE CONTROL: MODIFICA TAMAÑOS AQUÍ --- */
+    /* --- PANEL DE PERSONALIZACIÓN TOTAL --- */
     :root {
+      /* Fuentes */
       --font-family: 'Outfit', sans-serif;
-      --font-base: 15px;
-      --font-h1: 30px;
-      --font-th: 13px;
-      --btn-size: 48px;
-      --icon-size: 36px;
-      --card-radius: 16px;
+      --fs-h1: 30px;         /* Título cabecera */
+      --fs-tabs: 14px;       /* Pestañas */
+      --fs-th: 11px;         /* Cabecera tabla */
+      --fs-body: 15px;       /* Texto tabla */
       
+      /* Iconos y Botones */
+      --btn-size: 48px;      /* Tamaño botón redondo */
+      --icon-size: 24px;     /* Tamaño icono SVG */
+      
+      /* Colores */
       --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
       --text-dim: #707785; --accent: #3b82f6; 
     }
     
-    body { font-family: var(--font-family); background: var(--bg); color: var(--text); font-size: var(--font-base); margin: 0; padding: 20px; }
+    body { font-family: var(--font-family); background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; }
 
-    /* Header */
+    /* Cabecera */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    h1 { font-size: var(--font-h1); margin: 0; }
-    .header-actions { display: flex; gap: 10px; }
+    h1 { font-size: var(--fs-h1); margin: 0; }
     
     .btn-icon { background: var(--card-bg); border: 1px solid #2d3748; border-radius: 50%; width: var(--btn-size); height: var(--btn-size); cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; padding: 0; }
-    .btn-icon:hover { background: #2d3748; }
+    .btn-icon svg { width: var(--icon-size); height: var(--icon-size); stroke: currentColor; fill: none; }
     
-    /* Tabs */
-    .tabs { display: flex; background: var(--bg); border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
-    .tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
+    /* Pestañas */
+    .tabs { display: flex; border-bottom: 1px solid #2d3748; margin-bottom: 20px; }
+    .tab { flex: 1; padding: 15px; text-align: center; font-size: var(--fs-tabs); font-weight: 600; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-    /* Tables */
-    .card { background: var(--card-bg); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; }
-    th { color: var(--text-dim); font-size: var(--font-th); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; user-select: none; }
-    td { padding: 16px; border-top: 1px solid #2d3748; cursor: pointer; }
-    .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; margin-bottom: 2px; }
+    /* Tablas */
+    .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+    th { font-size: var(--fs-th); color: var(--text-dim); padding: 16px; text-transform: uppercase; cursor: pointer; text-align: left; }
+    td { font-size: var(--fs-body); padding: 16px; border-top: 1px solid #2d3748; cursor: pointer; }
+    .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
 
     /* Visor */
-    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; overflow-y: auto; display: none; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; }
+    .nom-visor { font-size: calc(var(--fs-h1) * 0.8); margin: 20px 0; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; }
-    .data-box small { color: var(--text-dim); font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 4px; }
   </style>
 </head>
 <body>
 
 <header class="header">
   <h1 id="txt-grupo-titulo">Cargando...</h1>
-  <div class="header-actions">
+  <div style="display:flex; gap: 10px;">
     <button class="btn-icon" onclick="toggleTheme()">◑</button>
     <button class="btn-icon" onclick="location.reload()">↻</button>
   </div>
@@ -82,9 +82,8 @@
 
 <div id="visor" class="visor">
   <button class="btn-icon" onclick="cerrarVisor()">✕</button>
-  <img id="img-visor" style="width:100%; height:200px; object-fit:cover; border-radius:12px;">
-  <h2 id="nom-visor" style="margin:20px 0;"></h2>
-  <div class="grid">
+  <h2 id="nom-visor" class="nom-visor"></h2>
+  <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
     <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
     <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
   </div>
@@ -132,7 +131,6 @@
   function abrirVisor(i, tipo) {
     const item = datos[tipo][i];
     document.getElementById('nom-visor').innerText = item.nombre;
-    document.getElementById('img-visor').src = item.img;
     document.getElementById('terr-visor').innerText = item.territorio || "-";
     document.getElementById('tiempo-visor').innerText = item.tiempo || "-";
     document.getElementById('visor').style.display = 'block';
