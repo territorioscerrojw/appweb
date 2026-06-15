@@ -27,21 +27,34 @@
       --size-table: 15px;          /* Tamaño tabla */
       --weight-table: 400;         /* Grosor tabla */
       /* --- TEMA CLARO --- */
+/* --- CORRECCIÓN MODO CLARO --- */
+
 [data-theme='light'] {
-    --bg-color: #f0f2f5;          /* Fondo claro */
-    --card-bg: #ffffff;          /* Fondo tarjetas blanco */
-    --text-main: #0b0f19;        /* Texto oscuro */
-    --text-dim: #555c6b;         /* Texto secundario gris */
-    --border-table: #e2e8f0;     /* Líneas tabla suaves */
-    --header-bg: #ffffff;
+    /* Sobrescribimos todas las variables para el modo claro */
+    --bg-color: #f0f2f5;          
+    --card-bg: #ffffff;          
+    --text-main: #0b0f19;        
+    --text-dim: #555c6b;         
+    --border-table: #e2e8f0;     
+    --header-bg: #ffffff;        
     --header-text: #0b0f19;
 }
 
-/* Ajuste adicional para que el texto sea legible en modo claro */
-[data-theme='light'] .data-box {
-    background: #f8f9fa;
-    color: #0b0f19;
+/* Forzamos que el body y el contenedor usen la variable de fondo */
+[data-theme='light'] body {
+    background-color: var(--bg-color);
 }
+
+[data-theme='light'] .app-wrapper {
+    background-color: var(--bg-color);
+}
+
+/* Ajuste para que los textos en las tarjetas no se pierdan */
+[data-theme='light'] .card {
+    color: var(--text-main);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Sombra suave para separar del fondo */
+}
+
 
       /* --- BORDES Y SOMBRAS --- */
       --radius-card: 16px;         /* Redondeo panel */
