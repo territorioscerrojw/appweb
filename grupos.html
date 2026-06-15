@@ -38,21 +38,26 @@
       z-index: 10;
     }
 
-    .main-content { 
-      padding: 15px; 
-      flex-grow: 1; 
-      display: flex; 
-      flex-direction: column;
-      background-color: var(--bg); /* Mantenemos el fondo oscuro aquí */
-    }
-    
-    .card { 
-      background: var(--card-bg); 
-      border-radius: 16px; 
-      color: var(--text); 
-      padding: 15px; 
-      flex-grow: 1; /* Esto hace que el panel de la tabla llegue al final */
-    }
+    /* Busca esta parte en tu código y modifícala así: */
+
+.main-content { 
+  padding: 15px; 
+  flex-grow: 1; 
+  display: flex; 
+  flex-direction: column;
+  padding-bottom: 20px; /* Añadimos un pequeño margen extra abajo */
+}
+
+.card { 
+  background: var(--card-bg); 
+  border-radius: 16px; /* Cambiamos a 16px en todas las esquinas */
+  color: var(--text); 
+  padding: 15px; 
+  flex-grow: 1; 
+  overflow-y: auto; /* IMPORTANTE: Esto permite hacer scroll dentro de la tabla si es muy larga */
+  margin-bottom: 15px; /* Separación del borde inferior */
+}
+
 
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
