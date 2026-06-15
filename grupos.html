@@ -39,6 +39,14 @@
       --header-text: #0b0f19;
     }
 
+    /* Ajuste específico para botones en modo claro: Gris suave */
+    [data-theme='light'] .btn-icon, 
+    [data-theme='light'] .btn-cerrar {
+        background: #e2e8f0;   /* Gris claro suave */
+        color: #0b0f19;        /* Texto oscuro para contraste */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+    }
+
     /* --- ESTRUCTURA --- */
     html, body { height: 100%; margin: 0; padding: 0; background-color: var(--bg-color); font-family: var(--font-family); }
     .app-wrapper { min-height: 100dvh; display: flex; flex-direction: column; }
@@ -54,7 +62,6 @@
     #txt-grupo-titulo { font-size: var(--size-header); font-weight: var(--weight-header); margin: 0; }
     
     .btn-icon { background: var(--card-bg); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); }
-    [data-theme='light'] .btn-icon { background: #ffffff; color: #0b0f19; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
 
     .tabs { display: flex; margin-top: 5px; }
     .tab { flex: 1; padding: var(--pad-tabs); text-align: center; color: var(--header-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; font-size: var(--size-tabs); font-weight: var(--weight-tabs); }
@@ -70,12 +77,12 @@
     /* --- VISOR --- */
     .visor { position: fixed; inset: 0; background: var(--bg-color); z-index: 100; padding: 20px; display: none; color: var(--text-main); overflow-y: auto; }
     .btn-cerrar { background: var(--card-bg); border: none; border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--text-main); font-size: 24px; box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
-    [data-theme='light'] .btn-cerrar { background: #ffffff; color: #0b0f19; }
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
     .visor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     #box-grupo { grid-column: span 2; }
 </style>
+
 </head>
 <body>
 
