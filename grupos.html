@@ -38,12 +38,17 @@
       z-index: 10;
     }
 
+    <style>
+    /* ... (tu código anterior igual hasta main-content) ... */
+
     .main-content { 
       padding: 15px; 
       flex-grow: 1; 
       display: flex; 
       flex-direction: column;
-      background-color: var(--bg); /* Mantenemos el fondo oscuro aquí */
+      background-color: transparent; /* AHORA ES TRANSPARENTE */
+      /* Esto añade espacio extra al final solo en dispositivos móviles con barra */
+      padding-bottom: calc(15px + env(safe-area-inset-bottom, 20px)); 
     }
     
     .card { 
@@ -51,8 +56,15 @@
       border-radius: 16px; 
       color: var(--text); 
       padding: 15px; 
-      flex-grow: 1; /* Esto hace que el panel de la tabla llegue al final */
+      flex-grow: 1; 
+      overflow-y: auto;
+      /* Eliminamos cualquier margen inferior que pueda cortar el diseño */
+      margin-bottom: 0; 
     }
+    
+    /* ... (resto del código igual) ... */
+</style>
+
 
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
