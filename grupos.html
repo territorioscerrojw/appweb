@@ -184,6 +184,18 @@ thead tr th:nth-child(3) {
   
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
+    /* Contenedor de los datos en el visor */
+.visor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Crea dos columnas iguales */
+    gap: 10px;                     /* Espacio entre cajas */
+}
+
+/* Hacemos que la caja de "Estado" (si aparece) ocupe las dos columnas */
+#box-grupo {
+    grid-column: span 2;
+}
+
 </style>
 
 </head>
@@ -225,14 +237,18 @@ thead tr th:nth-child(3) {
   <button class="btn-cerrar" onclick="cerrarVisor()">✕</button>
   <h2 id="nom-visor"></h2>
   <img id="img-visor" src="" alt="Mapa">
-  <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
-  <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
-  <div class="data-box"><small>Fecha inicio</small><div id="fecha-ini-visor"></div></div>
-  <div class="data-box"><small>Último trabajo</small><div id="ult-trab-visor"></div></div>
-  <div id="box-grupo" class="data-box" style="display:none;">
-    <small>Estado</small><div id="es-grupo-visor"></div>
+  
+  <div class="visor-grid">
+      <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
+      <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
+      <div class="data-box"><small>Fecha inicio</small><div id="fecha-ini-visor"></div></div>
+      <div class="data-box"><small>Último trabajo</small><div id="ult-trab-visor"></div></div>
+      <div id="box-grupo" class="data-box" style="display:none;">
+        <small>Estado</small><div id="es-grupo-visor"></div>
+      </div>
   </div>
-</div>
+  </div>
+
 
 <script>
   // ... (código JavaScript sin cambios) ...
