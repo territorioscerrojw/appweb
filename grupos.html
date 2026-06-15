@@ -17,50 +17,45 @@
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
     
-    /* El body es el único que debe tener el fondo oscuro */
     html, body { height: 100%; margin: 0; padding: 0; background-color: var(--bg); }
     body { font-family: 'Outfit', sans-serif; }
     
-    /* Wrapper y main-content transparentes para eliminar el panel extra */
     .app-wrapper { min-height: 100dvh; display: flex; flex-direction: column; background-color: transparent; }
 
     .top-header-area { 
       background-color: var(--top-bg); 
       color: var(--top-text); 
-      padding: 20px 15px 0 15px; 
+      padding: 10px 15px 0 15px; /* Cabecera más estrecha */
       position: sticky; top: 0; z-index: 10;
     }
 
     .main-content { 
-      padding: 15px 15px 0 15px; 
+      padding: 10px 15px 0 15px; 
       flex-grow: 1; 
       display: flex; 
       flex-direction: column;
       background-color: transparent; 
-      /* Esto asegura que los datos no se tapen tras la barra de Safari */
       padding-bottom: calc(15px + env(safe-area-inset-bottom, 20px));
     }
     
-   .card { 
-  background: var(--card-bg); 
-  /* Cambiamos 16px 16px 0 0 (solo arriba) a 16px para todas las esquinas */
-  border-radius: 16px; 
-  color: var(--text); 
-  padding: 15px; 
-  flex-grow: 1; 
-  overflow-y: auto;
-}
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 16px; 
+      color: var(--text); 
+      padding: 10px; /* Un poco menos de padding interno en la tarjeta */
+      flex-grow: 1; 
+      overflow-y: auto;
+    }
 
-
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; } /* Menos margen */
+    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 20px; }
     
-    .tabs { display: flex; margin-top: 10px; }
-    .tab { flex: 1; padding: 15px; text-align: center; color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; }
+    .tabs { display: flex; margin-top: 5px; } /* Pestañas más arriba */
+    .tab { flex: 1; padding: 12px; text-align: center; color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; font-size: 0.9rem; }
     .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; font-weight: 600; }
     
     table { width: 100%; border-collapse: collapse; }
-    td, th { padding: 16px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
+    td, th { padding: 14px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
     
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; color: var(--text); overflow-y: auto; }
@@ -74,7 +69,7 @@
 <div class="app-wrapper">
   <div class="top-header-area">
     <header class="header">
-      <h1 id="txt-grupo-titulo">Cargando...</h1>
+      <h1 id="txt-grupo-titulo" style="font-size: 1.5rem; margin: 0;">Cargando...</h1>
       <div style="display:flex; gap: 10px;">
         <button class="btn-icon" onclick="toggleTheme()">◑</button>
         <button class="btn-icon" onclick="location.reload()">↻</button>
@@ -117,6 +112,7 @@
 </div>
 
 <script>
+  // ... (código JavaScript sin cambios) ...
   let datos = { con: [], sin: [] };
   let ultimoCampo = "", esAscendente = true;
 
