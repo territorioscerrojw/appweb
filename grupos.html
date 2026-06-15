@@ -4,28 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Gestión de Grupo</title>
-  <style>
+<style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
     :root {
-      --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
-      --text-dim: #707785; --accent: #3b82f6;
-      --top-bg: #ffffff; --top-text: #0b0f19;
+      /* --- COLORES --- */
+      --bg-color: #0b0f19;          /* Fondo página */
+      --card-bg: #1a202d;          /* Fondo panel tabla */
+      --text-main: #ffffff;        /* Texto general */
+      --text-dim: #707785;         /* Texto secundario */
+      --accent: #3b82f6;           /* Pestañas activas/acentos */
+      --header-bg: #ffffff;        /* Fondo cabecera */
+      --header-text: #0b0f19;      /* Texto cabecera */
+      --border-table: #2d3748;     /* Líneas tabla */
+
+      /* --- FUENTES (Tamaños y Grosores) --- */
+      --font-family: 'Outfit', sans-serif;
+      --size-header: 1.5rem;       /* Tamaño título "GRUPO X" */
+      --weight-header: 700;        /* Grosor título */
+      --size-tabs: 0.9rem;         /* Tamaño pestañas */
+      --weight-tabs: 600;          /* Grosor pestañas */
+      --size-table: 1rem;          /* Tamaño tabla */
+      --weight-table: 400;         /* Grosor tabla */
+      
+      /* --- BORDES Y SOMBRAS --- */
+      --radius-card: 16px;         /* Redondeo panel */
+      
+      /* --- ESPACIADOS --- */
+      --pad-header-top: 15px;      /* Espacio superior cabecera */
+      --pad-tabs: 14px;            /* Padding interno pestañas */
     }
-    [data-theme='light'] {
-      --bg: #ffffff; --card-bg: #f4f4f7; --text: #0b0f19;
-      --text-dim: #6e6e73; --accent: #0066cc;
-      --top-bg: #0b0f19; --top-text: #ffffff;
-    }
-    
-    html, body { height: 100%; margin: 0; padding: 0; background-color: var(--bg); }
-    body { font-family: 'Outfit', sans-serif; }
-    
+
+    /* --- ESTRUCTURA --- */
+    html, body { height: 100%; margin: 0; padding: 0; background-color: var(--bg-color); font-family: var(--font-family); }
     .app-wrapper { min-height: 100dvh; display: flex; flex-direction: column; background-color: transparent; }
 
     .top-header-area { 
-      background-color: var(--top-bg); 
-      color: var(--top-text); 
-      padding: 25px 15px 0 15px; /* Cabecera más estrecha */
+      background-color: var(--header-bg); 
+      color: var(--header-text); 
+      padding: var(--pad-header-top) 15px 0 15px; 
       position: sticky; top: 0; z-index: 10;
     }
 
@@ -40,29 +57,35 @@
     
     .card { 
       background: var(--card-bg); 
-      border-radius: 16px; 
-      color: var(--text); 
-      padding: 10px; /* Un poco menos de padding interno en la tarjeta */
+      border-radius: var(--radius-card); 
+      color: var(--text-main); 
+      padding: 15px; 
       flex-grow: 1; 
       overflow-y: auto;
     }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; } /* Menos margen */
-    .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    /* --- CABECERA Y TABS --- */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    #txt-grupo-titulo { font-size: var(--size-header); font-weight: var(--weight-header); margin: 0; }
     
-    .tabs { display: flex; margin-top: 5px; } /* Pestañas más arriba */
-    .tab { flex: 1; padding: 12px; text-align: center; color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; font-size: 0.9rem; }
-    .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; font-weight: 600; }
+    .btn-icon { background: transparent; border: 1px solid var(--header-text); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; color: var(--header-text); display: flex; align-items: center; justify-content: center; font-size: 20px; }
     
+    .tabs { display: flex; margin-top: 5px; }
+    .tab { flex: 1; padding: var(--pad-tabs); text-align: center; color: var(--header-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; font-size: var(--size-tabs); font-weight: var(--weight-tabs); }
+    .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; }
+    
+    /* --- TABLA --- */
     table { width: 100%; border-collapse: collapse; }
-    td, th { padding: 14px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
+    td, th { padding: 14px; border-bottom: 1px solid var(--border-table); cursor: pointer; text-align: left; font-size: var(--size-table); font-weight: var(--weight-table); }
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
     
-    .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; color: var(--text); overflow-y: auto; }
-    .btn-cerrar { position: sticky; top: 0; float: right; background: var(--card-bg); border: 1px solid var(--text-dim); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 101; }
+    /* --- VISOR --- */
+    .visor { position: fixed; inset: 0; background: var(--bg-color); z-index: 100; padding: 20px; display: none; color: var(--text-main); overflow-y: auto; }
+    .btn-cerrar { position: sticky; top: 0; float: right; background: var(--card-bg); border: 1px solid var(--text-dim); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 101; }
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
-  </style>
+</style>
+
 </head>
 <body>
 
