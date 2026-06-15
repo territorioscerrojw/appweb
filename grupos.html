@@ -7,7 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
     :root {
-      --font-family: 'Outfit', sans-serif;
       --bg: #0b0f19; --card-bg: #1a202d; --text: #ffffff; 
       --text-dim: #707785; --accent: #3b82f6;
       --top-bg: #ffffff; --top-text: #0b0f19;
@@ -17,25 +16,32 @@
       --text-dim: #6e6e73; --accent: #0066cc;
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
-    * { box-sizing: border-box; }
     
-    /* Mantenemos el body con el color de la cabecera para la franja superior */
-    body { font-family: var(--font-family); background: var(--top-bg); margin: 0; transition: 0.3s; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); }
     
     .app-wrapper { 
       background: var(--bg); 
       min-height: 100vh; 
       display: flex; 
-      flex-direction: column; /* Estructura vertical */
+      flex-direction: column; 
     }
 
-    .top-header-area { background: var(--top-bg); color: var(--top-text); padding: 20px 15px 0 15px; }
-    
-    /* El contenido principal se expande para llenar el hueco hasta abajo */
+    .top-header-area { 
+      background: var(--top-bg); 
+      color: var(--top-text); 
+      padding: 20px 15px 0 15px; 
+    }
+
     .main-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
     
-    /* La tarjeta con la tabla se expande y redondeamos solo las esquinas superiores */
-    .card { background: var(--card-bg); border-radius: 16px 16px 0 0; color: var(--text); padding: 15px; flex-grow: 1; }
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 16px 16px 0 0; 
+      color: var(--text); 
+      padding: 15px; 
+      flex-grow: 1; 
+    }
 
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
