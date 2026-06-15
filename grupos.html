@@ -17,30 +17,41 @@
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
     
-    html, body { height: 100%; margin: 0; padding: 0; }
+    html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+    
+    /* El cuerpo es oscuro por defecto */
     body { font-family: 'Outfit', sans-serif; background: var(--bg); }
     
     .app-wrapper { 
-      background: var(--bg); 
       min-height: 100vh; 
       display: flex; 
       flex-direction: column; 
     }
 
+    /* FORZAMOS que la cabecera sea blanca independientemente del resto */
     .top-header-area { 
-      background: var(--top-bg); 
+      background-color: var(--top-bg); 
       color: var(--top-text); 
       padding: 20px 15px 0 15px; 
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .main-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+    .main-content { 
+      padding: 15px; 
+      flex-grow: 1; 
+      display: flex; 
+      flex-direction: column;
+      background-color: var(--bg); /* Mantenemos el fondo oscuro aquí */
+    }
     
     .card { 
       background: var(--card-bg); 
-      border-radius: 16px 16px 0 0; 
+      border-radius: 16px; 
       color: var(--text); 
       padding: 15px; 
-      flex-grow: 1; 
+      flex-grow: 1; /* Esto hace que el panel de la tabla llegue al final */
     }
 
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
