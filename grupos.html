@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Gestión de Grupo</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -17,56 +17,38 @@
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
     
-    html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+    /* El body es el único que debe tener el fondo oscuro */
+    html, body { height: 100%; margin: 0; padding: 0; background-color: var(--bg); }
+    body { font-family: 'Outfit', sans-serif; }
     
-    /* El cuerpo es oscuro por defecto */
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); }
-    
-    .app-wrapper { 
-      min-height: 100vh; 
-      display: flex; 
-      flex-direction: column; 
-      background: transparent;
-    }
+    /* Wrapper y main-content transparentes para eliminar el panel extra */
+    .app-wrapper { min-height: 100dvh; display: flex; flex-direction: column; background-color: transparent; }
 
-    /* FORZAMOS que la cabecera sea blanca independientemente del resto */
     .top-header-area { 
       background-color: var(--top-bg); 
       color: var(--top-text); 
       padding: 20px 15px 0 15px; 
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      position: sticky; top: 0; z-index: 10;
     }
 
+    .main-content { 
+      padding: 15px 15px 0 15px; 
+      flex-grow: 1; 
+      display: flex; 
+      flex-direction: column;
+      background-color: transparent; 
+      /* Esto asegura que los datos no se tapen tras la barra de Safari */
+      padding-bottom: calc(15px + env(safe-area-inset-bottom, 20px));
+    }
     
-    /* Ajusta estas clases en tu CSS */
-
-/* Elimina el espacio entre la tabla y el borde de la pantalla */
-.main-content { 
-  padding: 15px 15px 0 15px; /* Quita el padding inferior para que la tarjeta toque el borde */
-  flex-grow: 1; 
-  display: flex; 
-  flex-direction: column;
-  background-color: transparent; /* Transparente para que se vea el fondo oscuro detrás */
-}
-
-.card { 
-  background: var(--card-bg); 
-  border-radius: 16px 16px 0 0; /* Solo bordes arriba */
-  color: var(--text); 
-  padding: 15px; 
-  flex-grow: 1; 
-  overflow-y: auto;
-  margin-bottom: 0; /* Asegura que no haya margen extra abajo */
-  /* Este es el truco definitivo: extiende el panel hasta el fondo de la pantalla */
-  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-}
-
-
-    
-  
-
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 16px 16px 0 0; 
+      color: var(--text); 
+      padding: 15px; 
+      flex-grow: 1; 
+      overflow-y: auto;
+    }
 
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
