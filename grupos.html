@@ -18,33 +18,36 @@
       --top-bg: #0b0f19; --top-text: #ffffff;
     }
     * { box-sizing: border-box; }
-    body { font-family: var(--font-family); background: var(--top-bg); margin: 0; transition: 0.3s; }
-    .app-wrapper { background: var(--bg); min-height: 100vh; }
-    .top-header-area { background: var(--top-bg); color: var(--top-text); padding: 20px 15px 0 15px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     
+    /* El body ahora es el color del fondo principal para evitar franjas */
+    body { font-family: var(--font-family); background: var(--bg); margin: 0; transition: 0.3s; }
+    
+    .app-wrapper { 
+      background: var(--bg); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column;
+    }
+    
+    .top-header-area { background: var(--top-bg); color: var(--top-text); padding: 20px 15px 0 15px; }
+    
+    /* main-content ocupa todo el espacio sobrante */
+    .main-content { padding: 15px; flex-grow: 1; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-icon { background: transparent; border: 1px solid var(--top-text); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--top-text); display: flex; align-items: center; justify-content: center; font-size: 24px; }
     
     .tabs { display: flex; margin-top: 10px; }
     .tab { flex: 1; padding: 15px; text-align: center; color: var(--top-text); cursor: pointer; border-bottom: 3px solid transparent; opacity: 0.7; }
     .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); opacity: 1; font-weight: 600; }
-    .main-content { padding: 15px; }
+    
     .card { background: var(--card-bg); border-radius: 16px; margin-bottom: 20px; color: var(--text); padding: 15px; }
     table { width: 100%; border-collapse: collapse; }
     td, th { padding: 16px; border-bottom: 1px solid #2d3748; cursor: pointer; text-align: left; }
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
     
     .visor { position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 20px; display: none; color: var(--text); overflow-y: auto; }
-    
-    /* Botón de cierre pegajoso en la esquina */
-    .btn-cerrar { 
-      position: sticky; top: 0; float: right;
-      background: var(--card-bg); border: 1px solid var(--text-dim); 
-      border-radius: 50%; width: 56px; height: 56px; cursor: pointer; 
-      color: var(--text); display: flex; align-items: center; 
-      justify-content: center; font-size: 24px; z-index: 101; 
-    }
-    
+    .btn-cerrar { position: sticky; top: 0; float: right; background: var(--card-bg); border: 1px solid var(--text-dim); border-radius: 50%; width: 56px; height: 56px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 101; }
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
     .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
   </style>
