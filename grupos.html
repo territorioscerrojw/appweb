@@ -175,6 +175,7 @@
     try {
       const res = await fetch(`https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec?accion=leerDatosGrupos&hoja=${grupo}`);
       datos = await res.json();
+      ordenar('tiempo');
       renderizar();
     } catch (e) { console.error(e); }
   }
