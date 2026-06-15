@@ -26,8 +26,36 @@
       --weight-tabs: 600;          /* Grosor pestañas */
       --size-table: 15px;          /* Tamaño tabla */
       --weight-table: 400;         /* Grosor tabla */
+      
+      /* --- AJUSTES DE TABLA --- */
+
+/* 1. Cabecera en mayúsculas y negrita */
+thead tr th {
+    text-transform: uppercase;
+    font-weight: 800; /* Asegura negrita fuerte */
+}
+
+/* 2. Alinear columnas específicas: 
+   - Columna 2 (Territorio) y Columna 3 (Tiempo restante) centradas */
+#body-con td:nth-child(2), 
+#body-con td:nth-child(3),
+thead tr th:nth-child(2),
+thead tr th:nth-child(3) {
+    text-align: center;
+}
+
+/* 3. Tabla "Sin Territorio" centrada */
+#body-sin td {
+    text-align: center;
+}
+
+/* Opcional: Centrar también el encabezado de la tabla "Sin Territorio" */
+#seccion-sin thead th {
+    text-align: center;
+}
+
       /* --- TEMA CLARO --- */
-/* --- CORRECCIÓN MODO CLARO --- */
+
 
 [data-theme='light'] {
     /* Sobrescribimos todas las variables para el modo claro */
