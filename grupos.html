@@ -26,7 +26,23 @@
       --weight-tabs: 600;          /* Grosor pestañas */
       --size-table: 15px;          /* Tamaño tabla */
       --weight-table: 400;         /* Grosor tabla */
-      
+      /* --- TEMA CLARO --- */
+[data-theme='light'] {
+    --bg-color: #f0f2f5;          /* Fondo claro */
+    --card-bg: #ffffff;          /* Fondo tarjetas blanco */
+    --text-main: #0b0f19;        /* Texto oscuro */
+    --text-dim: #555c6b;         /* Texto secundario gris */
+    --border-table: #e2e8f0;     /* Líneas tabla suaves */
+    --header-bg: #ffffff;
+    --header-text: #0b0f19;
+}
+
+/* Ajuste adicional para que el texto sea legible en modo claro */
+[data-theme='light'] .data-box {
+    background: #f8f9fa;
+    color: #0b0f19;
+}
+
       /* --- BORDES Y SOMBRAS --- */
       --radius-card: 16px;         /* Redondeo panel */
       
@@ -93,7 +109,7 @@
 <div class="app-wrapper">
   <div class="top-header-area">
     <header class="header">
-      <h1 id="txt-grupo-titulo" ">Cargando...</h1>
+      <h1 id="txt-grupo-titulo">Cargando...</h1>
       <div style="display:flex; gap: 10px;">
         <button class="btn-icon" onclick="toggleTheme()">◑</button>
         <button class="btn-icon" onclick="location.reload()">↻</button>
