@@ -180,10 +180,31 @@ thead tr th:nth-child(3) {
     .sort-icon { display: inline-block; width: 6px; height: 6px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg); margin-left: 8px; }
     
     /* --- VISOR --- */
-    .visor { position: fixed; inset: 0; background: var(--bg-color); z-index: 100; padding: 20px; display: none; color: var(--text-main); overflow-y: auto; }
-  
+   /* --- VISOR - CORREGIDO --- */
+.visor { 
+    position: fixed; 
+    inset: 0; 
+    background: var(--bg-color); /* Esto ya está bien, usará el blanco en modo claro */
+    z-index: 100; 
+    padding: 20px; 
+    display: none; 
+    color: var(--text-main);    /* Esto cambiará a negro en modo claro */
+    overflow-y: auto; 
+}
+
+/* --- DATA-BOX - CORREGIDO --- */
+.data-box { 
+    /* Cambiamos el color fijo #252c3d por una variable */
+    background: var(--card-bg); 
+    /* Añadimos un pequeño borde o sombra para que resalte en modo claro */
+    border: 1px solid var(--border-table);
+    padding: 15px; 
+    border-radius: 12px; 
+    margin-top: 10px; 
+}
+
     #img-visor { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; margin-top: 20px; }
-    .data-box { background: #252c3d; padding: 15px; border-radius: 12px; margin-top: 10px; }
+    
 </style>
 
 </head>
