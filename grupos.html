@@ -187,9 +187,12 @@ thead tr th:nth-child(3) {
     background: var(--bg-color); /* Esto ya está bien, usará el blanco en modo claro */
     z-index: 100; 
     padding: 20px; 
-    display: none; 
+    display: grid; 
     color: var(--text-main);    /* Esto cambiará a negro en modo claro */
     overflow-y: auto; 
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;                     /* Espacio entre los cuadros */
+    margin-top: 15px;
 }
 
 /* --- DATA-BOX - CORREGIDO --- */
@@ -246,13 +249,16 @@ thead tr th:nth-child(3) {
   <button class="btn-cerrar" onclick="cerrarVisor()">✕</button>
   <h2 id="nom-visor"></h2>
   <img id="img-visor" src="" alt="Mapa">
+
   <div class="data-box"><small>Territorio</small><div id="terr-visor"></div></div>
   <div class="data-box"><small>Tiempo restante</small><div id="tiempo-visor"></div></div>
   <div class="data-box"><small>Fecha inicio</small><div id="fecha-ini-visor"></div></div>
   <div class="data-box"><small>Último trabajo</small><div id="ult-trab-visor"></div></div>
-  <div id="box-grupo" class="data-box" style="display:none;">
-    <small>Estado</small><div id="es-grupo-visor"></div>
-  </div>
+</div>
+<div id="box-grupo" class="data-box" style="display:none;">
+  <small>Estado</small><div id="es-grupo-visor"></div>
+</div>
+
 </div>
 
 <script>
