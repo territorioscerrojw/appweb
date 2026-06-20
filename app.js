@@ -200,30 +200,27 @@ function procesarFechasYBarras(inicioStr, finStr) {
   }
 }
 function actualizarAnillosEstadisticos() {
+  // MODIFICACIÓN AQUÍ:
+  // Si estamos en modo campana global, tomamos toda la base de datos.
+  // Si no, filtramos por el grupoFiltro original.
+  const grupoMapas = (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) 
+                     ? baseDatosCompleta 
+                     : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   
-  const grupoMapas = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   const total = grupoMapas.length;
+  if (total === 0) return; // Si no hay datos, salimos para no dividir por cero
   
   const prio = grupoMapas.filter(m => m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE").length;
   
-  // CORRECCIÓN AQUÍ:
-  // 'asignados' ahora cuenta todos los que tienen entregado = true (sin importar el estado de trabajo)
   const asignadosTotales = grupoMapas.filter(m => m.entregado === true).length;
-  
-  // 'calle' (pendientes) sigue siendo entregado = true Y trabajado = false
   const calle = grupoMapas.filter(m => m.entregado === true && m.trabajado === false).length;
-  
-  // 'hechos' (completados) sigue siendo entregado = true Y trabajado = true
   const hechos = grupoMapas.filter(m => m.entregado === true && m.trabajado === true).length;
   
   if (document.getElementById("w-totales")) document.getElementById("w-totales").innerText = total;
   if (document.getElementById("w-prioritarios")) document.getElementById("w-prioritarios").innerText = prio;
-  
-  // Cambiamos el valor de w-asignados para mostrar el total de asignados
   if (document.getElementById("w-asignados")) document.getElementById("w-asignados").innerText = asignadosTotales;
   if (document.getElementById("w-completados")) document.getElementById("w-completados").innerText = hechos;
   
-  // Actualizamos los arcos (puedes ajustar el valor de asignados a 'asignadosTotales' o 'calle' según prefieras mostrar)
   inyectarArcoProgreso("progreso-prioritarios", prio, total);
   inyectarArcoProgreso("progreso-asignados", asignadosTotales, total); 
   inyectarArcoProgreso("progreso-completados", hechos, total);
