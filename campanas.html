@@ -136,12 +136,14 @@
 <script src="app.js"></script>
  <script>
   window.addEventListener("DOMContentLoaded", async () => {
-    // 1. Descargamos los datos usando tu función original de app.js
+    // 1. Cargamos datos PERO NO renderizamos automáticamente
+    // Si descargarDatosDesdeSheets() llama a filtrarYRenderizar(), eso es lo que te está arruinando el orden
     await descargarDatosDesdeSheets();
     
-    // 2. Una vez cargados, renderizamos ordenando por cercanía
-    // Damos un pequeño retraso para asegurar que los estilos se carguen
-    setTimeout(renderizarPorCercania, 500);
+    // 2. Esperamos un poco y llamamos a NUESTRA función de cercanía
+    setTimeout(() => {
+        renderizarPorCercania();
+    }, 1000);
   });
 </script>
 </body>
