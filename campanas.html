@@ -2,76 +2,146 @@
 <html lang="es" data-theme="oscuro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Territorios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Territorios de grupo para la campaña</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+  <div class="fondo-mapa-blur"></div>
+
   <div class="contenedor-app">
     <header class="cabecera-apple">
-      <h1>Territorios</h1>
-      <button onclick="iniciarOrdenacion()" class="btn-apple">Ordenar por Distancia</button>
-    </header>
+  <div class="cabecera-titulos">
+    <h1 id="txt-campana-titulo">Cargando Campaña...</h1>
+    <h2 id="txt-grupo-sub">Grupo...</h2>
+  </div>
+  
+  <div class="cabecera-acciones" style="display: flex; gap: 10px;">
+    <button id="btn-refresh" onclick="recargarApp()" aria-label="Actualizar datos">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+      </svg>
+    </button>
+    <button id="btn-cambiar-tema" onclick="conmutarTema()"></button>
+  </div>
+</header>
+  <footer class="barra-tiempo-footer">
+    <div class="info-tiempo-texto">
+      <span id="lbl-tiempo-restante">Calculando campaña...</span>
+      <span id="lbl-porcentaje-tiempo">0%</span>
+    </div>
+    <div class="linea-progreso-fondo">
+      <div id="barra-progreso-elemento" class="linea-progreso-relleno"></div>
+    </div>
+  </footer>
+    <section class="seccion-anillos">
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-totales">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-totales" class="anillo-linea" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-totales" class="anillo-numero">0</div>
+        </div>
+        <span>Totales</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-prioritarios">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-prioritarios" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-prioritarios" class="anillo-numero">0</div>
+        </div>
+        <span>Prioritarios</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-asignados">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-asignados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-asignados" class="anillo-numero">0</div>
+        </div>
+        <span>Asignados</span>
+      </div>
+
+      <div class="tarjeta-anillo">
+        <div class="anillo-svg-wrapper">
+          <svg viewBox="0 0 36 36" class="anillo-circular color-completados">
+            <path class="anillo-fondo" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progreso-completados" class="anillo-linea" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div id="w-completados" class="anillo-numero">0</div>
+        </div>
+        <span>Completados</span>
+      </div>
+    </section>
+
+    <div class="contenedor-tabs">
+      <div class="control-segmentado">
+        <button class="tab activa" onclick="cambiarPestana('disponibles', this)">Disponibles</button>
+        <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
+      </div>
+    </div>
+
+    <div class="contenedor-busqueda">
+      <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
+    </div>
+
+    <div class="contenedor-sub-filtros" id="menu-ordenacion-asignados" style="display: none;">
+      <button class="btn-sub-filtro activa" id="btn-ord-territorio" onclick="cambiarCriterioOrdenacion('territorio')">Territorio</button>
+      <button class="btn-sub-filtro" id="btn-ord-hermano" onclick="cambiarCriterioOrdenacion('hermano')">Hermano</button>
+      <button class="btn-sub-filtro" id="btn-ord-fecha" onclick="cambiarCriterioOrdenacion('fecha')">Fecha Entrega</button>
+    </div>
+
+    <main id="contenedor-principal-grid" class="grid-territorios"></main>
+    <main id="contenedor-hermano-grid" class="grid-territorios" style="display: none;"></main>
+  </div>
+
+  <div id="panel-asignacion-unico" class="panel-inferior-flotante">
+  <div class="contenido-panel-flotante">
+    <button class="btn-cerrar-panel" onclick="limpiarSeleccionYEsconder()">✕</button>
+    <span id="txt-contador-seleccionados">0 seleccionados</span>
     
-    <div id="lista-territorios" class="contenedor-grid" style="padding: 15px;">
-      <p id="mensaje-estado">Cargando territorios...</p>
+    <div class="controles-asignacion">
+      <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
+        <option value="">Seleccionar Hermano/a...</option>
+      </select>
+      <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <div id="modal-visor-pantalla-completa" class="visor-pantalla-completa">
+    <div class="cabecera-visor-completo">
+      <span id="titulo-visor-completo">Mapa</span>
+      <button class="btn-cerrar-visor" onclick="cerrarVisorPantallaCompleta()">✕</button>
+    </div>
+    <div class="zona-scroll-zoom">
+      <img id="img-visor-completa" src="" alt="Mapa Expandido">
     </div>
   </div>
 
+<script src="app.js" defer></script>
+
   <script>
-    // URL directa a tu Google Script (asegúrate de que sea la correcta)
-    const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
-    let baseDatosCompleta = [];
-
-    // 1. Cargar datos al abrir
-    window.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const respuesta = await fetch(URL_API + "?accion=leerDatos");
-        baseDatosCompleta = await respuesta.json();
-        
-        // Renderizado inicial sin ordenar
-        renderizar(baseDatosCompleta);
-      } catch (err) {
-        document.getElementById('mensaje-estado').innerText = "Error cargando datos. Revisa la consola (F12).";
-        console.error(err);
-      }
-    });
-
-    // 2. Lógica de renderizado (usa la clase .tarjeta de tu styles.css)
-    function renderizar(datos) {
-      const contenedor = document.getElementById('lista-territorios');
-      contenedor.innerHTML = datos.map(t => `
-        <div class="tarjeta">
-          <h3>${t.id} - ${t.barriada}</h3>
-          <p style="color:var(--texto-secundario)">${t.distancia ? t.distancia.toFixed(2) + ' km' : 'Distancia no calculada'}</p>
-        </div>
-      `).join('');
-    }
-
-    // 3. Ordenar por cercanía
-    function iniciarOrdenacion() {
-      if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización");
-      
-      navigator.geolocation.getCurrentPosition(pos => {
-        const { latitude, longitude } = pos.coords;
-        
-        baseDatosCompleta.forEach(t => {
-          if (t.coordenadas && t.coordenadas.includes(',')) {
-            const [lat, lon] = t.coordenadas.split(',').map(Number);
-            const dLat = (lat - latitude) * Math.PI / 180;
-            const dLon = (lon - longitude) * Math.PI / 180;
-            const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
-            t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-          } else { t.distancia = 99999; }
-        });
-
-        baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
-        renderizar(baseDatosCompleta);
-      }, (err) => {
-        alert("Debes aceptar el permiso de ubicación para ordenar por cercanía.");
-      });
-    }
-  </script>
+  window.addEventListener("DOMContentLoaded", async () => {
+    // 1. Cargamos datos
+    await cargarDatos(); 
+    // 2. Ordenamos por proximidad en lugar de filtrar por grupo
+    mostrarTerritoriosCercanos();
+  });
+</script>
 </body>
 </html>
