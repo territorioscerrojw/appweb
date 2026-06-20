@@ -279,8 +279,16 @@ animation: pulso 4s infinite ease-in-out !important;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 28px;
+  
+  /* Esto significa: min 16px, ideal 28px, max 28px */
+  /* Si el texto se vuelve muy largo, el navegador lo reducirá automáticamente */
+  font-size: clamp(16px, 28px, 28px); 
+  
   font-weight: 1000 !important;
+  /* Evitamos que el texto salte de línea */
+  white-space: nowrap; 
+  /* Aseguramos que el color sea el correcto para que se lea bien */
+  color: var(--texto-principal);
 }
 
 /* ==========================================================================
