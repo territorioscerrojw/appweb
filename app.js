@@ -14,7 +14,7 @@ let idHermanoUrl = null;
 let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "pendiente"; 
 let direccionOrden = "asc"; // "asc" o "desc"
-
+let modoCampanaGlobal = false; 
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
@@ -290,32 +290,35 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
   }
   
   // Lógica de ordenación
+  // Lógica de ordenación
   if (vistaActual === "disponibles") {
-    dataset.sort((a, b) => {
-      let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
-      let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
-      return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
-    });
-    // Lógica de ordenación corregida
-  } else {
-  dataset.sort((a, b) => {
-    let resultado = 0;
-    
-    if (criterioOrdenacionAsignados === "territorio") {
-      resultado = parseInt(a.id) - parseInt(b.id);
-    } else if (criterioOrdenacionAsignados === "hermano") {
-      resultado = (a.hermano || "").localeCompare(b.hermano || "");
-    } else if (criterioOrdenacionAsignados === "fecha") {
-      resultado = new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
-    } else if (criterioOrdenacionAsignados === "pendiente") {
-      // Prioriza los falsos (pendientes)
-      resultado = (a.trabajado === b.trabajado) ? 0 : (a.trabajado ? 1 : -1);
+    // NUEVA CONDICIÓN: Si estamos en modo global (campanas), ordenamos por distancia.
+    // Si no, seguimos usando la lógica original de prioritarios + ID.
+    if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
+        dataset.sort((a, b) => (a.distancia || 0) - (b.distancia || 0));
+    } else {
+        dataset.sort((a, b) => {
+            let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
+            let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
+            return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
+        });
     }
-    
-    // Multiplicamos por 1 (asc) o -1 (desc)
-    return direccionOrden === "asc" ? resultado : -resultado;
-  });
-}
+  } else {
+    // Esta parte de 'else' (Asignados) NO LA TOQUES, déjala exactamente como está.
+    dataset.sort((a, b) => {
+      let resultado = 0;
+      if (criterioOrdenacionAsignados === "territorio") {
+        resultado = parseInt(a.id) - parseInt(b.id);
+      } else if (criterioOrdenacionAsignados === "hermano") {
+        resultado = (a.hermano || "").localeCompare(b.hermano || "");
+      } else if (criterioOrdenacionAsignados === "fecha") {
+        resultado = new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
+      } else if (criterioOrdenacionAsignados === "pendiente") {
+        resultado = (a.trabajado === b.trabajado) ? 0 : (a.trabajado ? 1 : -1);
+      }
+      return direccionOrden === "asc" ? resultado : -resultado;
+    });
+  }
 
   
   dataset.forEach(mapa => {
