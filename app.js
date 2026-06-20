@@ -200,9 +200,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   }
 }
 function actualizarAnillosEstadisticos() {
-  const grupoMapas = (typeof grupoFiltro === 'undefined' || grupoFiltro === "GLOBAL_CAMPANA") 
-                     ? baseDatosCompleta 
-                     : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
+  
   const grupoMapas = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   const total = grupoMapas.length;
   
