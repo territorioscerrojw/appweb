@@ -851,61 +851,74 @@ async function mostrarTerritoriosCercanos() {
   });
 }
 async function renderizarPorCercania() {
-  if (!navigator.geolocation) return alert("GPS necesario");
+  if (!navigator.geolocation) return alert("Geolocalización necesaria para ordenar por cercanía.");
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
     const grid = document.getElementById("contenedor-principal-grid");
-    
-    // DEBUG: Ver qué datos llegan realmente
-    console.log("Coordenadas GPS:", latitude, longitude);
-    console.log("Primer territorio muestra:", baseDatosCompleta[0]);
+    if (!grid) return;
 
     // 1. Calcular distancias
-    // Dentro del forEach en renderizarPorCercania()
-baseDatosCompleta.forEach(t => {
-  if (t.coordenadas && typeof t.coordenadas === 'string') {
-    // LIMPIEZA: Eliminamos "POINT (", ")", y dejamos solo los números y la coma
-    const limpio = t.coordenadas.replace("POINT (", "").replace(")", "");
-    const [lat, lon] = limpio.split(',').map(Number);
-    
-    // Verificamos que los números sean válidos (no NaN)
-    if (!isNaN(lat) && !isNaN(lon)) {
-      const dLat = (lat - latitude) * Math.PI / 180;
-      const dLon = (lon - longitude) * Math.PI / 180;
-      const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
-      t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    } else {
-      t.distancia = 99999;
-    }
-  } else {
-    t.distancia = 99999;
-  }
-});
+    baseDatosCompleta.forEach(t => {
+      // Limpiamos el formato "POINT (lat, lon)" que viene de Sheets
+      let coords = t.coordenadas ? String(t.coordenadas) : "";
+      
+      if (coords.includes(',')) {
+        const limpio = coords.replace("POINT (", "").replace(")", "");
+        const [lat, lon] = limpio.split(',').map(Number);
+        
+        if (!isNaN(lat) && !isNaN(lon)) {
+          const dLat = (lat - latitude) * Math.PI / 180;
+          const dLon = (lon - longitude) * Math.PI / 180;
+          const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+          t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        } else {
+          t.distancia = 99999;
+        }
+      } else {
+        t.distancia = 99999;
+      }
+    });
 
-    // 2. Ordenar
+    // 2. Ordenar de menor a mayor distancia
     baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
 
-    // 3. Renderizar
+    // 3. Renderizar en el grid
     grid.innerHTML = "";
     baseDatosCompleta.forEach(mapa => {
       const div = document.createElement("div");
-      div.className = `tarjeta-apple`;
+      const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
       
+      // Formato inteligente de distancia
+      let textoDistancia = "";
+      if (mapa.distancia < 1 && mapa.distancia !== 99999) {
+        textoDistancia = `${Math.round(mapa.distancia * 1000)} metros`;
+      } else if (mapa.distancia < 9999) {
+        textoDistancia = `${mapa.distancia.toFixed(1)} km`;
+      } else {
+        textoDistancia = "dist. desconocida";
+      }
+
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''}`;
       div.innerHTML = `
         <div class="fila-tarjeta-superior">
           <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
           <span class="barriada-derecha">${mapa.barriada}</span>
         </div>
         <div class="imagen-mapa-wrapper">
-          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
         <div class="fila-tarjeta-inferior">
-          <span style="font-size: 0.8rem; color: #34c759;">
-            ${mapa.distancia < 999 ? mapa.distancia.toFixed(1) + ' km' : '---'}
+          <span style="font-size: 0.8rem; color: #34c759; font-weight: 600;">
+            📍 A ${textoDistancia}
           </span>
         </div>`;
       grid.appendChild(div);
     });
+  }, (err) => {
+    alert("No se pudo obtener tu ubicación. Por favor, acepta los permisos.");
   });
 }
