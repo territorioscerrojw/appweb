@@ -252,19 +252,19 @@ function cambiarCriterioAsignados(criterio) {
 function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
-  
+
   const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
   }
 
-  const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda") 
-    ? document.getElementById("input-busqueda").value.toLowerCase() 
+  const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda")
+    ? document.getElementById("input-busqueda").value.toLowerCase()
     : "";
-    
+
   grid.innerHTML = "";
   const panelAsignacion = document.getElementById("panel-asignacion-unico");
-  
+
   if (vistaActual === "disponibles") {
     eliminarSelectorDeAgrupacionAsignados();
     actualizarPanelAsignacionFlotante();
@@ -272,91 +272,71 @@ function filtrarYRenderizar() {
     if (panelAsignacion) panelAsignacion.style.display = "none";
     inyectarSelectorDeAgrupacionAsignados();
   }
+
+  let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
+    ? baseDatosCompleta
+    : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   
-  // Si es GLOBAL_CAMPANA, tomamos todo. Si no, filtramos por grupo.
-let dataset = (grupoFiltro === "GLOBAL_CAMPANA") 
-              ? baseDatosCompleta 
-              : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
-  dataset = vistaActual === "disponibles" ? dataset.filter(m => m.entregado === false) : dataset.filter(m => m.entregado === true);
-  
+  dataset = vistaActual === "disponibles" 
+    ? dataset.filter(m => m.entregado === false) 
+    : dataset.filter(m => m.entregado === true);
+
   if (buscadorValue) {
-    dataset = dataset.filter(m => 
-      m.id.toString().includes(buscadorValue) || 
+    dataset = dataset.filter(m =>
+      m.id.toString().includes(buscadorValue) ||
       m.barriada.toLowerCase().includes(buscadorValue)
     );
   }
-  
+
   // Lógica de ordenación
-  // Lógica de ordenación
- if (vistaActual === "disponibles") {
-    // Si estamos en modo Campana, ordenamos por distancia SIEMPRE que exista
+  if (vistaActual === "disponibles") {
     if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
-        dataset.sort((a, b) => {
-            // Buscamos la distancia, si no la tiene, ponemos un valor gigante (99999) 
-            // para que se vaya al final de la lista
-            let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
-            let distB = (b.distancia !== undefined && b.distancia !== null) ? b.distancia : 99999;
-            return distA - distB;
-        });
+      dataset.sort((a, b) => {
+        let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
+        let distB = (b.distancia !== undefined && b.distancia !== null) ? b.distancia : 99999;
+        return distA - distB;
+      });
     } else {
-
-        dataset.sort((a, b) => {
-
-            let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
-
-            let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
-
-            return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
-
-        });
-
+      dataset.sort((a, b) => {
+        let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
+        let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
+        return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
+      });
     }
-
   } else {
-
-    // Esta parte de 'else' (Asignados) NO LA TOQUES, déjala exactamente como está.
-
     dataset.sort((a, b) => {
-
       let resultado = 0;
-
       if (criterioOrdenacionAsignados === "territorio") {
-
         resultado = parseInt(a.id) - parseInt(b.id);
-
       } else if (criterioOrdenacionAsignados === "hermano") {
-
         resultado = (a.hermano || "").localeCompare(b.hermano || "");
-
       } else if (criterioOrdenacionAsignados === "fecha") {
-
         resultado = new Date(b.fechaEntrega || 0) - new Date(a.fechaEntrega || 0);
-
       } else if (criterioOrdenacionAsignados === "pendiente") {
-
         resultado = (a.trabajado === b.trabajado) ? 0 : (a.trabajado ? 1 : -1);
-
       }
-
       return direccionOrden === "asc" ? resultado : -resultado;
-
     });
+  }
 
-  } 
-  
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
-    
-    if (vistaActual === "disponibles") {
-      // --- FORMATO DISPONIBLES ORIGINAL RESTAURADO ---
-  
-div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
 
+    if (vistaActual === "disponibles") {
+      // Cálculo de distancia para mostrar en verde
+      let textoDistancia = "";
+      if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal && mapa.distancia !== undefined && mapa.distancia < 999) {
+        textoDistancia = mapa.distancia < 1 
+          ? `${Math.round(mapa.distancia * 1000)} metros` 
+          : `${mapa.distancia.toFixed(1)} km`;
+      }
+
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
       div.id = `tarjeta-real-${mapa.id}`;
       div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-      
+
       div.innerHTML = `
         <div class="fila-tarjeta-superior">
           <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
@@ -368,58 +348,41 @@ div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActi
           </button>
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
-                          <div class="fila-tarjeta-inferior">
+        <div class="fila-tarjeta-inferior">
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
+          <span style="font-size: 0.75rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
           <button class="btn-check-rectangular" type="button"></button>
-         </div>`;
+        </div>`;
     } else {
-      // --- FORMATO ASIGNADOS (MANTIENE EL QUE TE GUSTABA) ---
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
-              // Dentro de la sección 'else' de filtrarYRenderizar:
-div.innerHTML = `
- <div class="contenedor-columna-imagen">
-    ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
-    <div class="img-lateral-wrapper-rectangular">
-      
-<button class="btn-lupa-flotante" 
-        onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-    </svg>
-</button>
-
-       <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
-    </div>
-  </div>
-  <div class="contenido-lateral-datos">
-    <div class="cabecera-datos-linea">
-      <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
-      <span class="nombre-barrio-chico">${mapa.barriada}</span>
-    </div>
-    
-    <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
-    <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
-    
-    <div class="estado-badge-linea" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-      <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">
-        ${!mapa.trabajado ? "Pendiente" : "Completado"}
-      </span>
-      
-      <button class="btn-check-apple ${mapa.trabajado ? 'activo' : ''}" 
-              onclick="toggleEstadoTrabajo(${mapa.id}, event)"
-              style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #34c759; background: ${mapa.trabajado ? '#34c759' : 'transparent'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
-        ${mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : ''}
-      </button>
-    </div>
-    
-  </div>`;
-
-
+      div.innerHTML = `
+        <div class="contenedor-columna-imagen">
+          ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
+          <div class="img-lateral-wrapper-rectangular">
+            <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+          </div>
+        </div>
+        <div class="contenido-lateral-datos">
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
+          <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
+          <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
+          <div class="estado-badge-linea" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Completado"}</span>
+            <button class="btn-check-apple ${mapa.trabajado ? 'activo' : ''}" onclick="toggleEstadoTrabajo(${mapa.id}, event)" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #34c759; background: ${mapa.trabajado ? '#34c759' : 'transparent'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
+              ${mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : ''}
+            </button>
+          </div>
+        </div>`;
     }
     grid.appendChild(div);
   });
@@ -887,61 +850,23 @@ async function renderizarPorCercaniaGlobal() {
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
-    const grid = document.getElementById("contenedor-principal-grid");
-    if (!grid) return;
 
-    // 1. Calcular distancias sobre baseDatosCompleta (ya contiene todos los territorios)
+    // Calculamos distancias y LAS GUARDAMOS en el objeto
     baseDatosCompleta.forEach(t => {
       let coords = t.coordenadas ? String(t.coordenadas) : "";
       if (coords.includes(',')) {
         const [lat, lon] = coords.replace("POINT (", "").replace(")", "").split(',').map(Number);
-        if (!isNaN(lat) && !isNaN(lon)) {
-          const dLat = (lat - latitude) * Math.PI / 180;
-          const dLon = (lon - longitude) * Math.PI / 180;
-          const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
-          t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        } else { t.distancia = 99999; }
-      } else { t.distancia = 99999; }
+        const dLat = (lat - latitude) * Math.PI / 180;
+        const dLon = (lon - longitude) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+        t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      } else {
+        t.distancia = 99999;
+      }
     });
 
-    // 2. Ordenar globalmente
-    baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
-
-    // 3. Renderizar en el grid (se usa la baseDatosCompleta tal cual viene ordenada)
-    grid.innerHTML = "";
-    
-    // FILTRAMOS SOLO POR ENTREGADO, NO POR GRUPO
-    const dataset = baseDatosCompleta.filter(m => m.entregado === false);
-
-    dataset.forEach(mapa => {
-      // Reutilizamos tu lógica de tarjetas
-      const div = document.createElement("div");
-      const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
-      
-      let textoDistancia = mapa.distancia < 1 ? `${Math.round(mapa.distancia * 1000)} metros` : `${mapa.distancia.toFixed(1)} km`;
-
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${territoriosSeleccionados.includes(mapa.id.toString()) ? 'seleccionada' : ''}`;
-      div.id = `tarjeta-real-${mapa.id}`;
-      div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-
-      div.innerHTML = `
-        <div class="fila-tarjeta-superior">
-          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
-          <span class="barriada-derecha">${mapa.barriada}</span>
-        </div>
-        <div class="imagen-mapa-wrapper">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-        </div>
-        <div class="fila-tarjeta-inferior">
-          <div class="bloque-prio-izq">${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}</div>
-          <span style="font-size: 0.75rem; color: #34c759;">📍 ${textoDistancia}</span>
-          <button class="btn-check-rectangular" type="button"></button>
-        </div>`;
-      grid.appendChild(div);
-    });
+    // Ahora llamamos a filtrarYRenderizar para que pinte usando esas distancias guardadas
+    filtrarYRenderizar();
   });
 }
 // --- NUEVAS FUNCIONES PARA CAMPANAS.HTML ---
