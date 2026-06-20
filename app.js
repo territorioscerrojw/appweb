@@ -927,3 +927,17 @@ div.innerHTML = `
     alert("No se pudo obtener tu ubicación. Por favor, acepta los permisos.");
   });
 }
+// Añade esto a app.js
+async function descargarDatosSilencioso() {
+    return new Promise((resolve) => {
+        const nombreCallback = "googleSheetsCallback_" + new Date().getTime();
+        window[nombreCallback] = function(datos) {
+            baseDatosCompleta = datos;
+            // IMPORTANTE: NO llamamos a filtrarYRenderizar aquí
+            resolve();
+        };
+        const script = document.createElement("script");
+        script.src = `${URL_API_SHEETS}?accion=leerDatos&callback=${nombreCallback}`;
+        document.body.appendChild(script);
+    });
+}
