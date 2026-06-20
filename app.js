@@ -856,29 +856,35 @@ async function renderizarPorCercania() {
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
     const grid = document.getElementById("contenedor-principal-grid");
-    if (!grid) return;
+    
+    // DEBUG: Ver qué datos llegan realmente
+    console.log("Coordenadas GPS:", latitude, longitude);
+    console.log("Primer territorio muestra:", baseDatosCompleta[0]);
 
     // 1. Calcular distancias
     baseDatosCompleta.forEach(t => {
-      if (t.coordenadas && t.coordenadas.includes(',')) {
-        const [lat, lon] = t.coordenadas.split(',').map(Number);
+      // NORMALIZACIÓN: Aseguramos que 't.coordenadas' sea tratado como string
+      let coords = t.coordenadas ? String(t.coordenadas) : "";
+      
+      if (coords.includes(',')) {
+        const [lat, lon] = coords.split(',').map(Number);
         const dLat = (lat - latitude) * Math.PI / 180;
         const dLon = (lon - longitude) * Math.PI / 180;
         const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
         t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      } else { t.distancia = 99999; }
+      } else {
+        t.distancia = 99999;
+      }
     });
 
     // 2. Ordenar
     baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
 
-    // 3. Renderizar usando tu mismo diseño de tarjeta
+    // 3. Renderizar
     grid.innerHTML = "";
     baseDatosCompleta.forEach(mapa => {
       const div = document.createElement("div");
-      // Mantenemos tus clases originales para que el CSS funcione igual
-      const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''}`;
+      div.className = `tarjeta-apple`;
       
       div.innerHTML = `
         <div class="fila-tarjeta-superior">
@@ -886,13 +892,12 @@ async function renderizarPorCercania() {
           <span class="barriada-derecha">${mapa.barriada}</span>
         </div>
         <div class="imagen-mapa-wrapper">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
         </div>
         <div class="fila-tarjeta-inferior">
-          <span style="font-size: 0.75rem; opacity: 0.6;">A ${mapa.distancia < 999 ? mapa.distancia.toFixed(1) + ' km' : 'dist. desconocida'}</span>
+          <span style="font-size: 0.8rem; color: #34c759;">
+            ${mapa.distancia < 999 ? mapa.distancia.toFixed(1) + ' km' : '---'}
+          </span>
         </div>`;
       grid.appendChild(div);
     });
