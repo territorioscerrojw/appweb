@@ -105,12 +105,13 @@ function extraerNombresDeHermanos() {
   }
   
   listaHermanosPool = listado.sort((a, b) => {
-    // ... (Mantén tu lógica de ordenación de nombres intacta)
     const infoA = diccionarioGruposHermanos[a];
     const infoB = diccionarioGruposHermanos[b];
     const grupoA = infoA && typeof infoA === 'object' ? String(infoA.grupo).trim() : String(infoA || "").trim();
     const grupoB = infoB && typeof infoB === 'object' ? String(infoB.grupo).trim() : String(infoB || "").trim();
+    
     const grupoActualStr = String(grupoFiltro).trim();
+
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
     if (grupoA !== grupoActualStr && grupoB === grupoActualStr) return 1;
     return a.localeCompare(b);
@@ -119,43 +120,37 @@ function extraerNombresDeHermanos() {
   const selectorUnico = document.getElementById("sel-hermano-unico");
   if (!selectorUnico) return;
   
-  // AÑADIMOS EL BUSCADOR DENTRO DE LA LÓGICA DE CONSTRUCCIÓN
-  // Primero, si ya existe un buscador, lo dejamos, si no, lo inyectamos encima del select
-  if (!document.getElementById("buscador-hermanos")) {
-    const inputBusqueda = document.createElement("input");
-    inputBusqueda.type = "text";
-    inputBusqueda.id = "buscador-hermanos";
-    inputBusqueda.className = "input-apple"; // Usa tus estilos de input
-    inputBusqueda.placeholder = "🔍 Buscar hermano...";
-    inputBusqueda.style = "width: 100%; margin-bottom: 8px; padding: 10px; border-radius: 10px; border: 1px solid #ccc;";
-    
-    // Al escribir, filtra las opciones
-    inputBusqueda.oninput = function() {
-      const filtro = this.value.toLowerCase();
-      const options = selectorUnico.options;
-      for (let i = 1; i < options.length; i++) {
-        const texto = options[i].text.toLowerCase();
-        options[i].style.display = texto.includes(filtro) ? "" : "none";
-      }
-    };
-    
-    selectorUnico.parentNode.insertBefore(inputBusqueda, selectorUnico);
-  }
-  
   selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no" data-telefono="">Seleccionar Hermano/a...</option>';
   
   listaHermanosPool.forEach(nombre => {
-    // ... (Mantén tu lógica de creación de <option> igual que la tenías)
     const opt = document.createElement("option");
     opt.value = nombre;
-    // ... (tu lógica de datos de teléfono y marcas)
+    
     const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
     opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
-    // ... (resto de tu lógica de opt.innerText)
+    
+    let telClean = "";
+    const infoHermano = diccionarioGruposHermanos[nombre];
+    if (infoHermano && typeof infoHermano === 'object' && infoHermano.whatsapp) {
+      telClean = infoHermano.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
+    } else {
+      const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.toLowerCase() && m.whatsapp);
+      if (mapaConWA && mapaConWA.whatsapp) {
+        telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
+      }
+    }
+    
+    if (telClean !== "" && !telClean.startsWith("34")) telClean = "34" + telClean;
+    opt.setAttribute("data-telefono", telClean);
+
+    const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
+    
     const infoH = diccionarioGruposHermanos[nombre];
     const grupoH = infoH && typeof infoH === 'object' ? infoH.grupo : infoH;
     const esDeEsteGrupo = (String(grupoH).trim() === String(grupoFiltro).trim());
-    opt.innerText = `${esDeEsteGrupo ? "● " : ""}${nombre}${tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎"}`;
+    const prefijoGrupo = esDeEsteGrupo ? "● " : "";
+    
+    opt.innerText = `${prefijoGrupo}${nombre}${marcaDiscreta}`;
     selectorUnico.appendChild(opt);
   });
 }
