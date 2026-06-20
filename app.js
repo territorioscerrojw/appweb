@@ -656,10 +656,20 @@ function alternarEstadoTrabajo(idMapa, checkbox) {
   s.src = `${URL_API_SHEETS}?accion=actualizarTrabajo&id=${idMapa}&estado=${nuevoEstado}&callback=callback_${new Date().getTime()}`;
   
   // Creamos un callback único para esta petición
-  window["callback_" + new Date().getTime()] = () => {
+  // Opción: Modifica el callback para que recalcule
+window["callback_" + new Date().getTime()] = async () => {
     s.remove();
-    descargarDatosDesdeSheets(); // Recarga la vista
-  };
+    // 1. Recargamos los datos
+    await descargarDatosDesdeSheets(); 
+    
+    // 2. Si estamos en modo campana, recalcula las distancias inmediatamente
+    if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
+        await calcularDistanciasNuevamente(); // Debes tener una función así o llamar a la lógica de nuevo
+    }
+    
+    // 3. Pintamos
+    filtrarYRenderizar();
+};
 
   document.body.appendChild(s);
 }
