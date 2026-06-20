@@ -275,7 +275,10 @@ function filtrarYRenderizar() {
     inyectarSelectorDeAgrupacionAsignados();
   }
   
-  let dataset = baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
+  // Si es GLOBAL_CAMPANA, tomamos todo. Si no, filtramos por grupo.
+let dataset = (grupoFiltro === "GLOBAL_CAMPANA") 
+              ? baseDatosCompleta 
+              : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   dataset = vistaActual === "disponibles" ? dataset.filter(m => m.entregado === false) : dataset.filter(m => m.entregado === true);
   
   if (buscadorValue) {
@@ -929,75 +932,39 @@ div.innerHTML = `
 }
 // --- NUEVAS FUNCIONES PARA CAMPANAS.HTML ---
 
+// Función para Campanas que ignora filtros de grupo
 async function inicializarCampana() {
-    tipoUsuario = "encargado"; // O el que necesites
-    configurarTemaInicial();
-    inyectarEstilosCorreccionSelector();
-    
-    // Forzamos grupoFiltro a 'TODOS' para evitar errores de lógica
-    grupoFiltro = "TODOS";
-    
-    await descargarDatosDesdeSheets();
-    
-    // Tras cargar, renderizamos por cercanía específicamente
-    await renderizarPorCercaniaCampana();
+  tipoUsuario = "encargado";
+  configurarTemaInicial();
+  inyectarEstilosCorreccionSelector();
+  
+  // Asignamos un ID de grupo que no existe para que se comporte de forma especial
+  grupoFiltro = "GLOBAL_CAMPANA"; 
+  
+  await descargarDatosDesdeSheets();
 }
+async function ordenarYRenderizarCercania() {
+  if (!navigator.geolocation) return alert("Geolocalización necesaria.");
 
-async function renderizarPorCercaniaCampana() {
-    if (!navigator.geolocation) return alert("Geolocalización necesaria.");
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const grid = document.getElementById("contenedor-principal-grid");
-        if (!grid) return;
-
-        // 1. Calcular distancias sobre baseDatosCompleta (sin filtrar por grupo)
-        baseDatosCompleta.forEach(t => {
-            let coords = t.coordenadas ? String(t.coordenadas) : "";
-            if (coords.includes(',')) {
-                const [lat, lon] = coords.replace("POINT (", "").replace(")", "").split(',').map(Number);
-                if (!isNaN(lat) && !isNaN(lon)) {
-                    const dLat = (lat - latitude) * Math.PI / 180;
-                    const dLon = (lon - longitude) * Math.PI / 180;
-                    const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
-                    t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                } else { t.distancia = 99999; }
-            } else { t.distancia = 99999; }
-        });
-
-        // 2. Ordenar
-        baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
-
-        // 3. Renderizar todos (sin filtro m.grupo)
-        grid.innerHTML = "";
-        baseDatosCompleta.forEach(mapa => {
-            // Nota: Aquí reutilizamos la lógica de creación de tarjeta del renderizado original
-            // pero aplicada a todos los registros
-            renderizarTarjetaIndividual(mapa, grid, true); // Función auxiliar abajo
-        });
+    // Calculamos distancias en TODA la base
+    baseDatosCompleta.forEach(t => {
+      let coords = t.coordenadas ? String(t.coordenadas) : "";
+      if (coords.includes(',')) {
+        const [lat, lon] = coords.replace("POINT (", "").replace(")", "").split(',').map(Number);
+        const dLat = (lat - latitude) * Math.PI / 180;
+        const dLon = (lon - longitude) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+        t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      } else { t.distancia = 99999; }
     });
-}
 
-// Función auxiliar para no duplicar HTML
-function renderizarTarjetaIndividual(mapa, grid, mostrarDistancia) {
-    const div = document.createElement("div");
-    const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true;
-    div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''}`;
-    
-    let txtDist = mostrarDistancia && mapa.distancia < 100 ? `${Math.round(mapa.distancia * 1000)}m` : "";
-    
-    div.innerHTML = `
-        <div class="fila-tarjeta-superior">
-            <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
-            <span class="barriada-derecha">${mapa.barriada}</span>
-        </div>
-        <div class="imagen-mapa-wrapper">
-             <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">🔍</button>
-             <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-        </div>
-        <div class="fila-tarjeta-inferior">
-            <span style="color:#34c759;">${txtDist}</span>
-            <button class="btn-check-rectangular"></button>
-        </div>`;
-    grid.appendChild(div);
+    // Ordenamos el array global
+    baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
+
+    // LLAMAMOS AL MOTOR ORIGINAL: Esto mantendrá todas las funciones intactas
+    filtrarYRenderizar();
+  });
 }
