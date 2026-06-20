@@ -3,7 +3,7 @@
 // Estado Terminado: entregado=true, trabajado=true
 
 const URL_API_SHEETS = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
-
+let ordenForzado = "ID"; // Por defecto ID
 let baseDatosCompleta = [];
 let listaHermanosPool = [];
 let territoriosSeleccionados = []; 
@@ -290,12 +290,13 @@ function filtrarYRenderizar() {
 
   // Lógica de ordenación
   if (vistaActual === "disponibles") {
-    if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
-      dataset.sort((a, b) => {
-        let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
-        let distB = (b.distancia !== undefined && b.distancia !== null) ? b.distancia : 99999;
-        return distA - distB;
-      });
+    // Si estamos en modo Campana O si el orden fue forzado por cercanía
+    if (modoCampanaGlobal || ordenForzado === "CERCANIA") {
+        dataset.sort((a, b) => {
+            let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
+            let distB = (b.distancia !== undefined && b.distancia !== null) ? b.distancia : 99999;
+            return distA - distB;
+        });
     } else {
       dataset.sort((a, b) => {
         let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
@@ -864,7 +865,7 @@ async function renderizarPorCercaniaGlobal() {
         t.distancia = 99999;
       }
     });
-
+ordenForzado = "CERCANIA";
     // Ahora llamamos a filtrarYRenderizar para que pinte usando esas distancias guardadas
     filtrarYRenderizar();
   });
