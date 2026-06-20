@@ -289,18 +289,37 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
   // Lógica de ordenación
   // Lógica de ordenación
   if (vistaActual === "disponibles") {
-    // NUEVA CONDICIÓN: Si estamos en modo global (campanas), ordenamos por distancia.
-    // Si no, seguimos usando la lógica original de prioritarios + ID.
-    if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
-        dataset.sort((a, b) => (a.distancia || 0) - (b.distancia || 0));
+      // --- LÓGICA DE DISTANCIA PARA CAMPANAS ---
+      let textoDistancia = "";
+      if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal && mapa.distancia !== undefined && mapa.distancia < 999) {
+        textoDistancia = mapa.distancia < 1 
+          ? `${Math.round(mapa.distancia * 1000)} metros` 
+          : `${mapa.distancia.toFixed(1)} km`;
+      }
+
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
+      div.id = `tarjeta-real-${mapa.id}`;
+      div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
+      
+      div.innerHTML = `
+        <div class="fila-tarjeta-superior">
+          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
+          <span class="barriada-derecha">${mapa.barriada}</span>
+        </div>
+        <div class="imagen-mapa-wrapper">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
+        </div>
+        <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq" style="min-height: 25px;">
+            ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
+          </div>
+          ${textoDistancia ? `<span style="font-size: 0.75rem; color: #34c759; margin-right: 10px;">📍 ${textoDistancia}</span>` : ''}
+          <button class="btn-check-rectangular" type="button"></button>
+        </div>`;
     } else {
-        dataset.sort((a, b) => {
-            let aPrio = a.prioritario === "SI" || a.prioritario === true || String(a.prioritario).toUpperCase() === "TRUE";
-            let bPrio = b.prioritario === "SI" || b.prioritario === true || String(b.prioritario).toUpperCase() === "TRUE";
-            return (aPrio === bPrio) ? (parseInt(a.id) - parseInt(b.id)) : (aPrio ? -1 : 1);
-        });
-    }
-  } else {
     // Esta parte de 'else' (Asignados) NO LA TOQUES, déjala exactamente como está.
     dataset.sort((a, b) => {
       let resultado = 0;
