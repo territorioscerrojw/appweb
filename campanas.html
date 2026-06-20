@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Territorios por Cercanía</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;1000&display=swap">
+  <title>Territorios</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,35 +11,47 @@
   <div class="contenedor-app">
     <header class="cabecera-apple">
       <h1>Territorios</h1>
-      <button onclick="ordenarPorProximidad()" class="btn-apple">Ordenar por Distancia</button>
+      <button onclick="iniciarOrdenacion()" class="btn-apple">Ordenar por Distancia</button>
     </header>
     
-    <div id="lista-territorios" class="contenedor-grid" style="margin-top: 20px;">
-      </div>
+    <div id="lista-territorios" class="contenedor-grid" style="padding: 15px;">
+      <p id="mensaje-estado">Cargando territorios...</p>
+    </div>
   </div>
 
-  <script src="app.js"></script>
   <script>
-    // 1. Al cargar la página, traemos los datos
+    // URL directa a tu Google Script (asegúrate de que sea la correcta)
+    const URL_API = "https://script.google.com/macros/s/AKfycbw0Vt1KuZyBTeJtLuuy7BV6nF2v_PpVDMy_DpD7o6iL8gxsZ1aSDCcjUsyUOb0m_ouVbQ/exec";
+    let baseDatosCompleta = [];
+
+    // 1. Cargar datos al abrir
     window.addEventListener("DOMContentLoaded", async () => {
-      // Usamos la función de carga que ya tienes en app.js
-      // Si tu función en app.js no llena 'baseDatosCompleta', 
-      // cámbiala por un fetch directo a tu URL_API_SHEETS
-      await cargarDatos(); 
+      try {
+        const respuesta = await fetch(URL_API + "?accion=leerDatos");
+        baseDatosCompleta = await respuesta.json();
+        
+        // Renderizado inicial sin ordenar
+        renderizar(baseDatosCompleta);
+      } catch (err) {
+        document.getElementById('mensaje-estado').innerText = "Error cargando datos. Revisa la consola (F12).";
+        console.error(err);
+      }
     });
 
-    // 2. Lógica de cálculo de distancia
-    function calcularDistancia(lat1, lon1, lat2, lon2) {
-      const R = 6371; 
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    // 2. Lógica de renderizado (usa la clase .tarjeta de tu styles.css)
+    function renderizar(datos) {
+      const contenedor = document.getElementById('lista-territorios');
+      contenedor.innerHTML = datos.map(t => `
+        <div class="tarjeta">
+          <h3>${t.id} - ${t.barriada}</h3>
+          <p style="color:var(--texto-secundario)">${t.distancia ? t.distancia.toFixed(2) + ' km' : 'Distancia no calculada'}</p>
+        </div>
+      `).join('');
     }
 
-    // 3. Ordenar y pintar
-    function ordenarPorProximidad() {
-      if (!navigator.geolocation) return alert("Geolocalización no disponible");
+    // 3. Ordenar por cercanía
+    function iniciarOrdenacion() {
+      if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización");
       
       navigator.geolocation.getCurrentPosition(pos => {
         const { latitude, longitude } = pos.coords;
@@ -48,22 +59,17 @@
         baseDatosCompleta.forEach(t => {
           if (t.coordenadas && t.coordenadas.includes(',')) {
             const [lat, lon] = t.coordenadas.split(',').map(Number);
-            t.distancia = calcularDistancia(latitude, longitude, lat, lon);
-          } else {
-            t.distancia = 999999;
-          }
+            const dLat = (lat - latitude) * Math.PI / 180;
+            const dLon = (lon - longitude) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+            t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          } else { t.distancia = 99999; }
         });
 
         baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
-        
-        const contenedor = document.getElementById('lista-territorios');
-        contenedor.innerHTML = baseDatosCompleta.map(t => `
-          <div class="tarjeta">
-            <h3>${t.id} - ${t.barriada}</h3>
-            <p>Distancia: ${t.distancia === 999999 ? 'No disponible' : t.distancia.toFixed(2) + ' km'}</p>
-            <p style="font-size: 0.8em; color: var(--texto-secundario)">${t.prioritario === 'SI' ? '🔴 Prioritario' : '✅ Normal'}</p>
-          </div>
-        `).join('');
+        renderizar(baseDatosCompleta);
+      }, (err) => {
+        alert("Debes aceptar el permiso de ubicación para ordenar por cercanía.");
       });
     }
   </script>
