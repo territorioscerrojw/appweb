@@ -138,12 +138,9 @@
   window.addEventListener("DOMContentLoaded", async () => {
     // 1. Cargamos datos PERO NO renderizamos automáticamente
     // Si descargarDatosDesdeSheets() llama a filtrarYRenderizar(), eso es lo que te está arruinando el orden
-   await descargarDatosDesdeSheets();
+  await inicializarCampana();
     
-    // 2. Esperamos un poco y llamamos a NUESTRA función de cercanía
-    setTimeout(() => {
-        renderizarPorCercania();
-    }, 1000);
+    
     actualizarAnillosEstadisticos();
   });
 </script>
