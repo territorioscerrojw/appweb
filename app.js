@@ -853,81 +853,68 @@ async function mostrarTerritoriosCercanos() {
     });
   });
 }
-async function renderizarPorCercania() {
-  if (!navigator.geolocation) return alert("Geolocalización necesaria para ordenar por cercanía.");
+// Usa esta versión en app.js. 
+// He eliminado el "grid = ..." y le paso el contenedor como argumento para mayor flexibilidad.
+async function renderizarPorCercaniaGlobal() {
+  if (!navigator.geolocation) return alert("Geolocalización necesaria.");
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
     const grid = document.getElementById("contenedor-principal-grid");
     if (!grid) return;
 
-    // 1. Calcular distancias
+    // 1. Calcular distancias sobre baseDatosCompleta (ya contiene todos los territorios)
     baseDatosCompleta.forEach(t => {
-      // Limpiamos el formato "POINT (lat, lon)" que viene de Sheets
       let coords = t.coordenadas ? String(t.coordenadas) : "";
-      
       if (coords.includes(',')) {
-        const limpio = coords.replace("POINT (", "").replace(")", "");
-        const [lat, lon] = limpio.split(',').map(Number);
-        
+        const [lat, lon] = coords.replace("POINT (", "").replace(")", "").split(',').map(Number);
         if (!isNaN(lat) && !isNaN(lon)) {
           const dLat = (lat - latitude) * Math.PI / 180;
           const dLon = (lon - longitude) * Math.PI / 180;
           const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
           t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        } else {
-          t.distancia = 99999;
-        }
-      } else {
-        t.distancia = 99999;
-      }
+        } else { t.distancia = 99999; }
+      } else { t.distancia = 99999; }
     });
 
-    // 2. Ordenar de menor a mayor distancia
+    // 2. Ordenar globalmente
     baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
 
-    // 3. Renderizar en el grid
+    // 3. Renderizar en el grid (se usa la baseDatosCompleta tal cual viene ordenada)
     grid.innerHTML = "";
-    baseDatosCompleta.forEach(mapa => {
+    
+    // FILTRAMOS SOLO POR ENTREGADO, NO POR GRUPO
+    const dataset = baseDatosCompleta.filter(m => m.entregado === false);
+
+    dataset.forEach(mapa => {
+      // Reutilizamos tu lógica de tarjetas
       const div = document.createElement("div");
       const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
       
-      // Formato inteligente de distancia
-      let textoDistancia = "";
-      if (mapa.distancia < 1 && mapa.distancia !== 99999) {
-        textoDistancia = `${Math.round(mapa.distancia * 1000)} metros`;
-      } else if (mapa.distancia < 9999) {
-        textoDistancia = `${mapa.distancia.toFixed(1)} km`;
-      } else {
-        textoDistancia = "dist. desconocida";
-      }
+      let textoDistancia = mapa.distancia < 1 ? `${Math.round(mapa.distancia * 1000)} metros` : `${mapa.distancia.toFixed(1)} km`;
 
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${territoriosSeleccionados.includes(mapa.id.toString()) ? 'seleccionada' : ''}`;
-div.id = `tarjeta-real-${mapa.id}`;
-div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
+      div.id = `tarjeta-real-${mapa.id}`;
+      div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
 
-div.innerHTML = `
-  <div class="fila-tarjeta-superior">
-    <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
-    <span class="barriada-derecha">${mapa.barriada}</span>
-  </div>
-  <div class="imagen-mapa-wrapper">
-    <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    </button>
-    <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
-  </div>
-  <div class="fila-tarjeta-inferior">
-    <div class="bloque-prio-izq">
-      ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
-    </div>
-    <span style="font-size: 0.75rem; color: #34c759;">📍 ${textoDistancia}</span>
-    <button class="btn-check-rectangular" type="button"></button>
-  </div>`;
+      div.innerHTML = `
+        <div class="fila-tarjeta-superior">
+          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
+          <span class="barriada-derecha">${mapa.barriada}</span>
+        </div>
+        <div class="imagen-mapa-wrapper">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+        </div>
+        <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq">${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}</div>
+          <span style="font-size: 0.75rem; color: #34c759;">📍 ${textoDistancia}</span>
+          <button class="btn-check-rectangular" type="button"></button>
+        </div>`;
       grid.appendChild(div);
     });
-  }, (err) => {
-    alert("No se pudo obtener tu ubicación. Por favor, acepta los permisos.");
   });
 }
 // --- NUEVAS FUNCIONES PARA CAMPANAS.HTML ---
