@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <title>Campanas Cercanas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .tarjeta { padding: 15px; margin: 10px 0; border: 1px solid var(--glass-borde); border-radius: 12px; background: var(--glass-fondo); }
+    .prioritario { border-color: var(--apple-rojo); }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="cabecera-apple">
+      <h1>Territorios</h1>
+      <button onclick="ordenarPorProximidad()">Ordenar por distancia</button>
+    </header>
+    <div id="lista-territorios"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function calcularDistancia(lat1, lon1, lat2, lon2) {
+      const R = 6371; 
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    function ordenarPorProximidad() {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        
+        baseDatosCompleta.forEach(t => {
+           if(t.coordenadas) {
+             const [lat, lon] = t.coordenadas.split(',').map(Number);
+             t.distancia = calcularDistancia(latitude, longitude, lat, lon);
+           }
+        });
+        
+        baseDatosCompleta.sort((a, b) => (a.distancia || 9999) - (b.distancia || 9999));
+        
+        const contenedor = document.getElementById('lista-territorios');
+        contenedor.innerHTML = baseDatosCompleta.map(t => `
+          <div class="tarjeta ${t.prioritario === 'SI' ? 'prioritario' : ''}">
+            <h3>${t.id} - ${t.barriada}</h3>
+            <p>Distancia: ${t.distancia ? t.distancia.toFixed(2) + ' km' : 'Desconocida'}</p>
+          </div>
+        `).join('');
+      });
+    }
+  </script>
+</body>
+</html>
