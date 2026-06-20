@@ -133,15 +133,45 @@
     </div>
   </div>
 
-<script src="app.js" defer></script>
-
+<script src="app.js"></script>
   <script>
-  window.addEventListener("DOMContentLoaded", async () => {
-    // 1. Cargamos datos
-    await cargarDatos(); 
-    // 2. Ordenamos por proximidad en lugar de filtrar por grupo
-    mostrarTerritoriosCercanos();
-  });
-</script>
+    async function ordenarYMostrar() {
+      if (!navigator.geolocation) return alert("GPS no disponible");
+      
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        
+        // 1. Cargamos datos
+        await cargarDatosGlobales();
+        
+        // 2. Calculamos distancia (usando la propiedad 'coordenadas' que ya tenemos)
+        baseDatosCompleta.forEach(t => {
+          if (t.coordenadas && t.coordenadas.includes(',')) {
+            const [lat, lon] = t.coordenadas.split(',').map(Number);
+            const dLat = (lat - latitude) * Math.PI / 180;
+            const dLon = (lon - longitude) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+            t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          } else {
+            t.distancia = 99999;
+          }
+        });
+
+        // 3. Ordenamos
+        baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
+        
+        // 4. Renderizamos usando la función de tu app.js
+        const contenedor = document.getElementById("contenedor-principal-grid");
+        contenedor.innerHTML = ""; 
+        
+        baseDatosCompleta.forEach(t => {
+            // AQUÍ LLAMAS A LA FUNCIÓN QUE YA TIENES EN APP.JS
+            // Si tu función en app.js se llama distinto, cámbialo por el nombre real
+            const tarjeta = crearTarjetaTerritorio(t); 
+            contenedor.appendChild(tarjeta);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
