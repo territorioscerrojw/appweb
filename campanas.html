@@ -136,6 +136,7 @@
 <script src="app.js" defer></script>
  <script>
   window.addEventListener("DOMContentLoaded", async () => {
+    modoCampanaGlobal = true;
     await inicializarCampana(); // Carga los datos
     await renderizarPorCercaniaGlobal(); // Ordena y pinta
     actualizarAnillosEstadisticos(); // Actualiza contadores globales
