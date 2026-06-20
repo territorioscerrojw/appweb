@@ -200,7 +200,17 @@ function procesarFechasYBarras(inicioStr, finStr) {
   }
 }
 function actualizarAnillosEstadisticos() {
-  // MODIFICACIÓN AQUÍ:
+ const elTotal = document.getElementById("w-totales");
+if (elTotal) {
+    elTotal.innerText = total;
+    
+    // Si tiene 3 cifras o más, le ponemos una clase pequeña
+    if (total >= 100) {
+        elTotal.style.fontSize = "1.2rem"; // Ajusta este valor a tu gusto
+    } else {
+        elTotal.style.fontSize = "1.6rem"; // Tu tamaño original
+    }
+}
   // Si estamos en modo campana global, tomamos toda la base de datos.
   // Si no, filtramos por el grupoFiltro original.
   const grupoMapas = (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) 
