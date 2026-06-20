@@ -290,6 +290,7 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
   // Lógica de ordenación
   if (vistaActual === "disponibles") {
       // --- LÓGICA DE DISTANCIA PARA CAMPANAS ---
+     // Definimos la variable aquí para que exista siempre
       let textoDistancia = "";
       if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal && mapa.distancia !== undefined && mapa.distancia < 999) {
         textoDistancia = mapa.distancia < 1 
@@ -297,10 +298,6 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
           : `${mapa.distancia.toFixed(1)} km`;
       }
 
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
-      div.id = `tarjeta-real-${mapa.id}`;
-      div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
-      
       div.innerHTML = `
         <div class="fila-tarjeta-superior">
           <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
@@ -316,7 +313,7 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          ${textoDistancia ? `<span style="font-size: 0.75rem; color: #34c759; margin-right: 10px;">📍 ${textoDistancia}</span>` : ''}
+          <span style="font-size: 0.75rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
           <button class="btn-check-rectangular" type="button"></button>
         </div>`;
     } else {
