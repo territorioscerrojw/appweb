@@ -862,20 +862,26 @@ async function renderizarPorCercania() {
     console.log("Primer territorio muestra:", baseDatosCompleta[0]);
 
     // 1. Calcular distancias
-    baseDatosCompleta.forEach(t => {
-      // NORMALIZACIÓN: Aseguramos que 't.coordenadas' sea tratado como string
-      let coords = t.coordenadas ? String(t.coordenadas) : "";
-      
-      if (coords.includes(',')) {
-        const [lat, lon] = coords.split(',').map(Number);
-        const dLat = (lat - latitude) * Math.PI / 180;
-        const dLon = (lon - longitude) * Math.PI / 180;
-        const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
-        t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      } else {
-        t.distancia = 99999;
-      }
-    });
+    // Dentro del forEach en renderizarPorCercania()
+baseDatosCompleta.forEach(t => {
+  if (t.coordenadas && typeof t.coordenadas === 'string') {
+    // LIMPIEZA: Eliminamos "POINT (", ")", y dejamos solo los números y la coma
+    const limpio = t.coordenadas.replace("POINT (", "").replace(")", "");
+    const [lat, lon] = limpio.split(',').map(Number);
+    
+    // Verificamos que los números sean válidos (no NaN)
+    if (!isNaN(lat) && !isNaN(lon)) {
+      const dLat = (lat - latitude) * Math.PI / 180;
+      const dLon = (lon - longitude) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+      t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    } else {
+      t.distancia = 99999;
+    }
+  } else {
+    t.distancia = 99999;
+  }
+});
 
     // 2. Ordenar
     baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
