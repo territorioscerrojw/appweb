@@ -800,3 +800,14 @@ async function recargarApp() {
   svg.style.transform = "rotate(0deg)"; 
 }
 
+// Añade esto a tu app.js si no existe
+async function cargarDatosGlobales() {
+  try {
+    const respuesta = await fetch(`${URL_API_SHEETS}?accion=leerDatos`);
+    baseDatosCompleta = await respuesta.json();
+    console.log("Datos cargados correctamente:", baseDatosCompleta.length);
+    return baseDatosCompleta;
+  } catch (error) {
+    console.error("Error al cargar datos:", error);
+  }
+}
