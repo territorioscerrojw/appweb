@@ -63,8 +63,18 @@ function descargarDatosDesdeSheets() {
           document.getElementById("txt-grupo-sub").innerText = `Grupo ${grupoFiltro}`;
         }
         actualizarAnillosEstadisticos();
-        filtrarYRenderizar();
+
+        // AQUÍ ESTÁ EL CAMBIO PARA MANTENER EL ORDEN Y LAS DISTANCIAS
+        if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
+            // Si estamos en modo campana, forzamos el recálculo y pintado
+            renderizarPorCercaniaGlobal(); 
+        } else {
+            // Comportamiento normal para otros grupos
+            filtrarYRenderizar();
+        }
+
       } else if (tipoUsuario === "hermano") {
+        // MANTENEMOS TU FUNCIÓN ORIGINAL PARA HERMANOS
         filtrarYRenderizarHermano();
       }
       
