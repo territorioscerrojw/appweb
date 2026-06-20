@@ -811,3 +811,42 @@ async function cargarDatosGlobales() {
     console.error("Error al cargar datos:", error);
   }
 }
+// Función para ordenar y pintar usando TU motor actual
+async function mostrarTerritoriosCercanos() {
+  if (!navigator.geolocation) {
+    alert("Geolocalización no soportada");
+    return;
+  }
+
+  // 1. Obtenemos posición
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
+
+    // 2. Calculamos distancias en todos los datos
+    baseDatosCompleta.forEach(t => {
+      if (t.coordenadas && t.coordenadas.includes(',')) {
+        const [lat, lon] = t.coordenadas.split(',').map(Number);
+        const dLat = (lat - latitude) * Math.PI / 180;
+        const dLon = (lon - longitude) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(latitude*Math.PI/180) * Math.cos(lat*Math.PI/180) * Math.sin(dLon/2)**2;
+        t.distancia = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      } else {
+        t.distancia = 99999; // Muy lejos
+      }
+    });
+
+    // 3. Ordenamos
+    baseDatosCompleta.sort((a, b) => a.distancia - b.distancia);
+
+    // 4. USAMOS TU MOTOR DE RENDERIZADO (El mismo de index.html)
+    // Suponiendo que tu función de renderizado se llama 'renderizarTerritorios' o similar:
+    const contenedor = document.getElementById("contenedor-principal-grid"); // O tu ID real
+    contenedor.innerHTML = ""; // Limpiamos
+    
+    baseDatosCompleta.forEach(t => {
+      // LLAMAS A TU FUNCIÓN QUE YA CREA LA TARJETA (la que tiene el botón de WhatsApp, etc.)
+      const tarjeta = crearTarjetaTerritorio(t); 
+      contenedor.appendChild(tarjeta);
+    });
+  });
+}
