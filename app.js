@@ -899,23 +899,28 @@ async function renderizarPorCercania() {
         textoDistancia = "dist. desconocida";
       }
 
-      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''}`;
-      div.innerHTML = `
-        <div class="fila-tarjeta-superior">
-          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
-          <span class="barriada-derecha">${mapa.barriada}</span>
-        </div>
-        <div class="imagen-mapa-wrapper">
-          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
-          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
-        </div>
-        <div class="fila-tarjeta-inferior">
-          <span style="font-size: 0.8rem; color: #34c759; font-weight: 600;">
-            📍 A ${textoDistancia}
-          </span>
-        </div>`;
+      div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${territoriosSeleccionados.includes(mapa.id.toString()) ? 'seleccionada' : ''}`;
+div.id = `tarjeta-real-${mapa.id}`;
+div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
+
+div.innerHTML = `
+  <div class="fila-tarjeta-superior">
+    <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
+    <span class="barriada-derecha">${mapa.barriada}</span>
+  </div>
+  <div class="imagen-mapa-wrapper">
+    <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <img src="${mapa.rutaMapa}" class="imagen-mapa-asset">
+  </div>
+  <div class="fila-tarjeta-inferior">
+    <div class="bloque-prio-izq">
+      ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
+    </div>
+    <span style="font-size: 0.75rem; color: #34c759;">📍 ${textoDistancia}</span>
+    <button class="btn-check-rectangular" type="button"></button>
+  </div>`;
       grid.appendChild(div);
     });
   }, (err) => {
