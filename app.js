@@ -289,15 +289,15 @@ let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
   // Lógica de ordenación
   // Lógica de ordenación
  if (vistaActual === "disponibles") {
-
-    // NUEVA CONDICIÓN: Si estamos en modo global (campanas), ordenamos por distancia.
-
-    // Si no, seguimos usando la lógica original de prioritarios + ID.
-
+    // Si estamos en modo Campana, ordenamos por distancia SIEMPRE que exista
     if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal) {
-
-        dataset.sort((a, b) => (a.distancia || 0) - (b.distancia || 0));
-
+        dataset.sort((a, b) => {
+            // Buscamos la distancia, si no la tiene, ponemos un valor gigante (99999) 
+            // para que se vaya al final de la lista
+            let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
+            let distB = (b.distancia !== undefined && b.distancia !== null) ? b.distancia : 99999;
+            return distA - distB;
+        });
     } else {
 
         dataset.sort((a, b) => {
