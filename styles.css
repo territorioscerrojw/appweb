@@ -887,20 +887,7 @@ animation: pulso 4s infinite ease-in-out !important;
   padding: 4px; /* Un poco de margen interno para que nada toque los bordes del banner */
   box-sizing: border-box;
 }
-.custom-select-box { position: relative; width: 100%; margin-bottom: 10px; }
-#input-busqueda-hermanos {
-  width: 100%; padding: 12px; border-radius: 10px;
-  background: var(--glass-fondo); border: 1px solid var(--glass-borde);
-  color: var(--texto-principal);
-}
-.lista-opciones-oculta {
-  position: absolute; top: 100%; left: 0; width: 100%;
-  max-height: 200px; overflow-y: auto; display: none;
-  background: var(--glass-fondo); border: 1px solid var(--glass-borde);
-  border-radius: 0 0 10px 10px; z-index: 9999;
-}
-.opcion-item { padding: 10px; cursor: pointer; color: white; }
-.opcion-item:hover { background: var(--apple-azul); }
+
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
    ========================================================================== */
