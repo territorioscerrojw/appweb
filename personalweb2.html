@@ -30,24 +30,17 @@
  function cargarDatos() {
   const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
   
-  // Usamos el formato JSONP (Carga dinámica de script)
-  window.callbackHandler = function(data) {
-    if (data && data.error) {
-      console.error("Error del servidor:", data.mensaje);
-      return;
-    }
-    datos = data;
-    renderizar();
+  // 1. Definimos la función que "atrapa" los datos de Google
+  window.test = function(data) {
+    datos = data; // Guardamos los datos en tu variable global
+    console.log("Datos recibidos:", datos);
+    renderizar(); // Pintamos la pantalla
   };
 
+  // 2. Cargamos el script dinámicamente
   const script = document.createElement('script');
-  script.src = `${URL_API}?accion=leerTodo&callback=callbackHandler`;
-  
-  // Si el servidor falla (404 o error), esto nos avisará
-  script.onerror = function() {
-    console.error("No se pudo cargar el script. Verifica que el despliegue sea público.");
-  };
-  
+  // Nota: hemos cambiado &callback=test para que coincida con el nombre de la función
+  script.src = `${URL_API}?accion=leerTodo&callback=test`;
   document.body.appendChild(script);
 }
 
