@@ -894,24 +894,24 @@ animation: pulso 4s infinite ease-in-out !important;
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
   color: white;
+  margin-bottom: 2px;
 }
 
 .lista-desplegable-flotante {
-  max-height: 200px;
+  max-height: 250px;
   overflow-y: auto;
   background: var(--glass-fondo);
   border: 1px solid var(--glass-borde);
-  border-radius: 0 0 10px 10px;
-  margin-top: -5px; /* Para que se pegue al input */
-  position: absolute;
-  width: calc(100% - 40px); /* Ajustar según padding de tu panel */
-  z-index: 1000;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: block; /* Siempre visible o se muestra al escribir */
 }
 
 .opcion-hermano {
-  padding: 10px;
-  color: white;
+  padding: 12px 15px;
+  color: var(--texto-principal);
   cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .opcion-hermano:hover { background: var(--apple-azul); }
 /* ==========================================================================
