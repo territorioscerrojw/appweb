@@ -109,13 +109,14 @@
     <span id="txt-contador-seleccionados">0 seleccionados</span>
     
    <div class="controles-asignacion">
-  <input type="text" id="input-busqueda-hermanos" placeholder="Buscar hermano..." 
-         oninput="filtrarListaHermanos(this.value)" class="input-busqueda-flotante">
-  
-  <select id="sel-hermano-unico" class="select-apple" onchange="evaluarEstadoBotonAsignar()">
-    <option value="">Seleccionar Hermano/a...</option>
-  </select>
-  <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
+  <div id="dropdown-hermanos" class="custom-dropdown">
+    <input type="text" id="input-busqueda-hermanos" placeholder="🔍 Buscar hermano..." 
+           oninput="filtrarListaHermanos(this.value)">
+    
+    <div id="lista-opciones-hermanos" class="lista-opciones">
+      </div>
+  </div>
+  <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled>Asignar</button>
 </div>
   </div>
 </div>
