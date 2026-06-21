@@ -33,33 +33,39 @@
     }
 
     window.test = function(data) {
-      cargando = false;
-      // Validamos si lo que llega es una lista real
-      if (data && Array.isArray(data)) {
+  cargando = false;
+  if (data && Array.isArray(data)) {
+    // FILTRO: Solo dejamos los que coinciden con el nombre del usuario
+    // Suponiendo que el nombre viene en la URL como ?id=Jairo+Castañeda
+    const nombreFiltro = new URLSearchParams(window.location.search).get('id');
+    
+    if (nombreFiltro) {
+        datos = data.filter(t => t.hermano.toLowerCase() === nombreFiltro.toLowerCase());
+    } else {
         datos = data;
-        renderizar();
-      } else {
-        console.error("El servidor no envió una lista válida:", data);
-        document.getElementById('grid').innerHTML = "<p>Error: Datos no recibidos.</p>";
-      }
-    };
+    }
+    renderizar();
+  }
+};
 
     function renderizar() {
-      const grid = document.getElementById('grid');
-      // Limpiamos el grid antes de dibujar para evitar duplicados
-      grid.innerHTML = ""; 
-      
-      const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
-      
-      grid.innerHTML = ordenado.map(t => `
-        <div class="card ${t.trabajado ? 'terminado' : ''}">
-          <h3>${t.barriada || 'Sin nombre'}</h3>
-          <button class="btn" onclick="toggle('${t.id}')">
-            ${t.trabajado ? 'Reactivar' : 'Completar'}
-          </button>
-        </div>
-      `).join('');
-    }
+  const grid = document.getElementById('grid');
+  grid.innerHTML = "";
+  
+  datos.forEach(t => {
+    const card = document.createElement('div');
+    card.className = `card ${t.trabajado ? 'terminado' : ''}`;
+    card.innerHTML = `
+      <img src="${t.rutaMapa}" onerror="this.src='https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/imagenes/defecto.png'">
+      <p><strong>Territorio:</strong> ${t.id}</p>
+      <p><strong>Barriada:</strong> ${t.barriada}</p>
+      <button class="btn" onclick="toggle('${t.id}')">
+        ${t.trabajado ? 'Reactivar' : 'Completar'}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
 
     function toggle(id) {
       const item = datos.find(x => x.id == id);
