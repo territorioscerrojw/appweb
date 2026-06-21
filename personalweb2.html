@@ -1,270 +1,69 @@
 
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Super App Territorios</title>
   <style>
-    :root { 
-      --primary: #1c1c1e; 
-      --bg: #f2f2f7;
-      --danger: #ff3b30; 
-      --success: #34c759; 
-      --warning: #ff9500;
-      --azul-moderno: rgba(28, 44, 66, 0.75);
-      --verde-moderno: rgba(58, 77, 57, 0.75);
-      --negocios: #6495ED;
-      --gris-apple: rgba(28, 28, 30, 0.9); 
-    }
-    
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--primary); }
-    
-    header { 
-      text-align: center; 
-      padding: 10px 5px; 
-      background: rgba(255, 255, 255, 0.6); 
-      backdrop-filter: blur(20px); 
-      -webkit-backdrop-filter: blur(20px); 
-      border-bottom: 0.5px solid rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-
-    /* Fuente Whisper: Un solo renglón y tamaño controlado */
-    .user-name { 
-      font-family: 'Whisper', cursive; 
-      font-size: clamp(1.5rem, 10vw, 2.8rem); 
-      color: var(--primary); 
-      margin: 0; 
-      font-weight: 400;
-      white-space: nowrap;
-      line-height: 1.2;
-    }
-
-    h2 { 
-      position: sticky; top: 0; z-index: 20; color: white;
-      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
-      margin: 0; padding: 15px 20px; font-weight: 800;
-      display: flex; justify-content: space-between; align-items: center;
-      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    }
-    .h2-personales { background: var(--azul-moderno); }
-    .h2-grupo { background: var(--verde-moderno); }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-    
-    .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 0.5px solid rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; }
-
-    .img-box { width: 100%; height: 210px; cursor: pointer; background: white; overflow: hidden; position: relative; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
-    .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .watermark {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 2.2rem; font-weight: 900; color: rgba(255, 59, 48, 0.35);
-      text-transform: uppercase; white-space: nowrap; pointer-events: none;
-      letter-spacing: 4px; width: 100%; text-align: center;
-    }
-    .btn-refresh {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  color: #007aff;
-  cursor: pointer;
-  padding: 5px;
-}
-.btn-refresh:active {
-  transform: rotate(180deg);
-  transition: transform 0.3s ease;
-}
-    .info { padding: 18px; text-align: center; flex-grow: 1; }
-    .es-negocios { color: var(--negocios) !important; }
-    .num { font-size: 1.5rem; font-weight: 800; color: #1c1c1e; display: block; }
-    .zona { font-size: 0.95rem; color: #8e8e93; display: block; margin-bottom: 15px; font-weight: 600; }
-    
-    .badge { display: block; padding: 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; width: 90%; margin: 0 auto; }
-    .label-mini { display: block; font-size: 0.6rem; opacity: 0.8; margin-bottom: 4px; }
-
-    .badge-red { background: var(--danger); color: white; }
-    .badge-orange { background: var(--warning); color: white; }
-    .badge-green { background: var(--success); color: white; }
-
-    .btn-more { width: 100%; padding: 18px; border: none; background: white; color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid #eee; font-size: 0.85rem; }
-
-    .footer-minimal {
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.7rem;
-      color: #8e8e93;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 400;
-    }
-
-    .btn-gps { 
-      display: flex; align-items: center; justify-content: center; 
-      background: #007aff; color: white !important; text-decoration: none; 
-      padding: 15px; border-radius: 14px; font-weight: 700; 
-      margin-bottom: 20px; gap: 10px; font-size: 0.9rem;
-    }
-
-    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index:1000; overflow-y:auto; }
-    
-    .modal-header { 
-      padding: 18px; text-align: center; position: sticky; top: 0; z-index: 1001; 
-      background: var(--gris-apple); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      color: white; border-bottom: 0.5px solid rgba(255,255,255,0.1);
-    }
-    .btn-refresh-link {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  text-decoration: none;
-  font-size: 1.2rem;
-  color: #007aff;
-  padding: 10px;
-  display: block;
-  z-index: 9999;
-}
-    .close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 10px; color: white; }
-    .modal-content { padding: 20px; max-width: 500px; margin: 0 auto; }
-    .img-grande { width: 100%; border-radius: 15px; margin-bottom: 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1); padding-bottom: 8px; display: block; }
-    .info-label-modal { font-size: 0.65rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; text-align: center; }
-    .box-tiempo-modal { padding: 20px; border-radius: 18px; margin-bottom: 20px; text-align: center; }
-    .notas-area { background: rgba(0,0,0,0.03); border-radius: 14px; padding: 18px; font-size: 0.95rem; margin-top: 10px; line-height: 1.5; border-left: 4px solid #007aff; }
-    .btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 10px; }
+    :root { --bg: #09090b; --card: #2d2d35; --text: #ffffff; --green: #34c759; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; }
+    #grid { display: flex; flex-direction: column; gap: 15px; }
+    .card { background: var(--card); padding: 16px; border-radius: 16px; transition: 0.3s; }
+    .card.terminado { opacity: 0.5; order: 99; } /* Esto mueve los trabajados al fondo */
+    .tipo-badge { font-size: 10px; color: #a1a1aa; text-transform: uppercase; font-weight: bold; }
+    .titulo { font-size: 18px; margin: 5px 0; font-weight: 600; }
+    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    .btn-completar { background: var(--green); color: white; }
+    .btn-undo { background: #3f3f46; color: white; }
   </style>
 </head>
 <body>
 
-  <header>
-  <div class="user-name"><?= nombreH ?></div>
-  <a href="https://script.google.com/macros/s/AKfycbx2Vtpgic1kf1uKEqu2r9weCaPDF3HFs3hDGhMywJBvbvowQfMvXwaOaStN7ERHjolJ/exec?h=<?= encodeURIComponent(nombreH) ?>&t=<?= new Date().getTime() ?>" class="btn-refresh-link">
-  <i class="fa-solid fa-rotate-right"></i>
-</a>
-</header>
+<main id="grid"></main>
 
-  <? if(datos.personales.length === 0 && datos.grupo.length === 0) { ?>
-    <div class="no-data-box">
-      <i class="fa-solid fa-triangle-exclamation"></i>
-      <p>NO TIENES NINGÚN TERRITORIO ASIGNADO ACTUALMENTE.<br><br>PIDE UNO EN EL DEPARTAMENTO DE TERRITORIOS.<br><br>MUCHAS GRACIAS.</p>
-    </div>
-  <? } ?>
+<script>
+  // Cambia esta URL por la de tu nuevo despliegue unificado
+  const URL_API = "https://script.google.com/macros/s/TU_ID_DE_DESPLIEGUE/exec";
+  let datos = [];
 
-  <? function dibujar(lista, titulo, icono, claseCSS) { ?>
-    <? if(lista.length > 0) { ?>
-      <h2 class="<?= claseCSS ?>"><?= titulo ?> <i class="fa-solid <?= icono ?>"></i></h2>
-      <div class="grid">
-        <? for(var i=0; i<lista.length; i++) { 
-             var t = lista[i]; 
-             var claseB = "badge " + (t.caducado ? "badge-red" : (t.tiempo.includes("MES") ? "badge-green" : "badge-orange"));
-             var claseNegocios = t.zona.toUpperCase().includes("NEGOCIOS") ? "es-negocios" : "";
-        ?>
-          <div class="card">
-            <div class="img-box" onclick="abrir('<?= t.num ?>','<?= t.zona ?>','<?= t.tiempo ?>','<?= t.imgGrande ?>','<?= t.notas.replace(/'/g, "\\'").replace(/\n/g, "\\n") ?>', <?= t.caducado ?>, '<?= t.coords ?>')">
-              <img src="<?= t.imgMini ?>" referrerpolicy="no-referrer">
-              <? if(t.caducado) { ?><div class="watermark">CADUCADO</div><? } ?>
-            </div>
-            <div class="info">
-              <span class="num <?= claseNegocios ?>">Territorio <?= t.num ?></span>
-              <span class="zona <?= claseNegocios ?>"><?= t.zona ?></span>
-              <div class="<?= claseB ?>">
-                <span class="label-mini">TIEMPO RESTANTE</span>
-                <?= t.tiempo ?>
-              </div>
-            </div>
-            <button class="btn-more" onclick="abrir('<?= t.num ?>','<?= t.zona ?>','<?= t.tiempo ?>','<?= t.imgGrande ?>','<?= t.notas.replace(/'/g, "\\'").replace(/\n/g, "\\n") ?>', <?= t.caducado ?>, '<?= t.coords ?>')"><b>PULSA PARA VER MÁS DETALLES</b></button>
-          </div>
-        <? } ?>
+  async function cargarDatos() {
+    // Usamos el proxy de allorigins para saltar el bloqueo CORS de Google
+    const proxy = "https://api.allorigins.win/get?url=";
+    const res = await fetch(proxy + encodeURIComponent(URL_API + "?accion=leerTodo"));
+    const data = await res.json();
+    datos = JSON.parse(data.contents);
+    renderizar();
+  }
+
+  function renderizar() {
+    const grid = document.getElementById('grid');
+    // Ordenamiento: los trabajados (true) se restan de los no trabajados (false)
+    const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
+    
+    grid.innerHTML = ordenado.map(t => `
+      <div class="card ${t.trabajado ? 'terminado' : ''}">
+        <div class="tipo-badge">${t.tipo}</div>
+        <div class="titulo">${t.barriada}</div>
+        <button class="btn ${t.trabajado ? 'btn-undo' : 'btn-completar'}" 
+                onclick="toggle('${t.id}')">
+          ${t.trabajado ? 'Reactivar' : 'Marcar como Completado'}
+        </button>
       </div>
-    <? } ?>
-  <? } ?>
+    `).join('');
+  }
 
-  <? dibujar(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales"); ?>
-  <? dibujar(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo"); ?>
+  async function toggle(id) {
+    const item = datos.find(x => x.id == id);
+    item.trabajado = !item.trabajado;
+    renderizar();
+    
+    // Guardamos en Google Sheets
+    fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}`, { mode: 'no-cors' });
+  }
 
-  <div class="footer-minimal">TERRITORIOS CERRO DEL ÁGUILA</div>
-
-  <div id="modal">
-    <div class="modal-header">
-      <span class="close-btn" onclick="cerrar()">‹</span>
-      <span id="m-titulo" style="font-weight:700;"></span>
-    </div>
-    <div class="modal-content">
-      <a id="m-gps" href="#" target="_blank" class="btn-gps" style="display:none;">
-        <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR AL TERRITORIO
-      </a>
-      <img id="m-img" class="img-grande" referrerpolicy="no-referrer">
-      <div style="margin-bottom:20px;">
-        <span class="info-label-modal">ZONA</span>
-        <div id="m-zona" style="font-size:1.3rem; font-weight:800; text-align:center;"></div>
-      </div>
-      <div id="m-box-tiempo" class="box-tiempo-modal">
-        <span style="color:white; opacity: 0.8; font-size:0.7rem; font-weight:800; text-transform:uppercase; display:block; margin-bottom:5px;">TIEMPO RESTANTE</span>
-        <div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900; color:white;"></div>
-      </div>
-      <div style="text-align:left;">
-        <span style="color:#007aff; font-size:0.8rem; font-weight:800; text-transform:uppercase;">📋 Incidencias</span>
-        <div id="m-notas" class="notas-area"></div>
-      </div>
-      <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
-      <div style="height:40px;"></div>
-    </div>
-  </div>
-
-  <script>
-    function abrir(num, zona, tiempo, img, notas, caducado, coords) {
-      document.getElementById('m-titulo').innerText = "TERRITORIO " + num;
-      document.getElementById('m-img').src = img;
-      document.getElementById('m-zona').innerText = zona;
-      document.getElementById('m-tiempo').innerText = tiempo;
-      document.getElementById('m-notas').innerText = notas.split(" | ").join("\n");
-      
-      // RESTAURADA LÓGICA DE GPS ORIGINAL
-      var btnGps = document.getElementById('m-gps');
-      if (coords && coords.includes("POINT")) {
-        var limpias = coords.replace("POINT (", "").replace(")", "").replace(" ", "");
-        btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + limpias;
-        btnGps.style.display = "flex";
-      } else {
-        btnGps.style.display = "none";
-      }
-
-      var box = document.getElementById('m-box-tiempo');
-      if(caducado === true || caducado === "true") { box.style.background = "#ff3b30"; } 
-      else if(tiempo.includes("MES")) { box.style.background = "#34c759"; } 
-      else { box.style.background = "#ff9500"; }
-      
-      document.getElementById('m-link').href = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform?usp=pp_url&entry.1249287665=" + num + "&entry.281107512=" + encodeURIComponent("<?= nombreH ?>");
-      document.getElementById('modal').style.display = "block";
-      document.body.style.overflow = "hidden";
-    }
-    function cerrar() { 
-      document.getElementById('modal').style.display = "none"; 
-      document.body.style.overflow = "auto";
-    }
- function actualizarWeb() {
-  var btn = document.querySelector('.btn-refresh');
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-  // Esto llama a tu función .gs de fondo sin cerrar la página
-  google.script.run
-    .withSuccessHandler(function(datos) {
-      // Si la llamada tiene éxito, recargamos solo la parte de los datos
-      // Nota: Esto requiere que tengas una función en tu .gs que devuelva solo el HTML nuevo o un JSON
-      location.reload(); 
-    })
-    .withFailureHandler(function(err) {
-      alert("Error: " + err);
-      btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
-    })
-    .obtenerDatosPortal("<?= nombreH ?>");
-}
-  </script>
+  cargarDatos();
+</script>
 </body>
 </html>
