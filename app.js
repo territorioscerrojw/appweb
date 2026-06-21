@@ -363,7 +363,7 @@ function filtrarYRenderizar() {
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
-          <span style="font-size: 0.8rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
+          <span style="font-size: 0.9rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
           <button class="btn-check-rectangular" type="button"></button>
         </div>`;
     } else {
