@@ -914,6 +914,15 @@ animation: pulso 4s infinite ease-in-out !important;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .opcion-hermano:hover { background: var(--apple-azul); }
+.input-apple-select {
+  width: 100%;
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-principal);
+  padding: 12px;
+  border-radius: 10px;
+  outline: none;
+}
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
    ========================================================================== */
