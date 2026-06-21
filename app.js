@@ -930,36 +930,44 @@ async function ordenarYRenderizarCercania() {
 // Variable para guardar el hermano seleccionado
 let hermanoSeleccionado = null;
 
-// Asegúrate de que esta función se llame cuando abras el panel
-// Función para rellenar el datalist
-function renderizarListaHermanos(hermanos) {
-  const datalist = document.getElementById("lista-hermanos-datalist");
-  datalist.innerHTML = ""; // Limpiamos
+// 1. Mostrar/Ocultar lista
+function toggleLista(mostrar) {
+  const lista = document.getElementById("lista-hermanos-manual");
+  lista.style.display = mostrar ? "block" : "none";
+}
 
-  hermanos.forEach(hermano => {
-    const option = document.createElement("option");
-    // El valor que se escribe es el nombre
-    option.value = hermano.nombre; 
-    // Usamos data-id para identificarlo después
-    option.setAttribute("data-id", hermano.id); 
-    datalist.appendChild(option);
+// 2. Filtrado y renderizado
+function filtrarLista() {
+  const input = document.getElementById("input-busqueda-hermanos").value.toLowerCase();
+  const items = document.querySelectorAll(".item-hermano");
+  
+  items.forEach(item => {
+    item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
   });
 }
 
-// Función que se dispara al escribir o seleccionar
-function verificarSeleccion(valor) {
-  const datalist = document.getElementById("lista-hermanos-datalist");
-  const btn = document.getElementById("btn-asignar-multiple");
+// 3. Cargar datos (LLAMA A ESTO CUANDO TENGAS LA LISTA DE HERMANOS)
+function cargarListaHermanos(listaHermanos) {
+  const contenedor = document.getElementById("lista-hermanos-manual");
+  contenedor.innerHTML = ""; // Limpiar
   
-  // Buscamos si el texto escrito coincide con alguna opción real
-  let seleccionado = Array.from(datalist.options).find(opt => opt.value === valor);
-  
-  if (seleccionado) {
-    // Si coincide, habilitamos el botón y guardamos el ID
-    btn.disabled = false;
-    btn.className = "btn-apple-activo"; // Asegúrate de tener esta clase
-    console.log("Hermano seleccionado ID:", seleccionado.getAttribute("data-id"));
-  } else {
-    btn.disabled = true;
-  }
+  listaHermanos.forEach(h => {
+    const div = document.createElement("div");
+    div.className = "item-hermano";
+    div.innerText = h.nombre;
+    div.onclick = () => {
+      document.getElementById("input-busqueda-hermanos").value = h.nombre;
+      toggleLista(false); // Cerramos tras elegir
+      evaluarEstadoBotonAsignar();
+    };
+    contenedor.appendChild(div);
+  });
 }
+
+// 4. Cerrar lista si hago clic fuera
+document.addEventListener('click', function(event) {
+  const contenedor = document.querySelector('.controles-asignacion');
+  if (!contenedor.contains(event.target)) {
+    toggleLista(false);
+  }
+});
