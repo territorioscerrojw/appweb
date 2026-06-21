@@ -109,7 +109,6 @@ function extraerNombresDeHermanos() {
     const infoB = diccionarioGruposHermanos[b];
     const grupoA = infoA && typeof infoA === 'object' ? String(infoA.grupo).trim() : String(infoA || "").trim();
     const grupoB = infoB && typeof infoB === 'object' ? String(infoB.grupo).trim() : String(infoB || "").trim();
-    
     const grupoActualStr = String(grupoFiltro).trim();
 
     if (grupoA === grupoActualStr && grupoB !== grupoActualStr) return -1;
@@ -117,41 +116,19 @@ function extraerNombresDeHermanos() {
     return a.localeCompare(b);
   });
   
-  const selectorUnico = document.getElementById("sel-hermano-unico");
-  if (!selectorUnico) return;
+  // AQUÍ ESTÁ EL CAMBIO PARA EL DATALIST
+  const datalist = document.getElementById("lista-hermanos-datalist");
+  if (!datalist) return;
   
-  selectorUnico.innerHTML = '<option value="" data-tiene-territorio="no" data-telefono="">Seleccionar Hermano/a...</option>';
+  datalist.innerHTML = ""; // Limpiar antes de llenar
   
   listaHermanosPool.forEach(nombre => {
     const opt = document.createElement("option");
     opt.value = nombre;
     
-    const tieneMapasAsignados = baseDatosCompleta.some(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.trim().toLowerCase() && m.entregado === true);
-    opt.setAttribute("data-tiene-territorio", tieneMapasAsignados ? "si" : "no");
-    
-    let telClean = "";
-    const infoHermano = diccionarioGruposHermanos[nombre];
-    if (infoHermano && typeof infoHermano === 'object' && infoHermano.whatsapp) {
-      telClean = infoHermano.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
-    } else {
-      const mapaConWA = baseDatosCompleta.find(m => m.hermano && m.hermano.trim().toLowerCase() === nombre.toLowerCase() && m.whatsapp);
-      if (mapaConWA && mapaConWA.whatsapp) {
-        telClean = mapaConWA.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
-      }
-    }
-    
-    if (telClean !== "" && !telClean.startsWith("34")) telClean = "34" + telClean;
-    opt.setAttribute("data-telefono", telClean);
-
-    const marcaDiscreta = tieneMapasAsignados ? " ₍✓₎" : " ₍₋₎";
-    
-    const infoH = diccionarioGruposHermanos[nombre];
-    const grupoH = infoH && typeof infoH === 'object' ? infoH.grupo : infoH;
-    const esDeEsteGrupo = (String(grupoH).trim() === String(grupoFiltro).trim());
-    const prefijoGrupo = esDeEsteGrupo ? "● " : "";
-    
-    opt.innerText = `${prefijoGrupo}${nombre}${marcaDiscreta}`;
-    selectorUnico.appendChild(opt);
+    // Si necesitas guardar el teléfono para el WhatsApp en el datalist
+    // Aunque el datalist es más simple, esta lógica es la que inyecta los nombres
+    datalist.appendChild(opt);
   });
 }
 function procesarFechasYBarras(inicioStr, finStr) {
@@ -547,48 +524,47 @@ function evaluarEstadoBotonAsignar() {
 }
 
 function procesarAsignacionMultiple() {
-  const selector = document.getElementById("sel-hermano-unico");
-  const nombreH = selector.value;
+  const input = document.getElementById("sel-hermano-unico");
+  const nombreH = input.value.trim(); // Obtenemos el nombre escrito
   
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
-  const opcionSeleccionada = selector.options[selector.selectedIndex];
-  const textoVisible = opcionSeleccionada.innerText; 
-  const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
+  // Obtenemos el teléfono del diccionario global
+  const infoHermano = diccionarioGruposHermanos[nombreH];
+  let telefonoWhatsApp = "";
+  if (infoHermano && typeof infoHermano === 'object' && infoHermano.whatsapp) {
+    telefonoWhatsApp = infoHermano.whatsapp.toString().replace(/\s+/g, '').replace('+', '').replace('-', '');
+  }
 
-  if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
-    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
-    const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios para la campaña. 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
+  // Lógica de WhatsApp
+  if (telefonoWhatsApp !== "") {
+    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH)}`;
+    const mensaje = `Hola ${nombreH}, te damos la bienvenida a tu panel personal de territorios. 🗺️\n\n${enlacePersonal}\n\n¡Muchas gracias!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
     const enlaceFantasma = document.createElement("a");
     enlaceFantasma.href = urlWhatsApp;
     enlaceFantasma.target = "_blank";
-    enlaceFantasma.rel = "noopener noreferrer";
     document.body.appendChild(enlaceFantasma);
     enlaceFantasma.click();
     enlaceFantasma.remove();
   }
 
   const copiaSeleccionados = [...territoriosSeleccionados];
-
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
+      mapa.trabajado = false;
     }
   });
 
-  territoriosSeleccionados = [];
-  actualizarPanelAsignacionFlotante();
+  limpiarSeleccionYEsconder(); 
   actualizarAnillosEstadisticos();
   filtrarYRenderizar(); 
-
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
-
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   try {
     const promesas = listaIds.map(id => lanzarPeticionGoogleAsincrona(id, nombreHermano));
