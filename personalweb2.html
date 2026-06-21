@@ -30,7 +30,11 @@
       script.src = `${URL_API}?accion=leerTodo&callback=test`;
       document.body.appendChild(script);
     }
-
+window.test = function(data) {
+  console.log("Lo que recibí de Google:", data); // <--- MIRA ESTO EN LA CONSOLA
+  datos = data;
+  renderizar();
+};
     function renderizar() {
   const grid = document.getElementById('grid');
   
