@@ -927,27 +927,42 @@ async function ordenarYRenderizarCercania() {
     filtrarYRenderizar();
   });
 }
-// 1. Cuando cargues los hermanos, en lugar de crear <option>, crea divs:
-function renderizarListaHermanos(hermanos) {
-  const contenedor = document.getElementById("lista-opciones-hermanos");
-  contenedor.innerHTML = "";
-  
-  hermanos.forEach(hermano => {
-    const div = document.createElement("div");
-    div.className = "opcion-hermano";
-    div.innerText = hermano.nombre;
-    div.onclick = () => seleccionarHermano(hermano);
-    contenedor.appendChild(div);
-  });
-}
+// Variable para guardar el hermano seleccionado
+let hermanoSeleccionado = null;
 
-// 2. Función de filtrado para este nuevo sistema:
 function filtrarListaHermanos(texto) {
+  const contenedor = document.getElementById("contenedor-lista-hermanos");
+  contenedor.style.display = "block"; // Mostrar siempre al escribir
+  
   const filtro = texto.toLowerCase();
   const opciones = document.querySelectorAll(".opcion-hermano");
   
   opciones.forEach(opcion => {
-    const nombre = opcion.innerText.toLowerCase();
-    opcion.style.display = nombre.includes(filtro) ? "" : "none";
+    opcion.style.display = opcion.innerText.toLowerCase().includes(filtro) ? "" : "none";
+  });
+}
+
+function mostrarListaCompleta() {
+  document.getElementById("contenedor-lista-hermanos").style.display = "block";
+}
+
+// Al seleccionar un hermano de la lista
+function seleccionarHermano(nombre, id) {
+  document.getElementById("input-busqueda-hermanos").value = nombre;
+  document.getElementById("contenedor-lista-hermanos").style.display = "none";
+  hermanoSeleccionado = id;
+  evaluarEstadoBotonAsignar(); // Tu función original para activar el botón
+}
+
+// IMPORTANTE: Cuando llenes la lista al abrir el panel, usa esto:
+function llenarListaHermanos(lista) {
+  const contenedor = document.getElementById("contenedor-lista-hermanos");
+  contenedor.innerHTML = "";
+  lista.forEach(h => {
+    const div = document.createElement("div");
+    div.className = "opcion-hermano";
+    div.innerText = h.nombre;
+    div.onclick = () => seleccionarHermano(h.nombre, h.id);
+    contenedor.appendChild(div);
   });
 }
