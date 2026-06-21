@@ -1,0 +1,76 @@
+
+
+<!DOCTYPE html>
+<html lang="es" data-theme="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Territorios: Gestión Total</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos base inspirados en personalweb */
+    :root {
+      --fondo-pantalla: #09090b;
+      --fondo-tarjeta: #1c1c1e;
+      --texto-principal: #ffffff;
+      --acento: #007aff;
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--fondo-pantalla); color: var(--texto-principal); margin: 0; padding: 20px; }
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .seccion-titulo { font-size: 1.5rem; font-weight: 800; margin: 30px 0 15px; border-left: 4px solid var(--acento); padding-left: 15px; }
+    .card { background: var(--fondo-tarjeta); border-radius: 18px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
+    .card.trabajado { opacity: 0.5; filter: grayscale(0.8); }
+    img { width: 100%; border-radius: 12px; }
+    .btn { background: var(--acento); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; margin-top: 10px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mis Territorios</h1>
+    <button onclick="cargarTodo()" id="btn-refresh"><i class="fa-solid fa-rotate"></i></button>
+  </header>
+
+  <main id="app">
+    <div id="seccion-campana">
+      <div class="seccion-titulo">Campaña</div>
+      <div id="grid-campana" class="grid-container"></div>
+    </div>
+
+    <div id="seccion-personal">
+      <div class="seccion-titulo">Personales</div>
+      <div id="grid-personales" class="grid-container"></div>
+    </div>
+
+    <div id="seccion-grupo">
+      <div class="seccion-titulo">Grupo</div>
+      <div id="grid-grupo" class="grid-container"></div>
+    </div>
+  </main>
+
+  <script>
+    // URL de tu App Script (la que maneja la lógica de campañas)
+    const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec"; 
+
+    async function cargarTodo() {
+      // 1. Fetch a tus datos
+      // Aquí debes llamar a tu función .gs que devuelve el JSON consolidado
+      const respuesta = await fetch(`${URL_API}?accion=leerTodo`);
+      const datos = await respuesta.json();
+
+      // 2. Limpiar y renderizar
+      renderizar(datos);
+    }
+
+    function renderizar(datos) {
+      // Lógica de filtrado:
+      // Si datos.trabajado === true, mover al final del grid
+      // Puedes usar .sort((a,b) => a.trabajado - b.trabajado)
+    }
+
+    // Al abrir, cargar datos
+    cargarTodo();
+  </script>
+</body>
+</html>
