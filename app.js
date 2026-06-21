@@ -930,44 +930,40 @@ async function ordenarYRenderizarCercania() {
 // Variable para guardar el hermano seleccionado
 let hermanoSeleccionado = null;
 
-// 1. Mostrar/Ocultar lista
-function toggleLista(mostrar) {
-  const lista = document.getElementById("lista-hermanos-manual");
-  lista.style.display = mostrar ? "block" : "none";
-}
-
-// 2. Filtrado y renderizado
-function filtrarLista() {
-  const input = document.getElementById("input-busqueda-hermanos").value.toLowerCase();
-  const items = document.querySelectorAll(".item-hermano");
+// Llamas a esta función para cargar los datos
+function inicializarSelectorHermanos(hermanos) {
+  const lista = document.getElementById("lista-desplegable");
+  lista.innerHTML = ""; // Limpiar
   
-  items.forEach(item => {
-    item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
-  });
-}
-
-// 3. Cargar datos (LLAMA A ESTO CUANDO TENGAS LA LISTA DE HERMANOS)
-function cargarListaHermanos(listaHermanos) {
-  const contenedor = document.getElementById("lista-hermanos-manual");
-  contenedor.innerHTML = ""; // Limpiar
-  
-  listaHermanos.forEach(h => {
+  hermanos.forEach(h => {
     const div = document.createElement("div");
-    div.className = "item-hermano";
+    div.className = "opcion-item";
     div.innerText = h.nombre;
     div.onclick = () => {
       document.getElementById("input-busqueda-hermanos").value = h.nombre;
-      toggleLista(false); // Cerramos tras elegir
-      evaluarEstadoBotonAsignar();
+      lista.style.display = "none";
+      // Aquí activas tu botón de asignar
+      document.getElementById("btn-asignar-multiple").disabled = false;
     };
-    contenedor.appendChild(div);
+    lista.appendChild(div);
   });
 }
 
-// 4. Cerrar lista si hago clic fuera
-document.addEventListener('click', function(event) {
-  const contenedor = document.querySelector('.controles-asignacion');
-  if (!contenedor.contains(event.target)) {
+// Lógica de apertura y filtrado
+function toggleLista(mostrar) {
+  document.getElementById("lista-desplegable").style.display = mostrar ? "block" : "none";
+}
+
+function filtrarLista(texto) {
+  const items = document.querySelectorAll(".opcion-item");
+  items.forEach(item => {
+    item.style.display = item.innerText.toLowerCase().includes(texto.toLowerCase()) ? "block" : "none";
+  });
+}
+
+// IMPORTANTE: Cerrar al hacer clic fuera
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('contenedor-busqueda-hermanos').contains(e.target)) {
     toggleLista(false);
   }
 });
