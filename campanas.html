@@ -108,15 +108,16 @@
     <button class="btn-cerrar-panel" onclick="limpiarSeleccionYEsconder()">✕</button>
     <span id="txt-contador-seleccionados">0 seleccionados</span>
     
- <div class="controles-asignacion" style="position: relative;">
-  <input type="text" id="input-busqueda-hermanos" 
-         placeholder="Escribe o pulsa aquí..." 
-         oninput="filtrarLista()" 
-         onclick="toggleLista(true)"
-         class="select-apple">
-         
-  <div id="lista-hermanos-manual" class="lista-desplegable-propia" style="display:none;">
-    </div>
+<div class="controles-asignacion">
+  <div id="contenedor-busqueda-hermanos" class="custom-select-box">
+    <input type="text" id="input-busqueda-hermanos" 
+           placeholder="Seleccionar hermano..." 
+           onclick="toggleLista(true)" 
+           oninput="filtrarLista(this.value)">
+    
+    <div id="lista-desplegable" class="lista-opciones-oculta">
+      </div>
+  </div>
   
   <button id="btn-asignar-multiple" class="btn-apple-bloqueado" disabled onclick="procesarAsignacionMultiple()">Asignar</button>
 </div>
