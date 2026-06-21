@@ -4,73 +4,57 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super App Territorios</title>
   <style>
-    :root { --bg: #09090b; --card: #2d2d35; --text: #ffffff; --green: #34c759; }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; }
-    #grid { display: flex; flex-direction: column; gap: 15px; }
-    .card { background: var(--card); padding: 16px; border-radius: 16px; transition: 0.3s; }
-    .card.terminado { opacity: 0.5; order: 99; } /* Esto mueve los trabajados al fondo */
-    .tipo-badge { font-size: 10px; color: #a1a1aa; text-transform: uppercase; font-weight: bold; }
-    .titulo { font-size: 18px; margin: 5px 0; font-weight: 600; }
-    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
-    .btn-completar { background: var(--green); color: white; }
-    .btn-undo { background: #3f3f46; color: white; }
+    body { background: #09090b; color: white; font-family: sans-serif; padding: 20px; }
+    .card { background: #2d2d35; padding: 15px; border-radius: 14px; margin-bottom: 15px; }
+    .card.terminado { opacity: 0.5; order: 99; }
+    img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-completar { background: #34c759; color: white; }
   </style>
 </head>
 <body>
+  <main id="grid"></main>
 
-<main id="grid"></main>
+  <script>
+    const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+    let datos = [];
 
-<script>
-  // Cambia esta URL por la de tu nuevo despliegue unificado
- 
+    function cargarDatos() {
+      window.test = function(data) {
+        datos = data;
+        renderizar();
+      };
+      const script = document.createElement('script');
+      script.src = `${URL_API}?accion=leerTodo&callback=test`;
+      document.body.appendChild(script);
+    }
 
- function cargarDatos() {
-  const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-  
-  // 1. Definimos la función que "atrapa" los datos de Google
-  window.test = function(data) {
-    datos = data; // Guardamos los datos en tu variable global
-    console.log("Datos recibidos:", datos);
-    renderizar(); // Pintamos la pantalla
-  };
+    function renderizar() {
+      const grid = document.getElementById('grid');
+      const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
+      grid.innerHTML = ordenado.map(t => `
+        <div class="card ${t.trabajado ? 'terminado' : ''}">
+          <img src="${t.rutaMapa}" onerror="this.src='https://via.placeholder.com/150'">
+          <h3>${t.barriada}</h3>
+          <button class="btn btn-completar" onclick="toggle('${t.id}')">
+            ${t.trabajado ? 'Reactivar' : 'Completar'}
+          </button>
+        </div>
+      `).join('');
+    }
 
-  // 2. Cargamos el script dinámicamente
-  const script = document.createElement('script');
-  // Nota: hemos cambiado &callback=test para que coincida con el nombre de la función
-  script.src = `${URL_API}?accion=leerTodo&callback=test`;
-  document.body.appendChild(script);
-}
+    function toggle(id) {
+      const item = datos.find(x => x.id == id);
+      item.trabajado = !item.trabajado;
+      renderizar();
+      const script = document.createElement('script');
+      script.src = `${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}&callback=void`;
+      document.body.appendChild(script);
+    }
 
-  function renderizar() {
-    const grid = document.getElementById('grid');
-    // Ordenamiento: los trabajados (true) se restan de los no trabajados (false)
-    const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
-    
-    grid.innerHTML = ordenado.map(t => `
-      <div class="card ${t.trabajado ? 'terminado' : ''}">
-        <div class="tipo-badge">${t.tipo}</div>
-        <div class="titulo">${t.barriada}</div>
-        <button class="btn ${t.trabajado ? 'btn-undo' : 'btn-completar'}" 
-                onclick="toggle('${t.id}')">
-          ${t.trabajado ? 'Reactivar' : 'Marcar como Completado'}
-        </button>
-      </div>
-    `).join('');
-  }
-
-  async function toggle(id) {
-    const item = datos.find(x => x.id == id);
-    item.trabajado = !item.trabajado;
-    renderizar();
-    
-    // Guardamos en Google Sheets
-    fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}`, { mode: 'no-cors' });
-  }
-
-  cargarDatos();
-</script>
+    cargarDatos();
+  </script>
 </body>
 </html>
