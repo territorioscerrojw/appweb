@@ -931,30 +931,35 @@ async function ordenarYRenderizarCercania() {
 let hermanoSeleccionado = null;
 
 // Asegúrate de que esta función se llame cuando abras el panel
-function poblarListaHermanos(listaHermanos) {
-  const contenedor = document.getElementById("contenedor-lista-hermanos");
-  contenedor.innerHTML = ""; // Limpiar antes de llenar
+// Función para rellenar el datalist
+function renderizarListaHermanos(hermanos) {
+  const datalist = document.getElementById("lista-hermanos-datalist");
+  datalist.innerHTML = ""; // Limpiamos
 
-  listaHermanos.forEach(hermano => {
-    const div = document.createElement("div");
-    div.className = "opcion-hermano";
-    div.textContent = hermano.nombre; // O el campo que contenga el nombre
-    div.onclick = () => {
-      document.getElementById("input-busqueda-hermanos").value = hermano.nombre;
-      // Aquí guardas el ID del hermano seleccionado en una variable global
-      idHermanoSeleccionado = hermano.id; 
-      evaluarEstadoBotonAsignar();
-    };
-    contenedor.appendChild(div);
+  hermanos.forEach(hermano => {
+    const option = document.createElement("option");
+    // El valor que se escribe es el nombre
+    option.value = hermano.nombre; 
+    // Usamos data-id para identificarlo después
+    option.setAttribute("data-id", hermano.id); 
+    datalist.appendChild(option);
   });
 }
 
-// Y la función de filtrado que ya tenías:
-function filtrarListaHermanos(texto) {
-  const filtro = texto.toLowerCase();
-  const opciones = document.querySelectorAll(".opcion-hermano");
+// Función que se dispara al escribir o seleccionar
+function verificarSeleccion(valor) {
+  const datalist = document.getElementById("lista-hermanos-datalist");
+  const btn = document.getElementById("btn-asignar-multiple");
   
-  opciones.forEach(opcion => {
-    opcion.style.display = opcion.textContent.toLowerCase().includes(filtro) ? "block" : "none";
-  });
+  // Buscamos si el texto escrito coincide con alguna opción real
+  let seleccionado = Array.from(datalist.options).find(opt => opt.value === valor);
+  
+  if (seleccionado) {
+    // Si coincide, habilitamos el botón y guardamos el ID
+    btn.disabled = false;
+    btn.className = "btn-apple-activo"; // Asegúrate de tener esta clase
+    console.log("Hermano seleccionado ID:", seleccionado.getAttribute("data-id"));
+  } else {
+    btn.disabled = true;
+  }
 }
