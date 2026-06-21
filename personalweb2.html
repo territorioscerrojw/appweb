@@ -28,14 +28,18 @@
   const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
   let datos = [];
 
-  async function cargarDatos() {
-    // Usamos el proxy de allorigins para saltar el bloqueo CORS de Google
-    const proxy = "https://api.allorigins.win/get?url=";
-    const res = await fetch(proxy + encodeURIComponent(URL_API + "?accion=leerTodo"));
-    const data = await res.json();
-    datos = JSON.parse(data.contents);
+  function cargarDatos() {
+  const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+  
+  window.callbackHandler = function(data) {
+    datos = data;
     renderizar();
-  }
+  };
+
+  const script = document.createElement('script');
+  script.src = `${URL_API}?accion=leerTodo&callback=callbackHandler`;
+  document.body.appendChild(script);
+}
 
   function renderizar() {
     const grid = document.getElementById('grid');
