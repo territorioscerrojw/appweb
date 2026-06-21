@@ -930,39 +930,31 @@ async function ordenarYRenderizarCercania() {
 // Variable para guardar el hermano seleccionado
 let hermanoSeleccionado = null;
 
-function filtrarListaHermanos(texto) {
+// Asegúrate de que esta función se llame cuando abras el panel
+function poblarListaHermanos(listaHermanos) {
   const contenedor = document.getElementById("contenedor-lista-hermanos");
-  contenedor.style.display = "block"; // Mostrar siempre al escribir
-  
+  contenedor.innerHTML = ""; // Limpiar antes de llenar
+
+  listaHermanos.forEach(hermano => {
+    const div = document.createElement("div");
+    div.className = "opcion-hermano";
+    div.textContent = hermano.nombre; // O el campo que contenga el nombre
+    div.onclick = () => {
+      document.getElementById("input-busqueda-hermanos").value = hermano.nombre;
+      // Aquí guardas el ID del hermano seleccionado en una variable global
+      idHermanoSeleccionado = hermano.id; 
+      evaluarEstadoBotonAsignar();
+    };
+    contenedor.appendChild(div);
+  });
+}
+
+// Y la función de filtrado que ya tenías:
+function filtrarListaHermanos(texto) {
   const filtro = texto.toLowerCase();
   const opciones = document.querySelectorAll(".opcion-hermano");
   
   opciones.forEach(opcion => {
-    opcion.style.display = opcion.innerText.toLowerCase().includes(filtro) ? "" : "none";
-  });
-}
-
-function mostrarListaCompleta() {
-  document.getElementById("contenedor-lista-hermanos").style.display = "block";
-}
-
-// Al seleccionar un hermano de la lista
-function seleccionarHermano(nombre, id) {
-  document.getElementById("input-busqueda-hermanos").value = nombre;
-  document.getElementById("contenedor-lista-hermanos").style.display = "none";
-  hermanoSeleccionado = id;
-  evaluarEstadoBotonAsignar(); // Tu función original para activar el botón
-}
-
-// IMPORTANTE: Cuando llenes la lista al abrir el panel, usa esto:
-function llenarListaHermanos(lista) {
-  const contenedor = document.getElementById("contenedor-lista-hermanos");
-  contenedor.innerHTML = "";
-  lista.forEach(h => {
-    const div = document.createElement("div");
-    div.className = "opcion-hermano";
-    div.innerText = h.nombre;
-    div.onclick = () => seleccionarHermano(h.nombre, h.id);
-    contenedor.appendChild(div);
+    opcion.style.display = opcion.textContent.toLowerCase().includes(filtro) ? "block" : "none";
   });
 }
