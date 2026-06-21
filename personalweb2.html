@@ -4,63 +4,82 @@
 <html lang="es" data-theme="oscuro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Territorios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mis Territorios</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    :root { --fondo: #09090b; --tarjeta: #1c1c1e; --acento: #007aff; }
-    body { font-family: sans-serif; background: var(--fondo); color: white; padding: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
-    .card { background: var(--tarjeta); border-radius: 15px; padding: 15px; border: 1px solid #333; }
-    .card.trabajado { opacity: 0.4; filter: grayscale(1); }
-    img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
-    .btn { background: var(--acento); border: none; color: white; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; }
+    :root { --bg: #09090b; --card: #2d2d35; --text: #ffffff; --green: #34c759; --border: rgba(255,255,255,0.1); }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; margin: 0; padding: 20px; }
+    header { margin-bottom: 20px; }
+    h1 { margin: 0; font-size: 24px; }
+    
+    #grid { display: grid; gap: 16px; }
+    
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; transition: all 0.3s; position: relative; }
+    .card.terminado { opacity: 0.6; border: 1px solid transparent; }
+    
+    .meta { font-size: 12px; color: #a1a1aa; text-transform: uppercase; margin-bottom: 8px; display: block; }
+    .titulo { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    
+    .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-do { background: var(--green); color: white; }
+    .btn-undo { background: transparent; border: 1px solid var(--border); color: #a1a1aa; }
   </style>
 </head>
 <body>
+
+<header>
   <h1>Mis Territorios</h1>
-  <div id="contenedor"></div>
+  <p id="status">Cargando...</p>
+</header>
 
-  <script>
-    const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-    const nombre = new URLSearchParams(window.location.search).get('h') || "Nombre_Hermano";
+<main id="grid"></main>
 
-    async function init() {
-      const resp = await fetch(`${URL_API}?accion=obtenerTodo&h=${encodeURIComponent(nombre)}`);
-      const data = await resp.json();
-      renderizar(data);
+<script>
+  const URL_API = "TU_URL_DE_APPS_SCRIPT_AQUI"; // <--- Pega aquí tu URL
+  let datos = [];
+
+  async function init() {
+    try {
+      const res = await fetch(`${URL_API}?accion=obtenerDatos`);
+      datos = await res.json();
+      render();
+      document.getElementById('status').innerText = "Todo sincronizado";
+    } catch(e) { document.getElementById('status').innerText = "Error de conexión"; }
+  }
+
+  function render() {
+    const grid = document.getElementById('grid');
+    // ORDENACIÓN: Primero los no trabajados, luego los trabajados
+    const sorted = [...datos].sort((a, b) => a.trabajado - b.trabajado);
+    
+    grid.innerHTML = sorted.map(t => `
+      <div class="card ${t.trabajado ? 'terminado' : ''}">
+        <span class="meta">${t.tipo} • ID: ${t.id}</span>
+        <div class="titulo">${t.barriada}</div>
+        <button class="btn ${t.trabajado ? 'btn-undo' : 'btn-do'}" onclick="toggle('${t.id}')">
+          ${t.trabajado ? 'Reactivar' : 'Marcar como Completado'}
+        </button>
+      </div>
+    `).join('');
+  }
+
+  async function toggle(id) {
+    const t = datos.find(x => x.id == id);
+    t.trabajado = !t.trabajado;
+    
+    if(t.trabajado) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
+    
+    render();
+    
+    // Llamada asíncrona al servidor
+    fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${t.trabajado}`, { mode: 'no-cors' });
+  }
 
-    function renderizar(data) {
-      const cont = document.getElementById('contenedor');
-      cont.innerHTML = "";
-      
-      // Función para pintar
-      const pintar = (titulo, lista, esCampana) => {
-        cont.innerHTML += `<h2>${titulo}</h2><div class="grid" id="grid-${titulo}"></div>`;
-        const grid = document.getElementById(`grid-${titulo}`);
-        lista.sort((a,b) => (a.trabajado || false) - (b.trabajado || false));
-        
-        lista.forEach(item => {
-          grid.innerHTML += `
-            <div class="card ${item.trabajado ? 'trabajado' : ''}">
-              <img src="${item.rutaMapa || item.img || ''}">
-              <h3>${item.id || item.num}</h3>
-              <p>${item.barriada || item.zona}</p>
-              ${esCampana ? `<button class="btn" onclick="cambiar('${item.id}', ${!item.trabajado})">${item.trabajado ? 'Reactivar' : 'Completar'}</button>` : ''}
-            </div>`;
-        });
-      };
-
-      pintar("Campaña", data.campana, true);
-      pintar("Personales", data.portal.personales, false);
-      pintar("Grupo", data.portal.grupo, false);
-    }
-
-    async function cambiar(id, estado) {
-      await fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${estado}`);
-      init();
-    }
-    init();
-  </script>
+  init();
+</script>
 </body>
 </html>
