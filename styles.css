@@ -887,7 +887,18 @@ animation: pulso 4s infinite ease-in-out !important;
   padding: 4px; /* Un poco de margen interno para que nada toque los bordes del banner */
   box-sizing: border-box;
 }
-
+/* En styles.css */
+.input-busqueda-flotante {
+  width: 100%;
+  background: var(--glass-fondo);
+  border: 1px solid var(--glass-borde);
+  color: var(--texto-principal);
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  outline: none;
+}
 /* ==========================================================================
    FOOTER (BARRA DE PROGRESO DE TIEMPO FIJA ABAJO)
    ========================================================================== */
