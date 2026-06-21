@@ -19,53 +19,57 @@
 
   <script>
     const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-    let datos = [];
+    et datos = [];
+    let cargando = false; // <--- CORTAFUEGOS
 
     function cargarDatos() {
-      window.test = function(data) {
-        datos = data;
-        renderizar();
-      };
+      if (cargando) return; // Si ya está cargando, no hacer nada
+      cargando = true;
+      
       const script = document.createElement('script');
-     script.src = `${URL_API}?accion=leerDatos&callback=test`;
+      // Usamos 'leerDatos' que es el nombre de la función que SÍ está en tu script
+      script.src = `${URL_API}?accion=leerDatos&callback=test`;
       document.body.appendChild(script);
     }
-window.test = function(data) {
-  console.log("Lo que recibí de Google:", data); // <--- MIRA ESTO EN LA CONSOLA
-  datos = data;
-  renderizar();
-};
-    function renderizar() {
-  const grid = document.getElementById('grid');
-  
-  // 1. Verificamos si datos es realmente un array
-  if (!Array.isArray(datos)) {
-    console.error("Los datos recibidos no son una lista:", datos);
-    grid.innerHTML = "<p>Error: No se pudieron cargar los territorios correctamente.</p>";
-    return;
-  }
 
-  // 2. Ahora sí, hacemos el sort y el map
-  const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
-  
-  grid.innerHTML = ordenado.map(t => `
-    <div class="card ${t.trabajado ? 'terminado' : ''}">
-      <img src="${t.rutaMapa}" onerror="this.src='https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/imagenes/defecto.png'">
-      <h3>${t.barriada}</h3>
-      <button class="btn btn-completar" onclick="toggle('${t.id}')">
-        ${t.trabajado ? 'Reactivar' : 'Completar'}
-      </button>
-    </div>
-  `).join('');
-}
+    window.test = function(data) {
+      cargando = false;
+      // Validamos si lo que llega es una lista real
+      if (data && Array.isArray(data)) {
+        datos = data;
+        renderizar();
+      } else {
+        console.error("El servidor no envió una lista válida:", data);
+        document.getElementById('grid').innerHTML = "<p>Error: Datos no recibidos.</p>";
+      }
+    };
+
+    function renderizar() {
+      const grid = document.getElementById('grid');
+      // Limpiamos el grid antes de dibujar para evitar duplicados
+      grid.innerHTML = ""; 
+      
+      const ordenado = [...datos].sort((a, b) => a.trabajado - b.trabajado);
+      
+      grid.innerHTML = ordenado.map(t => `
+        <div class="card ${t.trabajado ? 'terminado' : ''}">
+          <h3>${t.barriada || 'Sin nombre'}</h3>
+          <button class="btn" onclick="toggle('${t.id}')">
+            ${t.trabajado ? 'Reactivar' : 'Completar'}
+          </button>
+        </div>
+      `).join('');
+    }
 
     function toggle(id) {
       const item = datos.find(x => x.id == id);
+      if (!item) return;
+      
       item.trabajado = !item.trabajado;
-      renderizar();
-      const script = document.createElement('script');
-      script.src = `${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}&callback=void`;
-      document.body.appendChild(script);
+      renderizar(); // Actualizamos la vista localmente al instante
+      
+      // Llamada silenciosa al servidor
+      fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}`);
     }
 
     cargarDatos();
