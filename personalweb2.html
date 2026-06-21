@@ -25,19 +25,29 @@
 
 <script>
   // Cambia esta URL por la de tu nuevo despliegue unificado
-  const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-  let datos = [];
+ 
 
-  function cargarDatos() {
+ function cargarDatos() {
   const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
   
+  // Usamos el formato JSONP (Carga dinámica de script)
   window.callbackHandler = function(data) {
+    if (data && data.error) {
+      console.error("Error del servidor:", data.mensaje);
+      return;
+    }
     datos = data;
     renderizar();
   };
 
   const script = document.createElement('script');
   script.src = `${URL_API}?accion=leerTodo&callback=callbackHandler`;
+  
+  // Si el servidor falla (404 o error), esto nos avisará
+  script.onerror = function() {
+    console.error("No se pudo cargar el script. Verifica que el despliegue sea público.");
+  };
+  
   document.body.appendChild(script);
 }
 
