@@ -927,3 +927,23 @@ async function ordenarYRenderizarCercania() {
     filtrarYRenderizar();
   });
 }
+// En app.js
+function filtrarListaHermanos(texto) {
+  const filtro = texto.toLowerCase();
+  const selector = document.getElementById("sel-hermano-unico");
+  const opciones = selector.options;
+
+  for (let i = 1; i < opciones.length; i++) { // Empezamos en 1 para no ocultar la opción por defecto
+    const textoOpcion = opciones[i].text.toLowerCase();
+    if (textoOpcion.includes(filtro)) {
+      opciones[i].style.display = ""; // Mostrar
+    } else {
+      opciones[i].style.display = "none"; // Ocultar
+    }
+  }
+  
+  // Si se limpia el buscador, asegurar que el select vuelva a la posición inicial
+  if (filtro === "") {
+    selector.selectedIndex = 0;
+  }
+}
