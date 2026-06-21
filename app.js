@@ -927,23 +927,27 @@ async function ordenarYRenderizarCercania() {
     filtrarYRenderizar();
   });
 }
-// En app.js
+// 1. Cuando cargues los hermanos, en lugar de crear <option>, crea divs:
+function renderizarListaHermanos(hermanos) {
+  const contenedor = document.getElementById("lista-opciones-hermanos");
+  contenedor.innerHTML = "";
+  
+  hermanos.forEach(hermano => {
+    const div = document.createElement("div");
+    div.className = "opcion-hermano";
+    div.innerText = hermano.nombre;
+    div.onclick = () => seleccionarHermano(hermano);
+    contenedor.appendChild(div);
+  });
+}
+
+// 2. Función de filtrado para este nuevo sistema:
 function filtrarListaHermanos(texto) {
   const filtro = texto.toLowerCase();
-  const selector = document.getElementById("sel-hermano-unico");
-  const opciones = selector.options;
-
-  for (let i = 1; i < opciones.length; i++) { // Empezamos en 1 para no ocultar la opción por defecto
-    const textoOpcion = opciones[i].text.toLowerCase();
-    if (textoOpcion.includes(filtro)) {
-      opciones[i].style.display = ""; // Mostrar
-    } else {
-      opciones[i].style.display = "none"; // Ocultar
-    }
-  }
+  const opciones = document.querySelectorAll(".opcion-hermano");
   
-  // Si se limpia el buscador, asegurar que el select vuelva a la posición inicial
-  if (filtro === "") {
-    selector.selectedIndex = 0;
-  }
+  opciones.forEach(opcion => {
+    const nombre = opcion.innerText.toLowerCase();
+    opcion.style.display = nombre.includes(filtro) ? "" : "none";
+  });
 }
