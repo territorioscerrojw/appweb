@@ -954,3 +954,11 @@ function toggleFiltroPrioritarios() {
     // Volver a renderizar aplicando el filtro
     filtrarYRenderizar();
 }
+function cambiarPestana(vista, btn) {
+  vistaActual = vista;
+  // filtroPrioritariosActivo = false; // <-- ELIMINA O COMENTA ESTA LÍNEA
+  
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("activa"));
+  btn.classList.add("activa");
+  filtrarYRenderizar();
+}
