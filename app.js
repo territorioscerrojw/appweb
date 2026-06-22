@@ -272,8 +272,18 @@ function filtrarYRenderizar() {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
   }
   if (contenedorFiltroPrio) {
-    contenedorFiltroPrio.style.display = vistaActual === "asignados" ? "none" : "flex";
-  }
+    const esDisponibles = (vistaActual === "disponibles");
+    contenedorFiltroPrio.style.display = esDisponibles ? "flex" : "none";
+    
+    // Si estamos en disponibles, restauramos el estilo visual del botón
+    if (esDisponibles && btnFiltroPrio) {
+        if (filtroPrioritariosActivo) {
+            btnFiltroPrio.classList.add("activa");
+        } else {
+            btnFiltroPrio.classList.remove("activa");
+        }
+    }
+}
 
   const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda")
     ? document.getElementById("input-busqueda").value.toLowerCase()
