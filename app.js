@@ -264,9 +264,15 @@ function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
 
+  // 1. Gestión de visibilidad de los controles
   const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
+  const contenedorFiltroPrio = document.getElementById("contenedor-filtro-prio");
+  
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
+  }
+  if (contenedorFiltroPrio) {
+    contenedorFiltroPrio.style.display = vistaActual === "asignados" ? "none" : "flex";
   }
 
   const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda")
@@ -282,8 +288,12 @@ function filtrarYRenderizar() {
   } else {
     if (panelAsignacion) panelAsignacion.style.display = "none";
     inyectarSelectorDeAgrupacionAsignados();
+    // Reseteamos filtro prioritarios al salir de disponibles
+    filtroPrioritariosActivo = false;
+    document.getElementById("btn-filtro-prioritarios")?.classList.remove("activa");
   }
 
+  // 2. Filtrado inicial del dataset
   let dataset = (grupoFiltro === "GLOBAL_CAMPANA")
     ? baseDatosCompleta
     : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
@@ -292,21 +302,22 @@ function filtrarYRenderizar() {
     ? dataset.filter(m => m.entregado === false) 
     : dataset.filter(m => m.entregado === true);
 
+  // 3. Aplicar filtros (Búsqueda y Prioritarios)
   if (buscadorValue) {
     dataset = dataset.filter(m =>
       m.id.toString().includes(buscadorValue) ||
       m.barriada.toLowerCase().includes(buscadorValue)
     );
   }
-// --- NUEVO FILTRO DE PRIORITARIOS ---
-if (filtroPrioritariosActivo) {
-    dataset = dataset.filter(mapa => {
-        return mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
-    });
-}
-  // Lógica de ordenación
+
+  if (filtroPrioritariosActivo && vistaActual === "disponibles") {
+    dataset = dataset.filter(m => 
+      m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
+    );
+  }
+
+  // 4. Lógica de ordenación
   if (vistaActual === "disponibles") {
-    // Si estamos en modo Campana O si el orden fue forzado por cercanía
     if (modoCampanaGlobal || ordenForzado === "CERCANIA") {
         dataset.sort((a, b) => {
             let distA = (a.distancia !== undefined && a.distancia !== null) ? a.distancia : 99999;
@@ -336,13 +347,13 @@ if (filtroPrioritariosActivo) {
     });
   }
 
+  // 5. Renderizado en el DOM
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
 
     if (vistaActual === "disponibles") {
-      // Cálculo de distancia para mostrar en verde
       let textoDistancia = "";
       if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal && mapa.distancia !== undefined && mapa.distancia < 999) {
         textoDistancia = mapa.distancia < 1 
@@ -404,7 +415,6 @@ if (filtroPrioritariosActivo) {
     grid.appendChild(div);
   });
 }
-
 async function toggleEstadoTrabajo(idMapa, event) {
   event.preventDefault();
   const btn = event.currentTarget;
