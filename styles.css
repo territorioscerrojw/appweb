@@ -371,7 +371,26 @@ animation: pulso 4s infinite ease-in-out !important;
   gap: 14px;
   width: 100%;
 }
+.contenedor-filtros-extra {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
 
+.btn-chip {
+  background: var(--color-fondo-secundario); /* Ajusta según tus variables */
+  border: 1px solid var(--color-borde);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-chip.activo {
+  background: #f59e0b; /* Color amarillo o el que prefieras para prioritarios */
+  color: white;
+  border-color: #f59e0b;
+}
 /* ==========================================================================
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
    ========================================================================== */
