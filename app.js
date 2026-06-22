@@ -264,26 +264,23 @@ function filtrarYRenderizar() {
   const grid = document.getElementById("contenedor-principal-grid");
   if (!grid) return;
 
-  // 1. Gestión de visibilidad de los controles
+  // 1. Gestión de visibilidad de controles según pestaña
   const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
   const contenedorFiltroPrio = document.getElementById("contenedor-filtro-prio");
-  
+  const btnFiltroPrio = document.getElementById("btn-filtro-prioritarios");
+
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
   }
+  
+  // Mostrar filtro prioritarios solo en 'disponibles'
   if (contenedorFiltroPrio) {
-    const esDisponibles = (vistaActual === "disponibles");
-    contenedorFiltroPrio.style.display = esDisponibles ? "flex" : "none";
-    
-    // Si estamos en disponibles, restauramos el estilo visual del botón
-    if (esDisponibles && btnFiltroPrio) {
-        if (filtroPrioritariosActivo) {
-            btnFiltroPrio.classList.add("activa");
-        } else {
-            btnFiltroPrio.classList.remove("activa");
-        }
+    contenedorFiltroPrio.style.display = vistaActual === "asignados" ? "none" : "flex";
+    // Restaurar estado visual del botón al volver a la pestaña
+    if (btnFiltroPrio) {
+      btnFiltroPrio.classList.toggle("activa", filtroPrioritariosActivo);
     }
-}
+  }
 
   const buscadorValue = vistaActual === "disponibles" && document.getElementById("input-busqueda")
     ? document.getElementById("input-busqueda").value.toLowerCase()
@@ -298,9 +295,6 @@ function filtrarYRenderizar() {
   } else {
     if (panelAsignacion) panelAsignacion.style.display = "none";
     inyectarSelectorDeAgrupacionAsignados();
-    // Reseteamos filtro prioritarios al salir de disponibles
-    filtroPrioritariosActivo = false;
-    document.getElementById("btn-filtro-prioritarios")?.classList.remove("activa");
   }
 
   // 2. Filtrado inicial del dataset
@@ -320,6 +314,7 @@ function filtrarYRenderizar() {
     );
   }
 
+  // El filtro prioritario persiste porque no lo reseteamos al cambiar de pestaña
   if (filtroPrioritariosActivo && vistaActual === "disponibles") {
     dataset = dataset.filter(m => 
       m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
@@ -394,6 +389,7 @@ function filtrarYRenderizar() {
           <button class="btn-check-rectangular" type="button"></button>
         </div>`;
     } else {
+      // Renderizado para pestaña asignados...
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
       
