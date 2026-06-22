@@ -271,13 +271,11 @@ function filtrarYRenderizar() {
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
   }
-  
-  // Mantenemos el filtro oculto en "asignados", pero no reseteamos su variable
   if (contenedorFiltroPrio) {
     contenedorFiltroPrio.style.display = vistaActual === "asignados" ? "none" : "flex";
   }
 
-  // Sincronización visual del botón
+  // Sincronización visual del botón de prioritarios
   const btnPrio = document.getElementById("btn-filtro-prioritarios");
   if (btnPrio) {
     btnPrio.classList.toggle("activa", filtroPrioritariosActivo);
@@ -315,15 +313,13 @@ function filtrarYRenderizar() {
     );
   }
 
-  // El filtro de prioritarios ahora se aplica siempre que la variable esté activa
-  // independientemente de que estemos en disponibles
   if (filtroPrioritariosActivo && vistaActual === "disponibles") {
     dataset = dataset.filter(m => 
       m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
     );
   }
 
-  // 4. Lógica de ordenación
+  // 4. Lógica de ordenación (igual a tu original)
   if (vistaActual === "disponibles") {
     if (modoCampanaGlobal || ordenForzado === "CERCANIA") {
         dataset.sort((a, b) => {
@@ -354,21 +350,65 @@ function filtrarYRenderizar() {
     });
   }
 
-  // 5. Renderizado en el DOM
+  // 5. Renderizado (Aquí estaba el contenido que faltaba)
   dataset.forEach(mapa => {
     const div = document.createElement("div");
     const esPrio = mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
     const seleccionadoActivo = territoriosSeleccionados.includes(mapa.id.toString());
 
     if (vistaActual === "disponibles") {
-      // ... (código original de renderizado de tarjetas disponibles)
-      // Asegúrate de mantener la lógica de renderizado que ya tenías aquí
+      let textoDistancia = "";
+      if (typeof modoCampanaGlobal !== 'undefined' && modoCampanaGlobal && mapa.distancia !== undefined && mapa.distancia < 999) {
+        textoDistancia = mapa.distancia < 1 ? `${Math.round(mapa.distancia * 1000)} metros` : `${mapa.distancia.toFixed(1)} km`;
+      }
       div.className = `tarjeta-apple ${esPrio ? 'prioritaria' : ''} ${seleccionadoActivo ? 'seleccionada' : ''}`;
-      // ... resto del renderizado
+      div.id = `tarjeta-real-${mapa.id}`;
+      div.setAttribute("onclick", `alternarSeleccionTarjeta('${mapa.id}', event)`);
+      div.innerHTML = `
+        <div class="fila-tarjeta-superior">
+          <span class="num-mapa-gigante">${parseInt(mapa.id)}</span>
+          <span class="barriada-derecha">${mapa.barriada}</span>
+        </div>
+        <div class="imagen-mapa-wrapper">
+          <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)} - ${mapa.barriada}', event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
+        </div>
+        <div class="fila-tarjeta-inferior">
+          <div class="bloque-prio-izq" style="min-height: 25px;">
+            ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
+          </div>
+          <span style="font-size: 0.9rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
+          <button class="btn-check-rectangular" type="button"></button>
+        </div>`;
     } else {
-      // ... (código original de renderizado de tarjetas asignadas)
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
-      // ... resto del renderizado
+      let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
+      div.innerHTML = `
+        <div class="contenedor-columna-imagen">
+          ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
+          <div class="img-lateral-wrapper-rectangular">
+            <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+          </div>
+        </div>
+        <div class="contenido-lateral-datos">
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
+          <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
+          <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
+          <div class="estado-badge-linea" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Completado"}</span>
+            <button class="btn-check-apple ${mapa.trabajado ? 'activo' : ''}" onclick="toggleEstadoTrabajo(${mapa.id}, event)" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #34c759; background: ${mapa.trabajado ? '#34c759' : 'transparent'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
+              ${mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : ''}
+            </button>
+          </div>
+        </div>`;
     }
     grid.appendChild(div);
   });
