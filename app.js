@@ -15,6 +15,7 @@ let diccionarioGruposHermanos = {};
 let criterioOrdenacionAsignados = "pendiente"; 
 let direccionOrden = "asc"; // "asc" o "desc"
 let modoCampanaGlobal = false; 
+let filtroPrioritariosActivo = false;
 async function inicializarPantalla(tipo) {
   tipoUsuario = tipo;
   configurarTemaInicial();
@@ -297,7 +298,12 @@ function filtrarYRenderizar() {
       m.barriada.toLowerCase().includes(buscadorValue)
     );
   }
-
+// --- NUEVO FILTRO DE PRIORITARIOS ---
+if (filtroPrioritariosActivo) {
+    dataset = dataset.filter(mapa => {
+        return mapa.prioritario === "SI" || mapa.prioritario === true || String(mapa.prioritario).toUpperCase() === "TRUE";
+    });
+}
   // Lógica de ordenación
   if (vistaActual === "disponibles") {
     // Si estamos en modo Campana O si el orden fue forzado por cercanía
@@ -927,4 +933,14 @@ async function ordenarYRenderizarCercania() {
     // LLAMAMOS AL MOTOR ORIGINAL: Esto mantendrá todas las funciones intactas
     filtrarYRenderizar();
   });
+}
+function toggleFiltroPrioritarios() {
+    filtroPrioritariosActivo = !filtroPrioritariosActivo;
+    
+    // Cambiar visualmente el botón (asegúrate de que el ID coincida con tu HTML)
+    const btn = document.getElementById("btn-filtro-prioritarios");
+    if (btn) btn.classList.toggle("activa", filtroPrioritariosActivo);
+    
+    // Volver a renderizar aplicando el filtro
+    filtrarYRenderizar();
 }
