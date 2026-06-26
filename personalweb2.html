@@ -272,22 +272,27 @@ const PROXY = "https://corsproxy.io/?";
 
     
     function renderizarLista(lista, titulo, icono, clase) {
-      if(lista.length === 0) return "";
-      let cards = lista.map(t => `
-        <div class="card">
-          <div class="img-box" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">
-            <img src="${t.imgMini}" referrerpolicy="no-referrer">
-            ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
-          </div>
-          <div class="info">
-            <span class="num">Territorio ${t.num}</span>
-            <span class="zona">${t.zona}</span>
-          </div>
-          <button class="btn-more" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">VER DETALLES</button>
+  if(lista.length === 0) return "";
+  let cards = lista.map(t => {
+    // Si tu ID de imagen es '1YRYDG...', necesitas la URL base aquí:
+    // Si tus fotos están en Google Drive, usa la URL de Google.
+    // Si tus fotos están en GitHub, usa la URL de GitHub.
+    
+    // Ejemplo si tus imágenes están en GitHub:
+    const imgUrl = t.imgMini.startsWith('http') ? t.imgMini : `https://raw.githubusercontent.com/territorioscerrojw/appweb/main/img/${t.imgMini}`;
+
+    return `
+      <div class="card">
+        <div class="img-box" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">
+          <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'" referrerpolicy="no-referrer">
+          ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
         </div>
-      `).join('');
-      return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2><div class="grid">${cards}</div>`;
-    }
+        ...
+      </div>
+    `;
+  }).join('');
+  return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2><div class="grid">${cards}</div>`;
+}
 
     function abrir(num, zona, tiempo, img, notas, caducado, coords) {
       document.getElementById('m-titulo').innerText = "TERRITORIO " + num;
