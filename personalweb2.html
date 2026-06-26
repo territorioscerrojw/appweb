@@ -251,29 +251,24 @@ const PROXY = "https://corsproxy.io/?";
     const urlParams = new URLSearchParams(window.location.search);
     const nombreH = urlParams.get('h') || urlParams.get('id');
 
-    async function cargar() {
-      // Validamos que nombreH exista antes de hacer nada
-      if (!nombreH) {
-        document.body.innerHTML = "<h1>Error: No se ha especificado un nombre de usuario en la URL.</h1>";
-        return;
-      }
-
-      document.getElementById('user-display').innerText = nombreH;
-
-      try {
-        // Usamos el proxy para evitar el bloqueo CORS
-        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
-        const res = await fetch(proxyUrl);
-        
-        if (!res.ok) throw new Error("Error en la respuesta del servidor");
-        
-        const data = await res.json();
-        renderizar(data);
-      } catch (err) {
-        console.error("Error al conectar:", err);
-        document.getElementById('grid-container').innerHTML = "<p>No se pudieron cargar los datos. Revisa la consola para más detalles.</p>";
-      }
-    }
+   async function cargar() {
+  try {
+    const urlConsulta = `${API_URL}?h=${encodeURIComponent(nombreH)}`;
+    const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(urlConsulta));
+    
+    // Primero leemos el texto, no el JSON
+    const textoRespuesta = await res.text();
+    console.log("Respuesta recibida:", textoRespuesta); // <--- ESTO TE DIRÁ QUÉ PASA
+    
+    // Intentamos convertir a JSON
+    const data = JSON.parse(textoRespuesta);
+    renderizar(data);
+    
+  } catch (err) {
+    console.error("Error al conectar:", err);
+    // Esto te mostrará en la consola si recibes un error HTML
+  }
+}
 
     // Aseguramos que la función renderizar y demás lógica estén definidas antes de llamar a cargar()
     // ... (aquí iría el resto de tus funciones renderizar, abrir, cerrar) ...
