@@ -1,84 +1,298 @@
-
-
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
-  <title>Super App Territorios</title>
-  <style>
-    body { background: #09090b; color: white; font-family: sans-serif; padding: 20px; }
-    .card { background: #2d2d35; padding: 15px; border-radius: 14px; margin-bottom: 15px; }
-    .card.terminado { opacity: 0.5; order: 99; }
-    img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
-    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-completar { background: #34c759; color: white; }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <style>
+
+    :root {
+
+      --primary: #1c1c1e;
+
+      --bg: #f2f2f7;
+
+      --danger: #ff3b30;
+
+      --success: #34c759;
+
+      --warning: #ff9500;
+
+      --azul-moderno: rgba(28, 44, 66, 0.75);
+
+      --verde-moderno: rgba(58, 77, 57, 0.75);
+
+      --negocios: #6495ED;
+
+      --gris-apple: rgba(28, 28, 30, 0.9);
+
+    }
+
+   
+
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--primary); }
+
+   
+
+    header {
+
+      text-align: center;
+
+      padding: 10px 5px;
+
+      background: rgba(255, 255, 255, 0.6);
+
+      backdrop-filter: blur(20px);
+
+      -webkit-backdrop-filter: blur(20px);
+
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+
+      overflow: hidden;
+
+    }
+
+
+
+    /* Fuente Whisper: Un solo renglón y tamaño controlado */
+
+    .user-name {
+
+      font-family: 'Whisper', cursive;
+
+      font-size: clamp(1.5rem, 10vw, 2.8rem);
+
+      color: var(--primary);
+
+      margin: 0;
+
+      font-weight: 400;
+
+      white-space: nowrap;
+
+      line-height: 1.2;
+
+    }
+
+
+
+    h2 {
+
+      position: sticky; top: 0; z-index: 20; color: white;
+
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+
+      margin: 0; padding: 15px 20px; font-weight: 800;
+
+      display: flex; justify-content: space-between; align-items: center;
+
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+
+    }
+
+    .h2-personales { background: var(--azul-moderno); }
+
+    .h2-grupo { background: var(--verde-moderno); }
+
+
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
+
+   
+
+    .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 0.5px solid rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; }
+
+
+
+    .img-box { width: 100%; height: 210px; cursor: pointer; background: white; overflow: hidden; position: relative; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+
+    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+   
+
+    .watermark {
+
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+
+      font-size: 2.2rem; font-weight: 900; color: rgba(255, 59, 48, 0.35);
+
+      text-transform: uppercase; white-space: nowrap; pointer-events: none;
+
+      letter-spacing: 4px; width: 100%; text-align: center;
+
+    }
+
+
+
+    .info { padding: 18px; text-align: center; flex-grow: 1; }
+
+    .es-negocios { color: var(--negocios) !important; }
+
+    .num { font-size: 1.5rem; font-weight: 800; color: #1c1c1e; display: block; }
+
+    .zona { font-size: 0.95rem; color: #8e8e93; display: block; margin-bottom: 15px; font-weight: 600; }
+
+   
+
+    .badge { display: block; padding: 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; width: 90%; margin: 0 auto; }
+
+    .label-mini { display: block; font-size: 0.6rem; opacity: 0.8; margin-bottom: 4px; }
+
+
+
+    .badge-red { background: var(--danger); color: white; }
+
+    .badge-orange { background: var(--warning); color: white; }
+
+    .badge-green { background: var(--success); color: white; }
+
+
+
+    .btn-more { width: 100%; padding: 18px; border: none; background: white; color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid #eee; font-size: 0.85rem; }
+
+
+
+    .footer-minimal {
+
+      text-align: center;
+
+      padding: 20px 10px;
+
+      font-size: 0.7rem;
+
+      color: #8e8e93;
+
+      text-transform: uppercase;
+
+      letter-spacing: 2px;
+
+      font-weight: 400;
+
+    }
+
+
+
+    .btn-gps {
+
+      display: flex; align-items: center; justify-content: center;
+
+      background: #007aff; color: white !important; text-decoration: none;
+
+      padding: 15px; border-radius: 14px; font-weight: 700;
+
+      margin-bottom: 20px; gap: 10px; font-size: 0.9rem;
+
+    }
+
+
+
+    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index:1000; overflow-y:auto; }
+
+   
+
+    .modal-header {
+
+      padding: 18px; text-align: center; position: sticky; top: 0; z-index: 1001;
+
+      background: var(--gris-apple); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+
+      color: white; border-bottom: 0.5px solid rgba(255,255,255,0.1);
+
+    }
+
+   
+
+    .close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 10px; color: white; }
+
+    .modal-content { padding: 20px; max-width: 500px; margin: 0 auto; }
+
+    .img-grande { width: 100%; border-radius: 15px; margin-bottom: 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1); padding-bottom: 8px; display: block; }
+
+    .info-label-modal { font-size: 0.65rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; text-align: center; }
+
+    .box-tiempo-modal { padding: 20px; border-radius: 18px; margin-bottom: 20px; text-align: center; }
+
+    .notas-area { background: rgba(0,0,0,0.03); border-radius: 14px; padding: 18px; font-size: 0.95rem; margin-top: 10px; line-height: 1.5; border-left: 4px solid #007aff; }
+
+    .btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 10px; }
+
   </style>
 </head>
 <body>
-  <main id="grid"></main>
+
+  <header><div class="user-name" id="user-display"></div></header>
+  <div id="grid-container"></div>
+
+  <div id="modal">
+    <div class="modal-header">
+      <span class="close-btn" onclick="cerrar()">‹</span>
+      <span id="m-titulo" style="font-weight:700;"></span>
+    </div>
+    <div class="modal-content">
+      <a id="m-gps" href="#" target="_blank" class="btn-gps" style="display:none;"><i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR</a>
+      <img id="m-img" class="img-grande" referrerpolicy="no-referrer">
+      <div id="m-zona" style="font-size:1.3rem; font-weight:800; text-align:center;"></div>
+      <div id="m-box-tiempo" class="box-tiempo-modal"><div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900; color:white;"></div></div>
+      <div id="m-notas" class="notas-area"></div>
+      <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
+    </div>
+  </div>
 
   <script>
-    const URL_API = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-    let datos = [];
-    let cargando = false; // <--- CORTAFUEGOS
+    // CAMBIA ESTO POR TU URL DE GOOGLE APPS SCRIPT
+    const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec"; 
 
-    function cargarDatos() {
-      if (cargando) return; // Si ya está cargando, no hacer nada
-      cargando = true;
+    const params = new URLSearchParams(window.location.search);
+    const nombreH = params.get('h');
+
+    async function cargar() {
+      document.getElementById('user-display').innerText = nombreH;
+      const res = await fetch(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
+      const data = await res.json();
       
-      const script = document.createElement('script');
-      // Usamos 'leerDatos' que es el nombre de la función que SÍ está en tu script
-      script.src = `${URL_API}?accion=leerDatos&callback=test`;
-      document.body.appendChild(script);
+      document.getElementById('grid-container').innerHTML = 
+        renderizarLista(data.personales, "Mis Territorios", "fa-user-circle", "h2-personales") +
+        renderizarLista(data.grupo, "Territorios de Grupo", "fa-users", "h2-grupo");
     }
 
-    window.test = function(data) {
-  cargando = false;
-  if (data && Array.isArray(data)) {
-    // FILTRO: Solo dejamos los que coinciden con el nombre del usuario
-    // Suponiendo que el nombre viene en la URL como ?id=Jairo+Castañeda
-    const nombreFiltro = new URLSearchParams(window.location.search).get('id');
-    
-    if (nombreFiltro) {
-        datos = data.filter(t => t.hermano.toLowerCase() === nombreFiltro.toLowerCase());
-    } else {
-        datos = data;
-    }
-    renderizar();
-  }
-};
-
-    function renderizar() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = "";
-  
-  datos.forEach(t => {
-    const card = document.createElement('div');
-    card.className = `card ${t.trabajado ? 'terminado' : ''}`;
-    card.innerHTML = `
-      <img src="${t.rutaMapa}" onerror="this.src='https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/imagenes/defecto.png'">
-      <p><strong>Territorio:</strong> ${t.id}</p>
-      <p><strong>Barriada:</strong> ${t.barriada}</p>
-      <button class="btn" onclick="toggle('${t.id}')">
-        ${t.trabajado ? 'Reactivar' : 'Completar'}
-      </button>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-    function toggle(id) {
-      const item = datos.find(x => x.id == id);
-      if (!item) return;
-      
-      item.trabajado = !item.trabajado;
-      renderizar(); // Actualizamos la vista localmente al instante
-      
-      // Llamada silenciosa al servidor
-      fetch(`${URL_API}?accion=actualizarTrabajo&id=${id}&estado=${item.trabajado}`);
+    function renderizarLista(lista, titulo, icono, clase) {
+      if(lista.length === 0) return "";
+      let cards = lista.map(t => `
+        <div class="card">
+          <div class="img-box" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">
+            <img src="${t.imgMini}" referrerpolicy="no-referrer">
+            ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
+          </div>
+          <div class="info">
+            <span class="num">Territorio ${t.num}</span>
+            <span class="zona">${t.zona}</span>
+          </div>
+          <button class="btn-more" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">VER DETALLES</button>
+        </div>
+      `).join('');
+      return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2><div class="grid">${cards}</div>`;
     }
 
-    cargarDatos();
+    function abrir(num, zona, tiempo, img, notas, caducado, coords) {
+      document.getElementById('m-titulo').innerText = "TERRITORIO " + num;
+      document.getElementById('m-img').src = img;
+      document.getElementById('m-zona').innerText = zona;
+      document.getElementById('m-tiempo').innerText = tiempo;
+      document.getElementById('m-notas').innerText = notas;
+      
+      const btnGps = document.getElementById('m-gps');
+      if (coords && coords.length > 3) {
+        btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + coords.replace("POINT (", "").replace(")", "").replace(" ", ",");
+        btnGps.style.display = "flex";
+      } else { btnGps.style.display = "none"; }
+      
+      document.getElementById('modal').style.display = "block";
+    }
+
+    function cerrar() { document.getElementById('modal').style.display = "none"; }
+    cargar();
   </script>
 </body>
 </html>
