@@ -102,14 +102,39 @@
 
    
 
-    .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 0.5px solid rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; }
+    .card { 
+  background: white; 
+  border-radius: 18px; 
+  overflow: hidden; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+  border: 0.5px solid rgba(0,0,0,0.1); 
+  display: flex; 
+  flex-direction: column; /* Esto mantiene el orden: imagen -> info -> boton */
+}
 
+.img-box { 
+  width: 100%; 
+  height: 200px; /* Altura fija para que la tarjeta sea uniforme */
+  cursor: pointer; 
+  background: #f8f8f8; /* Un color de fondo suave por si la imagen no llena todo */
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+  position: relative; 
+  border-bottom: 0.5px solid rgba(0,0,0,0.1); 
+}
 
+.img-box img { 
+  max-width: 100%; 
+  max-height: 100%; 
+  object-fit: contain; /* Esto hace que la imagen se vea completa sin cortarse */
+}
 
-    .img-box { width: 100%; height: 210px; cursor: pointer; background: white; overflow: hidden; position: relative; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
-
-    .img-box img { width: 100%; height: 100%; object-fit: cover; }
-
+.info { 
+  padding: 18px; 
+  text-align: center; 
+  flex-grow: 1; /* Esto empuja el botón hacia abajo */
+}
    
 
     .watermark {
@@ -126,7 +151,7 @@
 
 
 
-    .info { padding: 18px; text-align: center; flex-grow: 1; }
+ 
 
     .es-negocios { color: var(--negocios) !important; }
 
