@@ -243,37 +243,31 @@
   <script>
    // Añadimos el prefijo de un proxy público para saltar el bloqueo CORS
 const PROXY = "https://corsproxy.io/?"; 
-<script>
-    // 1. URL de tu despliegue (asegúrate de que sea la última versión)
-    const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec"; 
-    
-    // 2. Definimos la variable al inicio para que esté disponible en todas las funciones
-    const urlParams = new URLSearchParams(window.location.search);
-    const nombreH = urlParams.get('h') || urlParams.get('id');
 
-   async function cargar() {
-  try {
-    const urlConsulta = `${API_URL}?h=${encodeURIComponent(nombreH)}`;
-    const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(urlConsulta));
-    
-    // Primero leemos el texto, no el JSON
-    const textoRespuesta = await res.text();
-    console.log("Respuesta recibida:", textoRespuesta); // <--- ESTO TE DIRÁ QUÉ PASA
-    
-    // Intentamos convertir a JSON
-    const data = JSON.parse(textoRespuesta);
-    renderizar(data);
-    
-  } catch (err) {
-    console.error("Error al conectar:", err);
-    // Esto te mostrará en la consola si recibes un error HTML
-  }
-}
+    const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+    const params = new URLSearchParams(window.location.search);
+    const nombreH = params.get('h') || params.get('id');
 
-    // Aseguramos que la función renderizar y demás lógica estén definidas antes de llamar a cargar()
-    // ... (aquí iría el resto de tus funciones renderizar, abrir, cerrar) ...
+    // Esta función maneja la respuesta de Google correctamente
+    function cargar() {
+        document.getElementById('user-display').innerText = nombreH;
+        
+        // Usamos un script tag para evitar problemas de CORS y bloqueos de navegador
+        const script = document.createElement('script');
+        script.src = `${API_URL}?h=${encodeURIComponent(nombreH)}&callback=procesarDatos`;
+        document.body.appendChild(script);
+    }
 
-    // 3. Lanzamos la carga
+    // Google llamará a esta función al recibir los datos
+    function procesarDatos(datos) {
+        console.log("Datos recibidos:", datos);
+        const cont = document.getElementById('grid-container');
+        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales") +
+                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo");
+    }
+
+    // ... (aquí pones tu función renderizarLista que ya tenías) ...
+    
     cargar();
 
     
