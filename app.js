@@ -376,12 +376,16 @@ function filtrarYRenderizar() {
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
         <div class="fila-tarjeta-inferior">
-          <div class="bloque-prio-izq" style="min-height: 25px;">
-            ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
-          </div>
-          <span style="font-size: 0.9rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
-          <button class="btn-check-rectangular" type="button"></button>
-        </div>`;
+  <span style="font-size: 0.9rem; color: #34c759; margin-right: 10px;">
+    ${textoDistancia ? `📍 ${textoDistancia}` : ''}
+  </span>
+
+  <div class="bloque-prio-izq" style="min-height: 25px;">
+    ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
+  </div>
+
+  <button class="btn-check-rectangular" type="button"></button>
+</div>`;
     } else {
       div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
       let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
