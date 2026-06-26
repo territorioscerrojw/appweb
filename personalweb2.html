@@ -243,20 +243,44 @@
   <script>
    // Añadimos el prefijo de un proxy público para saltar el bloqueo CORS
 const PROXY = "https://corsproxy.io/?"; 
-const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-
-async function cargar() {
-    const urlFinal = PROXY + encodeURIComponent(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
+<script>
+    // 1. URL de tu despliegue (asegúrate de que sea la última versión)
+    const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec"; 
     
-    try {
-        const res = await fetch(urlFinal);
+    // 2. Definimos la variable al inicio para que esté disponible en todas las funciones
+    const urlParams = new URLSearchParams(window.location.search);
+    const nombreH = urlParams.get('h') || urlParams.get('id');
+
+    async function cargar() {
+      // Validamos que nombreH exista antes de hacer nada
+      if (!nombreH) {
+        document.body.innerHTML = "<h1>Error: No se ha especificado un nombre de usuario en la URL.</h1>";
+        return;
+      }
+
+      document.getElementById('user-display').innerText = nombreH;
+
+      try {
+        // Usamos el proxy para evitar el bloqueo CORS
+        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
+        const res = await fetch(proxyUrl);
+        
+        if (!res.ok) throw new Error("Error en la respuesta del servidor");
+        
         const data = await res.json();
         renderizar(data);
-    } catch (err) {
+      } catch (err) {
         console.error("Error al conectar:", err);
+        document.getElementById('grid-container').innerHTML = "<p>No se pudieron cargar los datos. Revisa la consola para más detalles.</p>";
+      }
     }
-}
-    
+
+    // Aseguramos que la función renderizar y demás lógica estén definidas antes de llamar a cargar()
+    // ... (aquí iría el resto de tus funciones renderizar, abrir, cerrar) ...
+
+    // 3. Lanzamos la carga
+    cargar();
+
     
     function renderizarLista(lista, titulo, icono, clase) {
       if(lista.length === 0) return "";
