@@ -284,7 +284,10 @@ const PROXY = "https://corsproxy.io/?";
     return `
       <div class="card">
         <div class="img-box" onclick="abrir('${t.num}','${t.zona}','${t.tiempo}','${t.imgGrande}','${t.notas.replace(/\n/g, "\\n")}', ${t.caducado}, '${t.coords}')">
-          <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'" referrerpolicy="no-referrer">
+          // Dentro de tu renderizarLista:
+<img src="${t.imgMini}" 
+     onerror="this.style.display='none'" 
+     referrerpolicy="no-referrer">
           ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
         </div>
         ...
