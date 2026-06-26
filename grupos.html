@@ -230,10 +230,18 @@ thead tr th:nth-child(3) {
 .bg-menos-mes { background-color: #f97316; } /* Naranja */
 .bg-mas-mes { background-color: #22c55e; }   /* Verde */
 /* 4. Estilo para la columna Territorio (Columna 2) */
-#body-con td:nth-child(2) {
-    font-weight: 800;      /* Negrita extra */
-    font-size: 18px;       /* Tamaño ligeramente mayor (ajusta a tu gusto) */
-    color: var(--accent);  /* Opcional: le damos color de acento para que resalte más */
+
+/* Estilos para el territorio según el valor */
+.terr-alto {
+    font-weight: 800;
+    font-size: 18px;
+    color: #3b82f6; /* Azul */
+}
+
+.terr-bajo {
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text-main); /* Blanco (o color de texto principal) */
 }
 
 </style>
@@ -309,25 +317,29 @@ thead tr th:nth-child(3) {
 
   function renderizar() {
   document.getElementById('body-con').innerHTML = datos.con.map((item, i) => {
-    // Lógica para determinar la clase del badge
-    let clase = "";
+    // Lógica para etiquetas de tiempo (mantenemos lo anterior)
+    let claseTiempo = "";
     if (item.tiempo.toLowerCase().includes("caducado")) {
-      clase = "bg-caducado";
+      claseTiempo = "bg-caducado";
     } else if (item.tiempo.toLowerCase().includes("mes") || item.tiempo.toLowerCase().includes("d")) {
-      // Si tiene "mes" o "d", comprobamos si es menos de 1 mes (puedes ajustar esta lógica según el formato exacto de tu API)
       const meses = parseInt(item.tiempo.match(/(\d+)\s*mes/i)?.[1]) || 0;
-      clase = (meses < 1) ? "bg-menos-mes" : "bg-mas-mes";
+      claseTiempo = (meses < 1) ? "bg-menos-mes" : "bg-mas-mes";
     }
+
+    // Lógica para el color del Territorio
+    const valorTerritorio = parseInt(item.territorio) || 0;
+    const claseTerritorio = valorTerritorio > 500 ? "terr-alto" : "terr-bajo";
 
     return `<tr onclick='abrirVisor(${i}, "con")'>
               <td>${item.nombre}</td>
-              <td>${item.territorio}</td>
-              <td><span class="badge ${clase}">${item.tiempo}</span></td>
+              <td class="${claseTerritorio}">${item.territorio}</td>
+              <td><span class="badge ${claseTiempo}">${item.tiempo}</span></td>
             </tr>`;
   }).join('');
 
   document.getElementById('body-sin').innerHTML = datos.sin.map((item, i) => `<tr onclick='abrirVisor(${i}, "sin")'><td>${item.nombre}</td></tr>`).join('');
 }
+
 
 
   function ordenar(campo) {
