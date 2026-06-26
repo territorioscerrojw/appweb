@@ -244,19 +244,32 @@
     // CAMBIA ESTO POR TU URL DE GOOGLE APPS SCRIPT
     const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec"; 
 
-    const params = new URLSearchParams(window.location.search);
-    const nombreH = params.get('h');
+    const urlParams = new URLSearchParams(window.location.search);
+    const nombreH = urlParams.get('h') || urlParams.get('id'); // Soporta ambos
 
     async function cargar() {
-      document.getElementById('user-display').innerText = nombreH;
-      const res = await fetch(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
-      const data = await res.json();
-      
-      document.getElementById('grid-container').innerHTML = 
-        renderizarLista(data.personales, "Mis Territorios", "fa-user-circle", "h2-personales") +
-        renderizarLista(data.grupo, "Territorios de Grupo", "fa-users", "h2-grupo");
+        if (!nombreH) {
+            console.error("No se encontró nombre en la URL");
+            return;
+        }
+        document.getElementById('user-display').innerText = nombreH;
+        
+        try {
+            const res = await fetch(`${API_URL}?h=${encodeURIComponent(nombreH)}`, {
+                method: 'GET',
+                mode: 'cors' // Forzar modo CORS
+            });
+            const data = await res.json();
+            renderizar(data);
+        } catch (err) {
+            console.error("Error al conectar:", err);
+            document.getElementById('grid-container').innerHTML = "<p>Error de conexión con el servidor. Inténtalo de nuevo.</p>";
+        }
     }
-
+    
+    cargar();
+    
+    
     function renderizarLista(lista, titulo, icono, clase) {
       if(lista.length === 0) return "";
       let cards = lista.map(t => `
