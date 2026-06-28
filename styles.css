@@ -121,7 +121,7 @@ html {
 }
 
 .cabecera-titulos h1 {
-  font-size: clamp(1.2rem, 5vw, 1.5rem) !important;
+  font-size: clamp(1.2rem, 7vw, 1.5rem) !important;
   font-weight: 800;
   letter-spacing: -0.5px;
   white-space: nowrap;
@@ -129,7 +129,7 @@ html {
 }
 
 .cabecera-titulos h2 {
-  font-size: clamp(1rem, 4vw, 1.25rem) !important;
+  font-size: clamp(1rem, 5vw, 1.25rem) !important;
   color: var(--apple-azul);
   font-weight: 600;
   margin-top: 0;        /* Eliminado el margen superior */
