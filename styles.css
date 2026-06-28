@@ -288,7 +288,7 @@ animation: pulso 4s infinite ease-in-out !important;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
+  font-size: clamp(1.2rem, 8vw, 1.8rem) !important;
   font-weight: 1000 !important;
 }
 /* Esto afecta únicamente al número dentro del anillo de totales */
