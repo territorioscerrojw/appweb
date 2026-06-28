@@ -574,7 +574,7 @@ animation: pulso 4s infinite ease-in-out !important;
   background: var(--glass-fondo);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: 2px solid var(--apple-verde) !important;
+  border: 3px solid var(--apple-verde) !important;
   box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2) !important;
 }
 
@@ -584,9 +584,9 @@ animation: pulso 4s infinite ease-in-out !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-left: 6px solid var(--apple-verde) !important;
-  border-right: 2px solid var(--apple-verde) !important;
-  border-top: 2px solid var(--apple-verde) !important;
-  border-bottom: 2px solid var(--apple-verde) !important;
+  border-right: 3px solid var(--apple-verde) !important;
+  border-top: 3px solid var(--apple-verde) !important;
+  border-bottom: 3px solid var(--apple-verde) !important;
 }
 
 /* 3. Colorear textos internos al seleccionar (Funciona para ambos temas) */
