@@ -648,13 +648,13 @@ animation: pulso 4s infinite ease-in-out !important;
 }
 .img-lateral-wrapper-rectangular {
   position: relative;
-  width: 105px; 
-  height: 70px;
+ width: clamp(80px, 25vw, 120px); 
+  height: clamp(60px, 15vw, 80px);
   border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
   background: rgba(0,0,0,0.2);
-  border: 1px solid rgba(0, 0, 0, 0.08); 
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .imagen-lateral-asset-rect {
   width: 100%;
@@ -690,9 +690,9 @@ animation: pulso 4s infinite ease-in-out !important;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centra los elementos verticalmente en el espacio disponible */
-  gap: 5px;
+  gap: 4px;
   overflow: hidden;
-  padding-left: 16px;       /* Un poco de aire extra respecto a la imagen */
+ padding-left: clamp(8px, 3vw, 16px);      
 }
 /* Añade esto a tu hoja de estilos o en un tag <style> */
 .checkbox-apple {
@@ -725,6 +725,8 @@ animation: pulso 4s infinite ease-in-out !important;
     transition: background 0.2s ease;
     border: 2px solid rgba(142, 142, 147, 0.4)!important; 
     background: transparent;
+  width: clamp(28px, 8vw, 36px); /* Se ajusta según el tamaño de pantalla */
+  height: clamp(28px, 8vw, 36px);
 }
   
 .cabecera-datos-linea {
@@ -734,13 +736,13 @@ animation: pulso 4s infinite ease-in-out !important;
   width: 100%;
 }
 .num-mapa-chico { 
-  font-size: 22px; 
+  font-size: clamp(14px, 5vw, 22px) !important;
   font-weight: 800; 
   line-height: 1;
   flex-shrink: 0;
 }
 .nombre-barrio-chico { 
-  font-size: 13px; 
+  font-size: clamp(12px, 3.5vw, 15px) !important;
   font-weight: 600; 
   white-space: nowrap; 
   overflow: hidden; 
@@ -785,7 +787,7 @@ animation: pulso 4s infinite ease-in-out !important;
   align-items: center;
 }
 .badge-estado-pill {
-  font-size: 14px;
+font-size: clamp(10px, 2.5vw, 14px) !important;
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
