@@ -787,9 +787,9 @@ animation: pulso 4s infinite ease-in-out !important;
   align-items: center;
 }
 .badge-estado-pill {
-font-size: clamp(10px, 2.5vw, 14px) !important;
+font-size: clamp(0.85rem, 3vw, 1rem) !important;
   font-weight: 700;
-  padding: 2px 6px;
+ padding: 0.25rem 0.6rem !important;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
