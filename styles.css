@@ -437,7 +437,7 @@ animation: pulso 4s infinite ease-in-out !important;
 }
 
 .barriada-derecha {
- font-size: clamp(0.8rem, 3vw, 1rem) !important;
+ font-size: clamp(1rem, 4vw, 1rem) !important;
   font-weight: 600;
   color: var(--texto-secundario);
   text-align: right;
