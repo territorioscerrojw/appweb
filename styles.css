@@ -16,7 +16,7 @@
   --apple-verde: #27ae60;
   --apple-naranja: #f2994a;
   --apple-rojo: #eb5757;
-  
+  --fuente-base: 16px;
   
   /* Línea de fondo vacía de los contadores visible en modo oscuro */
   --anillo-vacio: rgba(255, 255, 255, 0.12);
@@ -80,6 +80,8 @@ body {
   width: 100%;
   overflow-x: hidden;
   letter-spacing: -0.2px;
+  font-size: var(--fuente-base);
+  line-height: 1.5;
 }
 
 .fondo-mapa-blur {
@@ -87,13 +89,19 @@ body {
 }
 
 .contenedor-app {
-  width: 100%;
+ width: 95% !important;
   max-width: 500px;
   margin: 0 auto;
-  padding: 10px 14px 60px 14px;
+padding: 10px 2% 60px 2%;
   background: transparent !important;
 }
-
+html {
+  -webkit-text-size-adjust: 100%;
+}
+* {
+  /* Evita que palabras muy largas rompan el diseño */
+  word-wrap: break-word;
+}
 /* ==========================================================================
    CABECERA PRINCIPAL REESTRUCTURADA
    ========================================================================== */
@@ -113,14 +121,15 @@ body {
 }
 
 .cabecera-titulos h1 {
-  font-size: 24px;      /* Ajustado para caber mejor */
+  font-size: clamp(1.2rem, 5vw, 1.5rem) !important;
   font-weight: 800;
   letter-spacing: -0.5px;
   white-space: nowrap;
+
 }
 
 .cabecera-titulos h2 {
-  font-size: 20px;      /* Texto un poco mayor como pediste */
+  font-size: clamp(1rem, 4vw, 1.25rem) !important;
   color: var(--apple-azul);
   font-weight: 600;
   margin-top: 0;        /* Eliminado el margen superior */
@@ -279,7 +288,7 @@ animation: pulso 4s infinite ease-in-out !important;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 28px;
+  font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
   font-weight: 1000 !important;
 }
 /* Esto afecta únicamente al número dentro del anillo de totales */
@@ -421,14 +430,14 @@ animation: pulso 4s infinite ease-in-out !important;
   min-height: 30px; /* Asegura que la fila tenga espacio suficiente */
 }
 .num-mapa-gigante {
-  font-size: 28px;
+  font-size: clamp(1.5rem, 8vw, 2rem) !important;
   font-weight: 1000 !important;
   color: var(--texto-principal);
   line-height: 1;
 }
 
 .barriada-derecha {
-  font-size: 16px;
+ font-size: clamp(0.8rem, 3vw, 1rem) !important;
   font-weight: 600;
   color: var(--texto-secundario);
   text-align: right;
@@ -800,7 +809,7 @@ animation: pulso 4s infinite ease-in-out !important;
   top: 15px;
   left: 50%;
   transform: translateX(-50%) translateY(-200%);
-  width: calc(100% - 32px); /* Un poco de aire lateral */
+width: 92% !important;
   max-width: 450px;
   box-sizing: border-box; /* CLAVE: El padding no añade ancho extra */
   z-index: 1000;
@@ -808,7 +817,7 @@ animation: pulso 4s infinite ease-in-out !important;
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
   border-radius: 18px;
-  padding: 12px;
+ padding: 1rem !important;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
