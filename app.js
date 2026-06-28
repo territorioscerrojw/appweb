@@ -496,7 +496,7 @@ function actualizarEstadosBotonesFiltro() {
     <span style="font-size: 12px; opacity: 0.6; align-self: center; margin-right: 4px;">Ordenar:</span>
     ${getBtn("Pendientes", "pendiente")}
     ${getBtn("Territorio", "territorio")}
-    ${getBtn("Hermano", "hermano")}
+    ${getBtn("Hermano/a", "hermano")}
     ${getBtn("Fecha", "fecha")}
   `;
 }
