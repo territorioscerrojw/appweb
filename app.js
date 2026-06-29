@@ -950,7 +950,7 @@ function abrirMenuZonas() {
     const modal = document.getElementById("modal-seleccionar-zona");
     
     // Extraer zonas únicas y ordenarlas
-    const zonas = [...new Set(baseDatosCompleta.map(t => t.zona).filter(z => z))].sort();
+    const zonas = [...new Set(baseDatosCompleta.map(t => t.barriada).filter(z => z))].sort();
     
     contenedorLista.innerHTML = "";
     zonas.forEach(zona => {
