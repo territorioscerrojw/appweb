@@ -88,16 +88,19 @@
         <button class="tab" onclick="cambiarPestana('asignados', this)">Asignados</button>
       </div>
     </div>
+
 <div class="contenedor-filtros-avanzados">
     <span class="label-filtrar">Filtrar por:</span>
     
     <button id="btn-filtro-prioritarios" class="btn-filtro" onclick="toggleFiltroPrioritarios()">Prioritarios</button>
     
-    <div class="filtro-zona-wrapper">
+    <div class="filtro-zona-wrapper" style="display: flex; align-items: center; position: relative;">
         <button id="btn-filtro-zona" class="btn-filtro" onclick="abrirMenuZonas()">Zona</button>
-        <button id="btn-quitar-zona" class="btn-x" onclick="quitarFiltroZona()" style="display: none;">✕</button>
+        <!-- La X aparecerá al lado del botón de Zona -->
+        <button id="btn-quitar-zona" class="btn-x" onclick="quitarFiltroZona()" style="display: none; margin-left: 5px;">✕</button>
     </div>
 </div>
+
 
     <div class="contenedor-busqueda">
       <input type="text" id="input-busqueda" placeholder="🔍 Buscar mapa, barrio o hermano..." oninput="filtrarYRenderizar()">
