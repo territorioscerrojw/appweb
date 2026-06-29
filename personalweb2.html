@@ -296,12 +296,16 @@ const PROXY = "https://corsproxy.io/?";
     cargar();
 
     
-  function renderizarLista(lista, titulo, icono, clase) {
-  if(lista.length === 0) return "";
-  let cards = lista.map(t => `
+ function renderizarLista(lista, titulo, icono, clase) {
+  if (!lista || lista.length === 0) return "";
+  
+  let cards = lista.map(t => {
+    // Usamos encodeURIComponent para pasar datos complejos de forma segura al modal
+    const datos = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
     
+    return `
     <div class="card">
-      <div class="img-box" onclick="abrir(...)">
+      <div class="img-box">
         <img src="${t.imgMini}" referrerpolicy="no-referrer">
         ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
       </div>
@@ -312,12 +316,18 @@ const PROXY = "https://corsproxy.io/?";
           ${t.tiempo}
         </div>
       </div>
-      <button class="btn-more" onclick="abrir('${t.num}', '${limpiarTexto(t.zona)}', '${t.tiempo}', '${t.imgGrande}', '${limpiarTexto(t.notas)}', ${t.caducado}, '${t.coords}')"</button>
-    </div>
-  `).join('');
+      <button class="btn-more" onclick="abrirDesdeBase64('${datos}')">VER MÁS</button>
+    </div>`;
+  }).join('');
+  
   return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2><div class="grid">${cards}</div>`;
 }
 
+// Nueva función segura para abrir el modal
+function abrirDesdeBase64(base64Data) {
+  const t = JSON.parse(decodeURIComponent(escape(atob(base64Data))));
+  abrir(t.num, t.zona, t.tiempo, t.imgGrande, t.notas, t.caducado, t.coords);
+}
     function abrir(num, zona, tiempo, img, notas, caducado, coords) {
       document.getElementById('m-titulo').innerText = "TERRITORIO " + num;
       document.getElementById('m-img').src = img;
