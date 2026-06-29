@@ -958,20 +958,20 @@ function abrirMenuZonas() {
         btn.textContent = barriada;
         
         // MODIFICACIÓN: Aquí aplicamos el tamaño grande y estilo "Apple"
-        btn.style.cssText = `
+                btn.style.cssText = `
             width: 100%;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            border-radius: 14px;
+            padding: 10px 15px;      /* <--- AQUI: Reducido de 18px a 10px */
+            margin-bottom: 6px;      /* <--- AQUI: Reducido de 10px a 6px para ganar espacio */
+            border-radius: 10px;     /* <--- Un poco menos redondeado para ahorrar espacio */
             border: 1px solid var(--glass-borde);
             background: var(--glass-fondo);
             color: var(--texto-principal);
-            font-size: 17px;
+            font-size: 15px;         /* <--- Ligeramente más pequeño para que entre más texto */
             font-weight: 600;
             text-align: left;
             cursor: pointer;
-            transition: transform 0.1s ease;
         `;
+
         
         btn.onclick = () => {
             filtroZonaActivo = barriada; // Ojo: tu variable global se llama así, mantenla
