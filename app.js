@@ -323,7 +323,7 @@ function filtrarYRenderizar() {
   }
 
   if (filtroZonaActivo && vistaActual === "disponibles") {
-    dataset = dataset.filter(m => m.zona === filtroZonaActivo);
+    dataset = dataset.filter(m => m.barriada === filtroZonaActivo);
   }
 
   // 4. Lógica de ordenación
