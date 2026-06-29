@@ -266,52 +266,63 @@
   </div>
 
 <script>
-  let datosCargados = null; // Variable global para los datos
-  const nombreH = new URLSearchParams(window.location.search).get('h') || new URLSearchParams(window.location.search).get('id');
+  let datosCargados = null;
+  // Obtenemos el nombre de la URL
+  const params = new URLSearchParams(window.location.search);
+  const nombreH = params.get('h') || params.get('id');
 
-  // 1. Inyección de script para evitar CORS
- function cargar() {
-  const script = document.createElement('script');
-  // Asegúrate de que aquí vaya tu URL real, NO el texto anterior
-  script.src = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
-               + "?h=" + encodeURIComponent(nombreH) 
-               + "&callback=procesarDatos";
-  document.body.appendChild(script);
-}
-
-  // 2. Función que recibe los datos desde Google
-  function procesarDatos(datos) {
-    datosCargados = datos;
-    const cont = document.getElementById('grid-container');
-    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "h2-personales", "p") +
-                     renderizarLista(datos.grupo, "Territorios de Grupo", "h2-grupo", "g");
+  // 1. CARGA: Inyecta el script directamente a Google
+  function cargar() {
+    if (!nombreH) return;
+    document.getElementById('user-display').innerText = nombreH;
+    
+    const script = document.createElement('script');
+    // PEGA AQUÍ TU URL DE GOOGLE (la que termina en /exec)
+    script.src = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
+                 + "?h=" + encodeURIComponent(nombreH) 
+                 + "&callback=procesarDatos";
+    document.body.appendChild(script);
   }
 
-  // 3. Renderizado con el índice correcto
-  function renderizarLista(lista, titulo, clase, tipo) {
+  // 2. PROCESAMIENTO: Google llama a esta función automáticamente
+  function procesarDatos(datos) {
+    datosCargados = datos; // Guardamos los datos globales
+    const cont = document.getElementById('grid-container');
+    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+  }
+
+  // 3. RENDERIZADO: Genera el HTML de las tarjetas
+  function renderizarLista(lista, titulo, icono, clase, tipo) {
     if(!lista || lista.length === 0) return "";
-    return `<h2 class="${clase}">${titulo}</h2>
+    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             <div class="grid">${lista.map((t, i) => `
               <div class="card">
                 <div class="info">
                   <span class="num">Territorio ${t.num}</span>
-                  <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+                  <span class="zona">${t.zona}</span>
                 </div>
+                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
               </div>`).join('')}</div>`;
   }
 
-  // 4. Abrir modal usando el índice
+  // 4. MODAL: Usa el tipo y el índice para extraer la información exacta
   function abrirModal(tipo, index) {
     if (!datosCargados) return;
+    // Seleccionamos el territorio basado en el tipo (p o g) y el índice
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
     
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
     document.getElementById('m-img').src = t.imgGrande;
+    document.getElementById('m-zona').innerText = t.zona;
+    document.getElementById('m-tiempo').innerText = t.tiempo;
+    document.getElementById('m-notas').innerText = t.notas;
     document.getElementById('modal').style.display = "block";
   }
 
   function cerrar() { document.getElementById('modal').style.display = "none"; }
   
+  // Iniciar todo
   cargar();
 </script>
 </body>
