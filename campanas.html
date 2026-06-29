@@ -93,26 +93,27 @@
     <span class="label-filtrar">Filtrar por:</span>
     
     <button id="btn-filtro-prioritarios" class="btn-filtro" onclick="toggleFiltroPrioritarios()">
-        <svg class="icono-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="stroke: var(--apple-naranja);"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg class="icono-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="stroke: var(--apple-naranja); width:16px; height:16px; margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Prioritarios
     </button>
     
     <div style="display: flex; align-items: center;">
-        <button id="btn-filtro-barriada" class="btn-filtro" onclick="abrirMenuBarriadas()">
-            <svg class="icono-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="stroke: var(--apple-azul);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <button id="btn-filtro-zona" class="btn-filtro" onclick="abrirMenuZonas()">
+            <svg class="icono-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="stroke: var(--apple-azul); width:16px; height:16px; margin-right:6px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             Barriada
         </button>
-        <button id="btn-quitar-barriada" class="btn-x" onclick="quitarFiltroBarriada()" style="display: none; margin-left: 5px;">✕</button>
+        <button id="btn-quitar-zona" class="btn-x" onclick="quitarFiltroZona()" style="display: none; margin-left: 5px; width:24px; height:24px; border-radius:50%; border:none; background:var(--apple-rojo); color:white; cursor:pointer;">✕</button>
     </div>
 </div>
 
-<div id="modal-seleccionar-zona" class="modal-zona" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-    <div class="modal-contenido" style="background: var(--glass-fondo); padding:24px; border-radius:20px; width:90%; max-width:400px; max-height:80%; overflow-y:auto; border:1px solid var(--glass-borde);">
-        <h3 style="color: var(--texto-principal);">Selecciona una barriada</h3>
-        <div id="lista-barriadas-opciones" style="margin-top:20px;"></div>
-        <button onclick="cerrarModalBarriada()" style="width:100%; padding:15px; margin-top:15px; border-radius:12px; border:none; background:var(--apple-azul); color:white; font-weight:bold; cursor:pointer;">Cancelar</button>
+<div id="modal-seleccionar-zona" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background: var(--glass-fondo); padding:24px; border-radius:20px; width:90%; max-width:400px; max-height:80%; overflow-y:auto; border:1px solid var(--glass-borde);">
+        <h3 style="color: var(--texto-principal); margin-top:0;">Selecciona una barriada</h3>
+        <div id="lista-zonas-opciones" style="margin-top:20px;"></div>
+        <button onclick="cerrarModalZona()" style="width:100%; padding:15px; margin-top:15px; border-radius:12px; border:none; background:var(--apple-azul); color:white; font-weight:bold; cursor:pointer;">Cancelar</button>
     </div>
 </div>
+
 
 
 
