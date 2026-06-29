@@ -269,6 +269,7 @@ function filtrarYRenderizar() {
   // 1. Gestión de visibilidad de los controles
   const contenedorBusqueda = document.querySelector(".contenedor-busqueda");
   const contenedorFiltroPrio = document.getElementById("contenedor-filtro-prio");
+  const contenedorFiltrosAvanzados = document.getElementById("contenedor-filtros-avanzados");
   
   if (contenedorBusqueda) {
     contenedorBusqueda.style.display = vistaActual === "asignados" ? "none" : "block";
@@ -276,8 +277,11 @@ function filtrarYRenderizar() {
   if (contenedorFiltroPrio) {
     contenedorFiltroPrio.style.display = vistaActual === "asignados" ? "none" : "flex";
   }
+  if (contenedorFiltrosAvanzados) {
+    contenedorFiltrosAvanzados.style.display = vistaActual === "asignados" ? "none" : "flex";
+  }
 
-  // Sincronización visual de los botones de filtro
+  // Sincronización visual de botones
   const btnPrio = document.getElementById("btn-filtro-prioritarios");
   if (btnPrio) btnPrio.classList.toggle("activa", filtroPrioritariosActivo);
   
@@ -304,33 +308,29 @@ function filtrarYRenderizar() {
     ? baseDatosCompleta
     : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   
-    // Esto separa lo que se muestra en una pestaña o en otra
   dataset = vistaActual === "disponibles" 
     ? dataset.filter(m => m.entregado === false) 
     : dataset.filter(m => m.entregado === true);
 
-  // 3. Aplicar filtros (Búsqueda, Prioritarios y Zona)
-  if (buscadorValue) {
-    dataset = dataset.filter(m =>
-      m.id.toString().includes(buscadorValue) ||
-      m.barriada.toLowerCase().includes(buscadorValue)
-    );
-  }
-
-    // Solo aplicar filtros si estamos en la vista de disponibles
+  // 3. Aplicar filtros (Búsqueda, Prioritarios y Zona - SOLO EN DISPONIBLES)
   if (vistaActual === "disponibles") {
-      
-      if (filtroPrioritariosActivo) {
-        dataset = dataset.filter(m => 
-          m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
-        );
-      }
+    if (buscadorValue) {
+      dataset = dataset.filter(m =>
+        m.id.toString().includes(buscadorValue) ||
+        (m.barriada && m.barriada.toLowerCase().includes(buscadorValue))
+      );
+    }
 
-      if (filtroZonaActivo) {
-        dataset = dataset.filter(m => m.barriada === filtroZonaActivo);
-      }
+    if (filtroPrioritariosActivo) {
+      dataset = dataset.filter(m => 
+        m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
+      );
+    }
+
+    if (filtroZonaActivo) {
+      dataset = dataset.filter(m => m.barriada === filtroZonaActivo);
+    }
   }
-
 
   // 4. Lógica de ordenación
   if (vistaActual === "disponibles") {
@@ -389,16 +389,39 @@ function filtrarYRenderizar() {
           <img src="${mapa.rutaMapa}" class="imagen-mapa-asset" onerror="this.src='https://placehold.co/400x300?text=Mapa+no+disponible'">
         </div>
         <div class="fila-tarjeta-inferior">
-          <span style="font-size: 0.9rem; color: #34c759; margin-right: 10px;">
-            ${textoDistancia ? `📍 ${textoDistancia}` : ''}
-          </span>
           <div class="bloque-prio-izq" style="min-height: 25px;">
             ${esPrio ? `<span class="tag-prioritario-esquina">⚠️ PRIORITARIO</span>` : ''}
           </div>
+          <span style="font-size: 0.9rem; color: #34c759;">${textoDistancia ? `📍 ${textoDistancia}` : ''}</span>
           <button class="btn-check-rectangular" type="button"></button>
         </div>`;
     } else {
-        // ... (Tu renderizado de asignados original)
+      div.className = `tarjeta-apple-horizontal ${esPrio ? 'prioritaria-row' : ''}`;
+      let fechaFormateada = (mapa.fechaEntrega && mapa.fechaEntrega !== "Sin fecha") ? new Date(mapa.fechaEntrega).toLocaleDateString("es-ES", {day:'2-digit', month:'2-digit', year:'2-digit'}) : "Sin fecha";
+      div.innerHTML = `
+        <div class="contenedor-columna-imagen">
+          ${esPrio ? `<span class="tag-prio-bloque">⚠️ PRIORITARIO</span>` : ''}
+          <div class="img-lateral-wrapper-rectangular">
+            <button class="btn-lupa-flotante" onclick="abrirVisorPantallaCompleta('${mapa.rutaMapa}', '${parseInt(mapa.id)}', event)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <img src="${mapa.rutaMapa}" class="imagen-lateral-asset-rect">
+          </div>
+        </div>
+        <div class="contenido-lateral-datos">
+          <div class="cabecera-datos-linea">
+            <span class="num-mapa-chico">${parseInt(mapa.id)}</span>
+            <span class="nombre-barrio-chico">${mapa.barriada}</span>
+          </div>
+          <div class="fila-dato-simple">👤 ${mapa.hermano || 'No asignado'}</div>
+          <div class="fila-dato-simple">📅 ${fechaFormateada}</div>
+          <div class="estado-badge-linea" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <span class="badge-estado-pill ${!mapa.trabajado ? 'estado-calle' : 'estado-hecho'}">${!mapa.trabajado ? "Pendiente" : "Completado"}</span>
+            <button class="btn-check-apple ${mapa.trabajado ? 'activo' : ''}" onclick="toggleEstadoTrabajo(${mapa.id}, event)" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #34c759; background: ${mapa.trabajado ? '#34c759' : 'transparent'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
+              ${mapa.trabajado ? '<span style="color:white; font-size: 16px; font-weight:bold;">✓</span>' : ''}
+            </button>
+          </div>
+        </div>`;
     }
     grid.appendChild(div);
   });
