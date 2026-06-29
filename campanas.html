@@ -89,17 +89,23 @@
       </div>
     </div>
 
-<div class="contenedor-filtros-avanzados">
+<div id="contenedor-filtros-avanzados" class="contenedor-filtros-avanzados">
     <span class="label-filtrar">Filtrar por:</span>
-    
     <button id="btn-filtro-prioritarios" class="btn-filtro" onclick="toggleFiltroPrioritarios()">Prioritarios</button>
-    
-    <div class="filtro-zona-wrapper" style="display: flex; align-items: center; position: relative;">
+    <div class="filtro-zona-wrapper" style="display: flex; align-items: center;">
         <button id="btn-filtro-zona" class="btn-filtro" onclick="abrirMenuZonas()">Zona</button>
-        <!-- La X aparecerá al lado del botón de Zona -->
         <button id="btn-quitar-zona" class="btn-x" onclick="quitarFiltroZona()" style="display: none; margin-left: 5px;">✕</button>
     </div>
 </div>
+
+<div id="modal-seleccionar-zona" class="modal-zona" style="display:none;">
+    <div class="modal-contenido">
+        <h3>Selecciona una zona</h3>
+        <div id="lista-zonas-opciones" class="lista-zonas"></div>
+        <button onclick="cerrarModalZona()" class="btn-cerrar-modal">Cancelar</button>
+    </div>
+</div>
+
 
 
     <div class="contenedor-busqueda">
