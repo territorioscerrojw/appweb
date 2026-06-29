@@ -270,11 +270,14 @@
   const nombreH = new URLSearchParams(window.location.search).get('h') || new URLSearchParams(window.location.search).get('id');
 
   // 1. Inyección de script para evitar CORS
-  function cargar() {
-    const script = document.createElement('script');
-    script.src = "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI" + "?h=" + encodeURIComponent(nombreH) + "&callback=procesarDatos";
-    document.body.appendChild(script);
-  }
+ function cargar() {
+  const script = document.createElement('script');
+  // Asegúrate de que aquí vaya tu URL real, NO el texto anterior
+  script.src = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
+               + "?h=" + encodeURIComponent(nombreH) 
+               + "&callback=procesarDatos";
+  document.body.appendChild(script);
+}
 
   // 2. Función que recibe los datos desde Google
   function procesarDatos(datos) {
