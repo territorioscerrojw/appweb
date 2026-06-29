@@ -945,27 +945,22 @@ function cambiarPestana(vista, btn) {
   btn.classList.add("activa");
   filtrarYRenderizar();
 }
-// Variables de estado
-
-
 function abrirMenuZonas() {
     const contenedorLista = document.getElementById("lista-zonas-opciones");
     const modal = document.getElementById("modal-seleccionar-zona");
     
-    // 1. Obtener zonas únicas y ordenarlas
+    // Extraer zonas únicas y ordenarlas
     const zonas = [...new Set(baseDatosCompleta.map(t => t.zona).filter(z => z))].sort();
     
-    // 2. Limpiar e inyectar botones
     contenedorLista.innerHTML = "";
     zonas.forEach(zona => {
         const btn = document.createElement("button");
         btn.textContent = zona;
-        btn.style.cssText = "padding:12px; border-radius:10px; border:1px solid var(--glass-borde); background:var(--glass-fondo); color:var(--texto-principal); cursor:pointer; text-align:left; font-weight:600;";
-        
+        btn.className = "btn-opcion-zona"; // Dale estilos en CSS
         btn.onclick = () => {
             filtroZonaActivo = zona;
             document.getElementById('btn-filtro-zona').classList.add('activa');
-            document.getElementById('btn-quitar-zona').style.display = 'block';
+            document.getElementById('btn-quitar-zona').style.display = 'flex';
             modal.style.display = "none";
             filtrarYRenderizar();
         };
