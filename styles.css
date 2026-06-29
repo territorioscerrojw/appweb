@@ -418,19 +418,56 @@ animation: pulso 4s infinite ease-in-out !important;
     font-size: 13px;
     font-weight: 600;
 }
-.btn-filtro.activa { background: var(--apple-azul); color: white; }
 .filtro-zona-wrapper { display: flex; align-items: center; gap: 4px; }
+
+
+.contenedor-filtros-avanzados {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0 20px 0;
+    padding: 0 4px;
+}
+
+.label-filtrar { 
+    font-size: 13px; 
+    font-weight: 700; 
+    color: var(--texto-secundario);
+    margin-right: 4px;
+}
+
+.btn-filtro {
+    background: var(--glass-fondo);
+    border: 1px solid var(--glass-borde);
+    padding: 8px 14px;
+    border-radius: 12px;
+    color: var(--texto-principal);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Efecto al estar activo */
+.btn-filtro.activa { 
+    background: var(--apple-azul); 
+    color: #ffffff; 
+    border-color: var(--apple-azul);
+}
 
 .btn-x { 
     background: var(--apple-rojo); 
     color: white; 
     border: none; 
     border-radius: 50%; 
-    width: 22px; 
-    height: 22px; 
+    width: 24px; 
+    height: 24px; 
     font-size: 12px; 
-    cursor: pointer;
-    margin-left: -5px; /* Ajuste para que quede pegado al botón */
+    font-weight: bold;
+    cursor: pointer; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ==========================================================================
