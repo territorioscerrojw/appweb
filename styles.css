@@ -400,6 +400,28 @@ animation: pulso 4s infinite ease-in-out !important;
   color: white;
   border-color: #f59e0b;
 }
+
+.contenedor-filtros-avanzados {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+    padding: 0 5px;
+}
+.label-filtrar { font-size: 12px; font-weight: 700; color: var(--texto-secundario); }
+.btn-filtro {
+    background: var(--glass-fondo);
+    border: 1px solid var(--glass-borde);
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: var(--texto-principal);
+    font-size: 13px;
+    font-weight: 600;
+}
+.btn-filtro.activa { background: var(--apple-azul); color: white; }
+.filtro-zona-wrapper { display: flex; align-items: center; gap: 4px; }
+.btn-x { background: var(--apple-rojo); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; }
+
 /* ==========================================================================
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
    ========================================================================== */
