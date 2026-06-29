@@ -273,24 +273,16 @@
   const params = new URLSearchParams(window.location.search);
   const nombreH = params.get('h') || params.get('id');
 
-  async function cargar() {
+ function cargar() {
   document.getElementById('user-display').innerText = nombreH;
-
-  try {
-    // La URL debe apuntar directamente a tu script sin el parámetro &callback=...
-    const url = `${API_URL}?h=${encodeURIComponent(nombreH)}`;
-    
-    const response = await fetch(url);
-    const datos = await response.json(); // Ahora esto funcionará porque recibes JSON puro
-    
-    datosCargados = datos;
-    procesarDatos(datos);
-  } catch (e) {
-    console.error("Error al cargar datos:", e);
-  }
+  const script = document.createElement('script');
+  // Nota: llamamos a "procesarDatos" como callback
+  script.src = `${API_URL}?h=${encodeURIComponent(nombreH)}&callback=procesarDatos`;
+  document.body.appendChild(script);
 }
 
   function procesarDatos(datos) {
+    datosCargados = datos;
     const cont = document.getElementById('grid-container');
     // Verificamos si los datos vienen vacíos
     if (!datos || (!datos.personales && !datos.grupo)) {
