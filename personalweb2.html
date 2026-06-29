@@ -266,56 +266,44 @@
   </div>
 
 <script>
-  let datosCargados = [];
-  const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-  
-  // Obtenemos el nombre y lo decodificamos correctamente
-  const params = new URLSearchParams(window.location.search);
-  const nombreH = params.get('h') || params.get('id');
+  let datosCargados = null; // Variable global para los datos
+  const nombreH = new URLSearchParams(window.location.search).get('h') || new URLSearchParams(window.location.search).get('id');
 
- function cargar() {
-  document.getElementById('user-display').innerText = nombreH;
-  const script = document.createElement('script');
-  // Nota: llamamos a "procesarDatos" como callback
-  script.src = `${API_URL}?h=${encodeURIComponent(nombreH)}&callback=procesarDatos`;
-  document.body.appendChild(script);
-}
+  // 1. Inyección de script para evitar CORS
+  function cargar() {
+    const script = document.createElement('script');
+    script.src = "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI" + "?h=" + encodeURIComponent(nombreH) + "&callback=procesarDatos";
+    document.body.appendChild(script);
+  }
 
+  // 2. Función que recibe los datos desde Google
   function procesarDatos(datos) {
     datosCargados = datos;
     const cont = document.getElementById('grid-container');
-    // Verificamos si los datos vienen vacíos
-    if (!datos || (!datos.personales && !datos.grupo)) {
-        cont.innerHTML = "<p style='padding:20px; text-align:center;'>No se encontraron territorios para este usuario.</p>";
-        return;
-    }
-    
-    cont.innerHTML = renderizarLista(datos.personales || [], "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                     renderizarLista(datos.grupo || [], "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "h2-personales", "p") +
+                     renderizarLista(datos.grupo, "Territorios de Grupo", "h2-grupo", "g");
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo) {
-    if(lista.length === 0) return "";
-    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+  // 3. Renderizado con el índice correcto
+  function renderizarLista(lista, titulo, clase, tipo) {
+    if(!lista || lista.length === 0) return "";
+    return `<h2 class="${clase}">${titulo}</h2>
             <div class="grid">${lista.map((t, i) => `
               <div class="card">
-                <div class="img-box"><img src="${t.imgMini}" referrerpolicy="no-referrer"></div>
                 <div class="info">
                   <span class="num">Territorio ${t.num}</span>
-                  <span class="zona">${t.zona}</span>
-                  <div class="badge ${t.caducado ? 'badge-red' : 'badge-orange'}">${t.tiempo}</div>
+                  <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>
-                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
               </div>`).join('')}</div>`;
   }
 
+  // 4. Abrir modal usando el índice
   function abrirModal(tipo, index) {
+    if (!datosCargados) return;
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
+    
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
     document.getElementById('m-img').src = t.imgGrande;
-    document.getElementById('m-zona').innerText = t.zona;
-    document.getElementById('m-tiempo').innerText = t.tiempo;
-    document.getElementById('m-notas').innerText = t.notas;
     document.getElementById('modal').style.display = "block";
   }
 
