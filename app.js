@@ -960,8 +960,8 @@ function abrirMenuZonas() {
         // MODIFICACIÓN: Aquí aplicamos el tamaño grande y estilo "Apple"
                 btn.style.cssText = `
             width: 100%;
-            padding: 8px 12px;      /* <--- AQUI: Reducido de 18px a 10px */
-            margin-bottom: 4px;      /* <--- AQUI: Reducido de 10px a 6px para ganar espacio */
+            padding: 6px 10px;      /* <--- AQUI: Reducido de 18px a 10px */
+            margin-bottom: 3px;      /* <--- AQUI: Reducido de 10px a 6px para ganar espacio */
             border-radius: 10px;     /* <--- Un poco menos redondeado para ahorrar espacio */
             border: 1px solid var(--glass-borde);
             background: var(--glass-fondo);
