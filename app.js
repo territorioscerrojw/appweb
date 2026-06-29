@@ -949,18 +949,34 @@ function cambiarPestana(vista, btn) {
 
 
 function abrirMenuZonas() {
-    // 1. Extraer zonas únicas y ordenarlas alfabéticamente
-    const zonas = [...new Set(baseDatosCompleta.map(t => t.zona))].sort();
+    const contenedorLista = document.getElementById("lista-zonas-opciones");
+    const modal = document.getElementById("modal-seleccionar-zona");
     
-    // 2. Crear un simple prompt o modal (puedes mejorar esto con un modal real)
-    const seleccion = prompt("Selecciona una zona:\n" + zonas.join("\n"));
+    // 1. Obtener zonas únicas y ordenarlas
+    const zonas = [...new Set(baseDatosCompleta.map(t => t.zona).filter(z => z))].sort();
     
-    if (seleccion && zonas.includes(seleccion)) {
-        filtroZonaActivo = seleccion;
-        document.getElementById('btn-filtro-zona').classList.add('activa');
-        document.getElementById('btn-quitar-zona').style.display = 'block';
-        filtrarYRenderizar(); // Tu función que renderiza según estados
-    }
+    // 2. Limpiar e inyectar botones
+    contenedorLista.innerHTML = "";
+    zonas.forEach(zona => {
+        const btn = document.createElement("button");
+        btn.textContent = zona;
+        btn.style.cssText = "padding:12px; border-radius:10px; border:1px solid var(--glass-borde); background:var(--glass-fondo); color:var(--texto-principal); cursor:pointer; text-align:left; font-weight:600;";
+        
+        btn.onclick = () => {
+            filtroZonaActivo = zona;
+            document.getElementById('btn-filtro-zona').classList.add('activa');
+            document.getElementById('btn-quitar-zona').style.display = 'block';
+            modal.style.display = "none";
+            filtrarYRenderizar();
+        };
+        contenedorLista.appendChild(btn);
+    });
+    
+    modal.style.display = "flex";
+}
+
+function cerrarModalZona() {
+    document.getElementById("modal-seleccionar-zona").style.display = "none";
 }
 
 function quitarFiltroZona() {
