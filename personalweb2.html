@@ -274,24 +274,21 @@
   const nombreH = params.get('h') || params.get('id');
 
   async function cargar() {
-    if (!nombreH) return;
-    document.getElementById('user-display').innerText = nombreH;
+  document.getElementById('user-display').innerText = nombreH;
 
-    try {
-      // Agregamos un timestamp para evitar caché del navegador móvil
-      const url = `${API_URL}?h=${encodeURIComponent(nombreH)}&_=${new Date().getTime()}`;
-      const response = await fetch(url);
-      
-      if (!response.ok) throw new Error('Error en la red');
-      
-      const datos = await response.json();
-      datosCargados = datos;
-      procesarDatos(datos);
-    } catch (e) {
-      console.error("Error al cargar datos:", e);
-      document.getElementById('grid-container').innerHTML = "<p style='padding:20px; text-align:center;'>Error al cargar territorios. Intenta nuevamente.</p>";
-    }
+  try {
+    // La URL debe apuntar directamente a tu script sin el parámetro &callback=...
+    const url = `${API_URL}?h=${encodeURIComponent(nombreH)}`;
+    
+    const response = await fetch(url);
+    const datos = await response.json(); // Ahora esto funcionará porque recibes JSON puro
+    
+    datosCargados = datos;
+    procesarDatos(datos);
+  } catch (e) {
+    console.error("Error al cargar datos:", e);
   }
+}
 
   function procesarDatos(datos) {
     const cont = document.getElementById('grid-container');
