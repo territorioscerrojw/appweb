@@ -420,7 +420,18 @@ animation: pulso 4s infinite ease-in-out !important;
 }
 .btn-filtro.activa { background: var(--apple-azul); color: white; }
 .filtro-zona-wrapper { display: flex; align-items: center; gap: 4px; }
-.btn-x { background: var(--apple-rojo); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; }
+
+.btn-x { 
+    background: var(--apple-rojo); 
+    color: white; 
+    border: none; 
+    border-radius: 50%; 
+    width: 22px; 
+    height: 22px; 
+    font-size: 12px; 
+    cursor: pointer;
+    margin-left: -5px; /* Ajuste para que quede pegado al botón */
+}
 
 /* ==========================================================================
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
