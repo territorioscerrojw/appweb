@@ -446,6 +446,9 @@ animation: pulso 4s infinite ease-in-out !important;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center; /* Alinea icono y texto verticalmente */
+    justify-content: center;
 }
 
 /* Efecto al estar activo */
@@ -496,6 +499,14 @@ animation: pulso 4s infinite ease-in-out !important;
     margin-bottom: 20px;
     color: var(--texto-principal);
 }
+.icono-btn {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+
 
 /* ==========================================================================
    NUEVO DISEÑO DE TARJETAS PESTAÑA: DISPONIBLES (ESTILO PREMIUM TRANSLÚCIDO)
