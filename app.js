@@ -964,7 +964,7 @@ function abrirMenuZonas() {
             margin-bottom: 3px;      /* <--- AQUI: Reducido de 10px a 6px para ganar espacio */
             border-radius: 10px;     /* <--- Un poco menos redondeado para ahorrar espacio */
             border: 1px solid var(--glass-borde);
-            background: var(--glass-fondo);
+            background: var(--fondo-base);
             color: var(--texto-principal);
             font-size: 13px;         /* <--- Ligeramente más pequeño para que entre más texto */
             font-weight: 600;
