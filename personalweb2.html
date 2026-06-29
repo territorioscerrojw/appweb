@@ -265,33 +265,48 @@
     </div>
   </div>
 
- <script>
-  let datosCargados = []; // Variable global para guardar los datos
+<script>
+  let datosCargados = [];
   const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+  
+  // Obtenemos el nombre y lo decodificamos correctamente
   const params = new URLSearchParams(window.location.search);
   const nombreH = params.get('h') || params.get('id');
 
-  // Carga usando fetch (más moderno y compatible)
   async function cargar() {
-    document.getElementById('user-display').innerText = nombreH || "Usuario";
+    if (!nombreH) return;
+    document.getElementById('user-display').innerText = nombreH;
+
     try {
-      const response = await fetch(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
+      // Agregamos un timestamp para evitar caché del navegador móvil
+      const url = `${API_URL}?h=${encodeURIComponent(nombreH)}&_=${new Date().getTime()}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) throw new Error('Error en la red');
+      
       const datos = await response.json();
-      datosCargados = datos; // Guardamos en memoria
+      datosCargados = datos;
       procesarDatos(datos);
     } catch (e) {
       console.error("Error al cargar datos:", e);
+      document.getElementById('grid-container').innerHTML = "<p style='padding:20px; text-align:center;'>Error al cargar territorios. Intenta nuevamente.</p>";
     }
   }
 
   function procesarDatos(datos) {
     const cont = document.getElementById('grid-container');
-    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+    // Verificamos si los datos vienen vacíos
+    if (!datos || (!datos.personales && !datos.grupo)) {
+        cont.innerHTML = "<p style='padding:20px; text-align:center;'>No se encontraron territorios para este usuario.</p>";
+        return;
+    }
+    
+    cont.innerHTML = renderizarLista(datos.personales || [], "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                     renderizarLista(datos.grupo || [], "Territorios de Grupo", "fa-users", "h2-grupo", "g");
   }
 
   function renderizarLista(lista, titulo, icono, clase, tipo) {
-    if(!lista || lista.length === 0) return "";
+    if(lista.length === 0) return "";
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             <div class="grid">${lista.map((t, i) => `
               <div class="card">
