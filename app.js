@@ -949,16 +949,32 @@ function abrirMenuZonas() {
     const contenedorLista = document.getElementById("lista-zonas-opciones");
     const modal = document.getElementById("modal-seleccionar-zona");
     
-    // Extraer zonas únicas y ordenarlas
-    const zonas = [...new Set(baseDatosCompleta.map(t => t.barriada).filter(z => z))].sort();
+    // Extraer barriadas únicas y ordenarlas
+    const barriadas = [...new Set(baseDatosCompleta.map(t => t.barriada).filter(z => z))].sort();
     
     contenedorLista.innerHTML = "";
-    zonas.forEach(zona => {
+    barriadas.forEach(barriada => {
         const btn = document.createElement("button");
-        btn.textContent = zona;
-        btn.className = "btn-opcion-zona"; // Dale estilos en CSS
+        btn.textContent = barriada;
+        
+        // MODIFICACIÓN: Aquí aplicamos el tamaño grande y estilo "Apple"
+        btn.style.cssText = `
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 10px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-borde);
+            background: var(--glass-fondo);
+            color: var(--texto-principal);
+            font-size: 17px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        `;
+        
         btn.onclick = () => {
-            filtroZonaActivo = zona;
+            filtroZonaActivo = barriada; // Ojo: tu variable global se llama así, mantenla
             document.getElementById('btn-filtro-zona').classList.add('activa');
             document.getElementById('btn-quitar-zona').style.display = 'flex';
             modal.style.display = "none";
