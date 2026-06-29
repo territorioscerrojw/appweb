@@ -265,95 +265,59 @@
     </div>
   </div>
 
-  <script>
-   // Añadimos el prefijo de un proxy público para saltar el bloqueo CORS
-const PROXY = "https://corsproxy.io/?"; 
+ <script>
+  let datosCargados = []; // Variable global para guardar los datos
+  const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+  const params = new URLSearchParams(window.location.search);
+  const nombreH = params.get('h') || params.get('id');
 
-    const API_URL = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-    const params = new URLSearchParams(window.location.search);
-    const nombreH = params.get('h') || params.get('id');
-
-    // Esta función maneja la respuesta de Google correctamente
-    function cargar() {
-        document.getElementById('user-display').innerText = nombreH;
-        
-        // Usamos un script tag para evitar problemas de CORS y bloqueos de navegador
-        const script = document.createElement('script');
-        script.src = `${API_URL}?h=${encodeURIComponent(nombreH)}&callback=procesarDatos`;
-        document.body.appendChild(script);
+  // Carga usando fetch (más moderno y compatible)
+  async function cargar() {
+    document.getElementById('user-display').innerText = nombreH || "Usuario";
+    try {
+      const response = await fetch(`${API_URL}?h=${encodeURIComponent(nombreH)}`);
+      const datos = await response.json();
+      datosCargados = datos; // Guardamos en memoria
+      procesarDatos(datos);
+    } catch (e) {
+      console.error("Error al cargar datos:", e);
     }
+  }
 
-    // Google llamará a esta función al recibir los datos
-    function procesarDatos(datos) {
-        console.log("Datos recibidos:", datos);
-        const cont = document.getElementById('grid-container');
-        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales") +
-                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo");
-    }
+  function procesarDatos(datos) {
+    const cont = document.getElementById('grid-container');
+    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+  }
 
-    // ... (aquí pones tu función renderizarLista que ya tenías) ...
-    
-    cargar();
+  function renderizarLista(lista, titulo, icono, clase, tipo) {
+    if(!lista || lista.length === 0) return "";
+    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+            <div class="grid">${lista.map((t, i) => `
+              <div class="card">
+                <div class="img-box"><img src="${t.imgMini}" referrerpolicy="no-referrer"></div>
+                <div class="info">
+                  <span class="num">Territorio ${t.num}</span>
+                  <span class="zona">${t.zona}</span>
+                  <div class="badge ${t.caducado ? 'badge-red' : 'badge-orange'}">${t.tiempo}</div>
+                </div>
+                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+              </div>`).join('')}</div>`;
+  }
 
-    
- function renderizarLista(lista, titulo, icono, clase) {
-  if (!lista || lista.length === 0) return "";
+  function abrirModal(tipo, index) {
+    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
+    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
+    document.getElementById('m-img').src = t.imgGrande;
+    document.getElementById('m-zona').innerText = t.zona;
+    document.getElementById('m-tiempo').innerText = t.tiempo;
+    document.getElementById('m-notas').innerText = t.notas;
+    document.getElementById('modal').style.display = "block";
+  }
+
+  function cerrar() { document.getElementById('modal').style.display = "none"; }
   
-  let cards = lista.map(t => {
-    // Usamos encodeURIComponent para pasar datos complejos de forma segura al modal
-    const datos = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-    
-    return `
-    <div class="card">
-      <div class="img-box">
-        <img src="${t.imgMini}" referrerpolicy="no-referrer">
-        ${t.caducado ? '<div class="watermark">CADUCADO</div>' : ''}
-      </div>
-      <div class="info">
-        <span class="num">Territorio ${t.num}</span>
-        <span class="zona">${t.zona}</span>
-        <div class="badge ${t.caducado ? 'badge-red' : 'badge-orange'}">
-          ${t.tiempo}
-        </div>
-      </div>
-      <button class="btn-more" onclick="abrirDesdeBase64('${datos}')">VER MÁS</button>
-    </div>`;
-  }).join('');
-  
-  return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2><div class="grid">${cards}</div>`;
-}
-
-// Nueva función segura para abrir el modal
-function abrirDesdeBase64(base64Data) {
-  const t = JSON.parse(decodeURIComponent(escape(atob(base64Data))));
-  abrir(t.num, t.zona, t.tiempo, t.imgGrande, t.notas, t.caducado, t.coords);
-}
-    function abrir(num, zona, tiempo, img, notas, caducado, coords) {
-      document.getElementById('m-titulo').innerText = "TERRITORIO " + num;
-      document.getElementById('m-img').src = img;
-      document.getElementById('m-zona').innerText = zona;
-      document.getElementById('m-tiempo').innerText = tiempo;
-      document.getElementById('m-notas').innerText = notas;
-      
-      const btnGps = document.getElementById('m-gps');
-      if (coords && coords.length > 3) {
-        btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + coords.replace("POINT (", "").replace(")", "").replace(" ", ",");
-        btnGps.style.display = "flex";
-      } else { btnGps.style.display = "none"; }
-      
-      document.getElementById('modal').style.display = "block";
-    }
-
-    function cerrar() { document.getElementById('modal').style.display = "none"; }
-    cargar();
-    function limpiarTexto(str) {
-    if (!str) return "";
-    return String(str)
-        .replace(/\\/g, '\\\\')    // Escapar barras
-        .replace(/'/g, "\\'")      // Escapar comillas simples
-        .replace(/"/g, '&quot;')   // Escapar comillas dobles
-        .replace(/\r?\n/g, ' ');   // Eliminar saltos de línea y reemplazarlos por espacios
-}
-  </script>
+  cargar();
+</script>
 </body>
 </html>
