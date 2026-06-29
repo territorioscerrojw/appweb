@@ -304,6 +304,7 @@ function filtrarYRenderizar() {
     ? baseDatosCompleta
     : baseDatosCompleta.filter(m => m.grupo == grupoFiltro);
   
+    // Esto separa lo que se muestra en una pestaña o en otra
   dataset = vistaActual === "disponibles" 
     ? dataset.filter(m => m.entregado === false) 
     : dataset.filter(m => m.entregado === true);
@@ -316,15 +317,20 @@ function filtrarYRenderizar() {
     );
   }
 
-  if (filtroPrioritariosActivo && vistaActual === "disponibles") {
-    dataset = dataset.filter(m => 
-      m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
-    );
+    // Solo aplicar filtros si estamos en la vista de disponibles
+  if (vistaActual === "disponibles") {
+      
+      if (filtroPrioritariosActivo) {
+        dataset = dataset.filter(m => 
+          m.prioritario === "SI" || m.prioritario === true || String(m.prioritario).toUpperCase() === "TRUE"
+        );
+      }
+
+      if (filtroZonaActivo) {
+        dataset = dataset.filter(m => m.barriada === filtroZonaActivo);
+      }
   }
 
-  if (filtroZonaActivo && vistaActual === "disponibles") {
-    dataset = dataset.filter(m => m.barriada === filtroZonaActivo);
-  }
 
   // 4. Lógica de ordenación
   if (vistaActual === "disponibles") {
