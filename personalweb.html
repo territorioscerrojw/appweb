@@ -477,24 +477,32 @@ function inyectarTarjetasHermano() {
   const gP = document.getElementById("grid-pendientes");
   const gC = document.getElementById("grid-completados");
 
-  // 1. ORDENAR: Aseguramos que siempre estén por ID (numérico)
+  // 1. ORDENAR
   datosLocalesHermano.sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
-  // 2. Fragmentos para mantener el orden
-  const fragmentoP = document.createDocumentFragment();
-  const fragmentoC = document.createDocumentFragment();
+  // 2. Filtrar
+  const pendientes = datosLocalesHermano.filter(item => !item.trabajado);
+  const completados = datosLocalesHermano.filter(item => item.trabajado);
 
-  datosLocalesHermano.forEach(mapa => {
-    const tarjeta = crearTarjetaDOM(mapa);
-    if (!mapa.trabajado) fragmentoP.appendChild(tarjeta);
-    else fragmentoC.appendChild(tarjeta);
-  });
+  // 3. Renderizar PENDIENTES
+  if (pendientes.length === 0) {
+    gP.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario); font-style: italic; font-size: 18px;">No tienes territorios pendientes.</p>`;
+  } else {
+    gP.innerHTML = "";
+    const fragmentoP = document.createDocumentFragment();
+    pendientes.forEach(mapa => fragmentoP.appendChild(crearTarjetaDOM(mapa)));
+    gP.appendChild(fragmentoP);
+  }
 
-  // 3. Limpiar y rellenar
-  gP.innerHTML = "";
-  gP.appendChild(fragmentoP);
-  gC.innerHTML = "";
-  gC.appendChild(fragmentoC);
+  // 4. Renderizar COMPLETADOS
+  if (completados.length === 0) {
+    gC.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--texto-secundario); font-style: italic; font-size: 18px;">Aún no has completado territorios.</p>`;
+  } else {
+    gC.innerHTML = "";
+    const fragmentoC = document.createDocumentFragment();
+    completados.forEach(mapa => fragmentoC.appendChild(crearTarjetaDOM(mapa)));
+    gC.appendChild(fragmentoC);
+  }
 }
 
 /**
