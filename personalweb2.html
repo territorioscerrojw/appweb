@@ -274,7 +274,6 @@
     if (!nombreH) return;
     document.getElementById('user-display').innerText = nombreH;
     
-    // URL DE TU SCRIPT (LA QUE TERMINA EN /exec)
     const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
                 + "?h=" + encodeURIComponent(nombreH);
 
@@ -288,15 +287,7 @@
       })
       .catch(err => console.error("Error:", err));
   }
-  // 2. PROCESAMIENTO: Google llama a esta función automáticamente
-  function procesarDatos(datos) {
-    datosCargados = datos; // Guardamos los datos globales
-    const cont = document.getElementById('grid-container');
-    cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
-  }
 
-  // 3. RENDERIZADO: Genera el HTML de las tarjetas
   function renderizarLista(lista, titulo, icono, clase, tipo) {
     if(!lista || lista.length === 0) return "";
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
@@ -310,7 +301,6 @@
               </div>`).join('')}</div>`;
   }
 
-  // 4. MODAL: Usa el tipo y el índice para extraer la información exacta
   function abrirModal(tipo, index) {
     if (!datosCargados) return;
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
@@ -321,20 +311,25 @@
     document.getElementById('m-tiempo').innerText = t.tiempo;
     document.getElementById('m-notas').innerText = t.notas;
     
-    // Lógica del botón GPS dentro de abrirModal
-  const btnGps = document.getElementById('m-gps');
-  if (t.coords && t.coords.trim() !== "") {
-    // Eliminamos cualquier espacio accidental para dejar solo "lat,lon"
-    let coordenadasLimpias = t.coords.replace(/\s+/g, '');
-    
-    btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + coordenadasLimpias;
-    btnGps.style.display = "flex";
-  } else {
-    btnGps.style.display = "none";
+    const btnGps = document.getElementById('m-gps');
+    if (t.coords && t.coords.trim() !== "") {
+      let coordenadasLimpias = t.coords.replace(/\s+/g, '');
+      btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + coordenadasLimpias;
+      btnGps.style.display = "flex";
+    } else {
+      btnGps.style.display = "none";
+    }
+
+    document.getElementById('modal').style.display = "block";
+  }
+
+  function cerrar() { 
+    document.getElementById('modal').style.display = "none"; 
   }
   
-  // Iniciar todo
+  // Iniciar al cargar la página
   cargar();
+
 </script>
 </body>
 </html>
