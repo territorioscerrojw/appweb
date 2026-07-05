@@ -289,11 +289,15 @@
       .catch(err => console.error("Error:", err));
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo) {
+function renderizarLista(lista, titulo, icono, clase, tipo) {
     if(!lista || lista.length === 0) return "";
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             <div class="grid">${lista.map((t, i) => `
               <div class="card">
+                <!-- AQUÍ ESTÁ EL CAMBIO: Se añade el div de la imagen -->
+                <div class="img-box">
+                  <img src="${t.imgMini}" referrerpolicy="no-referrer" crossorigin="anonymous">
+                </div>
                 <div class="info">
                   <span class="num">Territorio ${t.num}</span>
                   <span class="zona">${t.zona}</span>
