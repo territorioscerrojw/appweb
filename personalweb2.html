@@ -307,28 +307,35 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
   }
 
   function abrirModal(tipo, index) {
-    if (!datosCargados) return;
-    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
-    
-    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
-    document.getElementById('m-img').src = t.imgGrande;
-    document.getElementById('m-zona').innerText = t.zona;
-    document.getElementById('m-tiempo').innerText = t.tiempo;
-    document.getElementById('m-notas').innerText = t.notas;
-    
-    const btnGps = document.getElementById('m-gps');
-    if (t.coords && t.coords.trim() !== "") {
-      let coordenadasLimpias = t.coords.replace(/\s+/g, '');
-      // Cambia la línea del href en el botón GPS:
-btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + coordenadasLimpias + "&travelmode=driving";
-      btnGps.style.display = "flex";
-    } else {
-      btnGps.style.display = "none";
-    }
-
-    document.getElementById('modal').style.display = "block";
+  if (!datosCargados) return;
+  const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
+  
+  document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
+  document.getElementById('m-img').src = t.imgGrande;
+  document.getElementById('m-zona').innerText = t.zona;
+  document.getElementById('m-tiempo').innerText = t.tiempo;
+  document.getElementById('m-notas').innerText = t.notas;
+  
+  // Botón GPS
+  const btnGps = document.getElementById('m-gps');
+  if (t.coords && t.coords.trim() !== "") {
+    let clean = t.coords.replace(/\s+/g, '');
+    btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + clean + "&travelmode=driving";
+    btnGps.style.display = "flex";
+  } else {
+    btnGps.style.display = "none";
   }
 
+  // --- CONFIGURACIÓN DE INCIDENCIA PRE-RELLENADA ---
+  const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
+  // Usamos los IDs extraídos: entry.1249287665 para territorio y entry.281107512 para nombre
+  const urlIncidencia = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+  
+  document.getElementById('m-link').href = urlIncidencia;
+  // ------------------------------------------------
+
+  document.getElementById('modal').style.display = "block";
+}
   function cerrar() { 
     document.getElementById('modal').style.display = "none"; 
   }
