@@ -268,90 +268,67 @@
 
 <script>
   let datosCargados = null;
-  let nombreH = ""; // <--- CAMBIO 1: Variable global para que abrirModal la reconozca
+  let nombreH = "";
 
   function cargar() {
-    const params = new URLSearchParams(window.location.search);
-    let nombreRaw = params.get('h') || params.get('id');
-    
-    if (!nombreRaw) {
-      document.getElementById('user-display').innerText = "Usuario no identificado";
-      return;
-    }
-    
-    nombreH = decodeURIComponent(nombreRaw); // <--- Asignamos el valor global
-    document.getElementById('user-display').innerText = nombreH;
-    
-    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
-                + "?h=" + encodeURIComponent(nombreH);
+    try {
+      const params = new URLSearchParams(window.location.search);
+      let nombreRaw = params.get('h') || params.get('id');
+      
+      if (!nombreRaw) {
+        document.getElementById('user-display').innerText = "Usuario no identificado";
+        return;
+      }
+      
+      nombreH = decodeURIComponent(nombreRaw);
+      document.getElementById('user-display').innerText = nombreH;
+      
+      const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
 
-    fetch(url, { method: 'GET', mode: 'cors' })
-      .then(response => response.json())
-      .then(datos => {
-        datosCargados = datos;
-        const cont = document.getElementById('grid-container');
-        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
-      })
-      .catch(err => {
-        console.error("Error:", err);
-      });
+      fetch(url)
+        .then(r => r.json())
+        .then(datos => {
+          datosCargados = datos;
+          let html = "";
+          if (datos.personales) html += renderizarLista(datos.personales, "Mis Territorios", "p");
+          if (datos.grupo) html += renderizarLista(datos.grupo, "Territorios de Grupo", "g");
+          document.getElementById('grid-container').innerHTML = html;
+        });
+    } catch(e) { console.error(e); }
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo) {
-    if(!lista || lista.length === 0) return "";
-    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
-            <div class="grid">${lista.map((t, i) => `
-              <div class="card">
-                <div class="img-box"><img src="${t.imgMini}" referrerpolicy="no-referrer"></div>
-                <div class="info">
-                  <span class="num">Territorio ${t.num}</span>
-                  <span class="zona">${t.zona}</span>
-                </div>
-                <button class="btn-more" data-tipo="${tipo}" data-index="${i}">VER DETALLES</button>
-              </div>`).join('')}</div>`;
+  function renderizarLista(lista, titulo, tipo) {
+    let html = `<h2>${titulo}</h2><div class="grid">`;
+    lista.forEach((t, i) => {
+      html += `
+        <div class="card">
+          <div class="img-box"><img src="${t.imgMini}"></div>
+          <div class="info">
+            <span class="num">Territorio ${t.num}</span>
+            <span class="zona">${t.zona}</span>
+          </div>
+          <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+        </div>`;
+    });
+    return html + `</div>`;
   }
-
-  // <--- CAMBIO 2: Evento optimizado para iPhone
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.btn-more');
-    if (btn) {
-      e.preventDefault();
-      e.stopPropagation(); // Vital para iPhone
-      abrirModal(btn.getAttribute('data-tipo'), parseInt(btn.getAttribute('data-index')));
-    }
-  });
 
   function abrirModal(tipo, index) {
-    if (!datosCargados) return;
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
-    
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
     document.getElementById('m-img').src = t.imgGrande;
     document.getElementById('m-zona').innerText = t.zona;
     document.getElementById('m-tiempo').innerText = t.tiempo;
     document.getElementById('m-notas').innerText = t.notas;
     
-    const btnGps = document.getElementById('m-gps');
-    if (t.coords && t.coords.trim() !== "") {
-      btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + t.coords.replace(/\s+/g, '') + "&travelmode=driving";
-      btnGps.style.display = "flex";
-    } else {
-      btnGps.style.display = "none";
-    }
-
-    // El nombreH ya es accesible aquí porque es global
     const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-    const urlIncidencia = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-    document.getElementById('m-link').href = urlIncidencia;
-
+    document.getElementById('m-link').href = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+    
     document.getElementById('modal').style.display = "block";
   }
 
-  function cerrar() { 
-    document.getElementById('modal').style.display = "none"; 
-  }
-
+  function cerrar() { document.getElementById('modal').style.display = "none"; }
+  
   cargar();
 </script>
 </body>
