@@ -268,116 +268,91 @@
 
 <script>
   let datosCargados = null;
- 
+  let nombreH = ""; // <--- CAMBIO 1: Variable global para que abrirModal la reconozca
 
- function cargar() {
-  // 1. Obtener y decodificar el nombre de forma segura
-  const params = new URLSearchParams(window.location.search);
-  let nombreRaw = params.get('h') || params.get('id');
-  
-  if (!nombreRaw) {
-    document.getElementById('user-display').innerText = "Acceso Denegado: Usuario no identificado";
-    return;
+  function cargar() {
+    const params = new URLSearchParams(window.location.search);
+    let nombreRaw = params.get('h') || params.get('id');
+    
+    if (!nombreRaw) {
+      document.getElementById('user-display').innerText = "Usuario no identificado";
+      return;
+    }
+    
+    nombreH = decodeURIComponent(nombreRaw); // <--- Asignamos el valor global
+    document.getElementById('user-display').innerText = nombreH;
+    
+    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
+                + "?h=" + encodeURIComponent(nombreH);
+
+    fetch(url, { method: 'GET', mode: 'cors' })
+      .then(response => response.json())
+      .then(datos => {
+        datosCargados = datos;
+        const cont = document.getElementById('grid-container');
+        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+      })
+      .catch(err => {
+        console.error("Error:", err);
+      });
   }
-  
-  // Decodificamos el nombre una vez para mostrarlo y otra para la URL
-  const nombreH = decodeURIComponent(nombreRaw);
-  document.getElementById('user-display').innerText = nombreH;
-  
-  // 2. Construcción de URL con codificación estricta
-  const baseUrl = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-  const url = baseUrl + "?h=" + encodeURIComponent(nombreH);
 
-  // 3. Fetch con timeout y manejo de errores para móviles
-  // Usamos un objeto {mode: 'cors'} para evitar problemas con las políticas de Safari
-  fetch(url, { method: 'GET', mode: 'cors' })
-    .then(response => {
-      if (!response.ok) throw new Error('Respuesta no válida del servidor');
-      return response.json();
-    })
-    .then(datos => {
-      datosCargados = datos;
-      const cont = document.getElementById('grid-container');
-      
-      // Validación de seguridad por si el JSON viene vacío
-      if (!datos || (!datos.personales && !datos.grupo)) {
-        cont.innerHTML = "<p style='text-align:center; padding:20px;'>No se encontraron territorios para este usuario.</p>";
-        return;
-      }
-      
-      cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                       renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
-    })
-    .catch(err => {
-      console.error("Error al cargar en móvil:", err);
-      document.getElementById('grid-container').innerHTML = 
-        `<div style='text-align:center; padding:20px; color:red;'>
-           Error al conectar con la base de datos.<br>
-           <button onclick='window.location.reload()' style='padding:10px; margin-top:10px;'>Reintentar conexión</button>
-         </div>`;
-    });
-}
+  function renderizarLista(lista, titulo, icono, clase, tipo) {
+    if(!lista || lista.length === 0) return "";
+    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+            <div class="grid">${lista.map((t, i) => `
+              <div class="card">
+                <div class="img-box"><img src="${t.imgMini}" referrerpolicy="no-referrer"></div>
+                <div class="info">
+                  <span class="num">Territorio ${t.num}</span>
+                  <span class="zona">${t.zona}</span>
+                </div>
+                <button class="btn-more" data-tipo="${tipo}" data-index="${i}">VER DETALLES</button>
+              </div>`).join('')}</div>`;
+  }
 
-function renderizarLista(lista, titulo, icono, clase, tipo) {
-  if(!lista || lista.length === 0) return "";
-  return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
-          <div class="grid">${lista.map((t, i) => `
-            <div class="card">
-              <div class="img-box">
-                 <img src="${t.imgMini}" referrerpolicy="no-referrer" crossorigin="anonymous">
-              </div>
-              <div class="info">
-                <span class="num">Territorio ${t.num}</span>
-                <span class="zona">${t.zona}</span>
-              </div>
-              <button class="btn-more" data-tipo="${tipo}" data-index="${i}">VER DETALLES</button>
-            </div>`).join('')}</div>`;
-}
+  // <--- CAMBIO 2: Evento optimizado para iPhone
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.btn-more');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation(); // Vital para iPhone
+      abrirModal(btn.getAttribute('data-tipo'), parseInt(btn.getAttribute('data-index')));
+    }
+  });
 
   function abrirModal(tipo, index) {
-  if (!datosCargados) return;
-  const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
-  
-  document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
-  document.getElementById('m-img').src = t.imgGrande;
-  document.getElementById('m-zona').innerText = t.zona;
-  document.getElementById('m-tiempo').innerText = t.tiempo;
-  document.getElementById('m-notas').innerText = t.notas;
-  
-  // Botón GPS
-  const btnGps = document.getElementById('m-gps');
-  if (t.coords && t.coords.trim() !== "") {
-    let clean = t.coords.replace(/\s+/g, '');
-    btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + clean + "&travelmode=driving";
-    btnGps.style.display = "flex";
-  } else {
-    btnGps.style.display = "none";
+    if (!datosCargados) return;
+    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
+    
+    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
+    document.getElementById('m-img').src = t.imgGrande;
+    document.getElementById('m-zona').innerText = t.zona;
+    document.getElementById('m-tiempo').innerText = t.tiempo;
+    document.getElementById('m-notas').innerText = t.notas;
+    
+    const btnGps = document.getElementById('m-gps');
+    if (t.coords && t.coords.trim() !== "") {
+      btnGps.href = "https://www.google.com/maps/dir/?api=1&destination=" + t.coords.replace(/\s+/g, '') + "&travelmode=driving";
+      btnGps.style.display = "flex";
+    } else {
+      btnGps.style.display = "none";
+    }
+
+    // El nombreH ya es accesible aquí porque es global
+    const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
+    const urlIncidencia = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+    document.getElementById('m-link').href = urlIncidencia;
+
+    document.getElementById('modal').style.display = "block";
   }
 
-  // --- CONFIGURACIÓN DE INCIDENCIA PRE-RELLENADA ---
-  const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-  // Usamos los IDs extraídos: entry.1249287665 para territorio y entry.281107512 para nombre
-  const urlIncidencia = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-  
-  document.getElementById('m-link').href = urlIncidencia;
-  // ------------------------------------------------
-
-  document.getElementById('modal').style.display = "block";
-}
   function cerrar() { 
     document.getElementById('modal').style.display = "none"; 
   }
-  
-  // Iniciar al cargar la página
+
   cargar();
-// Listener universal para los botones (funciona perfecto en iOS)
-document.addEventListener('click', function(e) {
-  if (e.target && e.target.classList.contains('btn-more')) {
-    const tipo = e.target.getAttribute('data-tipo');
-    const index = e.target.getAttribute('data-index');
-    abrirModal(tipo, parseInt(index));
-  }
-});
 </script>
 </body>
 </html>
