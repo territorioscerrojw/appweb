@@ -317,16 +317,16 @@
     document.getElementById('m-tiempo').innerText = t.tiempo;
     document.getElementById('m-notas').innerText = t.notas;
     
-    // ESTA ES LA PARTE QUE DEBE ESTAR EN TU HTML:
-    const btnGps = document.getElementById('m-gps');
-    if (t.coords && t.coords.trim() !== "") {
-      btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(t.coords);
-      btnGps.style.display = "flex"; // Muestra el botón si hay coordenadas
-    } else {
-      btnGps.style.display = "none"; // Oculta el botón si no las hay
-    }
-
-    document.getElementById('modal').style.display = "block";
+    // Lógica del botón GPS dentro de abrirModal
+  const btnGps = document.getElementById('m-gps');
+  if (t.coords && t.coords.trim() !== "") {
+    // Eliminamos cualquier espacio accidental para dejar solo "lat,lon"
+    let coordenadasLimpias = t.coords.replace(/\s+/g, '');
+    
+    btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + coordenadasLimpias;
+    btnGps.style.display = "flex";
+  } else {
+    btnGps.style.display = "none";
   }
   
   // Iniciar todo
