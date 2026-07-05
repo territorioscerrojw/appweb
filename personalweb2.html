@@ -270,7 +270,7 @@
   let datosCargados = null;
   let nombreH = "";
 
-  function cargar() {
+ function cargar() {
     try {
       const params = new URLSearchParams(window.location.search);
       let nombreRaw = params.get('h') || params.get('id');
@@ -289,29 +289,27 @@
         .then(r => r.json())
         .then(datos => {
           datosCargados = datos;
-          let html = "";
-          if (datos.personales) html += renderizarLista(datos.personales, "Mis Territorios", "p");
-          if (datos.grupo) html += renderizarLista(datos.grupo, "Territorios de Grupo", "g");
+          // AQUÍ ESTÁ LA CORRECCIÓN: Pasamos los 5 argumentos necesarios
+          let html = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
           document.getElementById('grid-container').innerHTML = html;
         });
     } catch(e) { console.error(e); }
   }
 
-function renderizarLista(lista, titulo, icono, clase, tipo) {
-  if(!lista || lista.length === 0) return "";
-  // He añadido un estilo directo por si la clase CSS no carga
-  return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
-          <div class="grid">${lista.map((t, i) => `
-            <div class="card">
-              <div class="img-box"><img src="${t.imgMini}"></div>
-              <div class="info">
-                <span class="num">Territorio ${t.num}</span>
-                <span class="zona">${t.zona}</span>
-              </div>
-              <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
-            </div>`).join('')}</div>`;
-}
-
+  function renderizarLista(lista, titulo, icono, clase, tipo) {
+    if(!lista || lista.length === 0) return "";
+    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+            <div class="grid">${lista.map((t, i) => `
+              <div class="card">
+                <div class="img-box"><img src="${t.imgMini}"></div>
+                <div class="info">
+                  <span class="num">Territorio ${t.num}</span>
+                  <span class="zona">${t.zona}</span>
+                </div>
+                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+              </div>`).join('')}</div>`;
+  }
   function abrirModal(tipo, index) {
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
