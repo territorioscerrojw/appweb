@@ -309,7 +309,6 @@
   // 4. MODAL: Usa el tipo y el índice para extraer la información exacta
   function abrirModal(tipo, index) {
     if (!datosCargados) return;
-    // Seleccionamos el territorio basado en el tipo (p o g) y el índice
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
     
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
@@ -317,10 +316,18 @@
     document.getElementById('m-zona').innerText = t.zona;
     document.getElementById('m-tiempo').innerText = t.tiempo;
     document.getElementById('m-notas').innerText = t.notas;
+    
+    // ESTA ES LA PARTE QUE DEBE ESTAR EN TU HTML:
+    const btnGps = document.getElementById('m-gps');
+    if (t.coords && t.coords.trim() !== "") {
+      btnGps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(t.coords);
+      btnGps.style.display = "flex"; // Muestra el botón si hay coordenadas
+    } else {
+      btnGps.style.display = "none"; // Oculta el botón si no las hay
+    }
+
     document.getElementById('modal').style.display = "block";
   }
-
-  function cerrar() { document.getElementById('modal').style.display = "none"; }
   
   // Iniciar todo
   cargar();
