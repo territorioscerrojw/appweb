@@ -4,250 +4,128 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&display=swap" rel="stylesheet">
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   <style>
-
+  
+  <style>
     :root {
-
       --primary: #1c1c1e;
-
       --bg: #f2f2f7;
-
       --danger: #ff3b30;
-
       --success: #34c759;
-
       --warning: #ff9500;
-
       --azul-moderno: rgba(28, 44, 66, 0.75);
-
       --verde-moderno: rgba(58, 77, 57, 0.75);
-
       --negocios: #6495ED;
-
       --gris-apple: rgba(28, 28, 30, 0.9);
-
+      --card-bg: #ffffff;
     }
 
-   
+    /* Modo Oscuro */
+    body.dark-mode {
+      --primary: #ffffff;
+      --bg: #121212;
+      --card-bg: #1c1c1e;
+    }
 
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--primary); }
-
-   
+    body { 
+      font-family: 'Outfit', sans-serif; 
+      background: var(--bg); 
+      margin: 0; 
+      padding: 0; 
+      color: var(--primary); 
+      transition: background 0.3s, color 0.3s;
+    }
 
     header {
-
       text-align: center;
-
-      padding: 10px 5px;
-
+      padding: 15px 5px;
       background: rgba(255, 255, 255, 0.6);
-
       backdrop-filter: blur(20px);
-
-      -webkit-backdrop-filter: blur(20px);
-
       border-bottom: 0.5px solid rgba(0,0,0,0.1);
-
-      overflow: hidden;
-
+      position: relative;
     }
 
-
-
-    /* Fuente Whisper: Un solo renglón y tamaño controlado */
+    body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
 
     .user-name {
-
       font-family: 'Whisper', cursive;
-
       font-size: clamp(1.5rem, 10vw, 2.8rem);
-
-      color: var(--primary);
-
       margin: 0;
-
       font-weight: 400;
-
       white-space: nowrap;
-
       line-height: 1.2;
-
     }
 
-
+    .btn-theme {
+      position: absolute; right: 20px; top: 25px;
+      background: none; border: none; font-size: 1.4rem;
+      cursor: pointer; color: var(--primary);
+    }
 
     h2 {
-
       position: sticky; top: 0; z-index: 20; color: white;
-
       font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
-
       margin: 0; padding: 15px 20px; font-weight: 800;
-
       display: flex; justify-content: space-between; align-items: center;
-
-      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-
+      backdrop-filter: blur(15px);
     }
 
     .h2-personales { background: var(--azul-moderno); }
-
     .h2-grupo { background: var(--verde-moderno); }
 
-
-
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-
    
-
     .card { 
-  background: white; 
-  border-radius: 18px; 
-  overflow: hidden; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-  border: 0.5px solid rgba(0,0,0,0.1); 
-  display: flex; 
-  flex-direction: column; /* Esto mantiene el orden: imagen -> info -> boton */
-}
-
-.img-box { 
-  width: 100%; 
-  height: 200px; /* Altura fija para que la tarjeta sea uniforme */
-  cursor: pointer; 
-  background: #f8f8f8; /* Un color de fondo suave por si la imagen no llena todo */
-  display: flex;
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
-  position: relative; 
-  border-bottom: 0.5px solid rgba(0,0,0,0.1); 
-}
-
-.img-box img { 
-  max-width: 100%; 
-  max-height: 100%; 
-  object-fit: contain; /* Esto hace que la imagen se vea completa sin cortarse */
-}
-
-.info { 
-  padding: 18px; 
-  text-align: center; 
-  flex-grow: 1; /* Esto empuja el botón hacia abajo */
-}
-   
-
-    .watermark {
-
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-
-      font-size: 2.2rem; font-weight: 900; color: rgba(255, 59, 48, 0.35);
-
-      text-transform: uppercase; white-space: nowrap; pointer-events: none;
-
-      letter-spacing: 4px; width: 100%; text-align: center;
-
+      background: var(--card-bg); 
+      border-radius: 18px; 
+      overflow: hidden; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+      border: 0.5px solid rgba(0,0,0,0.1); 
+      display: flex; flex-direction: column; 
     }
 
+    .img-box { 
+      width: 100%; height: 200px; cursor: pointer;
+      background: #f8f8f8; display: flex;
+      align-items: center; justify-content: center;
+      position: relative; border-bottom: 0.5px solid rgba(0,0,0,0.1); 
+    }
 
+    .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
- 
-
-    .es-negocios { color: var(--negocios) !important; }
-
-    .num { font-size: 1.5rem; font-weight: 800; color: #1c1c1e; display: block; }
-
+    .info { padding: 18px; text-align: center; flex-grow: 1; }
+    .num { font-size: 1.5rem; font-weight: 800; display: block; }
     .zona { font-size: 0.95rem; color: #8e8e93; display: block; margin-bottom: 15px; font-weight: 600; }
 
-   
-
-    .badge { display: block; padding: 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; width: 90%; margin: 0 auto; }
-
-    .label-mini { display: block; font-size: 0.6rem; opacity: 0.8; margin-bottom: 4px; }
-
-
-
-    .badge-red { background: var(--danger); color: white; }
-
-    .badge-orange { background: var(--warning); color: white; }
-
-    .badge-green { background: var(--success); color: white; }
-
-
-
-    .btn-more { width: 100%; padding: 18px; border: none; background: white; color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid #eee; font-size: 0.85rem; }
-
-
-
-    .footer-minimal {
-
-      text-align: center;
-
-      padding: 20px 10px;
-
-      font-size: 0.7rem;
-
-      color: #8e8e93;
-
-      text-transform: uppercase;
-
-      letter-spacing: 2px;
-
-      font-weight: 400;
-
+    .btn-more { 
+      width: 100%; padding: 18px; border: none; 
+      background: rgba(0,0,0,0.02); color: #007aff; 
+      font-weight: 800; cursor: pointer; 
+      border-top: 0.5px solid #eee; font-size: 0.85rem; 
     }
 
-
-
-    .btn-gps {
-
-      display: flex; align-items: center; justify-content: center;
-
-      background: #007aff; color: white !important; text-decoration: none;
-
-      padding: 15px; border-radius: 14px; font-weight: 700;
-
-      margin-bottom: 20px; gap: 10px; font-size: 0.9rem;
-
-    }
-
-
-
-    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index:1000; overflow-y:auto; }
-
-   
-
-    .modal-header {
-
-      padding: 18px; text-align: center; position: sticky; top: 0; z-index: 1001;
-
-      background: var(--gris-apple); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-
-      color: white; border-bottom: 0.5px solid rgba(255,255,255,0.1);
-
-    }
-
-   
-
-    .close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 10px; color: white; }
-
-    .modal-content { padding: 20px; max-width: 500px; margin: 0 auto; }
-
-    .img-grande { width: 100%; border-radius: 15px; margin-bottom: 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1); padding-bottom: 8px; display: block; }
-
-    .info-label-modal { font-size: 0.65rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; text-align: center; }
-
-    .box-tiempo-modal { padding: 20px; border-radius: 18px; margin-bottom: 20px; text-align: center; }
-
-    .notas-area { background: rgba(0,0,0,0.03); border-radius: 14px; padding: 18px; font-size: 0.95rem; margin-top: 10px; line-height: 1.5; border-left: 4px solid #007aff; }
-
-    .btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 10px; }
-
+    /* Modal styles */
+    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); z-index:1000; overflow-y:auto; }
+    body.dark-mode #modal { background: rgba(0, 0, 0, 0.9); }
+    
+    .modal-header { padding: 18px; text-align: center; position: sticky; top: 0; background: var(--gris-apple); color: white; }
+    .close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 5px; }
+    .modal-content { padding: 20px; max-width: 500px; margin: 0 auto; color: var(--primary); }
+    .img-grande { width: 100%; border-radius: 15px; margin-bottom: 20px; }
+    .box-tiempo-modal { padding: 20px; border-radius: 18px; margin-bottom: 20px; text-align: center; background: rgba(0,0,0,0.05); }
+    .notas-area { background: rgba(0,0,0,0.03); border-radius: 14px; padding: 18px; margin-top: 10px; border-left: 4px solid #007aff; }
+    .btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-  <header><div class="user-name" id="user-display"></div></header>
+  <header>
+    <div class="user-name" id="user-display"></div>
+    <button class="btn-theme" onclick="toggleTheme()">@</button>
+  </header>
+  
   <div id="grid-container"></div>
 
   <div id="modal">
@@ -256,13 +134,11 @@
       <span id="m-titulo" style="font-weight:700;"></span>
     </div>
     <div class="modal-content">
-      <a id="m-gps" href="#" target="_blank" class="btn-gps" style="display:none;"><i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR</a>
       <img id="m-img" class="img-grande" referrerpolicy="no-referrer" crossorigin="anonymous">
       <div id="m-zona" style="font-size:1.3rem; font-weight:800; text-align:center;"></div>
-      <div id="m-box-tiempo" class="box-tiempo-modal"><div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900; color:white;"></div></div>
+      <div id="m-box-tiempo" class="box-tiempo-modal"><div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900;"></div></div>
       <div id="m-notas" class="notas-area"></div>
-     <!-- Cambia esta línea en tu código HTML -->
-<a id="m-link" href="https://forms.gle/JyjWUTdJfPrRj8LB8" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
+      <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
     </div>
   </div>
 
@@ -270,31 +146,34 @@
   let datosCargados = null;
   let nombreH = "";
 
- function cargar() {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      let nombreRaw = params.get('h') || params.get('id');
-      
-      if (!nombreRaw) {
-        document.getElementById('user-display').innerText = "Usuario no identificado";
-        return;
-      }
-      
-      nombreH = decodeURIComponent(nombreRaw);
-      document.getElementById('user-display').innerText = nombreH;
-      
-      const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
 
-      fetch(url)
-        .then(r => r.json())
-        .then(datos => {
-          datosCargados = datos;
-          // AQUÍ ESTÁ LA CORRECCIÓN: Pasamos los 5 argumentos necesarios
-          let html = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                     renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
-          document.getElementById('grid-container').innerHTML = html;
-        });
-    } catch(e) { console.error(e); }
+  // Cargar preferencia de tema
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+
+  function cargar() {
+    const params = new URLSearchParams(window.location.search);
+    let nombreRaw = params.get('h') || params.get('id');
+    if (!nombreRaw) { document.getElementById('user-display').innerText = "Usuario no identificado"; return; }
+    
+    nombreH = decodeURIComponent(nombreRaw);
+    document.getElementById('user-display').innerText = nombreH;
+    
+    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
+
+    fetch(url)
+      .then(r => r.json())
+      .then(datos => {
+        datosCargados = datos;
+        let html = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+        document.getElementById('grid-container').innerHTML = html;
+      });
   }
 
   function renderizarLista(lista, titulo, icono, clase, tipo) {
@@ -310,6 +189,7 @@
                 <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
               </div>`).join('')}</div>`;
   }
+
   function abrirModal(tipo, index) {
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
