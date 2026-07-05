@@ -297,22 +297,20 @@
     } catch(e) { console.error(e); }
   }
 
- function renderizarLista(lista, titulo, icono, clase, tipo) {
-    if(!lista || lista.length === 0) return "";
-    // Recuperamos la clase y el icono que habíamos quitado
-    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
-            <div class="grid">
-            ${lista.map((t, i) => `
-              <div class="card">
-                <div class="img-box"><img src="${t.imgMini}"></div>
-                <div class="info">
-                  <span class="num">Territorio ${t.num}</span>
-                  <span class="zona">${t.zona}</span>
-                </div>
-                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
-              </div>`).join('')}
-            </div>`;
-  }
+function renderizarLista(lista, titulo, icono, clase, tipo) {
+  if(!lista || lista.length === 0) return "";
+  // He añadido un estilo directo por si la clase CSS no carga
+  return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+          <div class="grid">${lista.map((t, i) => `
+            <div class="card">
+              <div class="img-box"><img src="${t.imgMini}"></div>
+              <div class="info">
+                <span class="num">Territorio ${t.num}</span>
+                <span class="zona">${t.zona}</span>
+              </div>
+              <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+            </div>`).join('')}</div>`;
+}
 
   function abrirModal(tipo, index) {
     const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
