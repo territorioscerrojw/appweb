@@ -268,26 +268,55 @@
 
 <script>
   let datosCargados = null;
+ 
+
+ function cargar() {
+  // 1. Obtener y decodificar el nombre de forma segura
   const params = new URLSearchParams(window.location.search);
-  const nombreH = params.get('h') || params.get('id');
-
-  function cargar() {
-    if (!nombreH) return;
-    document.getElementById('user-display').innerText = nombreH;
-    
-    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
-                + "?h=" + encodeURIComponent(nombreH);
-
-    fetch(url)
-      .then(response => response.json())
-      .then(datos => {
-        datosCargados = datos;
-        const cont = document.getElementById('grid-container');
-        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
-      })
-      .catch(err => console.error("Error:", err));
+  let nombreRaw = params.get('h') || params.get('id');
+  
+  if (!nombreRaw) {
+    document.getElementById('user-display').innerText = "Acceso Denegado: Usuario no identificado";
+    return;
   }
+  
+  // Decodificamos el nombre una vez para mostrarlo y otra para la URL
+  const nombreH = decodeURIComponent(nombreRaw);
+  document.getElementById('user-display').innerText = nombreH;
+  
+  // 2. Construcción de URL con codificación estricta
+  const baseUrl = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
+  const url = baseUrl + "?h=" + encodeURIComponent(nombreH);
+
+  // 3. Fetch con timeout y manejo de errores para móviles
+  // Usamos un objeto {mode: 'cors'} para evitar problemas con las políticas de Safari
+  fetch(url, { method: 'GET', mode: 'cors' })
+    .then(response => {
+      if (!response.ok) throw new Error('Respuesta no válida del servidor');
+      return response.json();
+    })
+    .then(datos => {
+      datosCargados = datos;
+      const cont = document.getElementById('grid-container');
+      
+      // Validación de seguridad por si el JSON viene vacío
+      if (!datos || (!datos.personales && !datos.grupo)) {
+        cont.innerHTML = "<p style='text-align:center; padding:20px;'>No se encontraron territorios para este usuario.</p>";
+        return;
+      }
+      
+      cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                       renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+    })
+    .catch(err => {
+      console.error("Error al cargar en móvil:", err);
+      document.getElementById('grid-container').innerHTML = 
+        `<div style='text-align:center; padding:20px; color:red;'>
+           Error al conectar con la base de datos.<br>
+           <button onclick='window.location.reload()' style='padding:10px; margin-top:10px;'>Reintentar conexión</button>
+         </div>`;
+    });
+}
 
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if(!lista || lista.length === 0) return "";
