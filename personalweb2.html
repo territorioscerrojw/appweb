@@ -267,34 +267,27 @@
 
 <script>
   let datosCargados = null;
-  // Obtenemos el nombre de la URL
   const params = new URLSearchParams(window.location.search);
   const nombreH = params.get('h') || params.get('id');
 
-  // 1. CARGA: Inyecta el script directamente a Google
- // Sustituye tu función cargar actual por esta:
-function cargar() {
-  if (!nombreH) return;
-  document.getElementById('user-display').innerText = nombreH;
-  
-  // Pega aquí tu URL de despliegue de Google Script
-  const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
-              + "?h=" + encodeURIComponent(nombreH);
+  function cargar() {
+    if (!nombreH) return;
+    document.getElementById('user-display').innerText = nombreH;
+    
+    // URL DE TU SCRIPT (LA QUE TERMINA EN /exec)
+    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
+                + "?h=" + encodeURIComponent(nombreH);
 
-  fetch(url)
-    .then(response => {
-      if (!response.ok) throw new Error('Error en la respuesta');
-      return response.json();
-    })
-    .then(datos => {
-      procesarDatos(datos); // Llamamos a tu misma función de renderizado
-    })
-    .catch(error => {
-      console.error('Error al cargar:', error);
-      document.getElementById('grid-container').innerHTML = "<p style='text-align:center; padding:20px;'>Error al cargar los datos. Inténtalo de nuevo.</p>";
-    });
-}
-
+    fetch(url)
+      .then(response => response.json())
+      .then(datos => {
+        datosCargados = datos;
+        const cont = document.getElementById('grid-container');
+        cont.innerHTML = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+                         renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+      })
+      .catch(err => console.error("Error:", err));
+  }
   // 2. PROCESAMIENTO: Google llama a esta función automáticamente
   function procesarDatos(datos) {
     datosCargados = datos; // Guardamos los datos globales
