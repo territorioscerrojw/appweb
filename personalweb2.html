@@ -272,17 +272,28 @@
   const nombreH = params.get('h') || params.get('id');
 
   // 1. CARGA: Inyecta el script directamente a Google
-  function cargar() {
-    if (!nombreH) return;
-    document.getElementById('user-display').innerText = nombreH;
-    
-    const script = document.createElement('script');
-    // PEGA AQUÍ TU URL DE GOOGLE (la que termina en /exec)
-    script.src = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
-                 + "?h=" + encodeURIComponent(nombreH) 
-                 + "&callback=procesarDatos";
-    document.body.appendChild(script);
-  }
+ // Sustituye tu función cargar actual por esta:
+function cargar() {
+  if (!nombreH) return;
+  document.getElementById('user-display').innerText = nombreH;
+  
+  // Pega aquí tu URL de despliegue de Google Script
+  const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec" 
+              + "?h=" + encodeURIComponent(nombreH);
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error('Error en la respuesta');
+      return response.json();
+    })
+    .then(datos => {
+      procesarDatos(datos); // Llamamos a tu misma función de renderizado
+    })
+    .catch(error => {
+      console.error('Error al cargar:', error);
+      document.getElementById('grid-container').innerHTML = "<p style='text-align:center; padding:20px;'>Error al cargar los datos. Inténtalo de nuevo.</p>";
+    });
+}
 
   // 2. PROCESAMIENTO: Google llama a esta función automáticamente
   function procesarDatos(datos) {
