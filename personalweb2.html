@@ -129,17 +129,35 @@ body.dark-mode .btn-theme {
 
 .img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Barra de progreso */
 .progreso-container {
-  width: 90%; margin: 15px auto; height: 20px;
-  background: #eee; border-radius: 10px; overflow: hidden; position: relative;
+  width: 90%; 
+  margin: 15px auto; 
+  height: 35px; /* Un poco más alto para que se lea mejor el texto */
+  background: #eee; 
+  border-radius: 10px; 
+  position: relative;
+  overflow: hidden; /* Esto asegura que el fondo de color no se salga de las esquinas redondeadas */
 }
 
-.progreso-fill { height: 100%; transition: width 0.5s ease-in-out, background 0.5s; }
-.progreso-texto { 
-  position: absolute; width: 100%; text-align: center; 
-  font-weight: bold; font-size: 0.8rem; line-height: 20px;
+.progreso-fill { 
+  height: 100%; 
+  transition: width 0.5s ease-in-out, background 0.5s; 
+  position: absolute;
+  top: 0;
+  left: 0;
 }
+
+.progreso-texto { 
+  position: relative; 
+  z-index: 1; /* Asegura que el texto esté encima del fondo de color */
+  width: 100%; 
+  text-align: center; 
+  line-height: 35px; /* Centrado vertical */
+  font-weight: 600; 
+  color: #000; /* Texto siempre en negro según pediste */
+  pointer-events: none;
+}
+
 
 
   
@@ -232,30 +250,36 @@ body.dark-mode .btn-theme {
   
   return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
           <div class="grid">${lista.map((t, i) => {
-            // Lógica de color y progreso (asumiendo 120 días = 4 meses)
-            let dias = parseInt(t.tiempo) || 0;
+            // Calculamos días para la barra (si t.tiempo es un número)
+            // Si es texto, necesitarías una lógica para convertirlo a días totales
+            let dias = parseInt(t.tiempo) || 0; 
             let porcentaje = Math.max(0, Math.min(100, (dias / 120) * 100));
-            let color = dias > 90 ? "#34c759" : dias > 60 ? "#ff9500" : dias > 30 ? "#ffcc00" : "#ff3b30";
             
+            // Lógica de colores
+            let color = dias > 90 ? "#34c759" : dias > 60 ? "#ffcc00" : dias > 30 ? "#ff9500" : "#ff3b30";
+            
+            // Estilo para cuando está caducado
+            let estiloTexto = (dias <= 0) ? "color: #ff3b30; font-weight: 800;" : "";
+            let textoMostrar = (dias <= 0) ? "CADUCADO" : t.tiempo;
+
             return `
             <div class="card">
-              <div class="card-header">
-                <span class="card-num">${t.num}</span>
-                <span class="card-zona">${t.zona}</span>
+              <div class="card-header" style="display:flex; justify-content:space-between; padding: 15px;">
+                <span class="card-num" style="font-size: 1.8rem; font-weight: 800;">${t.num}</span>
+                <span class="card-zona" style="font-size: 0.9rem; color: #8e8e93; font-weight: 600;">${t.zona}</span>
               </div>
-              <div class="img-box"><img src="${t.imgMini}"></div>
+              <div class="img-box"><img src="${t.imgMini}" style="width: 100%; height: 100%; object-fit: cover;"></div>
               
               <div class="progreso-container">
                 <div class="progreso-fill" style="width:${porcentaje}%; background:${color};"></div>
-                <div class="progreso-texto" style="${dias <= 0 ? 'color:red; font-weight:bold;' : ''}">
-                  ${dias <= 0 ? 'CADUCADO' : dias + ' días restantes'}
-                </div>
+                <div class="progreso-texto" style="${estiloTexto}">${textoMostrar}</div>
               </div>
 
               <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
             </div>`;
           }).join('')}</div>`;
 }
+
 
 
   function abrirModal(tipo, index) {
