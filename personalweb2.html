@@ -58,11 +58,37 @@
       line-height: 1.2;
     }
 
-    .btn-theme {
-      position: absolute; right: 20px; top: 25px;
-      background: none; border: none; font-size: 1.4rem;
-      cursor: pointer; color: var(--primary);
-    }
+   .btn-theme {
+  position: absolute; 
+  right: 20px; 
+  top: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  background: white;
+  color: #1c1c1e;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-theme:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+body.dark-mode .btn-theme {
+  background: #2c2c2e;
+  color: #ffffff;
+  border: 0.5px solid rgba(255,255,255,0.1);
+}
+
 
     h2 {
       position: sticky; top: 0; z-index: 20; color: white;
@@ -121,10 +147,13 @@
 </head>
 <body>
 
-  <header>
-    <div class="user-name" id="user-display"></div>
-    <button class="btn-theme" onclick="toggleTheme()">@</button>
-  </header>
+<header>
+  <div class="user-name" id="user-display"></div>
+  <button class="btn-theme" onclick="toggleTheme()">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+  </button>
+</header>
+
   
   <div id="grid-container"></div>
 
