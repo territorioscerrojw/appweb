@@ -292,22 +292,18 @@ body.dark-mode .btn-theme {
 
   return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
           <div class="grid">${lista.map((t, i) => {
-            // 1. Cálculo del progreso
             let diasTotales = calcularDiasTotales(t.tiempo);
             let porcentaje = Math.max(0, Math.min(100, (diasTotales / 120) * 100));
             
-            // 2. Lógica de colores
-            let color = diasTotales > 90 ? "#34c759" : 
-                        diasTotales > 60 ? "#ffcc00" : 
-                        diasTotales > 30 ? "#ff9500" : "#ff3b30";
+            let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
             
-            // 3. Preparación del texto y estilos
             let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : t.tiempo.toUpperCase();
             let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30;" : "color: #000;";
-            
-            // 4. Parámetros para el anillo SVG
-            const radio = 50;
+
+            // Radio reducido para un anillo más compacto
+            const radio = 30;
             const circunferencia = 2 * Math.PI * radio;
+            // Para "abrir" el anillo, usamos un offset que no llegue al 100% de la circunferencia
             const offset = circunferencia - (porcentaje / 100) * circunferencia;
 
             return `
@@ -317,24 +313,28 @@ body.dark-mode .btn-theme {
                 <span class="card-zona" style="font-size: 0.95rem; color: #8e8e93; font-weight: 600;">${t.zona}</span>
               </div>
               
-              <div class="img-box" style="height: 250px;">
+              <div class="img-box" style="height: 200px;">
                 <img src="${t.imgMini}" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
               
-              <div class="anillo-container" style="display: flex; flex-direction: column; align-items: center; margin: 15px 0; position: relative;">
-                <div class="anillo-label" style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">TIEMPO RESTANTE</div>
-                <svg class="svg-anillo" style="width: 120px; height: 120px; transform: rotate(-90deg);">
-                  <circle class="bg-circle" cx="60" cy="60" r="${radio}" style="fill: none; stroke: #eee; stroke-width: 10;" />
-                  <circle class="progress-circle" cx="60" cy="60" r="${radio}" 
-                          style="fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease-in-out; stroke-dasharray: ${circunferencia}; stroke-dashoffset: ${offset}; stroke: ${color};" />
+              <div class="anillo-container" style="display: flex; align-items: center; gap: 15px; padding: 15px;">
+                <svg width="70" height="70" style="transform: rotate(-90deg);">
+                  <circle cx="35" cy="35" r="${radio}" style="fill: none; stroke: #eee; stroke-width: 6;" />
+                  <circle cx="35" cy="35" r="${radio}" 
+                          style="fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.8s; stroke-dasharray: ${circunferencia}; stroke-dashoffset: ${offset}; stroke: ${color};" />
                 </svg>
-                <div class="texto-anillo" style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); width: 80px; text-align: center; font-weight: 900; font-size: 0.85rem; line-height: 1.1; ${estiloTexto}">${textoDisplay}</div>
+                
+                <div style="display: flex; flex-direction: column;">
+                  <div style="font-size: 0.65rem; color: #8e8e93; font-weight: 800; text-transform: uppercase;">TIEMPO RESTANTE</div>
+                  <div style="font-weight: 900; font-size: 1.1rem; line-height: 1.2; ${estiloTexto}">${textoDisplay}</div>
+                </div>
               </div>
 
               <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
             </div>`;
           }).join('')}</div>`;
 }
+
 
 function calcularDiasTotales(texto) {
   if (!texto) return 0;
