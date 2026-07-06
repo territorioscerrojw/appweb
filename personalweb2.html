@@ -325,14 +325,19 @@ huy
             const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
             // Lógica de separación de renglones
-            let mesesMatch = t.tiempo.match(/(\d+)\s*mes/i);
-            let diasMatch = t.tiempo.match(/(\d+)\s*d[ií]a/i);
-            let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : 
-                               ((mesesMatch ? mesesMatch[0].toUpperCase() : "") + 
-                                (mesesMatch && diasMatch ? "<br>" : "") + 
-                                (diasMatch ? diasMatch[0].toUpperCase() : ""));
-            
-            let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.9rem;" : "color: #000; font-size: 1.0rem;";
+            // Sustituye esta parte en tu función renderizarLista:
+
+// Lógica de separación de renglones y plurales
+let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
+let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
+
+let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
+let linea2 = diasMatch ? diasMatch[0].toUpperCase() : "";
+
+// Si hay ambos, los separamos con <br>, si solo hay uno, mostramos el que exista
+let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : (linea1 && linea2 ? `${linea1}<br>${linea2}` : (linea1 || linea2 || t.tiempo.toUpperCase()));
+
+let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.85rem;" : "color: #000; font-size: 0.95rem;";
 
             return `
             <div class="card">
