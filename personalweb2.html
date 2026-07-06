@@ -85,9 +85,13 @@
     return { pct, color };
   }
 
-  function cargar() {
+    function cargar() {
     const params = new URLSearchParams(window.location.search);
     const nombreH = decodeURIComponent(params.get('h') || "");
+    if(!nombreH) {
+      document.getElementById('grid-container').innerHTML = "<p style='text-align:center;'>Usuario no encontrado en la URL.</p>";
+      return;
+    }
     document.getElementById('user-display').innerText = nombreH;
     
     const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
@@ -95,15 +99,29 @@
     fetch(url)
       .then(r => r.json())
       .then(datos => {
+        console.log("Datos recibidos:", datos); // Esto te ayudará a ver si llegan datos en la consola (F12)
         datosCargados = datos;
         renderizar();
+      })
+      .catch(err => {
+        document.getElementById('grid-container').innerHTML = "<p style='text-align:center;'>Error al cargar los datos.</p>";
+        console.error(err);
       });
   }
 
   function renderizar() {
     const container = document.getElementById('grid-container');
     let html = "";
-    [...datosCargados.personales, ...datosCargados.grupo].forEach((t, i) => {
+    
+    // Aseguramos que existan las listas
+    const items = [...(datosCargados.personales || []), ...(datosCargados.grupo || [])];
+    
+    if(items.length === 0) {
+      container.innerHTML = "<p style='text-align:center;'>No hay territorios para mostrar.</p>";
+      return;
+    }
+
+    items.forEach((t, i) => {
       const isCaducado = t.tiempo.toLowerCase().includes("caducado");
       const { pct, color } = isCaducado ? { pct: 0, color: 'transparent' } : getProgreso(t.tiempo);
       
@@ -123,8 +141,9 @@
           <button class="btn-more" onclick="abrirModal(${i})">VER DETALLES</button>
         </div>`;
     });
-    container.innerHTML = html;
+    container.innerHTML = `<div class="grid">${html}</div>`;
   }
+
 
   function abrirModal(index) {
     const t = datosCargados.personales[index] || datosCargados.grupo[index];
