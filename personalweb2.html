@@ -4,57 +4,35 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuentes: Outfit para todo, Whisper para el nombre -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Whisper&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root { --primary: #1c1c1e; --bg: #f2f2f7; --card-bg: #ffffff; --gris-apple: #1c1c1e; }
+    :root { --primary: #1c1c1e; --bg: #f2f2f7; --card-bg: #ffffff; }
     body.dark-mode { --primary: #ffffff; --bg: #121212; --card-bg: #1c1c1e; }
-    
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--primary); transition: 0.3s; margin: 0; padding-bottom: 50px; }
-    
-    header { text-align: center; padding: 20px 5px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
-    body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
-    
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding-bottom: 50px; transition: 0.3s; }
+    header { text-align: center; padding: 20px 5px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
     .user-name { font-family: 'Whisper', cursive; font-size: 2.5rem; margin: 0; }
-    
-    .btn-theme {
-      position: absolute; right: 20px; top: 25px; width: 45px; height: 45px;
-      border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1);
-      background: var(--card-bg); color: var(--primary); font-size: 1.2rem;
-      cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s ease;
-    }
-    .btn-theme:active { transform: scale(0.9); }
-
+    .btn-theme { position: absolute; right: 20px; top: 25px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: var(--card-bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-    
-    .card { background: var(--card-bg); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 0.5px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-    
+    .card { background: var(--card-bg); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .num { font-size: 2rem; font-weight: 800; }
     .zona { font-size: 1rem; font-weight: 600; color: #8e8e93; }
-    
     .img-box { width: 100%; height: 220px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #eee; }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
-
     .progress-container { width: 100%; height: 30px; border-radius: 8px; background: #eee; overflow: hidden; margin-bottom: 15px; position: relative; }
-    .progress-bar { height: 100%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #000; }
+    .progress-bar { height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #000; }
     .caducado { color: #ff3b30 !important; font-weight: 900 !important; background: transparent !important; }
-
     .btn-more { width: 100%; padding: 12px; border: none; border-radius: 10px; background: rgba(0,122,255,0.1); color: #007aff; font-weight: 800; cursor: pointer; }
-    
     #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.95); z-index:1000; overflow-y:auto; backdrop-filter: blur(15px); }
     .modal-content { padding: 20px; max-width: 500px; margin: 0 auto; color: var(--primary); }
     .img-grande { width: 100%; border-radius: 15px; margin-bottom: 20px; }
-    .btn-inc { display: block; text-align: center; background: var(--primary); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 20px; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="user-name" id="user-display"></div>
+    <div class="user-name" id="user-display">Cargando...</div>
     <button class="btn-theme" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
   </header>
   
@@ -66,7 +44,6 @@
       <h2 id="m-titulo"></h2>
       <img id="m-img" class="img-grande">
       <div id="m-notas"></div>
-      <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR INCIDENCIA</a>
     </div>
   </div>
 
@@ -80,8 +57,7 @@
   if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
 
   function getProgreso(texto) {
-    let meses = 0;
-    if (texto.toLowerCase().includes("mes")) meses = parseFloat(texto) || 0;
+    let meses = parseFloat(texto) || 0;
     const pct = Math.max(0, Math.min(100, (meses / 4) * 100));
     let color = pct > 60 ? '#34c759' : (pct > 30 ? '#ff9500' : '#ff3b30');
     return { pct, color };
@@ -90,21 +66,31 @@
   function cargar() {
     const params = new URLSearchParams(window.location.search);
     const nombreH = decodeURIComponent(params.get('h') || "");
-    document.getElementById('user-display').innerText = nombreH;
+    if(nombreH) document.getElementById('user-display').innerText = nombreH;
     
-    fetch("https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH))
+    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
+    
+    fetch(url)
       .then(r => r.json())
       .then(datos => {
         datosCargados = datos;
         renderizar();
+      })
+      .catch(e => {
+        document.getElementById('grid-container').innerHTML = "Error al conectar con los datos.";
+        console.error(e);
       });
   }
 
   function renderizar() {
     const container = document.getElementById('grid-container');
+    const personales = datosCargados.personales || [];
+    const grupo = datosCargados.grupo || [];
+    const todos = [...personales, ...grupo];
+    
     let html = "";
-    [...datosCargados.personales, ...datosCargados.grupo].forEach((t, i) => {
-      const isCaducado = t.tiempo.toLowerCase().includes("caducado");
+    todos.forEach((t, i) => {
+      const isCaducado = t.tiempo && t.tiempo.toLowerCase().includes("caducado");
       const { pct, color } = isCaducado ? { pct: 0, color: 'transparent' } : getProgreso(t.tiempo);
       
       html += `
@@ -127,9 +113,11 @@
   }
 
   function abrirModal(index) {
-    const t = datosCargados.personales[index] || datosCargados.grupo[index];
+    const todos = [...(datosCargados.personales || []), ...(datosCargados.grupo || [])];
+    const t = todos[index];
     document.getElementById('m-titulo').innerText = "Territorio " + t.num;
     document.getElementById('m-img').src = t.imgGrande;
+    document.getElementById('m-notas').innerText = t.notas;
     document.getElementById('modal').style.display = "block";
   }
 
