@@ -327,17 +327,20 @@ huy
             // Lógica de separación de renglones
             // Sustituye esta parte en tu función renderizarLista:
 
-// Lógica de separación de renglones y plurales
+// Lógica de separación de renglones, plurales y la "Y"
 let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
 let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
 
 let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
 let linea2 = diasMatch ? diasMatch[0].toUpperCase() : "";
 
-// Si hay ambos, los separamos con <br>, si solo hay uno, mostramos el que exista
-let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : (linea1 && linea2 ? `${linea1}<br>${linea2}` : (linea1 || linea2 || t.tiempo.toUpperCase()));
+// Si hay ambos, ponemos la Y al final de la primera línea o antes de la segunda.
+// Aquí lo unimos con <br> y la Y para que aparezca: 1 MES Y / 2 DÍAS
+let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : 
+                   (linea1 && linea2 ? `${linea1} Y<br>${linea2}` : 
+                   (linea1 || linea2 || t.tiempo.toUpperCase()));
 
-let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.85rem;" : "color: #000; font-size: 0.95rem;";
+let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.8rem;" : "color: #000; font-size: 0.95rem;";
 
             return `
             <div class="card">
