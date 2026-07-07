@@ -291,9 +291,13 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-                // URL CORRECTA: usamos el parámetro 'q' para buscar las coordenadas
-                // t.coords es el valor que viene de tu App Script
-                const urlMaps = t.coords ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.coords)}` : "#";
+                // CORRECCIÓN: Extraemos los números del POINT y generamos la URL de navegación directa
+                // Esto busca los números dentro de POINT(lat, lng) y los pone en la URL
+                let coordsRaw = t.coords || "";
+                let matches = coordsRaw.match(/[-0-9.]+/g);
+                let urlNavegacion = (matches && matches.length >= 2) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` 
+                    : "#";
 
                 return `
                 <div class="card">
@@ -317,7 +321,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                    <a href="${urlMaps}" target="_blank" class="btn-gps" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 20px; padding: 12px; background: #007aff; color: white; text-decoration: none; border-radius: 12px; font-weight: 700;">
+                    <a href="${urlNavegacion}" target="_blank" class="btn-gps" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 20px; padding: 12px; background: #007aff; color: white; text-decoration: none; border-radius: 12px; font-weight: 700;">
                         <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
@@ -328,19 +332,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
- 
 
 
   cargar();
