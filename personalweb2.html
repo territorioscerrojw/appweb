@@ -276,38 +276,47 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 }
 
 // --- 3. GESTIÓN DEL MODAL (Apertura y Cierre) ---
-function abrirModal(tipo, index) {
-    console.log("Abriendo modal para:", tipo, index);
-    
-    // IMPORTANTE: Asegúrate de que estos nombres de arrays existen en tu código
+
+  // 1. Aseguramos que el contenido se cargue al abrir la página
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('grid-container');
+    if (container && typeof territoriosPersonales !== 'undefined') {
+       container.innerHTML = renderizarLista(territoriosPersonales, "Mis Territorios", "fa-user", "h2-personales", "personales") +
+                             renderizarLista(territoriosGrupo, "Territorios de Grupo", "fa-users", "h2-grupo", "grupo");
+    } else {
+       console.error("Error: Faltan los datos (territoriosPersonales/Grupo) o el contenedor no existe.");
+    }
+  });
+
+  // 2. Función de cierre
+  function cerrar() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  // 3. Función de apertura (Forzada)
+  function abrirModal(tipo, index) {
     const lista = (tipo === 'personales') ? territoriosPersonales : territoriosGrupo;
     const t = lista[index];
     
-    if (!t) {
-        console.error("No se encontraron datos para este territorio");
-        return;
+    if (t) {
+      document.getElementById('m-titulo').innerText = t.num;
+      document.getElementById('m-img').src = t.imgGrande;
+      document.getElementById('m-zona').innerText = t.zona;
+      document.getElementById('m-tiempo').innerText = t.tiempo;
+      document.getElementById('m-notas').innerText = t.notas || "Sin notas.";
+      document.getElementById('m-link').href = t.linkIncidencia || "#";
+      
+      document.getElementById('modal').style.display = 'block';
+    } else {
+      console.error("No se encontró el territorio:", tipo, index);
     }
+  }
 
-    // Rellenar elementos
-    document.getElementById('m-titulo').innerText = t.num;
-    document.getElementById('m-img').src = t.imgGrande;
-    document.getElementById('m-zona').innerText = t.zona;
-    document.getElementById('m-tiempo').innerText = t.tiempo;
-    document.getElementById('m-notas').innerText = t.notas || "Sin notas.";
-    
-    // Configurar enlace de incidencia
-    const link = document.getElementById('m-link');
-    link.href = t.linkIncidencia || "#";
+  // 4. Cierre al hacer click fuera
+  window.onclick = function(event) {
+    if (event.target == document.getElementById('modal')) cerrar();
+  };
 
-    // Mostrar modal (con z-index forzado)
-    const modal = document.getElementById('modal');
-    modal.style.display = 'block';
-    modal.style.zIndex = '9999';
-}
-
-function cerrar() {
-    document.getElementById('modal').style.display = 'none';
-}
 
 // Cerrar al hacer clic fuera del contenido
 window.onclick = function(event) {
