@@ -220,7 +220,28 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
   }
 
   
- 
+ function abrirModal(tipo, index) {
+    // Si tipo es 'p' usa personales, si es 'g' usa grupo
+    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
+    
+    if (!t) return;
+    
+    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
+    document.getElementById('m-img').src = t.imgGrande;
+    document.getElementById('m-zona').innerText = t.zona;
+    document.getElementById('m-tiempo').innerText = t.tiempo;
+    document.getElementById('m-notas').innerText = t.notas;
+    
+    // El enlace se construye igual que en tu versión antigua
+    const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
+    document.getElementById('m-link').href = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+    
+    document.getElementById('modal').style.display = "block";
+  }
+
+  function cerrar() { 
+    document.getElementById('modal').style.display = "none"; 
+  }
    
     
 // --- 1. LÓGICA DE CÁLCULO (Necesaria para los anillos) ---
@@ -275,56 +296,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             }).join('')}</div>`;
 }
 
-// --- 3. GESTIÓN DEL MODAL (Apertura y Cierre) ---
-
-  // 1. Aseguramos que el contenido se cargue al abrir la página
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('grid-container');
-    if (container && typeof territoriosPersonales !== 'undefined') {
-       container.innerHTML = renderizarLista(territoriosPersonales, "Mis Territorios", "fa-user", "h2-personales", "personales") +
-                             renderizarLista(territoriosGrupo, "Territorios de Grupo", "fa-users", "h2-grupo", "grupo");
-    } else {
-       console.error("Error: Faltan los datos (territoriosPersonales/Grupo) o el contenedor no existe.");
-    }
-  });
-
-  // 2. Función de cierre
-  function cerrar() {
-    document.getElementById('modal').style.display = 'none';
-  }
-
-  // 3. Función de apertura (Forzada)
-  function abrirModal(tipo, index) {
-    const lista = (tipo === 'personales') ? territoriosPersonales : territoriosGrupo;
-    const t = lista[index];
-    
-    if (t) {
-      document.getElementById('m-titulo').innerText = t.num;
-      document.getElementById('m-img').src = t.imgGrande;
-      document.getElementById('m-zona').innerText = t.zona;
-      document.getElementById('m-tiempo').innerText = t.tiempo;
-      document.getElementById('m-notas').innerText = t.notas || "Sin notas.";
-      document.getElementById('m-link').href = t.linkIncidencia || "#";
-      
-      document.getElementById('modal').style.display = 'block';
-    } else {
-      console.error("No se encontró el territorio:", tipo, index);
-    }
-  }
-
-  // 4. Cierre al hacer click fuera
-  window.onclick = function(event) {
-    if (event.target == document.getElementById('modal')) cerrar();
-  };
 
 
-// Cerrar al hacer clic fuera del contenido
-window.onclick = function(event) {
-    const modal = document.getElementById('modal');
-    if (event.target == modal) {
-        cerrar();
-    }
-};
+ 
 
 
   cargar();
