@@ -171,8 +171,6 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
   <div id="grid-container"></div>
 
 <div id="modal">
-  <div id="modal-contenido"></div>
-</div>
 
     <div class="modal-header">
       <span class="close-btn" onclick="cerrar()">‹</span>
@@ -291,44 +289,25 @@ function calcularDiasTotales(texto) {
 
 
   function abrirModal(tipo, index) {
-  // Obtenemos el objeto seleccionado según el tipo de lista
+  // Asegúrate de que este array coincida con el nombre de tu lista de datos
   const lista = (tipo === 'personales') ? territoriosPersonales : territoriosGrupo;
   const t = lista[index];
   
-  const modal = document.getElementById('modal');
-  const contenido = document.getElementById('modal-contenido');
+  if (!t) return;
 
-  // Construimos el HTML del modal usando las clases que definimos en CSS
-  contenido.innerHTML = `
-    <div class="modal-header">
-      <span class="close-btn" onclick="cerrarModal()">&times;</span>
-      <h3>DETALLES</h3>
-    </div>
-    
-    <div class="modal-content">
-      <img src="${t.imgGrande}" class="img-grande" alt="Mapa territorio">
-      
-      <h2>${t.num} - ${t.zona}</h2>
-      
-      <div class="box-tiempo-modal">
-        <strong>TIEMPO RESTANTE:</strong><br>
-        <span>${t.tiempo}</span>
-      </div>
+  // 1. Rellenamos los elementos que ya tienes en tu HTML
+  document.getElementById('m-titulo').innerText = t.num; // O el título que quieras
+  document.getElementById('m-img').src = t.imgGrande;
+  document.getElementById('m-zona').innerText = t.zona;
+  document.getElementById('m-tiempo').innerText = t.tiempo;
+  document.getElementById('m-notas').innerText = t.notas || "Sin notas adicionales.";
+  document.getElementById('m-link').href = t.linkIncidencia || "#";
 
-      <div class="notas-area">
-        <strong>Notas:</strong>
-        <p>${t.notas || "Sin notas adicionales."}</p>
-      </div>
-      
-      <a href="#" class="btn-inc" onclick="alert('Acción de incremento')">ACTUALIZAR TIEMPO</a>
-    </div>
-  `;
-
-  // Mostramos el modal
-  modal.style.display = 'block';
+  // 2. Mostramos el modal
+  document.getElementById('modal').style.display = 'block';
 }
 
-function cerrarModal() {
+function cerrar() {
   document.getElementById('modal').style.display = 'none';
 }
 
