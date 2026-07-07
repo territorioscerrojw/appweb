@@ -18,6 +18,7 @@
   --warning: #ff9500;
   --azul-moderno: rgba(28, 44, 66, 0.75);
   --verde-moderno: rgba(58, 77, 57, 0.75);
+  --gris-apple: rgba(28, 28, 30, 0.9);
   --color-texto-anillo: #000;
 }
 
@@ -25,17 +26,36 @@ body.dark-mode {
   --bg: #1e293b;
   --card-bg: #334155;
   --header-bg: #1e293b;
+  --primary: #ffffff;
   --color-texto-anillo: #fff;
 }
 
 body { 
   font-family: 'Outfit', sans-serif; 
   background-color: var(--bg); 
-  margin: 0; color: var(--primary);
+  margin: 0; padding: 0; 
+  color: var(--primary);
   transition: background 0.3s, color 0.3s;
 }
 
-/* Tarjetas y Contenedores */
+/* Header principal */
+header {
+  text-align: center;
+  padding: 15px 5px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  position: relative;
+}
+body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+
+.user-name {
+  font-family: 'Whisper', cursive;
+  font-size: clamp(1.5rem, 10vw, 2.8rem);
+  margin: 0; font-weight: 400;
+}
+
+/* Tarjetas */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
 .card {
@@ -60,54 +80,34 @@ body {
 }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Anillo Estilo Reloj */
+/* Anillo y Texto */
 .anillo-wrapper {
   display: flex; flex-direction: column; align-items: flex-start;
   padding: 15px 25px;
 }
+.anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+.anillo-svg-container { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
+.texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; }
 
-.anillo-label {
-  font-size: 0.7rem; color: #8e8e93; font-weight: 800;
-  text-transform: uppercase; margin-bottom: 5px;
-}
-
-.anillo-svg-container {
-  position: relative; width: 80px; height: 80px;
-  display: flex; align-items: center; justify-content: center;
-  margin-top: 8px;
-}
-
-.texto-anillo-dinamico {
-  color: var(--color-texto-anillo);
-  font-weight: 900; line-height: 1.1; font-size: 0.95rem;
-}
-
-/* Botones y UI Global */
-.btn-more { 
-  width: 100%; padding: 18px; border: none; 
-  background: rgba(0,0,0,0.02); color: #007aff; 
-  font-weight: 800; cursor: pointer; 
-  border-top: 0.5px solid rgba(0,0,0,0.1); font-size: 0.85rem; 
-}
-
-.btn-theme {
-  position: absolute; right: 20px; top: 15px;
-  width: 40px; height: 40px; border-radius: 50%;
-  border: 0.5px solid rgba(0,0,0,0.1);
-  background: white; cursor: pointer;
-  transition: all 0.3s;
-}
-
-body.dark-mode .btn-theme { background: #2c2c2e; border-color: rgba(255,255,255,0.1); }
+/* UI y Botones */
+.btn-more { width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.02); color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid rgba(0,0,0,0.1); }
+.btn-theme { position: absolute; right: 20px; top: 15px; width: 40px; height: 40px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; cursor: pointer; }
+body.dark-mode .btn-theme { background: #2c2c2e; color: #fff; }
 
 h2 {
   position: sticky; top: 0; z-index: 20; color: white;
-  font-size: 0.8rem; text-transform: uppercase;
-  margin: 0; padding: 15px 20px; font-weight: 800;
-  backdrop-filter: blur(15px);
+  font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px);
 }
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
+
+/* Modal */
+#modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); z-index:1000; overflow-y:auto; }
+body.dark-mode #modal { background: rgba(0, 0, 0, 0.9); }
+.modal-header { padding: 18px; text-align: center; position: sticky; top: 0; background: var(--gris-apple); color: white; }
+.close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 5px; }
+.modal-content { padding: 20px; max-width: 500px; margin: 0 auto; color: var(--primary); }
+.btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 20px; }
 <script>
 </head>
 <body>
@@ -172,52 +172,53 @@ h2 {
   
  
    
-    
-            function renderizarLista(lista, titulo, icono, clase, tipo) {
+    function renderizarLista(lista, titulo, icono, clase, tipo) {
   if (!lista || lista.length === 0) return "";
 
   return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
           <div class="grid">${lista.map((t, i) => {
             let diasTotales = calcularDiasTotales(t.tiempo);
-            let porcentaje = Math.max(0, Math.min(100, (diasTotales / 120) * 100));
             let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
             
+            // Configuración del anillo (Reloj: de 6 a 2)
             const radio = 35;
             const circunferencia = 2 * Math.PI * radio;
             const arcoTotal = (240 / 360) * circunferencia;
+            const porcentaje = Math.max(0, Math.min(100, (diasTotales / 120) * 100));
             const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+            // Formateo del texto "X MES Y Y DÍAS"
             let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
             let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
-            let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
-            let linea2 = diasMatch ? diasMatch[0].toUpperCase() : "";
-            let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : (linea1 && linea2 ? `${linea1} Y<br>${linea2}` : (linea1 || linea2 || t.tiempo.toUpperCase()));
+            let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : 
+                               ((mesesMatch ? mesesMatch[0].toUpperCase() : "") + 
+                                (mesesMatch && diasMatch ? " Y<br>" : "") + 
+                                (diasMatch ? diasMatch[0].toUpperCase() : ""));
             
-            let claseTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.8rem;" : "class='texto-anillo-dinamico'";
-            let estiloDiv = (diasTotales <= 0) ? `style="${claseTexto}"` : claseTexto;
+            let esCaducado = (diasTotales <= 0);
 
             return `
             <div class="card">
-              <div class="card-header" style="display:flex; justify-content:space-between; align-items: center; padding: 15px;">
-                <span class="card-num" style="font-size: 1.8rem; font-weight: 800;">${t.num}</span>
-                <span class="card-zona" style="font-size: 0.95rem; color: #8e8e93; font-weight: 600;">${t.zona}</span>
+              <div class="card-header">
+                <span class="card-num">${t.num}</span>
+                <span class="card-zona">${t.zona}</span>
               </div>
               
               <div class="img-box-custom">
-                <img src="${t.imgMini}" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="${t.imgMini}" alt="${t.num}">
               </div>
               
               <div class="anillo-wrapper">
-                <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">TIEMPO RESTANTE</div>
-                
-                <div style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                <div class="anillo-label">TIEMPO RESTANTE</div>
+                <div class="anillo-svg-container">
                   <svg width="80" height="80" style="transform: rotate(90deg);">
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                   </svg>
-                  
                   <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
-                    <div ${estiloDiv}>${textoDisplay}</div>
+                    <div class="${esCaducado ? '' : 'texto-anillo-dinamico'}" style="${esCaducado ? 'color:#ff3b30; font-weight:900; line-height:1.1; font-size:0.8rem;' : ''}">
+                      ${textoDisplay}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -226,6 +227,7 @@ h2 {
             </div>`;
           }).join('')}</div>`;
 }
+
 
 
 
