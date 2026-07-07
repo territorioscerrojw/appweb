@@ -54,6 +54,25 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   font-size: clamp(1.5rem, 10vw, 2.8rem);
   margin: 0; font-weight: 400;
 }
+.btn-gps-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  margin: 10px 15px;
+  background: #007aff; 
+  color: white;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 12px;
+  transition: opacity 0.2s;
+}
+
+.btn-gps-card:hover {
+  opacity: 0.9;
+}
 
 /* Grilla y Tarjetas */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
@@ -294,10 +313,17 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                         </div>
                     </div>
+                    
+                    <a href="https://www.google.com/maps/search/?api=1&query=${t.lat},${t.lng}" 
+                       target="_blank" class="btn-gps-card">
+                       <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+                    </a>
+
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
