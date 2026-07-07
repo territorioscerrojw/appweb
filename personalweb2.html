@@ -292,6 +292,11 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+                // CORRECCIÓN: Usamos el formato oficial de Google Maps
+                // Extraemos las coordenadas del string POINT(lat,lng) de forma simple
+                const coords = t.coordenadas ? t.coordenadas.replace(/[^0-9.,-]/g, "") : "";
+                const urlMaps = coords ? `https://www.google.com/maps/search/?api=1&query=${coords}` : "#";
+
                 return `
                 <div class="card">
                     <div class="card-header">
@@ -314,31 +319,18 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                  
-<a href="${construirUrlMaps(t.coordenadas)}" 
-   target="_blank" 
-   class="btn-gps">
-   <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
-</a>
-
+                    <a href="${urlMaps}" target="_blank" class="btn-gps" style="display: block; text-align: center; text-decoration: none; margin: 10px 20px; background: #007aff; color: white; padding: 12px; border-radius: 10px; font-weight: 700;">
+                        <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+                    </a>
 
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
             }).join('')}</div>`;
-
 }
 
 
-function construirUrlMaps(pointString) {
-    if (!pointString || typeof pointString !== 'string') return "#";
-    // Extrae números: convierte POINT(37.38,-5.98) en 37.38, -5.98
-    const nums = pointString.match(/[-0-9.]+/g);
-    if (nums && nums.length >= 2) {
-        // Formato oficial de Google Maps: q=lat,lng
-        return `https://www.google.com/maps/search/?api=1&query=${nums[0]},${nums[1]}`;
-    }
-    return "#";
-}
+
+
 
 
 
