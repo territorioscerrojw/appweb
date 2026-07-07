@@ -292,6 +292,11 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+                // Construimos el enlace de forma segura usando las coordenadas de la col. Q
+                // Si 't.coordenadas' es el campo con el POINT(...), esto lo convertirá en enlace
+                const coord = t.coordenadas ? t.coordenadas.match(/[-0-9.]+/g) : null;
+                const linkMaps = coord ? `https://www.google.com/maps/dir/?api=1&destination=${coord[0]},${coord[1]}` : "#";
+
                 return `
                 <div class="card">
                     <div class="card-header">
@@ -305,7 +310,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         <div class="anillo-label">TIEMPO RESTANTE</div>
                         <div class="anillo-svg-container">
                             <svg width="80" height="80" style="transform: rotate(90deg);">
-                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
+                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circenferencia}" />
                                 <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                             </svg>
                             <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
@@ -314,14 +319,15 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                    <a href="${t.mapsUrl}" target="_blank" class="btn-gps" style="margin: 0 20px 10px 20px;">
-                        <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+                    <a href="${linkMaps}" target="_blank" class="btn-gps">
+                      <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
