@@ -294,7 +294,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 
                 // --- LIMPIEZA DE COORDENADAS ---
                 // Esto busca los números dentro del POINT y los convierte a formato lat,lng
-                let coords = t.coordenadas ? t.coordenadas.match(/[-0-9.]+/g) : [];
+                let coords = t.coordenadas ? t.coords.match(/[-0-9.]+/g) : [];
                 let urlMaps = (coords && coords.length >= 2) 
                               ? `https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}` 
                               : "#";
