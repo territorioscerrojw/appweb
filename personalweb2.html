@@ -128,6 +128,11 @@ body.dark-mode .btn-theme {
 }
 
 .img-box img { width: 100%; height: 100%; object-fit: cover; }
+.img-box-custom {
+  height: 200px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
 
 .progreso-container {
   width: 90%; 
@@ -160,9 +165,10 @@ body.dark-mode .btn-theme {
 .anillo-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   margin: 15px 0;
   position: relative;
+  padding: 15px;
 }
 
 .anillo-label {
@@ -324,7 +330,6 @@ huy
             const arcoTotal = (240 / 360) * circunferencia;
             const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-            // Lógica de texto mejorada
             let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
             let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
             let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
@@ -339,27 +344,21 @@ huy
                 <span class="card-zona" style="font-size: 0.95rem; color: #8e8e93; font-weight: 600;">${t.zona}</span>
               </div>
               
-              <div class="img-box" style="height: 200px; border-top: 0.5px solid rgba(0,0,0,0.1); border-bottom: 0.5px solid rgba(0,0,0,0.1);">
+              <div class="img-box-custom">
                 <img src="${t.imgMini}" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
               
-              <div class="anillo-container" style="display: flex; flex-direction: column; align-items: flex-start; padding: 15px;">
+              <div class="anillo-container-custom">
                 <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">TIEMPO RESTANTE</div>
                 
                 <div style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
                   <svg width="80" height="80" style="transform: rotate(90deg);">
-                    <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" 
-                            stroke-dasharray="${arcoTotal} ${circunferencia}" />
-                    <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" 
-                            stroke-linecap="round" 
-                            stroke-dasharray="${arcoTotal} ${circunferencia}" 
-                            stroke-dashoffset="${offset}" />
+                    <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
+                    <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                   </svg>
                   
                   <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
-                    <div style="font-weight: 900; line-height: 1.1; ${estiloTexto}">
-                      ${textoDisplay}
-                    </div>
+                    <div style="font-weight: 900; line-height: 1.1; ${estiloTexto}">${textoDisplay}</div>
                   </div>
                 </div>
               </div>
@@ -368,7 +367,6 @@ huy
             </div>`;
           }).join('')}</div>`;
 }
-
 
 
 
