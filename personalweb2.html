@@ -291,9 +291,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-                // Usamos t.coords porque así se llama en tu Apps Script (línea 68)
-                // Usamos encodeURIComponent para que el formato POINT(lat,lng) no rompa el enlace
-                const urlMaps = t.coords ? `http://googleusercontent.com/maps.google.com/search?q=${encodeURIComponent(t.coords)}` : "#";
+                // URL CORRECTA: usamos el parámetro 'q' para buscar las coordenadas
+                // t.coords es el valor que viene de tu App Script
+                const urlMaps = t.coords ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.coords)}` : "#";
 
                 return `
                 <div class="card">
@@ -325,6 +325,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
