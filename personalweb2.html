@@ -278,7 +278,6 @@ function calcularDiasTotales(tiempoString) {
 }
 
 // --- 2. RENDERIZADO DE LA GRILLA ---
-
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
 
@@ -292,11 +291,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const arcoTotal = (240 / 360) * circunferencia;
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
-
-                // Lógica de extracción de coordenadas que necesitas
-                // Asegúrate de que 't.coordenadas' sea el nombre exacto de tu columna Q
-                const match = t.coordenadas ? t.coordenadas.match(/POINT\(([^,]+),([^)]+)\)/) : null;
-                const linkMaps = match ? `https://www.google.com/maps/search/?api=1&query=${match[1]},${match[2]}` : "#";
 
                 return `
                 <div class="card">
@@ -319,8 +313,8 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                         </div>
                     </div>
-
-                    <a href="${linkMaps}" target="_blank" class="btn-gps" style="margin: 0 20px 10px 20px;">
+                    
+                    <a href="${t.mapsUrl}" target="_blank" class="btn-gps" style="margin: 0 20px 10px 20px;">
                         <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
@@ -328,6 +322,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
