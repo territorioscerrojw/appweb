@@ -285,14 +285,20 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
                 
+                // --- FORMATEO DEL TIEMPO ---
+                // Asumiendo que t.tiempo viene como "X meses Y días"
+                let partes = t.tiempo.split(' '); 
+                let textoFormateado = partes.length >= 4 
+                    ? `${partes[0]} ${partes[1]}<br><span style="font-size:0.7em;">y</span><br>${partes[2]} ${partes[3]}`
+                    : t.tiempo;
+
                 const radio = 35;
                 const circunferencia = 2 * Math.PI * radio;
                 const arcoTotal = (240 / 360) * circunferencia;
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-                // CORRECCIÓN: Extraemos los números del POINT y generamos la URL de navegación directa
-                // Esto busca los números dentro de POINT(lat, lng) y los pone en la URL
+                // URL de navegación directa
                 let coordsRaw = t.coords || "";
                 let matches = coordsRaw.match(/[-0-9.]+/g);
                 let urlNavegacion = (matches && matches.length >= 2) 
@@ -310,13 +316,15 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                     </div>
                     <div class="anillo-wrapper">
                         <div class="anillo-label">TIEMPO RESTANTE</div>
-                        <div class="anillo-svg-container" style="position: relative;">
-                            <svg width="80" height="80" style="transform: rotate(90deg); display:block; margin: 0 auto;">
-                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
-                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
+                        <div class="anillo-svg-container" style="position: relative; width: 80px; height: 80px; margin: 0 auto;">
+                            <svg width="80" height="80" style="transform: rotate(90deg);">
+                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circenferencia}" />
+                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circenferencia}" stroke-dashoffset="${offset}" />
                             </svg>
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-                                <div class="texto-anillo-dinamico" style="font-size: 0.9rem; font-weight: 900;">${t.tiempo}</div>
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; pointer-events: none;">
+                                <div class="texto-anillo-dinamico" style="font-size: 0.75rem; font-weight: 900; text-align: center;">
+                                    ${textoFormateado}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -329,6 +337,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
