@@ -298,11 +298,16 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let urlMaps = coords ? `https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}` : "#";
 
                 return `
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-num">${t.num}</span>
-                        <span class="card-zona">${t.zona}</span>
-                    </div>
+<div class="card">
+    <div class="card-header">
+        <span class="card-num">${t.num}</span>
+        <span class="card-zona">${t.zona}</span>
+        
+        <div style="font-size: 8px; color: red; word-break: break-all;">
+            DEBUG: ${t.coordenadas || "VACÍO"}
+        </div>
+    </div>
+    `;
                     <div class="img-box-custom">
                         <img src="${t.imgMini}" alt="Imagen">
                     </div>
