@@ -57,6 +57,22 @@
       white-space: nowrap;
       line-height: 1.2;
     }
+/* Definimos la variable de color para el texto del anillo */
+:root {
+  --color-texto-anillo: #000;
+}
+
+body.dark-mode {
+  --color-texto-anillo: #fff;
+}
+
+/* Aplicamos la variable al estilo del texto */
+.texto-anillo-dinamico {
+  color: var(--color-texto-anillo);
+  font-weight: 900;
+  line-height: 1.1;
+  font-size: 0.95rem;
+}
 
    .btn-theme {
   position: absolute; 
@@ -342,12 +358,16 @@ huy
             const arcoTotal = (240 / 360) * circunferencia;
             const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+            // Lógica de texto: Meses Y Días
             let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
             let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
             let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
             let linea2 = diasMatch ? diasMatch[0].toUpperCase() : "";
             let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : (linea1 && linea2 ? `${linea1} Y<br>${linea2}` : (linea1 || linea2 || t.tiempo.toUpperCase()));
-            let estiloTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.8rem;" : "color: #000; font-size: 0.95rem;";
+            
+            // Color dinámico para modo oscuro
+            let claseTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.8rem;" : "class='texto-anillo-dinamico'";
+            let estiloDiv = (diasTotales <= 0) ? `style="${claseTexto}"` : claseTexto;
 
             return `
             <div class="card">
@@ -361,14 +381,16 @@ huy
               </div>
               
               <div class="anillo-wrapper">
-                <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase;">TIEMPO RESTANTE</div>
-                <div class="anillo-svg-container">
+                <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">TIEMPO RESTANTE</div>
+                
+                <div style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
                   <svg width="80" height="80" style="transform: rotate(90deg);">
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                   </svg>
+                  
                   <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
-                    <div style="font-weight: 900; line-height: 1.1; ${estiloTexto}">${textoDisplay}</div>
+                    <div ${estiloDiv}>${textoDisplay}</div>
                   </div>
                 </div>
               </div>
