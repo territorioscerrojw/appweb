@@ -20,21 +20,36 @@
       --negocios: #6495ED;
       --gris-apple: rgba(28, 28, 30, 0.9);
       --card-bg: #ffffff;
-    }
+  
+  /* Modo Claro */
+  --card-bg: #f5f5f7; /* Blanco roto / Grisáceo */
+  --body-bg: #e8e8ed; /* Fondo general */
+}
 
-    /* Modo Oscuro */
-    body.dark-mode {
-      --primary: #ffffff;
-      --bg: #121212;
-      --card-bg: #1c1c1e;
-    }
+body.dark-mode {
+  /* Modo Oscuro */
+  --card-bg: #2c3e50; /* Gris azulado */
+  --body-bg: #1e293b; /* Fondo general oscuro */
+}
+
+
+
+/* Fondo de la cabecera igual al del body */
+.card-header {
+  background: var(--body-bg);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+    
 
     body { 
       font-family: 'Outfit', sans-serif; 
       background: var(--bg); 
       margin: 0; 
       padding: 0; 
-      color: var(--primary); 
+      color: var(--primary);
+      background-color: var(--body-bg);
       transition: background 0.3s, color 0.3s;
     }
 
@@ -207,13 +222,14 @@ body.dark-mode .btn-theme {
 }
 
 .card {
-  background: var(--card-bg);
+  
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   border: 0.5px solid rgba(0,0,0,0.1);
   display: flex; 
   flex-direction: column;
+  background: var(--card-bg) !important;
 }
 
 .img-box-custom {
@@ -358,14 +374,12 @@ huy
             const arcoTotal = (240 / 360) * circunferencia;
             const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-            // Lógica de texto: Meses Y Días
             let mesesMatch = t.tiempo.match(/(\d+)\s*(mes(es)?)/i);
             let diasMatch = t.tiempo.match(/(\d+)\s*(d[ií]a(s)?)/i);
             let linea1 = mesesMatch ? mesesMatch[0].toUpperCase() : "";
             let linea2 = diasMatch ? diasMatch[0].toUpperCase() : "";
             let textoDisplay = (diasTotales <= 0) ? "CADUCADO" : (linea1 && linea2 ? `${linea1} Y<br>${linea2}` : (linea1 || linea2 || t.tiempo.toUpperCase()));
             
-            // Color dinámico para modo oscuro
             let claseTexto = (diasTotales <= 0) ? "color: #ff3b30; font-size: 0.8rem;" : "class='texto-anillo-dinamico'";
             let estiloDiv = (diasTotales <= 0) ? `style="${claseTexto}"` : claseTexto;
 
