@@ -288,21 +288,47 @@ function calcularDiasTotales(texto) {
 
 
   function abrirModal(tipo, index) {
-    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
-    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
-    document.getElementById('m-img').src = t.imgGrande;
-    document.getElementById('m-zona').innerText = t.zona;
-    document.getElementById('m-tiempo').innerText = t.tiempo;
-    document.getElementById('m-notas').innerText = t.notas;
-    
-    const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-    document.getElementById('m-link').href = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-    
-    document.getElementById('modal').style.display = "block";
-  }
-
-  function cerrar() { document.getElementById('modal').style.display = "none"; }
+  // Obtenemos el objeto seleccionado según el tipo de lista
+  const lista = (tipo === 'personales') ? territoriosPersonales : territoriosGrupo;
+  const t = lista[index];
   
+  const modal = document.getElementById('modal');
+  const contenido = document.getElementById('modal-contenido');
+
+  // Construimos el HTML del modal usando las clases que definimos en CSS
+  contenido.innerHTML = `
+    <div class="modal-header">
+      <span class="close-btn" onclick="cerrarModal()">&times;</span>
+      <h3>DETALLES</h3>
+    </div>
+    
+    <div class="modal-content">
+      <img src="${t.imgGrande}" class="img-grande" alt="Mapa territorio">
+      
+      <h2>${t.num} - ${t.zona}</h2>
+      
+      <div class="box-tiempo-modal">
+        <strong>TIEMPO RESTANTE:</strong><br>
+        <span>${t.tiempo}</span>
+      </div>
+
+      <div class="notas-area">
+        <strong>Notas:</strong>
+        <p>${t.notas || "Sin notas adicionales."}</p>
+      </div>
+      
+      <a href="#" class="btn-inc" onclick="alert('Acción de incremento')">ACTUALIZAR TIEMPO</a>
+    </div>
+  `;
+
+  // Mostramos el modal
+  modal.style.display = 'block';
+}
+
+function cerrarModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
   cargar();
 </script>
 </body>
