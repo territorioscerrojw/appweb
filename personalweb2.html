@@ -315,11 +315,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                     </div>
                     
              
-<a href="${generarLinkMaps(t.coordenadas)}" 
+
+<a href="${generarUrlMaps(t.coordenadas)}" 
    target="_blank" 
+   rel="noopener noreferrer" 
    class="btn-gps-card">
    <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
 </a>
+
 
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
