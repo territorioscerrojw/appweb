@@ -292,6 +292,13 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+                // --- LIMPIEZA DE COORDENADAS ---
+                // Esto busca los números dentro del POINT y los convierte a formato lat,lng
+                let coords = t.coordenadas ? t.coordenadas.match(/[-0-9.]+/g) : [];
+                let urlMaps = (coords && coords.length >= 2) 
+                              ? `https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}` 
+                              : "#";
+
                 return `
                 <div class="card">
                     <div class="card-header">
@@ -314,7 +321,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.coordenadas)}" target="_blank" class="btn-gps">
+                    <a href="${urlMaps}" target="_blank" class="btn-gps">
                         <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
@@ -322,6 +329,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
