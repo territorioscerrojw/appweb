@@ -292,10 +292,10 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-                // CORRECCIÓN: Usamos el formato oficial de Google Maps
-                // Extraemos las coordenadas del string POINT(lat,lng) de forma simple
-                const coords = t.coordenadas ? t.coordenadas.replace(/[^0-9.,-]/g, "") : "";
-                const urlMaps = coords ? `https://www.google.com/maps/search/?api=1&query=${coords}` : "#";
+                // Extraemos las coordenadas de forma segura
+                // Buscamos cualquier número que parezca una coordenada en tu columna
+                let coords = (t.coordenadas || "").match(/[-0-9.]+/g);
+                let urlMaps = coords ? `https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}` : "#";
 
                 return `
                 <div class="card">
@@ -319,7 +319,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                    <a href="${urlMaps}" target="_blank" class="btn-gps" style="display: block; text-align: center; text-decoration: none; margin: 10px 20px; background: #007aff; color: white; padding: 12px; border-radius: 10px; font-weight: 700;">
+                    <a href="${urlMaps}" target="_blank" class="btn-gps" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 20px; padding: 12px; background: #007aff; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">
                         <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
@@ -327,6 +327,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
