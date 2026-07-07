@@ -293,11 +293,10 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
-                // --- ESTO ES LO ÚNICO NUEVO ---
-                // Extrae latitud y longitud de tu formato POINT(lat,lng)
+                // Lógica de extracción de coordenadas que necesitas
+                // Asegúrate de que 't.coordenadas' sea el nombre exacto de tu columna Q
                 const match = t.coordenadas ? t.coordenadas.match(/POINT\(([^,]+),([^)]+)\)/) : null;
                 const linkMaps = match ? `https://www.google.com/maps/search/?api=1&query=${match[1]},${match[2]}` : "#";
-                // ------------------------------
 
                 return `
                 <div class="card">
@@ -320,15 +319,16 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <a href="${linkMaps}" target="_blank" class="btn-gps" style="margin: 0 20px 10px 20px;">
-                      <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+                        <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
                     </a>
 
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
 
