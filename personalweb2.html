@@ -103,15 +103,7 @@ body.dark-mode .btn-theme {
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
    
-  /* Nueva estructura de tarjeta */
-.card {
-  background: var(--card-bg);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border: 0.5px solid rgba(0,0,0,0.1);
-  display: flex; flex-direction: column;
-}
+ 
 
 .card-header {
   display: flex; justify-content: space-between; align-items: center;
@@ -162,14 +154,7 @@ body.dark-mode .btn-theme {
   color: #000; /* Texto siempre en negro según pediste */
   pointer-events: none;
 }
-.anillo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start !important;
-  
-  position: relative;
-  padding: 15px 25px !important;
-}
+
 
 .anillo-label {
   font-size: 0.7rem;
@@ -205,13 +190,39 @@ body.dark-mode .btn-theme {
   line-height: 1.1;
 }
 
-.anillo-box {
+.card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 0.5px solid rgba(0,0,0,0.1);
+  display: flex; 
+  flex-direction: column;
+}
+
+.img-box-custom {
+  height: 200px;
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+}
+
+.anillo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px 25px; /* Esto da aire por los lados */
+}
+
+.anillo-svg-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
-  position: relative;
+  justify-content: center;
+  margin-top: 8px;
 }
+
 
 .svg-anillo-abierto {
   width: 80px;
@@ -316,7 +327,8 @@ huy
   
  
    
-    function renderizarLista(lista, titulo, icono, clase, tipo) {
+    
+            function renderizarLista(lista, titulo, icono, clase, tipo) {
   if (!lista || lista.length === 0) return "";
 
   return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
@@ -348,15 +360,13 @@ huy
                 <img src="${t.imgMini}" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
               
-              <div class="anillo-container-custom">
-                <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">TIEMPO RESTANTE</div>
-                
-                <div style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+              <div class="anillo-wrapper">
+                <div style="font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase;">TIEMPO RESTANTE</div>
+                <div class="anillo-svg-container">
                   <svg width="80" height="80" style="transform: rotate(90deg);">
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
                     <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                   </svg>
-                  
                   <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
                     <div style="font-weight: 900; line-height: 1.1; ${estiloTexto}">${textoDisplay}</div>
                   </div>
@@ -367,6 +377,7 @@ huy
             </div>`;
           }).join('')}</div>`;
 }
+
 
 
 
