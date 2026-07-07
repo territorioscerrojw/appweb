@@ -280,6 +280,7 @@ function calcularDiasTotales(tiempoString) {
 // --- 2. RENDERIZADO DE LA GRILLA ---
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
+
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             <div class="grid">${lista.map((t, i) => {
                 let diasTotales = calcularDiasTotales(t.tiempo);
@@ -292,30 +293,35 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
                 return `
-              <div class="card">
-                <div class="img-box" onclick="abrirModal('${tipo}', ${i})"><img src="${t.imgMini}"></div>
-                <div class="info">
-                  <span class="num">Territorio ${t.num}</span>
-                  <span class="zona">${t.zona}</span>
-                  <div class="anillo-wrapper" style="margin-top: 10px;">
-                    <svg width="80" height="80" style="transform: rotate(90deg); display:block; margin: 0 auto;">
-                      <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
-                      <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
-                    </svg>
-                    <div style="text-align:center; font-weight:900; margin-top:-50px; margin-bottom:30px;">${t.tiempo}</div>
-                  </div>
-                </div>
-                
-                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.coordenadas)}" target="_blank" class="btn-gps" style="display: flex; align-items: center; justify-content: center; background: #007aff; color: white !important; text-decoration: none; padding: 15px; border-radius: 14px; font-weight: 700; margin: 0 15px 15px 15px; gap: 10px; font-size: 0.9rem;">
-                  <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
-                </a>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-num">${t.num}</span>
+                        <span class="card-zona">${t.zona}</span>
+                    </div>
+                    <div class="img-box-custom">
+                        <img src="${t.imgMini}" alt="Imagen">
+                    </div>
+                    <div class="anillo-wrapper">
+                        <div class="anillo-label">TIEMPO RESTANTE</div>
+                        <div class="anillo-svg-container">
+                            <svg width="80" height="80" style="transform: rotate(90deg);">
+                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
+                                <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
+                            </svg>
+                            <div style="position: absolute; text-align: center; width: 100%; pointer-events: none;">
+                                <div class="texto-anillo-dinamico">${t.tiempo}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.coordenadas)}" target="_blank" class="btn-gps">
+                        <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+                    </a>
 
-                <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
-              </div>`;
+                    <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
+                </div>`;
             }).join('')}</div>`;
 }
-
-
 
 
 
