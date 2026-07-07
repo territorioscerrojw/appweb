@@ -314,9 +314,13 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
                     </div>
                     
-                    <a href="https://www.google.com/maps/search/?api=1&query=${t.coordenadas}" target="_blank" class="btn-gps">
-                      <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
-                    </a>
+                  
+<a href="${construirUrlMaps(t.coordenadas)}" 
+   target="_blank" 
+   class="btn-gps">
+   <i class="fa-solid fa-location-arrow"></i> CÓMO LLEGAR
+</a>
+
 
                     <button class="btn-more" onclick="abrirModal('${tipo}', ${i})">VER DETALLES</button>
                 </div>`;
@@ -325,6 +329,16 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 }
 
 
+function construirUrlMaps(pointString) {
+    if (!pointString || typeof pointString !== 'string') return "#";
+    // Extrae números: convierte POINT(37.38,-5.98) en 37.38, -5.98
+    const nums = pointString.match(/[-0-9.]+/g);
+    if (nums && nums.length >= 2) {
+        // Formato oficial de Google Maps: q=lat,lng
+        return `https://www.google.com/maps/search/?api=1&query=${nums[0]},${nums[1]}`;
+    }
+    return "#";
+}
 
 
 
