@@ -80,37 +80,46 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   width: 100%;
 }
 
-/* 2. El inner es quien dicta la altura basándose en su contenido más alto */
 .card-inner {
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
+  /* Esto obliga a que el contenedor tenga la altura de la cara más grande */
 }
 
-/* 3. Ambas caras ocupan la misma celda de grid */
 .card-front, .card-back {
-  grid-area: 1 / 1 / 2 / 2;
+  grid-area: 1 / 1 / 2 / 2; /* Ambas en la misma celda */
   backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: 0.5px solid rgba(0,0,0,0.1);
+  
+  /* Estructura interna idéntica */
   display: flex;
   flex-direction: column;
+  height: 100%; 
 }
 
-/* 4. Solo el dorso necesita la rotación inicial */
-.card-back {
-  transform: rotateY(180deg);
+/* El truco: el contenido principal debe empujar al botón hacia abajo */
+.card-body {
+  flex: 1; /* Esto hace que el cuerpo ocupe todo el espacio sobrante */
+  overflow: hidden;
 }
 
-/* 5. Aseguramos que el contenido interno no rompa el layout */
-.card-back {
-  padding: 20px;
-  justify-content: space-between;
+.btn-more {
+  margin-top: auto; /* Empuja el botón siempre al fondo */
+  width: 100%;
+  padding: 18px;
+  border: none;
+  background: rgba(0,0,0,0.03);
+  color: #007aff;
+  font-weight: 800;
+  cursor: pointer;
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 0 0 18px 18px;
 }
+
 
 
 
@@ -199,21 +208,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin-bottom: 8px;
 }
 
-.btn-more { 
-  width: 100%; 
-  padding: 18px; 
-  border: none; 
-  background: rgba(0,0,0,0.03); 
-  color: #007aff; 
-  font-weight: 800; 
-  cursor: pointer; 
-  border-top: 0.5px solid rgba(0,0,0,0.1); 
-  border-radius: 0 0 18px 18px;
-  box-sizing: border-box;
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 20;
-}
 
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
@@ -398,7 +392,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
-                            </div>
+            
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
                         <div class="card-back">
