@@ -74,23 +74,24 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
     pointer-events: auto; /* Activa el dorso al girar */
 }
 
+/* 1. El contenedor padre debe ser un bloque normal */
 .card-container {
   perspective: 1000px;
   width: 100%;
-  display: flex; /* Para controlar la altura del contenedor padre */
 }
 
+/* 2. El inner es quien dicta la altura basándose en su contenido más alto */
 .card-inner {
-  position: relative;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
-  display: grid; /* El contenedor se convierte en el padre del grid */
 }
 
+/* 3. Ambas caras ocupan la misma celda de grid */
 .card-front, .card-back {
-  grid-row: 1; /* Ambas ocupan la fila 1 */
-  grid-column: 1; /* Ambas ocupan la columna 1 */
+  grid-area: 1 / 1 / 2 / 2;
   backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
@@ -98,12 +99,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   border: 0.5px solid rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  height: 100%; /* Obliga a ocupar el 100% del contenedor padre */
 }
 
+/* 4. Solo el dorso necesita la rotación inicial */
 .card-back {
   transform: rotateY(180deg);
+}
+
+/* 5. Aseguramos que el contenido interno no rompa el layout */
+.card-back {
   padding: 20px;
   justify-content: space-between;
 }
