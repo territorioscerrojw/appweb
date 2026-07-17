@@ -85,15 +85,25 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 
 .card-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  transform: rotateY(180deg);
-  padding: 20px;
-  overflow: hidden;
-  backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transform: rotateY(180deg);
+    padding: 20px;
+    z-index: 5; /* Asegura que la cara trasera esté activa */
+    backface-visibility: hidden;
 }
+
+/* Fuerza a los botones a capturar el clic */
+.card-back .btn-more, 
+.card-back .btn-back-action {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto; /* IMPORTANTE: asegura que el clic pase */
+}
+
 /* Ocultar el botón */
 .card-back .swipe-container {
   display: none !important;
