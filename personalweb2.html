@@ -435,7 +435,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                               
-<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
+
+<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${nombreH}')">
+
 
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
