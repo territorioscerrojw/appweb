@@ -432,13 +432,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 </div>
                             </div>
 
-                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
-                                <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                              
+                        <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
+    <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
+    <div class="swipe-handle" 
+         onclick="enviarAlServidor('${t.num}', '${t.zona}', '${encodeURIComponent(t.nombre || nombreH)}')">
+         <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
+    </div>
+</div>
 
-
-<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${encodeURIComponent(t.nombre || nombreH)}')">
-u
 
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
@@ -497,11 +498,12 @@ let isDragging = false;
 
 
     // 1. Función única para enviar al servidor
-function enviarAlServidor(numT, zona, nombre) {
+function enviarAlServidor(numT, zona, nombreCodificado) {
+    // Decodificamos el nombre al recibirlo
+    const nombre = decodeURIComponent(nombreCodificado);
     const log = document.getElementById('debug-log');
     log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
-    console.log("Intentando llamar a registrarEntrega...");⁠
-
+    
     google.script.run
       .withSuccessHandler((respuesta) => {
           if (respuesta === "OK") {
@@ -510,7 +512,6 @@ function enviarAlServidor(numT, zona, nombre) {
               cargar(); 
           } else {
               log.innerHTML = "ERROR: " + respuesta;
-              alert(respuesta);
           }
       })
       .withFailureHandler((err) => {
@@ -518,6 +519,7 @@ function enviarAlServidor(numT, zona, nombre) {
       })
       .registrarEntrega(numT, nombre, zona);
 }
+
 
 // 2. Función simplificada para el deslizamiento táctil
 function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
