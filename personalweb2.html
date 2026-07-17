@@ -100,10 +100,17 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 /* Cabeceras compartidas */
 .card-header {
-  background: var(--header-bg);
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 15px;
+    width: 100%;
+    padding: 15px 20px;
+    background: #f8f9fa; /* Fondo suave para ambos */
+    border-radius: 15px 15px 0 0; /* Bordes redondeados solo arriba */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box; /* Crucial para que el padding no saque el elemento */
+    margin-bottom: 10px;
 }
+
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
@@ -375,7 +382,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             <div class="grid">${lista.map((t, i) => {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
-                
                 let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
 
                 const radio = 35;
@@ -395,17 +401,20 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        <div class="card-front" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; padding-bottom: 10px;">
-                            <div class="card-header" style="width: 100%;">
+                        
+                        <!-- LADO DELANTERO -->
+                        <div class="card-front" style="display: flex; flex-direction: column; align-items: center; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
+                            <div class="card-header">
                                 <span class="card-num">${t.num}</span>
                                 <span class="card-zona">${t.zona}</span>
                             </div>
-                            <div class="img-box-custom">
+
+                            <div class="img-box-custom" style="margin: 10px 0;">
                                 <img src="${t.imgMini}" alt="Imagen">
                             </div>
                             
                             ${tieneIncidencias ? `
-                            <div style="width: 90%; margin: 10px 0; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
+                            <div style="width: 90%; margin: 5px 0; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
                                 <i class="fa-solid fa-triangle-exclamation icono-latido" style="color:#ff3b30;"></i>
                                 <div style="flex: 1; text-align: left;">${limpiarIncidencia(t.notas)}</div>
                             </div>` : ''}
@@ -423,25 +432,28 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 </div>
                             </div>
 
-                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 10px 0;">
+                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                                 <div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || ''}')">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
 
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto;">MÁS DETALLES</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
                         </div>
 
-                        <div class="card-back">
-                            <div class="card-header" style="padding: 0 0 10px 0; background: transparent;">
+                        <!-- LADO TRASERO -->
+                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
+                            <div class="card-header">
                                 <span class="card-num">${t.num}</span>
                                 <span class="card-zona">${t.zona}</span>
                             </div>
-                            <div class="anillo-label" style="margin-top: 5px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container">
+                            
+                            <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
+                            <div class="calles-container" style="flex: 1; padding: 10px;">
                                 <div class="calles-texto">${t.calles}</div>
                             </div>
+
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
                                     <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
@@ -453,12 +465,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                     <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
                                 </button>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
                         </div>
+
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 function limpiarIncidencia(texto) {
     // 1. Elimina el emoji del calendario
