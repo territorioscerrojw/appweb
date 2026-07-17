@@ -203,6 +203,39 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
   margin-right: 15px;
   color: #ff3b30;
 }
+/* Botón Deslizar */
+.slider-container {
+  width: 90%;
+  margin: 15px auto;
+  height: 50px;
+  background: #e0e0e0;
+  border-radius: 25px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.slider-text {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  /* Efecto de brillo pasando por encima */
+  background: linear-gradient(90deg, #8e8e93 0%, #8e8e93 40%, #fff 50%, #8e8e93 60%, #8e8e93 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
@@ -340,6 +373,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                     </div>
                                 </div>
                             </div>
+                            <!-- NUEVO BOTÓN DESLIZANTE -->
+<div class="slider-container">
+    <div class="slider-text">
+        <i class="fa-solid fa-angles-right"></i> DESLIZAR PARA ENTREGAR
+    </div>
+</div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
 
