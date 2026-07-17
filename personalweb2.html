@@ -204,19 +204,33 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
   color: #ff3b30;
 }
 /* Botón Deslizar */
-.slider-container {
+.slider-wrapper {
   width: 90%;
   margin: 15px auto;
+  position: relative;
   height: 50px;
+}
+.slider-input {
+  width: 100%;
+  height: 50px;
+  -webkit-appearance: none;
   background: #e0e0e0;
   border-radius: 25px;
-  position: relative;
+  outline: none;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
 }
+/* El "brillo" que se desliza */
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: -400px 0 0 400px #34c759; /* Esto crea el efecto de llenado verde */
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
 
 .slider-text {
   font-size: 0.8rem;
@@ -375,11 +389,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             <!-- NUEVO BOTÓN DESLIZANTE -->
 <!-- Sustituye tu slider actual por este botón más robusto -->
-<div class="slider-container" id="slider-${tipo}-${i}" onclick="ejecutarEntrega(this, '${tipo}', ${i}, '${t.num}', '${t.zona}')">
-    <div class="slider-text">
-        <i class="fa-solid fa-angles-right"></i> PULSA PARA ENTREGAR
+<div class="slider-wrapper">
+    <input type="range" min="0" max="100" value="0" class="slider-input" 
+           onchange="verificarDeslizamiento(this, '${tipo}', ${i}, '${t.num}', '${t.zona}')">
+    <div style="position:absolute; top:15px; left:25%; color:#8e8e93; pointer-events:none; font-weight:800; font-size:0.8rem;">
+        DESLIZAR PARA ENTREGAR
     </div>
 </div>
+
 
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
@@ -460,6 +477,27 @@ function ejecutarEntrega(elemento, tipo, index, numT, zona) {
           elemento.innerHTML = '<div class="slider-text"><i class="fa-solid fa-angles-right"></i> INTENTAR DE NUEVO</div>';
       })
       .registrarEntrega(numT, nombreH, zona);
+}
+function verificarDeslizamiento(slider, tipo, index, numT, zona) {
+    if (slider.value >= 90) { // Si llega casi al final
+        slider.style.opacity = "0.5";
+        slider.disabled = true;
+        
+        google.script.run
+          .withSuccessHandler(() => {
+              alert("Territorio " + numT + " entregado.");
+              cargar();
+          })
+          .withFailureHandler((err) => {
+              alert("Error: " + err);
+              slider.value = 0;
+              slider.disabled = false;
+              slider.style.opacity = "1";
+          })
+          .registrarEntrega(numT, nombreH, zona);
+    } else {
+        slider.value = 0; // Si no llega al final, rebota
+    }
 }
 
 
