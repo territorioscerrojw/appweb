@@ -315,6 +315,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 </header>
 
 <div id="grid-container"></div>
+<div id="debug-log" style="color: red; font-size: 10px; margin: 10px; padding: 5px; border: 1px solid red;">Esperando acciones...</div>
 
 <script>
   let datosCargados = null;
@@ -590,13 +591,27 @@ function verificarDeslizamiento(slider, tipo, index, numT, zona) {
 }
 
 function finalizarSwipe(container, handle, numT, zona) {
+    const log = document.getElementById('debug-log');
+    log.innerHTML = "Enviando datos de " + numT + "...";
+    
     container.style.background = "#34c759";
-    handle.innerHTML = '<i class="fa-solid fa-check" style="color:white;"></i>';
+    handle.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:white;"></i>';
     
     google.script.run
-      .withSuccessHandler(() => { cargar(); })
+      .withSuccessHandler(() => {
+          log.innerHTML = "ÉXITO: Datos registrados.";
+          cargar(); 
+      })
+      .withFailureHandler((err) => {
+          log.innerHTML = "ERROR: " + err;
+          handle.innerHTML = '<i class="fa-solid fa-xmark" style="color:white;"></i>';
+          // Rebotar el botón si falla
+          handle.style.transition = "transform 0.3s ease";
+          handle.style.transform = "translateX(0px)";
+      })
       .registrarEntrega(numT, nombreH, zona);
 }
+
 
 
   cargar();
