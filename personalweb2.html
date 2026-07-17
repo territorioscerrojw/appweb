@@ -133,29 +133,37 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   line-height: 1.4;
 }
 
-/* Botones Traseros Inferiores */
+
+/* Botones Traseros - Diseño cuadrado y vertical */
 .btns-back-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 15px;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 15px 0; /* Espacio extra para que no se pisen */
 }
+
 .btn-back-action {
-  flex: 1;
   display: flex;
+  flex-direction: column; /* Icono arriba, texto abajo */
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 14px 5px;
-  border-radius: 12px;
+  aspect-ratio: 1 / 1; /* Los hace cuadrados perfectos */
+  padding: 10px;
+  border-radius: 16px;
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   text-align: center;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  box-sizing: border-box;
+  transition: transform 0.2s;
 }
+
+.btn-back-action i {
+  font-size: 1.5rem; /* Icono grande */
+  margin-bottom: 8px;
+}
+
 
 /* Botón Más detalles / Volver */
 .btn-more { 
@@ -311,32 +319,33 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
 
                         <!-- LADO TRASERO -->
-                        <div class="card-back">
-                            <div class="card-header" style="padding: 0 0 10px 0; background: transparent;">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-                            
-                            <div class="anillo-label" style="margin-top: 5px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container">
-                                <div class="calles-texto">${t.calles}</div>
-                            </div>
+<div class="card-back">
+    <div class="card-header" style="padding: 0 0 10px 0; background: transparent;">
+        <span class="card-num">${t.num}</span>
+        <span class="card-zona">${t.zona}</span>
+    </div>
+    
+    <div class="anillo-label" style="margin-top: 5px;">NUMERACIÓN CALLES</div>
+    <div class="calles-container">
+        <div class="calles-texto">${t.calles}</div>
+    </div>
 
-                            <!-- Bloque de 3 Botones del mismo tamaño -->
-                            <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-                                   <i class="fa-solid fa-circle-plus"></i> INCIDENCIA
-                                </a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-                                   <i class="fa-solid fa-location-arrow"></i> GPS
-                                </a>
-                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
-                                   <i class="fa-solid fa-rotate"></i> RENOVAR
-                                </button>
-                            </div>
-                            
-                            <button class="btn-more" style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
-                        </div>
+    <!-- Bloque de 3 Botones cuadrados -->
+    <div class="btns-back-row">
+        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+           <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
+        </a>
+        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+           <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
+        </a>
+        <button class="btn-back-action" style="background: #34c759; color: #fff;">
+           <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
+        </button>
+    </div>
+    
+    <!-- Botón volver al final -->
+    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+</div>
 
                     </div>
                 </div>`;
