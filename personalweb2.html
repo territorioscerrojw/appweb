@@ -107,6 +107,16 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .card-back {
   justify-content: space-between; /* Mejora la distribución si quitas el botón */
 }
+/* Oculta explícitamente el contenedor de deslizamiento cuando la tarjeta está girada */
+.card-container.flipped .card-front .swipe-container {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Opcional: mejora el rendimiento durante el giro */
+.card-inner {
+    backface-visibility: hidden;
+}
 
 .card-header {
     width: 100%;
