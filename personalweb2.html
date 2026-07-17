@@ -436,8 +436,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                               
 
-<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${nombreH}')">
 
+<div class="swipe-handle" 
+     data-num="${t.num}" 
+     data-zona="${t.zona}" 
+     data-nombre="${nombreH}" 
+     ontouchstart="iniciarSwipe(event)">
+    <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
+</div>
 
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
@@ -519,8 +525,12 @@ function enviarAlServidor(numT, zona, nombre) {
 }
 
 // 2. Función simplificada para el deslizamiento táctil
-function iniciarSwipe(e, tipo, index, numT, zona, nombre) {
+function iniciarSwipe(e) {
     const handle = e.currentTarget;
+    const numT = handle.getAttribute('data-num');
+    const zona = handle.getAttribute('data-zona');
+    const nombre = handle.getAttribute('data-nombre');
+    
     const container = handle.parentElement;
     const startX = e.touches[0].clientX;
     const maxX = container.offsetWidth - handle.offsetWidth - 10;
@@ -536,16 +546,19 @@ function iniciarSwipe(e, tipo, index, numT, zona, nombre) {
         }
     }
 
+    // ... el resto de tu función queda igual ...
     function terminar() {
         document.removeEventListener('touchmove', mover);
         handle.style.transition = "transform 0.3s ease";
         handle.style.transform = "translateX(0px)";
         setTimeout(() => handle.style.transition = "none", 300);
     }
-
     document.addEventListener('touchmove', mover, {passive: false});
     document.addEventListener('touchend', terminar, {once: true});
 }
+
+    
+    
 
 
 
