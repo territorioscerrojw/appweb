@@ -410,7 +410,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
+                               <div class="swipe-handle" 
+     data-num="${t.num}" 
+     data-zona="${t.zona}" 
+     data-nombre="${encodeURIComponent(nombreH)}" 
+     ontouchstart="iniciarSwipe(event)">
+     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
+</div>
+
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
@@ -452,17 +459,20 @@ let isDragging = false;
 
 
     // 1. Función única para enviar al servidor
+
+
+    // Función para enviar al servidor
 function enviarAlServidor(numT, zona, nombreCodificado) {
-    // Decodificamos el nombre al recibirlo
     const nombre = decodeURIComponent(nombreCodificado);
     const log = document.getElementById('debug-log');
     log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
     
+    // IMPORTANTE: Asegúrate de que registrarEntrega sea una función global en el .gs
     google.script.run
       .withSuccessHandler((respuesta) => {
           if (respuesta === "OK") {
               log.innerHTML = "ÉXITO";
-              alert("Territorio " + numT + " entregado correctamente.");
+              // Recargamos la interfaz para que desaparezca la tarjeta
               cargar(); 
           } else {
               log.innerHTML = "ERROR: " + respuesta;
@@ -474,49 +484,16 @@ function enviarAlServidor(numT, zona, nombreCodificado) {
       .registrarEntrega(numT, nombre, zona);
 }
 
-
-// 2. Función simplificada para el deslizamiento táctil
-
+// Única función de swipe que usa los atributos data-
 function iniciarSwipe(e) {
     const handle = e.currentTarget;
     const numT = handle.getAttribute('data-num');
     const zona = handle.getAttribute('data-zona');
-    const nombre = decodeURIComponent(handle.getAttribute('data-nombre'));
+    const nombre = handle.getAttribute('data-nombre'); // Ya viene codificado
     
     const container = handle.parentElement;
     const startX = e.touches[0].clientX;
-    const maxX = container.offsetWidth - handle.offsetWidth - 10;
-
-    function mover(event) {
-        let deltaX = event.touches[0].clientX - startX;
-        let pos = Math.max(0, Math.min(deltaX, maxX));
-        handle.style.transform = `translateX(${pos}px)`;
-        if (pos >= maxX * 0.9) {
-            document.removeEventListener('touchmove', mover);
-            enviarAlServidor(numT, zona, nombre);
-        }
-    }
-
-    function terminar() {
-        document.removeEventListener('touchmove', mover);
-        handle.style.transition = "transform 0.3s ease";
-        handle.style.transform = "translateX(0px)";
-        setTimeout(() => handle.style.transition = "none", 300);
-    }
-
-    document.addEventListener('touchmove', mover, {passive: false});
-    document.addEventListener('touchend', terminar, {once: true});
-}
-
-
-    function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
-    // Decodificamos el nombre aquí mismo
-    const nombre = decodeURIComponent(nombreCodificado);
-    
-    const handle = e.currentTarget;
-    const container = handle.parentElement;
-    const startX = e.touches[0].clientX;
-    const maxX = container.offsetWidth - handle.offsetWidth - 10;
+    const maxX = container.offsetWidth - handle.offsetWidth - 15;
 
     function mover(event) {
         let deltaX = event.touches[0].clientX - startX;
@@ -539,6 +516,7 @@ function iniciarSwipe(e) {
     document.addEventListener('touchmove', mover, {passive: false});
     document.addEventListener('touchend', terminar, {once: true});
 }
+
 
 
     
