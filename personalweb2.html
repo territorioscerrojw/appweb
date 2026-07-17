@@ -37,48 +37,7 @@ body {
   color: var(--primary);
   transition: background 0.3s, color 0.3s;
 }
-/* Contenedor principal con profundidad */
-.card-container { 
-  perspective: 1000px; 
-  width: 100%; 
-  height: auto; 
-  min-height: 300px; /* Asegura altura mínima */
-}
 
-.card-inner { 
-  position: relative; 
-  width: 100%; 
-  height: 100%;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-  transform-style: preserve-3d; 
-}
-
-/* Clase que activa el giro */
-.card-container.flipped .card-inner { 
-  transform: rotateY(180deg); 
-}
-
-/* Caras de la tarjeta */
-.card-front, .card-back { 
-  position: absolute; 
-  width: 100%; 
-  height: 100%; 
-  backface-visibility: hidden; 
-  border-radius: 18px; 
-  background: var(--card-bg); 
-  border: 0.5px solid rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
-.card-back { 
-  transform: rotateY(180deg); 
-  padding: 20px; 
-  box-sizing: border-box; 
-  display: flex;
-  flex-direction: column;
-}
-
-    
 /* Header principal */
 header {
   text-align: center;
@@ -95,47 +54,60 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   font-size: clamp(1.5rem, 10vw, 2.8rem);
   margin: 0; font-weight: 400;
 }
-.btn-gps-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  margin: 10px 15px;
-  background: #007aff; 
-  color: white;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 700;
-  border-radius: 12px;
-  transition: opacity 0.2s;
-}
 
-.btn-gps-card:hover {
-  opacity: 0.9;
-}
-
-/* Grilla y Tarjetas */
+/* Grilla de Tarjetas */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
-.card {
-  background: var(--card-bg) !important;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border: 0.5px solid rgba(0,0,0,0.1);
-  display: flex; flex-direction: column;
+/* ESTRUCTURA DEL EFECTO DE GIRO (FLIP) COMPLETAMENTE OPERATIVA */
+.card-container {
+  perspective: 1000px;
+  width: 100%;
 }
 
+.card-inner {
+  position: relative;
+  width: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+/* Cuando se añade la clase flipped, la tarjeta gira */
+.card-container.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  width: 100%;
+  backface-visibility: hidden;
+  border-radius: 18px;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 0.5px solid rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* La cara trasera se posiciona sobre la delantera pero volteada */
+.card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: rotateY(180deg);
+  padding: 20px;
+}
+
+/* Cabeceras compartidas */
 .card-header {
   background: var(--header-bg);
   display: flex; justify-content: space-between; align-items: center;
   padding: 15px;
 }
-
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
+/* Contenedor de Imagen Frontal */
 .img-box-custom {
   height: 200px;
   border-top: 1px solid rgba(0,0,0,0.1);
@@ -143,14 +115,61 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Anillo y Texto */
+/* Anillo y Texto (Frontal) */
 .anillo-wrapper { display: flex; flex-direction: column; align-items: flex-start; padding: 15px 25px; }
 .anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
 .anillo-svg-container { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
 .texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; }
 
-/* Botones y UI */
-.btn-more { width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.03); color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid rgba(0,0,0,0.1); }
+/* Área de Calles (Trasera) */
+.calles-container {
+  flex: 1;
+  margin-top: 10px;
+  overflow-y: auto;
+}
+.calles-texto {
+  font-size: 0.95rem;
+  white-space: pre-line;
+  line-height: 1.4;
+}
+
+/* Botones Traseros Inferiores */
+.btns-back-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+.btn-back-action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 5px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Botón Más detalles / Volver */
+.btn-more { 
+  width: 100%; 
+  padding: 18px; 
+  border: none; 
+  background: rgba(0,0,0,0.03); 
+  color: #007aff; 
+  font-weight: 800; 
+  cursor: pointer; 
+  border-top: 0.5px solid rgba(0,0,0,0.1); 
+  border-radius: 0 0 18px 18px;
+}
+
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
   border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); 
@@ -160,66 +179,9 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
 
-/* H2 y Modales */
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
-/* Corrección específica para el Modal */
-#modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(25px);
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
-
-.modal-content {
-  padding: 20px;
-  max-width: 500px;
-  margin: 0 auto;
-  color: var(--primary);
-}
-
-/* Limitamos la imagen para que no desborde */
-.img-grande {
-  width: 100%;            /* Ocupa todo el ancho disponible */
-  height: auto;           /* Mantiene la proporción original automáticamente */
-  max-height: 400px;      /* Opcional: limita la altura si la foto es muy alta */
-  object-fit: contain;    /* IMPORTANTE: Muestra toda la imagen sin recortar */
-  border-radius: 15px;
-  margin-bottom: 20px;
-  display: block;
-  background: #f8f8f8;    /* Fondo suave si la imagen no llena todo el espacio */
-}
-
-
-.modal-header {
-  padding: 18px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  background: var(--gris-apple);
-  color: white;
-  z-index: 1001;
-}
-
-.box-tiempo-modal {
-  padding: 20px;
-  border-radius: 18px;
-  margin-bottom: 20px;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-
-.close-btn { position: absolute; left: 20px; font-size: 2.2rem; cursor: pointer; top: 5px; }
-.btn-inc { display: block; text-align: center; background: #1c1c1e; color: white; padding: 18px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-top: 20px; }
-
 </style>
 </head>
 <body>
@@ -231,15 +193,7 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
   </button>
 </header>
 
-  <div id="grid-container"></div>
-
-
-
-      <div id="m-box-tiempo" class="box-tiempo-modal"><div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900;"></div></div>
-      <div id="m-notas" class="notas-area"></div>
-      <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
-    </div>
-  </div>
+<div id="grid-container"></div>
 
 <script>
   let datosCargados = null;
@@ -250,7 +204,6 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
   }
 
-  // Cargar preferencia de tema
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
   }
@@ -275,32 +228,14 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
       });
   }
 
-  
- function abrirModal(tipo, index) {
-    // Si tipo es 'p' usa personales, si es 'g' usa grupo
-    const t = (tipo === 'p') ? datosCargados.personales[index] : datosCargados.grupo[index];
-    
-    if (!t) return;
-    
-    document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
-     document.getElementById('m-calles').innerText = t.calles;
-    document.getElementById('m-zona').innerText = t.zona;
-    document.getElementById('m-tiempo').innerText = t.tiempo;
-    document.getElementById('m-notas').innerText = t.notas;
-    
-    // El enlace se construye igual que en tu versión antigua
-    const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-    document.getElementById('m-link').href = `${baseUrl}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-    
-    document.getElementById('modal').style.display = "block";
+  // Activa o desactiva la clase de giro en el contenedor seleccionado
+  function girarTarjeta(tipo, index) {
+    const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
+    if (contenedor) {
+      contenedor.classList.toggle('flipped');
+    }
   }
 
-  function cerrar() { 
-    document.getElementById('modal').style.display = "none"; 
-  }
-   
-    
-// --- 1. LÓGICA DE CÁLCULO (Necesaria para los anillos) ---
 function calcularDiasTotales(tiempoString) {
     if (!tiempoString) return 0;
     let dias = 0;
@@ -319,55 +254,94 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
                 
-                // Botones traseros
+                let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
+
+                const radio = 35;
+                const circunferencia = 2 * Math.PI * radio;
+                const arcoTotal = (240 / 360) * circumference;
+                const porcentaje = Math.min(100, (diasTotales / 120) * 100);
+                const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
+
+                // URL Formulario Incidencias
                 const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-                const urlInc = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-                
+                const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+
+                // URL Navegación GPS
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
-                let urlNavegacion = matches ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}` : "#";
+                let urlNavegacion = (matches && matches.length >= 2) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` 
+                    : "#";
+
+                // Variable para evaluar si existen incidencias reales
+                let tieneIncidencias = t.notas && t.notas.trim() !== "" && t.notas !== "No hay incidencias.";
 
                 return `
-                <div class="card-container" id="card-${tipo}-${i}">
+                <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
+                        
                         <!-- LADO DELANTERO -->
                         <div class="card-front">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
-                            ${t.notas !== "No hay incidencias." ? `<div style="padding:10px 20px; font-size:0.8rem; color: var(--danger); font-weight:700;">⚠️ ${t.notas}</div>` : ""}
-                            <button class="btn-more" onclick="flipCard('${tipo}', ${i})">MÁS DETALLES</button>
+                            <div class="card-header">
+                                <span class="card-num">${t.num}</span>
+                                <span class="card-zona">${t.zona}</span>
+                            </div>
+                            <div class="img-box-custom">
+                                <img src="${t.imgMini}" alt="Imagen">
+                            </div>
+                            
+                            <!-- Condicional de Incidencias: Sólo aparece en el frente si existen -->
+                            ${tieneIncidencias ? `
+                            <div style="padding: 12px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.82rem; color: #ff3b30; font-weight: 600; line-height: 1.4;">
+                              <i class="fa-solid fa-triangle-exclamation"></i> ${t.notas}
+                            </div>` : ''}
+
+                            <div class="anillo-wrapper">
+                                <div class="anillo-label">TIEMPO RESTANTE</div>
+                                <div class="anillo-svg-container">
+                                    <svg width="80" height="80" style="transform: rotate(90deg);">
+                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
+                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
+                                    </svg>
+                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+                                        <div class="texto-anillo-dinamico" style="text-align: center;">${textoFormateado}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
+
                         <!-- LADO TRASERO -->
                         <div class="card-back">
-                            <div class="card-num">${t.num}</div>
-                            <div class="card-zona" style="margin-bottom:15px;">${t.zona}</div>
-                            <div class="anillo-label">NUMERACIÓN CALLES</div>
-                            <p style="font-size:0.9rem; margin-bottom:20px;">${t.calles}</p>
-                            <div class="btns-back">
-                                <a href="${urlInc}" target="_blank" class="btn-back" style="background:#d4af37; color:white;">INCIDENCIA</a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back" style="background:#007aff; color:white;">GPS</a>
-                                <button class="btn-back" style="background:#34c759; color:white;">RENOVAR</button>
+                            <div class="card-header" style="padding: 0 0 10px 0; background: transparent;">
+                                <span class="card-num">${t.num}</span>
+                                <span class="card-zona">${t.zona}</span>
                             </div>
-                            <button class="btn-more" style="margin-top:15px; border-top:none;" onclick="flipCard('${tipo}', ${i})">VOLVER</button>
+                            
+                            <div class="anillo-label" style="margin-top: 5px;">NUMERACIÓN CALLES</div>
+                            <div class="calles-container">
+                                <div class="calles-texto">${t.calles}</div>
+                            </div>
+
+                            <!-- Bloque de 3 Botones del mismo tamaño -->
+                            <div class="btns-back-row">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+                                   <i class="fa-solid fa-circle-plus"></i> INCIDENCIA
+                                </a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+                                   <i class="fa-solid fa-location-arrow"></i> GPS
+                                </a>
+                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
+                                   <i class="fa-solid fa-rotate"></i> RENOVAR
+                                </button>
+                            </div>
+                            
+                            <button class="btn-more" style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
+
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
-
-// Asegúrate de que esta función esté en tu sección de <script>
-function flipCard(tipo, i) {
-    const card = document.getElementById(`card-${tipo}-${i}`);
-    if (card) {
-        card.classList.toggle('flipped');
-    }
-}
-
-
-
-
-
-
-
 
   cargar();
 </script>
