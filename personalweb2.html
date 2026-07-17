@@ -112,6 +112,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   display: none !important;
   visibility: hidden !important;
 }
+/* Cuando la tarjeta está girada, ocultamos el botón de detalles del frente */
+.card-container.flipped .card-front .btn-more {
+    display: none !important;
+}
+
+/* Aseguramos que el botón del dorso sea el único visible en esa zona */
+.card-container:not(.flipped) .card-back .btn-more {
+    display: none !important;
+}
 
 .card-header {
     width: 100%;
