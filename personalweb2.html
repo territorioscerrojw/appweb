@@ -383,102 +383,66 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
                 let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
-
                 const radio = 35;
                 const circunferencia = 2 * Math.PI * radio;
                 const arcoTotal = (240 / 360) * circunferencia;
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
-
                 const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
                 const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
                 let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
-
                 let tieneIncidencias = t.notas && t.notas.trim() !== "" && t.notas !== "No hay incidencias.";
+                
+                // CORRECCIÓN: Usamos un atributo data para evitar romper el HTML con las comillas
+                const nombreSeguro = encodeURIComponent(t.nombre || nombreH);
 
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        
-                        <!-- LADO DELANTERO -->
-                        <div class="card-front" style="display: flex; flex-direction: column; align-items: center; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
+                        <div class="card-front">
                             <div class="card-header">
                                 <span class="card-num">${t.num}</span>
                                 <span class="card-zona">${t.zona}</span>
                             </div>
-
-                            <div class="img-box-custom" style="margin: 10px 0;">
-                                <img src="${t.imgMini}" alt="Imagen">
-                            </div>
-                            
-                            ${tieneIncidencias ? `
-                            <div style="width: 90%; margin: 5px 0; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
-                                <i class="fa-solid fa-triangle-exclamation icono-latido" style="color:#ff3b30;"></i>
-                                <div style="flex: 1; text-align: left;">${limpiarIncidencia(t.notas)}</div>
-                            </div>` : ''}
-
-                            <div class="anillo-wrapper" style="margin: 5px 0;">
+                            <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
+                            ${tieneIncidencias ? `<div class="warning-box"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notas)}</div>` : ''}
+                            <div class="anillo-wrapper">
                                 <div class="anillo-label">TIEMPO RESTANTE</div>
                                 <div class="anillo-svg-container">
-                                    <svg width="80" height="80" style="transform: rotate(90deg);">
-                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
-                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
-                                    </svg>
-                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-                                        <div class="texto-anillo-dinamico">${textoFormateado}</div>
-                                    </div>
+                                    <svg width="80" height="80" style="transform: rotate(90deg);"><circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" /><circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" /></svg>
+                                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; pointer-events:none;"><div class="texto-anillo-dinamico">${textoFormateado}</div></div>
                                 </div>
                             </div>
-
-                        <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
-    <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-    <div class="swipe-handle" 
-         onclick="enviarAlServidor('${t.num}', '${t.zona}', '${encodeURIComponent(t.nombre || nombreH)}')">
-         <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
-    </div>
-</div>
-
-
+                            <div class="swipe-container">
+                                <div class="swipe-text">DESLIZAR</div>
+                                <div class="swipe-handle" 
+                                     data-num="${t.num}" 
+                                     data-zona="${t.zona}" 
+                                     data-nombre="${nombreSeguro}" 
+                                     ontouchstart="iniciarSwipe(event)">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
-
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
-
-                        <!-- LADO TRASERO -->
-                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
-                            <div class="card-header">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-                            
+                        <div class="card-back">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container" style="flex: 1; padding: 10px;">
-                                <div class="calles-texto">${t.calles}</div>
-                            </div>
-
+                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
                             <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-                                    <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-                                </a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-                                    <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-                                </a>
-                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
-                                    <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-                                </button>
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background:#e6b800; color:#fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background:#007aff; color:#fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
+                                <button class="btn-back-action" style="background:#34c759; color:#fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
-
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
 
+                                     
 
 function limpiarIncidencia(texto) {
     // 1. Elimina el emoji del calendario
@@ -522,11 +486,12 @@ function enviarAlServidor(numT, zona, nombreCodificado) {
 
 
 // 2. Función simplificada para el deslizamiento táctil
-function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
-    // Decodificamos el nombre aquí mismo
-    const nombre = decodeURIComponent(nombreCodificado);
-    
+function iniciarSwipe(e) {
     const handle = e.currentTarget;
+    const numT = handle.getAttribute('data-num');
+    const zona = handle.getAttribute('data-zona');
+    const nombre = decodeURIComponent(handle.getAttribute('data-nombre'));
+    
     const container = handle.parentElement;
     const startX = e.touches[0].clientX;
     const maxX = container.offsetWidth - handle.offsetWidth - 10;
@@ -535,12 +500,20 @@ function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
         let deltaX = event.touches[0].clientX - startX;
         let pos = Math.max(0, Math.min(deltaX, maxX));
         handle.style.transform = `translateX(${pos}px)`;
-        
         if (pos >= maxX * 0.9) {
             document.removeEventListener('touchmove', mover);
             enviarAlServidor(numT, zona, nombre);
         }
     }
+    document.addEventListener('touchmove', mover, {passive: false});
+    document.addEventListener('touchend', () => {
+        document.removeEventListener('touchmove', mover);
+        handle.style.transition = "transform 0.3s ease";
+        handle.style.transform = "translateX(0px)";
+        setTimeout(() => handle.style.transition = "none", 300);
+    }, {once: true});
+}
+
 
     function terminar() {
         document.removeEventListener('touchmove', mover);
