@@ -186,6 +186,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
 }
 body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+.icono-latido {
+  display: inline-block;
+  animation: heartbeat 2s infinite;
+  font-size: 1.2rem !important;
+  margin-right: 12px;
+  color: #ff3b30;
+}
 
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
@@ -298,10 +313,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             
                             <!-- Condicional de Incidencias: Sólo aparece en el frente si existen -->
-                            ${tieneIncidencias ? `
-                            <div style="padding: 12px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.82rem; color: #ff3b30; font-weight: 600; line-height: 1.4;">
-                              <i class="fa-solid fa-triangle-exclamation"></i> ${t.notas}
-                            </div>` : ''}
+                         ${tieneIncidencias ? `
+<div style="padding: 12px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.82rem; color: #1c1c1e; font-weight: 500; line-height: 1.4; display: flex; align-items: flex-start;">
+  <i class="fa-solid fa-circle-exclamation icono-latido" style="margin-top: 2px;"></i>
+  <span style="flex: 1;">${limpiarIncidencia(t.notas)}</span>
+</div>` : ''}
+
 
                             <div class="anillo-wrapper">
                                 <div class="anillo-label">TIEMPO RESTANTE</div>
@@ -350,6 +367,10 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                     </div>
                 </div>`;
             }).join('')}</div>`;
+}
+function limpiarIncidencia(texto) {
+    // Reemplaza solo el emoji del calendario, manteniendo el resto (fechas y textos)
+    return texto.replace(/📅/g, "").trim();
 }
 
   cargar();
