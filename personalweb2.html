@@ -381,35 +381,35 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
       }).filter(i => i !== "").join("<br>");
   }
 
-  function enviarAlServidor(numT, zona, nombreCodificado) {
-      const log = document.getElementById('debug-log');
-      log.innerHTML = `⌛ Enviando territorio ${numT}...`;
-      
+    // 1. Modificación: Eliminamos la tarjeta visualmente al instante
+  function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
+      // Eliminación visual instantánea
+      elementoTarjeta.style.transition = "opacity 0.3s, transform 0.3s";
+      elementoTarjeta.style.opacity = "0";
+      elementoTarjeta.style.transform = "scale(0.8)";
+      setTimeout(() => elementoTarjeta.remove(), 300);
+
+      // El registro sigue en segundo plano
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
 
       fetch(urlFinal)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado === "OK") {
-                log.innerHTML = "✅ ÉXITO AL REGISTRAR";
-                alert(`Territorio ${numT} entregado correctamente.`);
-                cargar(); 
-            } else {
-                log.innerHTML = "❌ ERROR: " + data.resultado;
-                alert("Error en el servidor: " + data.resultado);
+            if (data.resultado !== "OK") {
+                console.error("Error en servidor:", data.resultado);
+                // Opcional: mostrar una notificación discreta si falla
             }
         })
-        .catch((err) => {
-            log.innerHTML = "❌ ERROR CRÍTICO DE CONEXIÓN";
-            alert("No se pudo conectar con Google Sheets.");
-        });
+        .catch(err => console.error("Error de conexión:", err));
   }
 
+  // 2. Modificación: Pasamos el elementoTarjeta al iniciarSwipe
   function iniciarSwipe(e) {
       const handle = e.currentTarget;
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
       const nombreCodificado = handle.getAttribute('data-nombre');
+      const tarjeta = handle.closest('.card-container'); // Identificamos la tarjeta padre
       
       const container = handle.parentElement;
       const startX = e.touches[0].clientX;
@@ -425,7 +425,8 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
           if (pos >= maxX * 0.95) {
               document.removeEventListener('touchmove', mover);
               document.removeEventListener('touchend', terminar);
-              enviarAlServidor(numT, zona, nombreCodificado);
+              // Llamamos a la función con el elemento para poder borrarlo
+              enviarAlServidor(numT, zona, nombreCodificado, tarjeta);
           }
       }
 
@@ -438,6 +439,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
       document.addEventListener('touchmove', mover, {passive: false});
       document.addEventListener('touchend', terminar, {once: true});
   }
+
 
   cargar();
 </script>
