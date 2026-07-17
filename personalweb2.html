@@ -7,7 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+
+<style>
 :root {
   --primary: #1c1c1e;
   --bg: #e8e8ed;
@@ -68,8 +69,18 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform-style: preserve-3d;
 }
 
+/* --- LOGICA DE GIRO Y CLICS --- */
 .card-container.flipped .card-inner {
   transform: rotateY(180deg);
+}
+
+.card-container.flipped .card-front {
+    pointer-events: none; /* Desactiva el frente al girar */
+}
+
+.card-container.flipped .card-back {
+    z-index: 10;
+    pointer-events: auto; /* Activa el dorso al girar */
 }
 
 .card-front, .card-back {
@@ -85,47 +96,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 
 .card-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    transform: rotateY(180deg);
-    padding: 20px;
-    z-index: 5; /* Asegura que la cara trasera esté activa */
-    backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: rotateY(180deg);
+  padding: 20px;
+  overflow: hidden;
+  justify-content: space-between;
 }
 
-/* Fuerza a los botones a capturar el clic */
-.card-back .btn-more, 
-.card-back .btn-back-action {
-    position: relative;
-    z-index: 10;
-    pointer-events: auto; /* IMPORTANTE: asegura que el clic pase */
-}
-
-/* Ocultar el botón */
-.card-back .swipe-container {
-  display: none !important;
-  visibility: hidden !important;
-}
+/* Ocultar elementos de swipe en el dorso */
+.card-back .swipe-container, 
 .card-back .swipe-handle {
   display: none !important;
   visibility: hidden !important;
-}
-/* Opcional: Asegurar que el contenido trasero aproveche el espacio */
-.card-back {
-  justify-content: space-between; /* Mejora la distribución si quitas el botón */
-}
-/* Oculta explícitamente el contenedor de deslizamiento cuando la tarjeta está girada */
-.card-container.flipped .card-front .swipe-container {
-    visibility: hidden;
-    pointer-events: none;
-}
-
-/* Opcional: mejora el rendimiento durante el giro */
-.card-inner {
-    backface-visibility: hidden;
 }
 
 .card-header {
@@ -171,6 +156,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin: 15px 0;
+  position: relative;
+  z-index: 20;
 }
 
 .btn-back-action {
@@ -187,7 +174,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  pointer-events: auto !important;
 }
 
 .btn-back-action i {
@@ -206,6 +193,9 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   border-top: 0.5px solid rgba(0,0,0,0.1); 
   border-radius: 0 0 18px 18px;
   box-sizing: border-box;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 20;
 }
 
 .btn-theme { 
@@ -287,6 +277,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
 </style>
+
 </head>
 <body>
 
