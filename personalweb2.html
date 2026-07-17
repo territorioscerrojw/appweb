@@ -92,13 +92,16 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform: rotateY(180deg);
   padding: 20px;
   overflow: hidden;
+  backface-visibility: hidden;
 }
 /* Ocultar el botón */
 .card-back .swipe-container {
   display: none !important;
+  visibility: hidden !important;
 }
 .card-back .swipe-handle {
   display: none !important;
+  visibility: hidden !important;
 }
 /* Opcional: Asegurar que el contenido trasero aproveche el espacio */
 .card-back {
