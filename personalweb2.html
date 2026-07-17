@@ -374,10 +374,11 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 </div>
                             </div>
                             <!-- NUEVO BOTÓN DESLIZANTE -->
-<div class="slider-container">
+<div class="slider-container" onmousedown="iniciarDeslizamiento(event, '${tipo}', ${i}, '${t.num}', '${t.zona}')">
     <div class="slider-text">
         <i class="fa-solid fa-angles-right"></i> DESLIZAR PARA ENTREGAR
     </div>
+
 </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
@@ -428,6 +429,35 @@ function limpiarIncidencia(texto) {
     }).filter(i => i !== "").join("<br>");
 }
 
+// Variable global para controlar el progreso
+let isDragging = false;
+
+function iniciarDeslizamiento(e, tipo, index, numT, zona) {
+    isDragging = true;
+    const slider = e.currentTarget;
+    const texto = slider.querySelector('.slider-text');
+    
+    // Al soltar el ratón o terminar el toque
+    document.addEventListener('mouseup', () => finalizarDeslizamiento(slider, tipo, index, numT, zona), {once: true});
+}
+
+function finalizarDeslizamiento(slider, tipo, index, numT, zona) {
+    if(!isDragging) return;
+    isDragging = false;
+    
+    // Animación visual de éxito
+    slider.style.background = "#34c759";
+    slider.innerHTML = '<span style="color:white; font-size:1rem;"><i class="fa-solid fa-check"></i></span>';
+    
+    // Llamada al servidor
+    google.script.run
+      .withSuccessHandler(() => {
+          // Opcional: Eliminar tarjeta de la vista o recargar
+          alert("Entrega registrada correctamente.");
+          cargar(); 
+      })
+      .registrarEntrega(numT, nombreH, zona);
+}
 
 
   cargar();
