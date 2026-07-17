@@ -437,13 +437,8 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                               
 
 
-<div class="swipe-handle" 
-     data-num="${t.num}" 
-     data-zona="${t.zona}" 
-     data-nombre="${nombreH}" 
-     ontouchstart="iniciarSwipe(event)">
-    <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
-</div>
+<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${encodeURIComponent(t.nombre || nombreH)}')">
+u
 
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
@@ -525,12 +520,11 @@ function enviarAlServidor(numT, zona, nombre) {
 }
 
 // 2. Función simplificada para el deslizamiento táctil
-function iniciarSwipe(e) {
-    const handle = e.currentTarget;
-    const numT = handle.getAttribute('data-num');
-    const zona = handle.getAttribute('data-zona');
-    const nombre = handle.getAttribute('data-nombre');
+function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
+    // Decodificamos el nombre aquí mismo
+    const nombre = decodeURIComponent(nombreCodificado);
     
+    const handle = e.currentTarget;
     const container = handle.parentElement;
     const startX = e.touches[0].clientX;
     const maxX = container.offsetWidth - handle.offsetWidth - 10;
@@ -546,16 +540,48 @@ function iniciarSwipe(e) {
         }
     }
 
-    // ... el resto de tu función queda igual ...
     function terminar() {
         document.removeEventListener('touchmove', mover);
         handle.style.transition = "transform 0.3s ease";
         handle.style.transform = "translateX(0px)";
         setTimeout(() => handle.style.transition = "none", 300);
     }
+
     document.addEventListener('touchmove', mover, {passive: false});
     document.addEventListener('touchend', terminar, {once: true});
 }
+
+    function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
+    // Decodificamos el nombre aquí mismo
+    const nombre = decodeURIComponent(nombreCodificado);
+    
+    const handle = e.currentTarget;
+    const container = handle.parentElement;
+    const startX = e.touches[0].clientX;
+    const maxX = container.offsetWidth - handle.offsetWidth - 10;
+
+    function mover(event) {
+        let deltaX = event.touches[0].clientX - startX;
+        let pos = Math.max(0, Math.min(deltaX, maxX));
+        handle.style.transform = `translateX(${pos}px)`;
+        
+        if (pos >= maxX * 0.9) {
+            document.removeEventListener('touchmove', mover);
+            enviarAlServidor(numT, zona, nombre);
+        }
+    }
+
+    function terminar() {
+        document.removeEventListener('touchmove', mover);
+        handle.style.transition = "transform 0.3s ease";
+        handle.style.transform = "translateX(0px)";
+        setTimeout(() => handle.style.transition = "none", 300);
+    }
+
+    document.addEventListener('touchmove', mover, {passive: false});
+    document.addEventListener('touchend', terminar, {once: true});
+}
+
 
     
     
