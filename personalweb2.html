@@ -441,11 +441,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 <!-- Sustituye tu slider actual por este botón más robusto -->
 <div class="swipe-container" id="swipe-${tipo}-${i}">
     <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-    <div class="swipe-handle" 
-         ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}')">
-         <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
-    </div>
+ <!-- Fíjate que ahora pasamos el nombre '${t.nombre}' directamente -->
+<div class="swipe-handle" 
+     ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre}')">
+     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
 </div>
+
 
 
 
@@ -590,27 +591,21 @@ function verificarDeslizamiento(slider, tipo, index, numT, zona) {
     document.addEventListener('touchend', terminar);
 }
 
-function finalizarSwipe(container, handle, numT, zona) {
+function finalizarSwipe(container, handle, numT, zona, nombre) {
     const log = document.getElementById('debug-log');
-    log.innerHTML = "Enviando datos de " + numT + "...";
-    
-    container.style.background = "#34c759";
-    handle.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:white;"></i>';
+    log.innerHTML = "Enviando: " + numT;
     
     google.script.run
       .withSuccessHandler(() => {
-          log.innerHTML = "ÉXITO: Datos registrados.";
+          log.innerHTML = "ÉXITO";
           cargar(); 
       })
       .withFailureHandler((err) => {
           log.innerHTML = "ERROR: " + err;
-          handle.innerHTML = '<i class="fa-solid fa-xmark" style="color:white;"></i>';
-          // Rebotar el botón si falla
-          handle.style.transition = "transform 0.3s ease";
-          handle.style.transform = "translateX(0px)";
       })
-      .registrarEntrega(numT, nombreH, zona);
+      .registrarEntrega(numT, nombre, zona); // Enviamos los 3 datos
 }
+
 
 
 
