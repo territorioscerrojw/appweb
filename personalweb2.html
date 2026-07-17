@@ -434,7 +434,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 
                             <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || ''}')">
+                              
+<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
+
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
@@ -490,107 +492,56 @@ function limpiarIncidencia(texto) {
 // Variable global para controlar el progreso
 let isDragging = false;
 
-function iniciarDeslizamiento(e, tipo, index, numT, zona) {
-    isDragging = true;
-    const slider = e.currentTarget;
-    const texto = slider.querySelector('.slider-text');
-    
-    // Al soltar el ratón o terminar el toque
-    document.addEventListener('mouseup', () => finalizarDeslizamiento(slider, tipo, index, numT, zona), {once: true});
-}
 
-function ejecutarEntrega(elemento, tipo, index, numT, zona) {
-    // 1. Efecto visual inmediato
-    elemento.style.background = "#34c759";
-    elemento.innerHTML = '<span style="color:white; font-weight:800;"><i class="fa-solid fa-spinner fa-spin"></i> PROCESANDO...</span>';
+    // 1. Función única para enviar al servidor
+function enviarAlServidor(numT, zona, nombre) {
+    const log = document.getElementById('debug-log');
+    log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
     
-    // 2. Llamada a Google Apps Script
     google.script.run
       .withSuccessHandler((respuesta) => {
-          // Si el servidor responde correctamente, recargamos
-          alert("Territorio " + numT + " entregado correctamente.");
-          cargar(); 
+          if (respuesta === "OK") {
+              log.innerHTML = "ÉXITO";
+              alert("Territorio " + numT + " entregado correctamente.");
+              cargar(); 
+          } else {
+              log.innerHTML = "ERROR: " + respuesta;
+              alert(respuesta);
+          }
       })
       .withFailureHandler((err) => {
-          alert("Error: " + err);
-          elemento.style.background = "#e0e0e0";
-          elemento.innerHTML = '<div class="slider-text"><i class="fa-solid fa-angles-right"></i> INTENTAR DE NUEVO</div>';
+          log.innerHTML = "ERROR CRÍTICO: " + err;
       })
-      .registrarEntrega(numT, nombreH, zona);
-}
-function verificarDeslizamiento(slider, tipo, index, numT, zona) {
-    if (slider.value >= 90) { // Si llega casi al final
-        slider.style.opacity = "0.5";
-        slider.disabled = true;
-        
-        google.script.run
-          .withSuccessHandler(() => {
-              alert("Territorio " + numT + " entregado.");
-              cargar();
-          })
-          .withFailureHandler((err) => {
-              alert("Error: " + err);
-              slider.value = 0;
-              slider.disabled = false;
-              slider.style.opacity = "1";
-          })
-          .registrarEntrega(numT, nombreH, zona);
-    } else {
-        slider.value = 0; // Si no llega al final, rebota
-    }
+      .registrarEntrega(numT, nombre, zona);
 }
 
-    function iniciarSwipe(e, tipo, index, numT, zona) {
+// 2. Función simplificada para el deslizamiento táctil
+function iniciarSwipe(e, tipo, index, numT, zona, nombre) {
     const handle = e.currentTarget;
     const container = handle.parentElement;
-    const touch = e.touches[0];
-    const startX = touch.clientX;
+    const startX = e.touches[0].clientX;
     const maxX = container.offsetWidth - handle.offsetWidth - 10;
 
     function mover(event) {
-        const currentX = event.touches[0].clientX;
-        let deltaX = currentX - startX;
-        
-        // Limitar movimiento
+        let deltaX = event.touches[0].clientX - startX;
         let pos = Math.max(0, Math.min(deltaX, maxX));
         handle.style.transform = `translateX(${pos}px)`;
-
-        // Si llega al final (90% del camino)
+        
         if (pos >= maxX * 0.9) {
             document.removeEventListener('touchmove', mover);
-            finalizarSwipe(container, handle, numT, zona);
+            enviarAlServidor(numT, zona, nombre);
         }
     }
 
     function terminar() {
         document.removeEventListener('touchmove', mover);
-        document.removeEventListener('touchend', terminar);
-        
-        // Si no se completó, que vuelva al inicio suavemente
-        if (handle.style.transform === "" || parseInt(handle.style.transform.replace(/\D/g,'')) < maxX * 0.9) {
-            handle.style.transition = "transform 0.3s ease";
-            handle.style.transform = "translateX(0px)";
-            setTimeout(() => handle.style.transition = "none", 300);
-        }
+        handle.style.transition = "transform 0.3s ease";
+        handle.style.transform = "translateX(0px)";
+        setTimeout(() => handle.style.transition = "none", 300);
     }
 
     document.addEventListener('touchmove', mover, {passive: false});
-    document.addEventListener('touchend', terminar);
-}
-
-function finalizarSwipe(container, handle, numT, zona, nombre) {
-    const log = document.getElementById('debug-log');
-    log.innerHTML = "Enviando: " + numT;
-    
-    google.script.run
-      .withSuccessHandler(() => {
-          log.innerHTML = "ÉXITO";
-          cargar(); 
-      })
-      .withFailureHandler((err) => {
-          log.innerHTML = "ERROR: " + err;
-      })
-      .registrarEntrega(numT, nombre, zona); // Enviamos los 3 datos
+    document.addEventListener('touchend', terminar, {once: true});
 }
 
 
