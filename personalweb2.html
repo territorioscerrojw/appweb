@@ -92,6 +92,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform: rotateY(180deg);
   padding: 20px;
 }
+/* Ocultar el botón */
+.card-back .swipe-container {
+  display: none !important;
+}
+
+/* Opcional: Asegurar que el contenido trasero aproveche el espacio */
+.card-back {
+  justify-content: space-between; /* Mejora la distribución si quitas el botón */
+}
 
 .card-header {
     width: 100%;
