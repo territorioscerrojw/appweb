@@ -1,3 +1,4 @@
+Personalweb 2
 
 <!DOCTYPE html>
 <html>
@@ -57,7 +58,45 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
+/* 1. Contenedor padre: perspective es suficiente */
+.card-container {
+  perspective: 1000px;
+  width: 100%;
+}
 
+/* 2. Contenedor giratorio: usamos Grid para apilar caras */
+.card-inner {
+  display: grid;
+  grid-template-areas: "card";
+  width: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+/* 3. Caras: ambas en la misma celda de grid */
+.card-front, .card-back {
+  grid-area: card;
+  backface-visibility: hidden;
+  border-radius: 18px;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 0.5px solid rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Sincroniza altura con el contenedor */
+}
+
+/* 4. El dorso pierde el absolute para alinearse con el grid */
+.card-back {
+  transform: rotateY(180deg);
+  padding: 20px;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+/* 5. Asegurar que el botón siempre esté al final */
+.card-front { justify-content: flex-start; }
+.card-front .btn-more { margin-top: auto; }
 
 
 /* --- LOGICA DE GIRO Y CLICS --- */
@@ -74,54 +113,17 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
     pointer-events: auto; /* Activa el dorso al girar */
 }
 
-/* 1. El contenedor padre debe ser un bloque normal */
-.card-container {
-  perspective: 1000px;
-  width: 100%;
-}
 
-.card-inner {
-  display: grid;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
-  /* Esto obliga a que el contenedor tenga la altura de la cara más grande */
-}
-
-.card-front, .card-back {
-  grid-area: 1 / 1 / 2 / 2; /* Ambas en la misma celda */
-  backface-visibility: hidden;
-  border-radius: 18px;
-  background: var(--card-bg);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border: 0.5px solid rgba(0,0,0,0.1);
-  
-  /* Estructura interna idéntica */
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-}
-
-/* El truco: el contenido principal debe empujar al botón hacia abajo */
-.card-body {
-  flex: 1; /* Esto hace que el cuerpo ocupe todo el espacio sobrante */
+.card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: rotateY(180deg);
+  padding: 20px;
   overflow: hidden;
+  justify-content: space-between;
 }
-
-.btn-more {
-  margin-top: auto; /* Empuja el botón siempre al fondo */
-  width: 100%;
-  padding: 18px;
-  border: none;
-  background: rgba(0,0,0,0.03);
-  color: #007aff;
-  font-weight: 800;
-  cursor: pointer;
-  border-top: 0.5px solid rgba(0,0,0,0.1);
-  border-radius: 0 0 18px 18px;
-}
-
-
-
 
 /* Ocultar elementos de swipe en el dorso */
 .card-back .swipe-container, 
@@ -208,6 +210,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin-bottom: 8px;
 }
 
+.btn-more { 
+  width: 100%; 
+  padding: 18px; 
+  border: none; 
+  background: rgba(0,0,0,0.03); 
+  color: #007aff; 
+  font-weight: 800; 
+  cursor: pointer; 
+  border-top: 0.5px solid rgba(0,0,0,0.1); 
+  border-radius: 0 0 18px 18px;
+  box-sizing: border-box;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 20;
+}
 
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
@@ -392,7 +409,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
-            
+                            </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
                         <div class="card-back">
@@ -483,3 +500,5 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
 </body>
 </html>
 </html>
+</html>
+
