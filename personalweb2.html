@@ -57,44 +57,45 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
 /* Asegura que el contenedor interno y ambos lados ocupen la misma altura */
+/* 1. El contenedor padre no debe ser flex */
 .card-container {
   perspective: 1000px;
   width: 100%;
-  display: flex; /* Añadido */
 }
 
+/* 2. El inner debe mantener la posición relativa para el giro */
 .card-inner {
   position: relative;
   width: 100%;
+  height: 100%; /* Asegura que ocupe el espacio */
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
-  display: flex; /* Añadido para estirar */
 }
 
-.card-front, .card-back {
-  width: 100%;
-  backface-visibility: hidden;
-  border-radius: 18px;
-  background: var(--card-bg);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border: 0.5px solid rgba(0,0,0,0.1);
+/* 3. Asegura que el frente sea el bloque base */
+.card-front {
+  position: relative; /* Cambiado de static a relative */
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  /* Esto permite que ambos lados compartan la altura del contenedor padre */
-  height: 100%; 
+  height: 100%;
+  background: var(--card-bg);
 }
 
+/* 4. Asegura que el dorso esté posicionado ABSOLUTAMENTE sobre el frente */
 .card-back {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%; /* Esto iguala la altura al frente */
   transform: rotateY(180deg);
+  backface-visibility: hidden;
   padding: 20px;
-  overflow: hidden;
-  /* IMPORTANTE: Flexbox para empujar el contenido hacia abajo */
-  justify-content: flex-start; 
+  display: flex;
+  flex-direction: column; /* Alineación vertical */
+  box-sizing: border-box;
 }
+
 
 /* Ajuste del botón inferior para que siempre esté al final */
 .calles-container {
