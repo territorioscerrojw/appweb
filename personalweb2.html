@@ -499,7 +499,8 @@ let isDragging = false;
 function enviarAlServidor(numT, zona, nombre) {
     const log = document.getElementById('debug-log');
     log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
-    
+    console.log("Intentando llamar a registrarEntrega...");⁠
+
     google.script.run
       .withSuccessHandler((respuesta) => {
           if (respuesta === "OK") {
