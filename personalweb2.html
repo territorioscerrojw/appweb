@@ -315,11 +315,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             
                             <!-- Condicional de Incidencias: Sólo aparece en el frente si existen -->
-                        ${tieneIncidencias ? `
-<div style="padding: 15px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.85rem; color: #1c1c1e; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                       ${tieneIncidencias ? `
+<div style="padding: 15px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.85rem; color: #1c1c1e; font-weight: 500; line-height: 1.5; display: flex; align-items: flex-start;">
   <i class="fa-solid fa-triangle-exclamation icono-latido"></i>
-  <span style="flex: 1;">${limpiarIncidencia(t.notas)}</span>
+  <div style="flex: 1;">${limpiarIncidencia(t.notas)}</div>
 </div>` : ''}
+
 
 
 
@@ -372,9 +373,18 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             }).join('')}</div>`;
 }
 function limpiarIncidencia(texto) {
-    // Elimina el emoji, el carácter | y recorta espacios extra
-    return texto.replace(/📅/g, "").replace(/\|/g, "").trim();
+    // 1. Elimina el emoji del calendario
+    let limpio = texto.replace(/📅/g, "");
+    
+    // 2. Busca el patrón "fecha: texto" y lo encierra en <b> (negrita)
+    // Cambia cada entrada separada por "|" por un bloque con salto de línea
+    return limpio.split('|').map(item => {
+        if (item.trim() === "") return "";
+        // Pone en negrita la parte de la fecha (todo lo que está antes de los dos puntos)
+        return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
+    }).filter(i => i !== "").join("<br>");
 }
+
 
 
   cargar();
