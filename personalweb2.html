@@ -198,9 +198,14 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
       <span class="close-btn" onclick="cerrar()">‹</span>
       <span id="m-titulo" style="font-weight:700;"></span>
     </div>
-    <div class="modal-content">
-      <img id="m-img" class="img-grande" referrerpolicy="no-referrer" crossorigin="anonymous">
-      <div id="m-zona" style="font-size:1.3rem; font-weight:800; text-align:center;"></div>
+   <div class="modal-content">
+
+  <div id="m-calles" style="background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; white-space: pre-line; color: #333;"></div>
+  
+  <div id="m-zona" style="font-size:1.3rem; font-weight:800; text-align:center;"></div>
+  
+</div>
+
       <div id="m-box-tiempo" class="box-tiempo-modal"><div id="m-tiempo" style="font-size: 1.6rem; font-weight: 900;"></div></div>
       <div id="m-notas" class="notas-area"></div>
       <a id="m-link" href="#" target="_blank" class="btn-inc">INFORMAR DE UNA INCIDENCIA</a>
@@ -249,7 +254,7 @@ body.dark-mode #modal { background: rgba(0, 0, 0, 0.95); }
     if (!t) return;
     
     document.getElementById('m-titulo').innerText = "TERRITORIO " + t.num;
-    document.getElementById('m-img').src = t.imgGrande;
+     document.getElementById('m-calles').innerText = t.calles;
     document.getElementById('m-zona').innerText = t.zona;
     document.getElementById('m-tiempo').innerText = t.tiempo;
     document.getElementById('m-notas').innerText = t.notas;
