@@ -37,17 +37,46 @@ body {
   color: var(--primary);
   transition: background 0.3s, color 0.3s;
 }
-/* Efecto Flip */
-.card-container { perspective: 1000px; width: 100%; height: auto; }
-.card-inner { position: relative; width: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
-.card.flipped .card-inner { transform: rotateY(180deg); }
+/* Contenedor principal con profundidad */
+.card-container { 
+  perspective: 1000px; 
+  width: 100%; 
+  height: auto; 
+  min-height: 300px; /* Asegura altura mínima */
+}
 
-.card-front, .card-back { position: relative; backface-visibility: hidden; border-radius: 18px; background: var(--card-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.card-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotateY(180deg); padding: 20px; box-sizing: border-box; }
+.card-inner { 
+  position: relative; 
+  width: 100%; 
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+  transform-style: preserve-3d; 
+}
 
-/* Botones traseros */
-.btns-back { display: flex; gap: 10px; margin-top: 15px; }
-.btn-back { flex: 1; padding: 15px; border-radius: 12px; border: none; font-weight: 800; text-align: center; cursor: pointer; text-decoration: none; font-size: 0.8rem; }
+/* Clase que activa el giro */
+.card-container.flipped .card-inner { 
+  transform: rotateY(180deg); 
+}
+
+/* Caras de la tarjeta */
+.card-front, .card-back { 
+  position: absolute; 
+  width: 100%; 
+  height: 100%; 
+  backface-visibility: hidden; 
+  border-radius: 18px; 
+  background: var(--card-bg); 
+  border: 0.5px solid rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.card-back { 
+  transform: rotateY(180deg); 
+  padding: 20px; 
+  box-sizing: border-box; 
+  display: flex;
+  flex-direction: column;
+}
 
     
 /* Header principal */
@@ -325,9 +354,14 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             }).join('')}</div>`;
 }
 
+// Asegúrate de que esta función esté en tu sección de <script>
 function flipCard(tipo, i) {
-    document.getElementById(`card-${tipo}-${i}`).classList.toggle('flipped');
+    const card = document.getElementById(`card-${tipo}-${i}`);
+    if (card) {
+        card.classList.toggle('flipped');
+    }
 }
+
 
 
 
