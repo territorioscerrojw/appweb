@@ -56,34 +56,33 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
+/* Contenedor con aspecto fijo para igualar alturas */
 .card-container {
   perspective: 1000px;
   width: 100%;
+  aspect-ratio: 1 / 1.15; 
 }
 
 .card-inner {
   position: relative;
   width: 100%;
+  height: 100%;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
 }
 
-/* --- LOGICA DE GIRO Y CLICS --- */
-.card-container.flipped .card-inner {
-  transform: rotateY(180deg);
-}
+.card-container.flipped .card-inner { transform: rotateY(180deg); }
 
-.card-container.flipped .card-front {
-    pointer-events: none; /* Desactiva el frente al girar */
-}
+.card-container.flipped .card-front { pointer-events: none; }
+.card-container.flipped .card-back { z-index: 10; pointer-events: auto; }
 
-.card-container.flipped .card-back {
-    z-index: 10;
-    pointer-events: auto; /* Activa el dorso al girar */
-}
-
+/* Ambas caras ocupan el 100% del contenedor padre */
 .card-front, .card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
   backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
@@ -92,45 +91,27 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .card-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
   transform: rotateY(180deg);
   padding: 20px;
-  overflow: hidden;
   justify-content: space-between;
 }
 
-/* Ocultar elementos de swipe en el dorso */
-.card-back .swipe-container, 
-.card-back .swipe-handle {
-  display: none !important;
-  visibility: hidden !important;
-}
-/* Cuando la tarjeta está girada, ocultamos el botón de detalles del frente */
-.card-container.flipped .card-front .btn-more {
-    display: none !important;
-}
-
-/* Aseguramos que el botón del dorso sea el único visible en esa zona */
-.card-container:not(.flipped) .card-back .btn-more {
-    display: none !important;
-}
+.card-back .swipe-container, .card-back .swipe-handle { display: none !important; visibility: hidden !important; }
+.card-container.flipped .card-front .btn-more { display: none !important; }
+.card-container:not(.flipped) .card-back .btn-more { display: none !important; }
 
 .card-header {
     width: 100%;
     padding: 15px 20px;
     background: rgba(0,0,0,0.02);
-    border-radius: 15px 15px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    margin-bottom: 10px;
 }
 
 .card-num { font-size: 1.8rem; font-weight: 800; }
@@ -138,8 +119,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 .img-box-custom {
   height: 200px;
-  border-top: 1px solid rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(0,0,0,0.1);
+  flex-shrink: 0;
 }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -153,11 +134,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin-top: 10px;
   overflow-y: auto;
 }
-.calles-texto {
-  font-size: 0.95rem;
-  white-space: pre-line;
-  line-height: 1.4;
-}
+.calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; }
 
 .btns-back-row {
   display: grid;
@@ -169,49 +146,24 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 
 .btn-back-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1;
-  padding: 10px;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 0.65rem;
-  text-align: center;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  pointer-events: auto !important;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  aspect-ratio: 1 / 1; padding: 10px; border-radius: 16px; font-weight: 700; font-size: 0.65rem;
+  text-align: center; text-decoration: none; border: none; cursor: pointer; pointer-events: auto !important;
 }
-
-.btn-back-action i {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
+.btn-back-action i { font-size: 1.5rem; margin-bottom: 8px; }
 
 .btn-more { 
-  width: 100%; 
-  padding: 18px; 
-  border: none; 
-  background: rgba(0,0,0,0.03); 
-  color: #007aff; 
-  font-weight: 800; 
-  cursor: pointer; 
-  border-top: 0.5px solid rgba(0,0,0,0.1); 
-  border-radius: 0 0 18px 18px;
-  box-sizing: border-box;
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 20;
+  width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.03); 
+  color: #007aff; font-weight: 800; cursor: pointer; 
+  border-top: 0.5px solid rgba(0,0,0,0.1); border-radius: 0 0 18px 18px;
+  box-sizing: border-box; pointer-events: auto !important;
 }
 
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
-  border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); 
-  background: white; color: #1c1c1e; font-size: 1.4rem; 
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
+  border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; 
+  color: #1c1c1e; font-size: 1.4rem; display: flex; align-items: center; 
+  justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
 }
 body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
 
@@ -224,66 +176,37 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
   100% { transform: scale(1); }
 }
 
-.icono-latido {
-  display: inline-block;
-  animation: heartbeat-intenso 1.5s infinite;
-  font-size: 1.2rem !important;
-  margin-right: 10px;
-  color: #ff3b30;
-}
+.icono-latido { display: inline-block; animation: heartbeat-intenso 1.5s infinite; font-size: 1.2rem !important; margin-right: 10px; color: #ff3b30; }
 
 .swipe-container {
-    width: 90%;
-    margin: 15px auto;
-    height: 55px;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 30px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    touch-action: none;
+    width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05);
+    border-radius: 30px; position: relative; display: flex; align-items: center;
+    overflow: hidden; touch-action: none;
 }
 body.dark-mode .swipe-container { background: rgba(255,255,255,0.1); }
 
 .swipe-handle {
-    width: 45px;
-    height: 45px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    left: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    cursor: grab;
+    width: 45px; height: 45px; background: #fff; border-radius: 50%;
+    position: absolute; left: 5px; display: flex; align-items: center; 
+    justify-content: center; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab;
 }
 
 .swipe-text {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    font-weight: 700;
-    color: #8e8e93;
-    font-size: 0.85rem;
-    pointer-events: none;
+    position: absolute; width: 100%; text-align: center; font-weight: 700;
+    color: #8e8e93; font-size: 0.85rem; pointer-events: none;
     background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 2.5s infinite linear;
+    background-size: 200% auto; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; animation: shine 2.5s infinite linear;
 }
 
-@keyframes shine {
-    0% { background-position: -100% 0; }
-    100% { background-position: 100% 0; }
-}
+@keyframes shine { 0% { background-position: -100% 0; } 100% { background-position: 100% 0; } }
 
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
+
+
+
 </style>
 
 </head>
