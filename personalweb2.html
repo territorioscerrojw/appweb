@@ -398,8 +398,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <div class="tiempo-container">
-                                <div class="tiempo-text-wrapper">
+                            <!-- ESTRUCTURA MODIFICADA: TIEMPO SOBRE BARRA A LA DERECHA -->
+                            <div class="tiempo-container" style="justify-content: flex-end;">
+                                <div class="tiempo-text-wrapper" style="align-items: flex-end; margin-right: 15px;">
                                     <span class="anillo-label">TIEMPO RESTANTE</span>
                                     <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
                                 </div>
@@ -426,7 +427,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
                                     <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
                                 </a>
-                                <!-- BOTÓN DE RENOVACIÓN VERDE -->
                                 <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;">
                                     <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
                                 </button>
@@ -437,6 +437,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
+
 
 
   function limpiarIncidencia(texto) {
