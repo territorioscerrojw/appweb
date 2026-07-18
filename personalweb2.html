@@ -398,16 +398,17 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
                             <!-- ESTRUCTURA FINAL: Etiquetas arriba, Barra abajo -->
-                            <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span class="anillo-label" style="font-size: 0.75rem;">TIEMPO RESTANTE</span>
-                                    <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
-                                </div>
-                                <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
-                                    <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
-                                </div>
-                            </div>
-
+                         
+<div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px; margin-right: auto;">TIEMPO RESTANTE</span>
+        <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
+    </div>
+    <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
+        <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
+    </div>
+</div>
+`;
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
