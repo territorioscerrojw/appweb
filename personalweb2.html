@@ -397,12 +397,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <!-- ESTRUCTURA: Etiqueta izquierda, Columna derecha (Tiempo + Barra) -->
-                            <div class="tiempo-container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05);">
-                                <span class="anillo-label" style="margin-top: -10px;">TIEMPO RESTANTE</span>
-                                <div class="columna-derecha" style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    <div class="texto-tiempo-grande" style="font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">${t.tiempo.replace(" y ", " ")}</div>
-                                    <div class="barra-container" style="width: 120px; height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                            <!-- ESTRUCTURA AJUSTADA: Más centrada y texto más grande -->
+                            <div class="tiempo-container" style="display: flex; justify-content: space-between; align-items: center; padding: 18px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05);">
+                                <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px;">TIEMPO<br>RESTANTE</span>
+                                <div class="columna-derecha" style="display: flex; flex-direction: column; align-items: center;">
+                                    <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; margin-bottom: 6px; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
+                                    <div class="barra-container" style="width: 140px; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
                                         <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
                                     </div>
                                 </div>
