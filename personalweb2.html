@@ -401,22 +401,30 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
                 const nombreSeguro = encodeURIComponent(nombreH);
 
+                // Estilos comunes para asegurar la misma posición
+                const commonStyle = "height: 480px; display: flex; flex-direction: column; padding: 0;";
+                const headerStyle = "padding: 15px 20px; background: rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; height: 60px; box-sizing: border-box;";
+
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
                         <!-- FRENTE -->
-                        <div class="card-front" style="height: 480px; display: flex; flex-direction: column;">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
-                            <div class="incidencias-box" style="height: 40px; display: flex; align-items: center; padding: 0 20px; font-size: 0.8rem; background: ${tieneIncidencias ? '#fff0f0' : 'transparent'};">
-                                ${tieneIncidencias ? `<i class="fa-solid fa-triangle-exclamation" style="color:red; margin-right:8px;"></i> ${limpiarIncidencia(t.notes)}` : ''}
+                        <div class="card-front" style="${commonStyle}">
+                            <div class="card-header" style="${headerStyle}"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="img-box-custom" style="flex: 1;"><img src="${t.imgMini}" alt="Imagen"></div>
+                            
+                            <!-- Bloque de incidencias con altura reservada para no mover nada -->
+                            <div style="height: 40px; padding: 0 20px; font-size: 0.8rem; display: flex; align-items: center; color: #ff3b30;">
+                                ${tieneIncidencias ? `<i class="fa-solid fa-triangle-exclamation"></i>&nbsp; ${limpiarIncidencia(t.notes)}` : ''}
                             </div>
+                            
                             <div class="tiempo-container" style="padding: 10px 20px;">
                                 <div class="anillo-label">TIEMPO RESTANTE</div>
                                 <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
                                 <div class="barra-container"><div class="barra-progreso" style="width: ${porcentaje}%; background-color: ${color};"></div></div>
                             </div>
-                            <div class="swipe-container" style="margin: 0 20px 10px 20px;">
+
+                            <div class="swipe-container" style="margin: 10px 20px;">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)"></div>
                             </div>
@@ -424,13 +432,15 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         </div>
 
                         <!-- TRASERA -->
-                        <div class="card-back" style="height: 480px; display: flex; flex-direction: column;">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="calles-container" style="flex: 1; padding: 20px;"><div class="calles-texto">${t.calles}</div></div>
-                            <div class="btns-back-row" style="padding: 0 20px; margin-bottom: 10px;">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action">INCIDENCIA</a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action">GPS</a>
-                                <button class="btn-back-action">RENOVAR</button>
+                        <div class="card-back" style="${commonStyle}">
+                            <div class="card-header" style="${headerStyle}"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="calles-container" style="flex: 1; padding: 20px; overflow-y: auto;"><div class="calles-texto">${t.calles}</div></div>
+                            
+                            <!-- Bloque de botones original -->
+                            <div class="btns-back-row" style="padding: 0 20px; margin: 10px 0;">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
+                                <button onclick="alert('Renovando...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                             </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin: 0 20px 15px 20px;">▲ VOLVER</button>
                         </div>
@@ -438,8 +448,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
-
-
 
 
 
