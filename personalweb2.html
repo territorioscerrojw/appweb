@@ -54,18 +54,23 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin: 0; font-weight: 400;
 }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+  gap: 20px; 
+  padding: 20px;
+  align-items: start; /* Evita que las tarjetas se estiren a la misma altura si no quieres */
+}
 .card-container {
   perspective: 1000px;
   width: 100%;
-  height: auto;
+ 
 }
 
 .card-inner {
   position: relative;
   width: 100%;
-  min-height: 400px;
+  min-height: 450px;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
 }
@@ -81,7 +86,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 400px;
+  height: 100%;
   backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
@@ -130,7 +135,11 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .barra-progreso { height: 100%; transition: width 0.5s ease-in-out; }
 
 /* EL CONTENEDOR DE CALLES ES FLEX:1 PARA ADAPTARSE */
-.calles-container { flex: 1; overflow-y: auto; margin-top: 10px; }
+.calles-container {
+  flex: 1 0 auto; /* Crece para empujar el botón al fondo */
+  overflow-y: visible; /* Cambiado de auto a visible para que no aparezca scroll interno */
+  padding: 10px;
+}
 .calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; padding: 0 20px; }
 
 /* BOTONES DEL DORSO */
