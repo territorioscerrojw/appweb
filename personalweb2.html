@@ -80,8 +80,32 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
 .swipe-handle { width: 45px; height: 45px; background: #fff; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; }
 .btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
+.swipe-text {
+  position: absolute; width: 100%; text-align: center; font-weight: 700; color: #8e8e93; font-size: 0.85rem; pointer-events: none;
+  background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 2.5s infinite linear;
+}
 /* ANIMACIONES */
+
+@keyframes heartbeat-intenso {
+  0% { transform: scale(1); }
+  10% { transform: scale(1.3); }
+  20% { transform: scale(1); }
+  30% { transform: scale(1.3); }
+  40% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.icono-latido {
+  display: inline-block;
+  animation: heartbeat-intenso 1.5s infinite;
+  font-size: 1.2rem !important;
+  margin-right: 10px;
+  color: #ff3b30;
+}
 @keyframes shine { 0% { background-position: -100% 0; } 100% { background-position: 100% 0; } }
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
