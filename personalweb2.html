@@ -444,34 +444,37 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
                         </div>
 
-                        <!-- LADO TRASERO -->
-                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
-                            <div class="card-header">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-                            
-                            <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container" style="flex: 1; padding: 10px;">
-                                <div class="calles-texto">${t.calles}</div>
-                            </div>
+                       // ... dentro de la función renderizarLista, en el LADO TRASERO ...
 
-                            <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-                                    <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-                                </a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-                                    <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-                                </a>
-                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
-                                    <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-                                </button>
-                            </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
-                        </div>
+<!-- LADO TRASERO -->
+<div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
+    <div class="card-header">
+        <span class="card-num">${t.num}</span>
+        <span class="card-zona">${t.zona}</span>
+    </div>
+    
+    <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
+    <div class="calles-container" style="flex: 1; padding: 10px; overflow-y: auto;">
+        <div class="calles-texto">${t.calles}</div>
+    </div>
 
-                    </div>
-                </div>`;
+    <div class="btns-back-row">
+        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+            <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
+        </a>
+        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+            <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
+        </a>
+        <button class="btn-back-action" style="background: #34c759; color: #fff;">
+            <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
+        </button>
+    </div>
+
+    <!-- EL CAMBIO ESTÁ AQUÍ: margin-top: auto asegura que se pegue abajo -->
+    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">
+        VOLVER
+    </button>
+</div>;
             }).join('')}</div>`;
 }
 
