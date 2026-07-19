@@ -58,40 +58,36 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .card-container {
   perspective: 1000px;
   width: 100%;
-  height: 550px; /* FIJAMOS LA ALTURA AQUÍ. Al ser fija, no cambiará nunca al girar */
 }
 
 .card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%; /* Obligamos a que llene el contenedor fijo */
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
   display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
 
 .card-front, .card-back {
-  grid-area: 1 / 1 / 2 / 2;
-  width: 100%;
-  height: 100%; /* OBLIGATORIO: Altura 100% para no colapsar */
-  backface-visibility: hidden;
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: 0.5px solid rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
+  backface-visibility: hidden; /* Esto oculta el reverso automáticamente */
   overflow: hidden;
 }
-
 .card-back { transform: rotateY(180deg); }
 
-.card-back .swipe-container, .card-back .swipe-handle {
-  visibility: hidden !important;
+.card-back .swipe-container {
+  visibility: hidden !important; 
   opacity: 0 !important;
-  pointer-events: none;
-  display: flex !important;
+  pointer-events: none !important;
+  display: flex !important; /* Mantenemos el display para que ocupe altura */
 }
 
 .card-container.flipped .card-front .btn-more { display: none !important; }
@@ -181,13 +177,9 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   font-weight: 800;
   cursor: pointer;
   border-top: 0.5px solid rgba(0,0,0,0.1);
-  border-radius: 0 0 18px 18px;
-  margin-top: auto;
+  margin-top: auto; /* IMPORTANTE: Esto mantiene la altura estirable */
   flex-shrink: 0;
-  pointer-events: auto !important;
-  z-index: 20;
 }
-
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
   border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); 
