@@ -4,14 +4,14 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+
+<style>
 :root {
   --primary: #1c1c1e;
   --bg: #e8e8ed;
-  --card-bg: #fcfcfc; /* Blanco roto */
+  --card-bg: #fcfcfc;
   --header-bg: #fcfcfc;
   --danger: #ff3b30;
   --success: #34c759;
@@ -23,8 +23,8 @@
 }
 
 body.dark-mode {
-  --bg: #000000;      /* Fondo negro */
-  --card-bg: #2c3e50; /* Gris azulado */
+  --bg: #000000;
+  --card-bg: #2c3e50;
   --header-bg: #2c3e50;
   --primary: #ffffff;
   --color-texto-anillo: #fff;
@@ -38,11 +38,10 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* Header principal */
 header {
   text-align: center;
   padding: 15px 5px;
-  background: rgba(255, 255, 255, 0.6);
+  background: transparent;
   backdrop-filter: blur(20px);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
   position: relative;
@@ -55,10 +54,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin: 0; font-weight: 400;
 }
 
-/* Grilla de Tarjetas */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
-/* ESTRUCTURA DEL EFECTO DE GIRO (FLIP) COMPLETAMENTE OPERATIVA */
 .card-container {
   perspective: 1000px;
   width: 100%;
@@ -71,9 +68,18 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform-style: preserve-3d;
 }
 
-/* Cuando se añade la clase flipped, la tarjeta gira */
+/* --- LOGICA DE GIRO Y CLICS --- */
 .card-container.flipped .card-inner {
   transform: rotateY(180deg);
+}
+
+.card-container.flipped .card-front {
+    pointer-events: none; /* Desactiva el frente al girar */
+}
+
+.card-container.flipped .card-back {
+    z-index: 10;
+    pointer-events: auto; /* Activa el dorso al girar */
 }
 
 .card-front, .card-back {
@@ -88,7 +94,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-sizing: border-box;
 }
 
-/* La cara trasera se posiciona sobre la delantera pero volteada */
 .card-back {
   position: absolute;
   top: 0;
@@ -96,31 +101,41 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   height: 100%;
   transform: rotateY(180deg);
   padding: 20px;
+  overflow: hidden;
+  justify-content: space-between;
 }
 
-/* Cabeceras compartidas */
+/* Ocultar elementos de swipe en el dorso */
+.card-back .swipe-container, 
+.card-back .swipe-handle {
+  display: none !important;
+  visibility: hidden !important;
+}
+/* Cuando la tarjeta está girada, ocultamos el botón de detalles del frente */
+.card-container.flipped .card-front .btn-more {
+    display: none !important;
+}
+
+/* Aseguramos que el botón del dorso sea el único visible en esa zona */
+.card-container:not(.flipped) .card-back .btn-more {
+    display: none !important;
+}
+
 .card-header {
     width: 100%;
     padding: 15px 20px;
-    background: #f8f9fa; /* Fondo suave para ambos */
-    border-radius: 15px 15px 0 0; /* Bordes redondeados solo arriba */
+    background: rgba(0,0,0,0.02);
+    border-radius: 15px 15px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-sizing: border-box; /* Crucial para que el padding no saque el elemento */
+    box-sizing: border-box;
     margin-bottom: 10px;
 }
-/* Corrección del bug de giro */
-.card-container .card-back {
-    pointer-events: none; /* Desactivado por defecto */
-}
-.card-container.flipped .card-back {
-    pointer-events: auto; /* Activado solo al girar */
-}
+
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
-/* Contenedor de Imagen Frontal */
 .img-box-custom {
   height: 200px;
   border-top: 1px solid rgba(0,0,0,0.1);
@@ -128,13 +143,34 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Anillo y Texto (Frontal) */
 .anillo-wrapper { display: flex; flex-direction: column; align-items: flex-start; padding: 15px 25px; }
 .anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
 .anillo-svg-container { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
-.texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; }
+.texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; text-align: center; }
+.tiempo-container { 
+  padding: 15px 25px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  border-bottom: 0.5px solid rgba(0,0,0,0.05);
+}
 
-/* Área de Calles (Trasera) */
+.tiempo-text-wrapper { display: flex; flex-direction: column; align-items: flex-start; }
+.anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; }
+.texto-tiempo-grande { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+
+.barra-container {
+  width: 120px;
+  height: 12px;
+  background: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.barra-progreso {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+}
+
 .calles-container {
   flex: 1;
   margin-top: 10px;
@@ -146,21 +182,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   line-height: 1.4;
 }
 
-
-/* Botones Traseros - Diseño cuadrado y vertical */
 .btns-back-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 15px 0; /* Espacio extra para que no se pisen */
+  margin: 15px 0;
+  position: relative;
+  z-index: 20;
 }
 
 .btn-back-action {
   display: flex;
-  flex-direction: column; /* Icono arriba, texto abajo */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1; /* Los hace cuadrados perfectos */
+  aspect-ratio: 1 / 1;
   padding: 10px;
   border-radius: 16px;
   font-weight: 700;
@@ -169,16 +205,14 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  pointer-events: auto !important;
 }
 
 .btn-back-action i {
-  font-size: 1.5rem; /* Icono grande */
+  font-size: 1.5rem;
   margin-bottom: 8px;
 }
 
-
-/* Botón Más detalles / Volver */
 .btn-more { 
   width: 100%; 
   padding: 18px; 
@@ -189,11 +223,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   cursor: pointer; 
   border-top: 0.5px solid rgba(0,0,0,0.1); 
   border-radius: 0 0 18px 18px;
-  margin-top: auto; /* Esto empuja el botón siempre al fondo */
-    height: 55px; /* Altura fija igual que el swipe-container */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  box-sizing: border-box;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 20;
 }
 
 .btn-theme { 
@@ -204,10 +237,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
 }
 body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
-/* Animación de latido más pronunciada */
+
 @keyframes heartbeat-intenso {
   0% { transform: scale(1); }
-  10% { transform: scale(1.3); } /* Aumenta el tamaño drásticamente */
+  10% { transform: scale(1.3); }
   20% { transform: scale(1); }
   30% { transform: scale(1.3); }
   40% { transform: scale(1); }
@@ -216,71 +249,25 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
 
 .icono-latido {
   display: inline-block;
-  animation: heartbeat-intenso 1.5s infinite; /* Más rápido */
-  font-size: 2.2rem !important; /* El doble de grande */
-  margin-right: 15px;
+  animation: heartbeat-intenso 1.5s infinite;
+  font-size: 1.2rem !important;
+  margin-right: 10px;
   color: #ff3b30;
 }
-/* Botón Deslizar */
-.slider-wrapper {
-  width: 90%;
-  margin: 15px auto;
-  position: relative;
-  height: 50px;
-}
-.slider-input {
-  width: 100%;
-  height: 50px;
-  -webkit-appearance: none;
-  background: #e0e0e0;
-  border-radius: 25px;
-  outline: none;
-  overflow: hidden;
-}
-/* El "brillo" que se desliza */
-.slider-input::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 50px;
-  height: 50px;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: -400px 0 0 400px #34c759; /* Esto crea el efecto de llenado verde */
-  cursor: pointer;
-  border: 1px solid #ccc;
-}
 
-
-.slider-text {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #8e8e93;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  /* Efecto de brillo pasando por encima */
-  background: linear-gradient(90deg, #8e8e93 0%, #8e8e93 40%, #fff 50%, #8e8e93 60%, #8e8e93 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shine 3s infinite linear;
-}
-
-@keyframes shine {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
 .swipe-container {
     width: 90%;
     margin: 15px auto;
     height: 55px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 30px;
     position: relative;
     display: flex;
     align-items: center;
-    overflow: hidden; /* Importante para que no se salga */
-    touch-action: none; /* EVITA QUE EL NAVEGADOR HAGA SCROLL AL TOCAR EL BOTÓN */
+    overflow: hidden;
+    touch-action: none;
 }
+body.dark-mode .swipe-container { background: rgba(255,255,255,0.1); }
 
 .swipe-handle {
     width: 45px;
@@ -293,10 +280,9 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
     align-items: center;
     justify-content: center;
     z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: transform 0.05s linear; /* Muy fluido */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: grab;
 }
-
 
 .swipe-text {
     position: absolute;
@@ -322,6 +308,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
 </style>
+
 </head>
 <body>
 
@@ -333,11 +320,12 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 </header>
 
 <div id="grid-container"></div>
-<div id="debug-log" style="color: red; font-size: 10px; margin: 10px; padding: 5px; border: 1px solid red;">Esperando acciones...</div>
+<div id="debug-log" style="color: #8e8e93; font-size: 11px; margin: 10px; padding: 8px; border: 1px dashed #ccc; text-align:center; border-radius:8px;">Esperando acciones...</div>
 
 <script>
   let datosCargados = null;
   let nombreH = "";
+  const urlAppScript = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
 
   function toggleTheme() {
     document.body.classList.toggle('dark-mode');
@@ -356,7 +344,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
     
-    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
+    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH);
 
     fetch(url)
       .then(r => r.json())
@@ -368,7 +356,6 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
       });
   }
 
-  // Activa o desactiva la clase de giro en el contenedor seleccionado
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
@@ -376,15 +363,15 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
     }
   }
 
-function calcularDiasTotales(tiempoString) {
-    if (!tiempoString) return 0;
-    let dias = 0;
-    const mesesMatch = tiempoString.match(/(\d+)\s*mes/i);
-    const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
-    if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
-    if (diasMatch) dias += parseInt(diasMatch[1]);
-    return dias;
-}
+  function calcularDiasTotales(tiempoString) {
+      if (!tiempoString) return 0;
+      let dias = 0;
+      const mesesMatch = tiempoString.match(/(\d+)\s*mes/i);
+      const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
+      if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
+      if (diasMatch) dias += parseInt(diasMatch[1]);
+      return dias;
+  }
 
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
@@ -405,18 +392,20 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        <!-- FRENTE -->
-                        <div class="card-front" style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="card-front">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <div class="tiempo-container" style="flex-grow: 1; display: flex; flex-direction: column; padding: 15px 25px; gap: 10px;">
-                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                                    <span class="anillo-label">TIEMPO RESTANTE</span>
-                                    <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
+                            <!-- ESTRUCTURA AJUSTADA: Separación forzada con padding-right -->
+                            <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
+                                    <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px; padding-right: 40px; white-space: nowrap;">TIEMPO RESTANTE</span>
+                                    <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
                                 </div>
-                                <div class="barra-container"><div class="barra-progreso" style="width: ${porcentaje}%; background-color: ${color};"></div></div>
+                                <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
+                                    <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
+                                </div>
                             </div>
 
                             <div class="swipe-container">
@@ -427,13 +416,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
-
-                        <!-- DORSO -->
-                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="calles-container" style="flex-grow: 1; overflow-y: auto; padding: 10px 20px;">
-                                <div class="calles-texto">${t.calles}</div>
-                            </div>
+                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
@@ -446,78 +431,81 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             }).join('')}</div>`;
 }
 
-function limpiarIncidencia(texto) {
-    // 1. Elimina el emoji del calendario
-    let limpio = texto.replace(/📅/g, "");
-    
-    // 2. Busca el patrón "fecha: texto" y lo encierra en <b> (negrita)
-    // Cambia cada entrada separada por "|" por un bloque con salto de línea
-    return limpio.split('|').map(item => {
-        if (item.trim() === "") return "";
-        // Pone en negrita la parte de la fecha (todo lo que está antes de los dos puntos)
-        return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
-    }).filter(i => i !== "").join("<br>");
-}
-
-// Variable global para controlar el progreso
-let isDragging = false;
 
 
-    // 1. Función única para enviar al servidor
-function enviarAlServidor(numT, zona, nombre) {
-    const log = document.getElementById('debug-log');
-    log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
-    
-    google.script.run
-      .withSuccessHandler((respuesta) => {
-          if (respuesta === "OK") {
-              log.innerHTML = "ÉXITO";
-              alert("Territorio " + numT + " entregado correctamente.");
-              cargar(); 
-          } else {
-              log.innerHTML = "ERROR: " + respuesta;
-              alert(respuesta);
+
+
+  function limpiarIncidencia(texto) {
+      let limpio = texto.replace(/📅/g, "");
+      return limpio.split('|').map(item => {
+          if (item.trim() === "") return "";
+          return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
+      }).filter(i => i !== "").join("<br>");
+  }
+
+    // 1. Modificación: Eliminamos la tarjeta visualmente al instante
+  function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
+      // Eliminación visual instantánea
+      elementoTarjeta.style.transition = "opacity 0.3s, transform 0.3s";
+      elementoTarjeta.style.opacity = "0";
+      elementoTarjeta.style.transform = "scale(0.8)";
+      setTimeout(() => elementoTarjeta.remove(), 300);
+
+      // El registro sigue en segundo plano
+      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
+
+      fetch(urlFinal)
+        .then(r => r.json())
+        .then(data => {
+            if (data.resultado !== "OK") {
+                console.error("Error en servidor:", data.resultado);
+                // Opcional: mostrar una notificación discreta si falla
+            }
+        })
+        .catch(err => console.error("Error de conexión:", err));
+  }
+
+  // 2. Modificación: Pasamos el elementoTarjeta al iniciarSwipe
+  function iniciarSwipe(e) {
+      const handle = e.currentTarget;
+      const numT = handle.getAttribute('data-num');
+      const zona = handle.getAttribute('data-zona');
+      const nombreCodificado = handle.getAttribute('data-nombre');
+      const tarjeta = handle.closest('.card-container'); // Identificamos la tarjeta padre
+      
+      const container = handle.parentElement;
+      const startX = e.touches[0].clientX;
+      const maxX = container.offsetWidth - handle.offsetWidth - 10;
+      
+      handle.style.transition = "none";
+
+      function mover(event) {
+          let deltaX = event.touches[0].clientX - startX;
+          let pos = Math.max(0, Math.min(deltaX, maxX));
+          handle.style.transform = `translateX(${pos}px)`;
+          
+          if (pos >= maxX * 0.95) {
+              document.removeEventListener('touchmove', mover);
+              document.removeEventListener('touchend', terminar);
+              // Llamamos a la función con el elemento para poder borrarlo
+              enviarAlServidor(numT, zona, nombreCodificado, tarjeta);
           }
-      })
-      .withFailureHandler((err) => {
-          log.innerHTML = "ERROR CRÍTICO: " + err;
-      })
-      .registrarEntrega(numT, nombre, zona);
-}
+      }
 
-// 2. Función simplificada para el deslizamiento táctil
-function iniciarSwipe(e, tipo, index, numT, zona, nombre) {
-    const handle = e.currentTarget;
-    const container = handle.parentElement;
-    const startX = e.touches[0].clientX;
-    const maxX = container.offsetWidth - handle.offsetWidth - 10;
+      function terminar() {
+          document.removeEventListener('touchmove', mover);
+          handle.style.transition = "transform 0.3s ease";
+          handle.style.transform = "translateX(0px)";
+      }
 
-    function mover(event) {
-        let deltaX = event.touches[0].clientX - startX;
-        let pos = Math.max(0, Math.min(deltaX, maxX));
-        handle.style.transform = `translateX(${pos}px)`;
-        
-        if (pos >= maxX * 0.9) {
-            document.removeEventListener('touchmove', mover);
-            enviarAlServidor(numT, zona, nombre);
-        }
-    }
-
-    function terminar() {
-        document.removeEventListener('touchmove', mover);
-        handle.style.transition = "transform 0.3s ease";
-        handle.style.transform = "translateX(0px)";
-        setTimeout(() => handle.style.transition = "none", 300);
-    }
-
-    document.addEventListener('touchmove', mover, {passive: false});
-    document.addEventListener('touchend', terminar, {once: true});
-}
-
-
+      document.addEventListener('touchmove', mover, {passive: false});
+      document.addEventListener('touchend', terminar, {once: true});
+  }
 
 
   cargar();
 </script>
 </body>
+</html>
+</html>
 </html>
