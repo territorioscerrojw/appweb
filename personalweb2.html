@@ -62,17 +62,19 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 .card-inner {
   display: grid;
-  grid-template-areas: "card";
+  grid-template-columns: 100%;
+  grid-template-rows: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 400px; /* Altura mínima inicial */
 }
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
 
 .card-front, .card-back {
-  grid-area: card;
+  grid-area: 1 / 1 / 2 / 2;
   display: flex;
   flex-direction: column;
-  backface-visibility: hidden; /* Esto oculta el botón invertido */
+  backface-visibility: hidden; /* Esto oculta lo de atrás al girar */
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -83,6 +85,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .card-back .swipe-container {
   visibility: hidden !important; 
   pointer-events: none !important;
+  display: flex !important; /* Mantiene su lugar físico */
 }
 
 .card-container.flipped .card-front .btn-more { display: none !important; }
@@ -167,16 +170,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .btn-back-action i { font-size: 1.5rem; margin-bottom: 8px; }
 
 .btn-more {
+  margin-top: auto; /* Fuerza el botón al borde inferior */
   width: 100%;
   padding: 18px;
-  border: none;
+  border-top: 1px solid rgba(0,0,0,0.1);
   background: rgba(0,0,0,0.03);
   color: #007aff;
   font-weight: 800;
   cursor: pointer;
-  border-top: 0.5px solid rgba(0,0,0,0.1);
-  margin-top: auto; /* IMPORTANTE: Esto mantiene la altura estirable */
-  flex-shrink: 0;
+  z-index: 5;
 }
 .btn-theme { 
   position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; 
