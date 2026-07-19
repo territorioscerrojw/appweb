@@ -419,16 +419,30 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
                         <div class="card-back">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
-                            <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
-                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
-                                </div>
-                            </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
-                       </div>
+    <div class="card-header">
+        <span class="card-num">${t.num}</span>
+        <span class="card-zona">${t.zona}</span>
+    </div>
+    
+    <div class="calles-container">
+        <div class="calles-texto">${t.calles}</div>
+    </div>
+    
+    <div class="btns-back-row">
+        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+            <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
+        </a>
+        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+            <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
+        </a>
+        <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;">
+            <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
+        </button>
+    </div>
+
+   
+    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+</div>
                 </div>`;
             }).join('')}</div>`;
 }
