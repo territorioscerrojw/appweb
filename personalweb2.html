@@ -82,8 +82,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 /* ESTRUCTURA DE TARJETAS (FLEXBOX FLUIDO) */
 .card-front, .card-back {
+  grid-area: 1 / 1 / 2 / 2; /* Obliga a que ambas ocupen la misma celda de grid */
   width: 100%;
-  grid-area: 1 / 1 / 2 / 2; /* Ambas ocupan el mismo lugar en el grid */
   display: flex;
   flex-direction: column;
   border-radius: 18px;
@@ -91,8 +91,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: 0.5px solid rgba(0,0,0,0.1);
   backface-visibility: hidden;
+  overflow: hidden;
 }
-
 .card-back { transform: rotateY(180deg); }
 
 /* VISIBILIDAD CONDICIONAL */
@@ -139,9 +139,9 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 /* EL CONTENEDOR DE CALLES ES FLEX:1 PARA ADAPTARSE */
 .calles-container {
-  flex: 1; /* Crece para empujar el botón al fondo */
-  overflow-y: visible; /* Cambiado de auto a visible para que no aparezca scroll interno */
-  padding: 15px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
 }
 .calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; padding: 0 20px; }
 
@@ -180,8 +180,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   font-weight: 800;
   cursor: pointer;
   border-top: 0.5px solid rgba(0,0,0,0.1);
-  border-radius: 0 0 18px 18px;
-  margin-top: auto; /* Empuja el botón siempre al fondo */
+  margin-top: auto; /* Empuja al fondo */
   flex-shrink: 0;
 }
 
