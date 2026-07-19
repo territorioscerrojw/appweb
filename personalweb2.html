@@ -100,17 +100,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 
 /* Cabeceras compartidas */
 .card-header {
-    width: 100%;
-    padding: 15px 20px;
-    background: #f8f9fa; /* Fondo suave para ambos */
-    border-radius: 15px 15px 0 0; /* Bordes redondeados solo arriba */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box; /* Crucial para que el padding no saque el elemento */
-    margin-bottom: 10px;
+  background: var(--header-bg);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px;
 }
-
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
@@ -211,33 +204,19 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
   color: #ff3b30;
 }
 /* Botón Deslizar */
-.slider-wrapper {
+.slider-container {
   width: 90%;
   margin: 15px auto;
-  position: relative;
   height: 50px;
-}
-.slider-input {
-  width: 100%;
-  height: 50px;
-  -webkit-appearance: none;
   background: #e0e0e0;
   border-radius: 25px;
-  outline: none;
+  position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
-/* El "brillo" que se desliza */
-.slider-input::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 50px;
-  height: 50px;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: -400px 0 0 400px #34c759; /* Esto crea el efecto de llenado verde */
-  cursor: pointer;
-  border: 1px solid #ccc;
-}
-
 
 .slider-text {
   font-size: 0.8rem;
@@ -257,55 +236,6 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-.swipe-container {
-    width: 90%;
-    margin: 15px auto;
-    height: 55px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 30px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    overflow: hidden; /* Importante para que no se salga */
-    touch-action: none; /* EVITA QUE EL NAVEGADOR HAGA SCROLL AL TOCAR EL BOTÓN */
-}
-
-.swipe-handle {
-    width: 45px;
-    height: 45px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    left: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: transform 0.05s linear; /* Muy fluido */
-}
-
-
-.swipe-text {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    font-weight: 700;
-    color: #8e8e93;
-    font-size: 0.85rem;
-    pointer-events: none;
-    background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 2.5s infinite linear;
-}
-
-@keyframes shine {
-    0% { background-position: -100% 0; }
-    100% { background-position: 100% 0; }
-}
 
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
@@ -322,7 +252,6 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 </header>
 
 <div id="grid-container"></div>
-<div id="debug-log" style="color: red; font-size: 10px; margin: 10px; padding: 5px; border: 1px solid red;">Esperando acciones...</div>
 
 <script>
   let datosCargados = null;
@@ -382,6 +311,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             <div class="grid">${lista.map((t, i) => {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
+                
                 let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
 
                 const radio = 35;
@@ -390,12 +320,17 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
 
+                // URL Formulario Incidencias
                 const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
                 const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
 
+                // URL Navegación GPS
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
-                let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
+                let urlNavegacion = (matches && matches.length >= 2) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` 
+                    : "#";
 
+                // Variable para evaluar si existen incidencias reales
                 let tieneIncidencias = t.notas && t.notas.trim() !== "" && t.notas !== "No hay incidencias.";
 
                 return `
@@ -403,79 +338,83 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                     <div class="card-inner">
                         
                         <!-- LADO DELANTERO -->
-                        <div class="card-front" style="display: flex; flex-direction: column; align-items: center; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
+                        <div class="card-front">
                             <div class="card-header">
                                 <span class="card-num">${t.num}</span>
                                 <span class="card-zona">${t.zona}</span>
                             </div>
-
-                            <div class="img-box-custom" style="margin: 10px 0;">
+                            <div class="img-box-custom">
                                 <img src="${t.imgMini}" alt="Imagen">
                             </div>
                             
-                            ${tieneIncidencias ? `
-                            <div style="width: 90%; margin: 5px 0; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
-                                <i class="fa-solid fa-triangle-exclamation icono-latido" style="color:#ff3b30;"></i>
-                                <div style="flex: 1; text-align: left;">${limpiarIncidencia(t.notas)}</div>
-                            </div>` : ''}
+                            <!-- Condicional de Incidencias: Sólo aparece en el frente si existen -->
+                       ${tieneIncidencias ? `
+<div style="padding: 15px 20px; background: rgba(255,59,48,0.08); border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 0.85rem; color: #1c1c1e; font-weight: 500; line-height: 1.5; display: flex; align-items: center;"> 
+  <!-- align-items: center asegura que el icono siempre esté centrado verticalmente respecto al texto -->
+  
+  <i class="fa-solid fa-triangle-exclamation icono-latido"></i>
+  
+  <div style="flex: 1;">${limpiarIncidencia(t.notas)}</div>
+</div>` : ''}
 
-                            <div class="anillo-wrapper" style="margin: 5px 0;">
+
+
+
+
+                            <div class="anillo-wrapper">
                                 <div class="anillo-label">TIEMPO RESTANTE</div>
                                 <div class="anillo-svg-container">
                                     <svg width="80" height="80" style="transform: rotate(90deg);">
                                         <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
                                         <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
                                     </svg>
-                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-                                        <div class="texto-anillo-dinamico">${textoFormateado}</div>
+                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+                                        <div class="texto-anillo-dinamico" style="text-align: center;">${textoFormateado}</div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
-                                <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                              
-<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
-
-                                     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
-                                </div>
-                            </div>
-
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
+                            <!-- NUEVO BOTÓN DESLIZANTE -->
+<div class="slider-container">
+    <div class="slider-text">
+        <i class="fa-solid fa-angles-right"></i> DESLIZAR PARA ENTREGAR
+    </div>
+</div>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
 
                         <!-- LADO TRASERO -->
-                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
-                            <div class="card-header">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-                            
-                            <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container" style="flex: 1; padding: 10px;">
-                                <div class="calles-texto">${t.calles}</div>
-                            </div>
+<div class="card-back">
+    <div class="card-header" style="padding: 0 0 10px 0; background: transparent;">
+        <span class="card-num">${t.num}</span>
+        <span class="card-zona">${t.zona}</span>
+    </div>
+    
+    <div class="anillo-label" style="margin-top: 5px;">NUMERACIÓN CALLES</div>
+    <div class="calles-container">
+        <div class="calles-texto">${t.calles}</div>
+    </div>
 
-                            <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-                                    <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-                                </a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-                                    <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-                                </a>
-                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
-                                    <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-                                </button>
-                            </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
-                        </div>
+    <!-- Bloque de 3 Botones cuadrados -->
+    <div class="btns-back-row">
+        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+           <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
+        </a>
+        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+           <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
+        </a>
+        <button class="btn-back-action" style="background: #34c759; color: #fff;">
+           <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
+        </button>
+    </div>
+    
+    <!-- Botón volver al final -->
+    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+</div>
 
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
-
-
 function limpiarIncidencia(texto) {
     // 1. Elimina el emoji del calendario
     let limpio = texto.replace(/📅/g, "");
@@ -488,62 +427,6 @@ function limpiarIncidencia(texto) {
         return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
     }).filter(i => i !== "").join("<br>");
 }
-
-// Variable global para controlar el progreso
-let isDragging = false;
-
-
-    // 1. Función única para enviar al servidor
-function enviarAlServidor(numT, zona, nombre) {
-    const log = document.getElementById('debug-log');
-    log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
-    
-    google.script.run
-      .withSuccessHandler((respuesta) => {
-          if (respuesta === "OK") {
-              log.innerHTML = "ÉXITO";
-              alert("Territorio " + numT + " entregado correctamente.");
-              cargar(); 
-          } else {
-              log.innerHTML = "ERROR: " + respuesta;
-              alert(respuesta);
-          }
-      })
-      .withFailureHandler((err) => {
-          log.innerHTML = "ERROR CRÍTICO: " + err;
-      })
-      .registrarEntrega(numT, nombre, zona);
-}
-
-// 2. Función simplificada para el deslizamiento táctil
-function iniciarSwipe(e, tipo, index, numT, zona, nombre) {
-    const handle = e.currentTarget;
-    const container = handle.parentElement;
-    const startX = e.touches[0].clientX;
-    const maxX = container.offsetWidth - handle.offsetWidth - 10;
-
-    function mover(event) {
-        let deltaX = event.touches[0].clientX - startX;
-        let pos = Math.max(0, Math.min(deltaX, maxX));
-        handle.style.transform = `translateX(${pos}px)`;
-        
-        if (pos >= maxX * 0.9) {
-            document.removeEventListener('touchmove', mover);
-            enviarAlServidor(numT, zona, nombre);
-        }
-    }
-
-    function terminar() {
-        document.removeEventListener('touchmove', mover);
-        handle.style.transition = "transform 0.3s ease";
-        handle.style.transform = "translateX(0px)";
-        setTimeout(() => handle.style.transition = "none", 300);
-    }
-
-    document.addEventListener('touchmove', mover, {passive: false});
-    document.addEventListener('touchend', terminar, {once: true});
-}
-
 
 
 
