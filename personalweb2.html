@@ -110,7 +110,13 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
     box-sizing: border-box; /* Crucial para que el padding no saque el elemento */
     margin-bottom: 10px;
 }
-
+/* Corrección del bug de giro */
+.card-container .card-back {
+    pointer-events: none; /* Desactivado por defecto */
+}
+.card-container.flipped .card-back {
+    pointer-events: auto; /* Activado solo al girar */
+}
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
@@ -183,6 +189,11 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   cursor: pointer; 
   border-top: 0.5px solid rgba(0,0,0,0.1); 
   border-radius: 0 0 18px 18px;
+  margin-top: auto; /* Esto empuja el botón siempre al fondo */
+    height: 55px; /* Altura fija igual que el swipe-container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-theme { 
@@ -382,98 +393,58 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             <div class="grid">${lista.map((t, i) => {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
-                let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
-
-                const radio = 35;
-                const circunferencia = 2 * Math.PI * radio;
-                const arcoTotal = (240 / 360) * circunferencia;
-                const porcentaje = Math.min(100, (diasTotales / 120) * 100);
-                const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
-
+                let porcentaje = Math.min(100, (diasTotales / 120) * 100);
+                
                 const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
                 const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
                 let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
-
-                let tieneIncidencias = t.notas && t.notas.trim() !== "" && t.notas !== "No hay incidencias.";
+                let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
+                const nombreSeguro = encodeURIComponent(nombreH);
 
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        
-                        <!-- LADO DELANTERO -->
-                        <div class="card-front" style="display: flex; flex-direction: column; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
-                            <div class="card-header">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-
-                            <div class="img-box-custom" style="margin: 10px 0;">
-                                <img src="${t.imgMini}" alt="Imagen">
-                            </div>
+                        <!-- FRENTE -->
+                        <div class="card-front" style="display: flex; flex-direction: column; height: 100%;">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
+                            ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            ${tieneIncidencias ? `
-                            <div style="width: 90%; margin: 5px auto; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
-                                <i class="fa-solid fa-triangle-exclamation icono-latido" style="color:#ff3b30;"></i>
-                                <div style="flex: 1; text-align: left;">${limpiarIncidencia(t.notas)}</div>
-                            </div>` : ''}
-
-                            <div class="anillo-wrapper" style="margin: 5px 0;">
-                                <div class="anillo-label">TIEMPO RESTANTE</div>
-                                <div class="anillo-svg-container">
-                                    <svg width="80" height="80" style="transform: rotate(90deg);">
-                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" />
-                                        <circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" />
-                                    </svg>
-                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-                                        <div class="texto-anillo-dinamico">${textoFormateado}</div>
-                                    </div>
+                            <div class="tiempo-container" style="flex-grow: 1; display: flex; flex-direction: column; padding: 15px 25px; gap: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                    <span class="anillo-label">TIEMPO RESTANTE</span>
+                                    <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
                                 </div>
+                                <div class="barra-container"><div class="barra-progreso" style="width: ${porcentaje}%; background-color: ${color};"></div></div>
                             </div>
 
-                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px auto;">
+                            <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
+                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
-
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
 
-                        <!-- LADO TRASERO -->
-                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
-                            <div class="card-header">
-                                <span class="card-num">${t.num}</span>
-                                <span class="card-zona">${t.zona}</span>
-                            </div>
-                            
-                            <div class="anillo-label" style="margin-top: 10px; padding-left: 20px;">NUMERACIÓN CALLES</div>
-                            <div class="calles-container" style="flex: 1; padding: 10px 20px; overflow-y: auto;">
+                        <!-- DORSO -->
+                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%;">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="calles-container" style="flex-grow: 1; overflow-y: auto; padding: 10px 20px;">
                                 <div class="calles-texto">${t.calles}</div>
                             </div>
-
-                            <div class="btns-back-row" style="padding: 0 20px;">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-                                    <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-                                </a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-                                    <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-                                </a>
-                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
-                                    <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-                                </button>
+                            <div class="btns-back-row">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
+                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                             </div>
-                            
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
-
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
-
 
 function limpiarIncidencia(texto) {
     // 1. Elimina el emoji del calendario
