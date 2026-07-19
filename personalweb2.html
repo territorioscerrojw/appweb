@@ -403,7 +403,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                     <div class="card-inner">
                         
                         <!-- LADO DELANTERO -->
-                        <div class="card-front" style="display: flex; flex-direction: column; align-items: center; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
+                        <div class="card-front" style="display: flex; flex-direction: column; height: 100%; overflow: hidden; background: white; border-radius: 15px;">
                             <div class="card-header">
                                 <span class="card-num">${t.num}</span>
                                 <span class="card-zona">${t.zona}</span>
@@ -414,7 +414,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             
                             ${tieneIncidencias ? `
-                            <div style="width: 90%; margin: 5px 0; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
+                            <div style="width: 90%; margin: 5px auto; padding: 10px; background: rgba(255,59,48,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem;"> 
                                 <i class="fa-solid fa-triangle-exclamation icono-latido" style="color:#ff3b30;"></i>
                                 <div style="flex: 1; text-align: left;">${limpiarIncidencia(t.notas)}</div>
                             </div>` : ''}
@@ -432,11 +432,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 </div>
                             </div>
 
-                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px 0;">
+                            <div class="swipe-container" id="swipe-${tipo}-${i}" style="margin: 5px auto;">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                              
-<div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
-
+                                <div class="swipe-handle" ontouchstart="iniciarSwipe(event, '${tipo}', ${i}, '${t.num}', '${t.zona}', '${t.nombre || nombreH}')">
                                      <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
                                 </div>
                             </div>
@@ -444,35 +442,35 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">MÁS DETALLES</button>
                         </div>
 
-                       <!-- LADO TRASERO -->
-<div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
-    <div class="card-header">
-        <span class="card-num">${t.num}</span>
-        <span class="card-zona">${t.zona}</span>
-    </div>
-    
-    <div class="anillo-label" style="margin-top: 10px;">NUMERACIÓN CALLES</div>
-    <div class="calles-container" style="flex: 1; padding: 10px; overflow-y: auto;">
-        <div class="calles-texto">${t.calles}</div>
-    </div>
+                        <!-- LADO TRASERO -->
+                        <div class="card-back" style="display: flex; flex-direction: column; height: 100%; border-radius: 15px; overflow: hidden;">
+                            <div class="card-header">
+                                <span class="card-num">${t.num}</span>
+                                <span class="card-zona">${t.zona}</span>
+                            </div>
+                            
+                            <div class="anillo-label" style="margin-top: 10px; padding-left: 20px;">NUMERACIÓN CALLES</div>
+                            <div class="calles-container" style="flex: 1; padding: 10px 20px; overflow-y: auto;">
+                                <div class="calles-texto">${t.calles}</div>
+                            </div>
 
-    <div class="btns-back-row">
-        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-            <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-        </a>
-        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-            <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-        </a>
-        <button class="btn-back-action" style="background: #34c759; color: #fff;">
-            <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-        </button>
-    </div>
+                            <div class="btns-back-row" style="padding: 0 20px;">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
+                                    <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
+                                </a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
+                                    <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
+                                </a>
+                                <button class="btn-back-action" style="background: #34c759; color: #fff;">
+                                    <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
+                                </button>
+                            </div>
+                            
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">VOLVER</button>
+                        </div>
 
-    <!-- EL CAMBIO ESTÁ AQUÍ: margin-top: auto asegura que se pegue abajo -->
-    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin-top: auto; width: 100%; border-radius: 0 0 15px 15px;">
-        VOLVER
-    </button>
-</div>;
+                    </div>
+                </div>`;
             }).join('')}</div>`;
 }
 
