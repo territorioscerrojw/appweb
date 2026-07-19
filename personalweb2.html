@@ -1,17 +1,17 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
 :root {
   --primary: #1c1c1e;
   --bg: #e8e8ed;
-  --card-bg: #fcfcfc;
+  --card-bg: #fcfcfc; /* Blanco roto */
   --header-bg: #fcfcfc;
   --danger: #ff3b30;
   --success: #34c759;
@@ -23,8 +23,8 @@
 }
 
 body.dark-mode {
-  --bg: #000000;
-  --card-bg: #2c3e50;
+  --bg: #000000;      /* Fondo negro */
+  --card-bg: #2c3e50; /* Gris azulado */
   --header-bg: #2c3e50;
   --primary: #ffffff;
   --color-texto-anillo: #fff;
@@ -38,6 +38,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+/* Header principal */
 header {
   text-align: center;
   padding: 15px 5px;
@@ -54,8 +55,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin: 0; font-weight: 400;
 }
 
+/* Grilla de Tarjetas */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
+/* ESTRUCTURA DEL EFECTO DE GIRO (FLIP) COMPLETAMENTE OPERATIVA */
 .card-container {
   perspective: 1000px;
   width: 100%;
@@ -68,6 +71,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform-style: preserve-3d;
 }
 
+/* Cuando se añade la clase flipped, la tarjeta gira */
 .card-container.flipped .card-inner {
   transform: rotateY(180deg);
 }
@@ -84,6 +88,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-sizing: border-box;
 }
 
+/* La cara trasera se posiciona sobre la delantera pero volteada */
 .card-back {
   position: absolute;
   top: 0;
@@ -93,21 +98,23 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   padding: 20px;
 }
 
+/* Cabeceras compartidas */
 .card-header {
     width: 100%;
     padding: 15px 20px;
-    background: rgba(0,0,0,0.02);
-    border-radius: 15px 15px 0 0;
+    background: #f8f9fa; /* Fondo suave para ambos */
+    border-radius: 15px 15px 0 0; /* Bordes redondeados solo arriba */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Crucial para que el padding no saque el elemento */
     margin-bottom: 10px;
 }
 
 .card-num { font-size: 1.8rem; font-weight: 800; }
 .card-zona { font-size: 0.95rem; color: #8e8e93; font-weight: 600; }
 
+/* Contenedor de Imagen Frontal */
 .img-box-custom {
   height: 200px;
   border-top: 1px solid rgba(0,0,0,0.1);
@@ -115,11 +122,13 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
+/* Anillo y Texto (Frontal) */
 .anillo-wrapper { display: flex; flex-direction: column; align-items: flex-start; padding: 15px 25px; }
 .anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
 .anillo-svg-container { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
-.texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; text-align: center; }
+.texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; }
 
+/* Área de Calles (Trasera) */
 .calles-container {
   flex: 1;
   margin-top: 10px;
@@ -131,19 +140,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   line-height: 1.4;
 }
 
+
+/* Botones Traseros - Diseño cuadrado y vertical */
 .btns-back-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 15px 0;
+  margin: 15px 0; /* Espacio extra para que no se pisen */
 }
 
 .btn-back-action {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Icono arriba, texto abajo */
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* Los hace cuadrados perfectos */
   padding: 10px;
   border-radius: 16px;
   font-weight: 700;
@@ -156,10 +167,12 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 
 .btn-back-action i {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Icono grande */
   margin-bottom: 8px;
 }
 
+
+/* Botón Más detalles / Volver */
 .btn-more { 
   width: 100%; 
   padding: 18px; 
@@ -170,7 +183,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   cursor: pointer; 
   border-top: 0.5px solid rgba(0,0,0,0.1); 
   border-radius: 0 0 18px 18px;
-  box-sizing: border-box;
 }
 
 .btn-theme { 
@@ -181,10 +193,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
 }
 body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
-
+/* Animación de latido más pronunciada */
 @keyframes heartbeat-intenso {
   0% { transform: scale(1); }
-  10% { transform: scale(1.3); }
+  10% { transform: scale(1.3); } /* Aumenta el tamaño drásticamente */
   20% { transform: scale(1); }
   30% { transform: scale(1.3); }
   40% { transform: scale(1); }
@@ -193,25 +205,71 @@ body.dark-mode .btn-theme { background: #2c2c2e; color: #ffffff; }
 
 .icono-latido {
   display: inline-block;
-  animation: heartbeat-intenso 1.5s infinite;
-  font-size: 1.2rem !important;
-  margin-right: 10px;
+  animation: heartbeat-intenso 1.5s infinite; /* Más rápido */
+  font-size: 2.2rem !important; /* El doble de grande */
+  margin-right: 15px;
   color: #ff3b30;
 }
+/* Botón Deslizar */
+.slider-wrapper {
+  width: 90%;
+  margin: 15px auto;
+  position: relative;
+  height: 50px;
+}
+.slider-input {
+  width: 100%;
+  height: 50px;
+  -webkit-appearance: none;
+  background: #e0e0e0;
+  border-radius: 25px;
+  outline: none;
+  overflow: hidden;
+}
+/* El "brillo" que se desliza */
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: -400px 0 0 400px #34c759; /* Esto crea el efecto de llenado verde */
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
 
+
+.slider-text {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  /* Efecto de brillo pasando por encima */
+  background: linear-gradient(90deg, #8e8e93 0%, #8e8e93 40%, #fff 50%, #8e8e93 60%, #8e8e93 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 .swipe-container {
     width: 90%;
     margin: 15px auto;
     height: 55px;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
     border-radius: 30px;
     position: relative;
     display: flex;
     align-items: center;
-    overflow: hidden;
-    touch-action: none;
+    overflow: hidden; /* Importante para que no se salga */
+    touch-action: none; /* EVITA QUE EL NAVEGADOR HAGA SCROLL AL TOCAR EL BOTÓN */
 }
-body.dark-mode .swipe-container { background: rgba(255,255,255,0.1); }
 
 .swipe-handle {
     width: 45px;
@@ -224,9 +282,10 @@ body.dark-mode .swipe-container { background: rgba(255,255,255,0.1); }
     align-items: center;
     justify-content: center;
     z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    cursor: grab;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.05s linear; /* Muy fluido */
 }
+
 
 .swipe-text {
     position: absolute;
@@ -263,12 +322,11 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 </header>
 
 <div id="grid-container"></div>
-<div id="debug-log" style="color: #8e8e93; font-size: 11px; margin: 10px; padding: 8px; border: 1px dashed #ccc; text-align:center; border-radius:8px;">Esperando acciones...</div>
+<div id="debug-log" style="color: red; font-size: 10px; margin: 10px; padding: 5px; border: 1px solid red;">Esperando acciones...</div>
 
 <script>
   let datosCargados = null;
   let nombreH = "";
-  const urlAppScript = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
 
   function toggleTheme() {
     document.body.classList.toggle('dark-mode');
@@ -287,7 +345,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
     
-    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH);
+    const url = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec?h=" + encodeURIComponent(nombreH);
 
     fetch(url)
       .then(r => r.json())
@@ -299,6 +357,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
       });
   }
 
+  // Activa o desactiva la clase de giro en el contenedor seleccionado
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
@@ -306,15 +365,15 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
     }
   }
 
-  function calcularDiasTotales(tiempoString) {
-      if (!tiempoString) return 0;
-      let dias = 0;
-      const mesesMatch = tiempoString.match(/(\d+)\s*mes/i);
-      const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
-      if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
-      if (diasMatch) dias += parseInt(diasMatch[1]);
-      return dias;
-  }
+function calcularDiasTotales(tiempoString) {
+    if (!tiempoString) return 0;
+    let dias = 0;
+    const mesesMatch = tiempoString.match(/(\d+)\s*mes/i);
+    const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
+    if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
+    if (diasMatch) dias += parseInt(diasMatch[1]);
+    return dias;
+}
 
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
@@ -333,8 +392,8 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
                 let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
-                let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
-                const nombreSeguro = encodeURIComponent(nombreH);
+                let tieneIncidencias = t.notas && t.notas.trim() !== "" && t.notas !== "No hay incidencias.";
+                const nombreSeguro = encodeURIComponent(t.nombre || nombreH);
 
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
@@ -342,9 +401,8 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         <div class="card-front">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
-                            ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
+                            ${tieneIncidencias ? `<div style="padding:10px;"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notas)}</div>` : ''}
                             <div class="anillo-wrapper">
-                                <div class="anillo-label">TIEMPO RESTANTE</div>
                                 <div class="anillo-svg-container">
                                     <svg width="80" height="80" style="transform: rotate(90deg);"><circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" /><circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" /></svg>
                                     <div style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center;"><div class="texto-anillo-dinamico">${textoFormateado}</div></div>
@@ -373,76 +431,123 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             }).join('')}</div>`;
 }
 
-  function limpiarIncidencia(texto) {
-      let limpio = texto.replace(/📅/g, "");
-      return limpio.split('|').map(item => {
-          if (item.trim() === "") return "";
-          return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
-      }).filter(i => i !== "").join("<br>");
-  }
 
-    // 1. Modificación: Eliminamos la tarjeta visualmente al instante
-  function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
-      // Eliminación visual instantánea
-      elementoTarjeta.style.transition = "opacity 0.3s, transform 0.3s";
-      elementoTarjeta.style.opacity = "0";
-      elementoTarjeta.style.transform = "scale(0.8)";
-      setTimeout(() => elementoTarjeta.remove(), 300);
+                                     
 
-      // El registro sigue en segundo plano
-      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
+function limpiarIncidencia(texto) {
+    // 1. Elimina el emoji del calendario
+    let limpio = texto.replace(/📅/g, "");
+    
+    // 2. Busca el patrón "fecha: texto" y lo encierra en <b> (negrita)
+    // Cambia cada entrada separada por "|" por un bloque con salto de línea
+    return limpio.split('|').map(item => {
+        if (item.trim() === "") return "";
+        // Pone en negrita la parte de la fecha (todo lo que está antes de los dos puntos)
+        return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
+    }).filter(i => i !== "").join("<br>");
+}
 
-      fetch(urlFinal)
-        .then(r => r.json())
-        .then(data => {
-            if (data.resultado !== "OK") {
-                console.error("Error en servidor:", data.resultado);
-                // Opcional: mostrar una notificación discreta si falla
-            }
-        })
-        .catch(err => console.error("Error de conexión:", err));
-  }
+// Variable global para controlar el progreso
+let isDragging = false;
 
-  // 2. Modificación: Pasamos el elementoTarjeta al iniciarSwipe
-  function iniciarSwipe(e) {
-      const handle = e.currentTarget;
-      const numT = handle.getAttribute('data-num');
-      const zona = handle.getAttribute('data-zona');
-      const nombreCodificado = handle.getAttribute('data-nombre');
-      const tarjeta = handle.closest('.card-container'); // Identificamos la tarjeta padre
-      
-      const container = handle.parentElement;
-      const startX = e.touches[0].clientX;
-      const maxX = container.offsetWidth - handle.offsetWidth - 10;
-      
-      handle.style.transition = "none";
 
-      function mover(event) {
-          let deltaX = event.touches[0].clientX - startX;
-          let pos = Math.max(0, Math.min(deltaX, maxX));
-          handle.style.transform = `translateX(${pos}px)`;
-          
-          if (pos >= maxX * 0.95) {
-              document.removeEventListener('touchmove', mover);
-              document.removeEventListener('touchend', terminar);
-              // Llamamos a la función con el elemento para poder borrarlo
-              enviarAlServidor(numT, zona, nombreCodificado, tarjeta);
+    // 1. Función única para enviar al servidor
+function enviarAlServidor(numT, zona, nombreCodificado) {
+    // Decodificamos el nombre al recibirlo
+    const nombre = decodeURIComponent(nombreCodificado);
+    const log = document.getElementById('debug-log');
+    log.innerHTML = "Enviando " + numT + " para " + nombre + "...";
+    
+    google.script.run
+      .withSuccessHandler((respuesta) => {
+          if (respuesta === "OK") {
+              log.innerHTML = "ÉXITO";
+              alert("Territorio " + numT + " entregado correctamente.");
+              cargar(); 
+          } else {
+              log.innerHTML = "ERROR: " + respuesta;
           }
-      }
+      })
+      .withFailureHandler((err) => {
+          log.innerHTML = "ERROR CRÍTICO: " + err;
+      })
+      .registrarEntrega(numT, nombre, zona);
+}
 
-      function terminar() {
-          document.removeEventListener('touchmove', mover);
-          handle.style.transition = "transform 0.3s ease";
-          handle.style.transform = "translateX(0px)";
-      }
 
-      document.addEventListener('touchmove', mover, {passive: false});
-      document.addEventListener('touchend', terminar, {once: true});
-  }
+// 2. Función simplificada para el deslizamiento táctil
+
+function iniciarSwipe(e) {
+    const handle = e.currentTarget;
+    const numT = handle.getAttribute('data-num');
+    const zona = handle.getAttribute('data-zona');
+    const nombre = decodeURIComponent(handle.getAttribute('data-nombre'));
+    
+    const container = handle.parentElement;
+    const startX = e.touches[0].clientX;
+    const maxX = container.offsetWidth - handle.offsetWidth - 10;
+
+    function mover(event) {
+        let deltaX = event.touches[0].clientX - startX;
+        let pos = Math.max(0, Math.min(deltaX, maxX));
+        handle.style.transform = `translateX(${pos}px)`;
+        if (pos >= maxX * 0.9) {
+            document.removeEventListener('touchmove', mover);
+            enviarAlServidor(numT, zona, nombre);
+        }
+    }
+
+    function terminar() {
+        document.removeEventListener('touchmove', mover);
+        handle.style.transition = "transform 0.3s ease";
+        handle.style.transform = "translateX(0px)";
+        setTimeout(() => handle.style.transition = "none", 300);
+    }
+
+    document.addEventListener('touchmove', mover, {passive: false});
+    document.addEventListener('touchend', terminar, {once: true});
+}
+
+
+    function iniciarSwipe(e, tipo, index, numT, zona, nombreCodificado) {
+    // Decodificamos el nombre aquí mismo
+    const nombre = decodeURIComponent(nombreCodificado);
+    
+    const handle = e.currentTarget;
+    const container = handle.parentElement;
+    const startX = e.touches[0].clientX;
+    const maxX = container.offsetWidth - handle.offsetWidth - 10;
+
+    function mover(event) {
+        let deltaX = event.touches[0].clientX - startX;
+        let pos = Math.max(0, Math.min(deltaX, maxX));
+        handle.style.transform = `translateX(${pos}px)`;
+        
+        if (pos >= maxX * 0.9) {
+            document.removeEventListener('touchmove', mover);
+            enviarAlServidor(numT, zona, nombre);
+        }
+    }
+
+    function terminar() {
+        document.removeEventListener('touchmove', mover);
+        handle.style.transition = "transform 0.3s ease";
+        handle.style.transform = "translateX(0px)";
+        setTimeout(() => handle.style.transition = "none", 300);
+    }
+
+    document.addEventListener('touchmove', mover, {passive: false});
+    document.addEventListener('touchend', terminar, {once: true});
+}
+
+
+    
+    
+
+
 
 
   cargar();
 </script>
 </body>
-</html>
 </html>
