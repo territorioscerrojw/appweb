@@ -66,7 +66,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   grid-template-rows: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 400px; /* Altura mínima inicial */
+
 }
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
 
@@ -79,6 +79,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
+  backface-visibility: hidden;
 }
 .card-back { transform: rotateY(180deg); }
 
@@ -86,6 +87,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   visibility: hidden !important; 
   pointer-events: none !important;
   display: flex !important; /* Mantiene su lugar físico */
+  z-index: -1;
 }
 
 .card-container.flipped .card-front .btn-more { display: none !important; }
@@ -168,9 +170,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 }
 
 .btn-back-action i { font-size: 1.5rem; margin-bottom: 8px; }
-
 .btn-more {
-  margin-top: auto; /* Fuerza el botón al borde inferior */
+  margin-top: auto;
   width: 100%;
   padding: 18px;
   border-top: 1px solid rgba(0,0,0,0.1);
