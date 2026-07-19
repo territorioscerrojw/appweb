@@ -394,12 +394,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
+                        <!-- CARA FRONTAL -->
                         <div class="card-front">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <!-- ESTRUCTURA AJUSTADA: Separación forzada con padding-right -->
                             <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                                 <div style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
                                     <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px; padding-right: 40px; white-space: nowrap;">TIEMPO RESTANTE</span>
@@ -418,35 +418,22 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
-                        <div class="card-back">
-    <div class="card-header">
-        <span class="card-num">${t.num}</span>
-        <span class="card-zona">${t.zona}</span>
-    </div>
-    
-    <div class="calles-container">
-        <div class="calles-texto">${t.calles}</div>
-    </div>
-    
-    <div class="btns-back-row">
-        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;">
-            <i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span>
-        </a>
-        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;">
-            <i class="fa-solid fa-location-arrow"></i><span>GPS</span>
-        </a>
-        <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;">
-            <i class="fa-solid fa-rotate"></i><span>RENOVAR</span>
-        </button>
-    </div>
 
-   
-    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
-</div>
+                        <!-- CARA TRASERA -->
+                        <div class="card-back">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
+                            <div class="btns-back-row">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
+                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
+                            </div>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+                        </div>
+                    </div>
                 </div>`;
             }).join('')}</div>`;
 }
-
 
 
 
