@@ -426,10 +426,9 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
                                 <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                                 </div>
-                                
+                            </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
-                        </div>
-                    </div>
+                       </div>
                 </div>`;
             }).join('')}</div>`;
 }
