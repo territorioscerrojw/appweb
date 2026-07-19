@@ -403,45 +403,42 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        <!-- FRENTE -->
-                        <div class="card-front">
+                        <!-- FRENTE: Estructura fija -->
+                        <div class="card-front" style="display: flex; flex-direction: column; position: relative;">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem;">${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <div class="tiempo-container">
-                                <div class="tiempo-text-wrapper">
-                                    <span class="anillo-label">TIEMPO</span>
-                                    <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
-                                </div>
+                            <div class="tiempo-container" style="flex: 1;">
+                                <span class="anillo-label">TIEMPO RESTANTE</span>
+                                <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
                                 <div class="barra-container"><div class="barra-progreso" style="width: ${porcentaje}%; background-color: ${color};"></div></div>
                             </div>
 
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
-                                     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
-                                </div>
+                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)"></div>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">DETALLES</button>
+                            <!-- Botón Detalles: Esquina inferior derecha -->
+                            <button class="btn-more" style="position: absolute; bottom: 10px; right: 10px; width: auto; padding: 5px 15px;" onclick="girarTarjeta('${tipo}', ${i})">DETALLES</button>
                         </div>
 
-                        <!-- DORSO -->
-                        <div class="card-back">
+                        <!-- DORSO: Estructura idéntica -->
+                        <div class="card-back" style="display: flex; flex-direction: column; position: relative;">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
+                            <div class="calles-container" style="flex: 1;"><div class="calles-texto">${t.calles}</div></div>
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action">INCIDENCIA</a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action">GPS</a>
                                 <button class="btn-back-action">RENOVAR</button>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+                            <!-- Botón Volver: Misma posición que Detalles -->
+                            <button class="btn-more" style="position: absolute; bottom: 10px; right: 10px; width: auto; padding: 5px 15px;" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
-
 
 
 
