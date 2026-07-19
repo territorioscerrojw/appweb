@@ -92,6 +92,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  position: relative; /* Cambia a relative para que el absoluto del botón funcione dentro */
+  min-height: 400px;  /* Asegúrate de que tengan una altura mínima */
+  padding-bottom: 60px; /* IMPORTANTE: Espacio extra abajo para que el botón no tape el contenido */
+  box-sizing: border-box;
 }
 
 .card-back {
@@ -215,20 +219,21 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   margin-bottom: 8px;
 }
 
-.btn-more { 
-  width: 100%; 
-  padding: 18px; 
-  border: none; 
-  background: rgba(0,0,0,0.03); 
-  color: #007aff; 
-  font-weight: 800; 
-  cursor: pointer; 
-  border-top: 0.5px solid rgba(0,0,0,0.1); 
+.btn-more {
+  position: absolute; /* Anclado al fondo */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 18px;
+  border: none;
+  background: rgba(0,0,0,0.03);
+  color: #007aff;
+  font-weight: 800;
+  cursor: pointer;
+  border-top: 0.5px solid rgba(0,0,0,0.1);
   border-radius: 0 0 18px 18px;
   box-sizing: border-box;
   pointer-events: auto !important;
-  position: relative;
-  z-index: 20;
 }
 
 .btn-theme { 
@@ -427,7 +432,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
                                 <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
-                            </div>
+                           
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
                     </div>
