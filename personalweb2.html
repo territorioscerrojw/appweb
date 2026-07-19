@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,8 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Whisper&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
+  <style>
 :root {
   --primary: #1c1c1e;
   --bg: #e8e8ed;
@@ -41,7 +41,7 @@ body {
 header {
   text-align: center;
   padding: 15px 5px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
   position: relative;
@@ -68,18 +68,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   transform-style: preserve-3d;
 }
 
-/* --- LOGICA DE GIRO Y CLICS --- */
 .card-container.flipped .card-inner {
   transform: rotateY(180deg);
-}
-
-.card-container.flipped .card-front {
-    pointer-events: none; /* Desactiva el frente al girar */
-}
-
-.card-container.flipped .card-back {
-    z-index: 10;
-    pointer-events: auto; /* Activa el dorso al girar */
 }
 
 .card-front, .card-back {
@@ -101,24 +91,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   height: 100%;
   transform: rotateY(180deg);
   padding: 20px;
-  overflow: hidden;
-  justify-content: space-between;
-}
-
-/* Ocultar elementos de swipe en el dorso */
-.card-back .swipe-container, 
-.card-back .swipe-handle {
-  display: none !important;
-  visibility: hidden !important;
-}
-/* Cuando la tarjeta está girada, ocultamos el botón de detalles del frente */
-.card-container.flipped .card-front .btn-more {
-    display: none !important;
-}
-
-/* Aseguramos que el botón del dorso sea el único visible en esa zona */
-.card-container:not(.flipped) .card-back .btn-more {
-    display: none !important;
 }
 
 .card-header {
@@ -147,29 +119,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
 .anillo-svg-container { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
 .texto-anillo-dinamico { color: var(--color-texto-anillo); font-weight: 900; line-height: 1.1; font-size: 0.95rem; text-align: center; }
-.tiempo-container { 
-  padding: 15px 25px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-  border-bottom: 0.5px solid rgba(0,0,0,0.05);
-}
-
-.tiempo-text-wrapper { display: flex; flex-direction: column; align-items: flex-start; }
-.anillo-label { font-size: 0.7rem; color: #8e8e93; font-weight: 800; text-transform: uppercase; }
-.texto-tiempo-grande { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-
-.barra-container {
-  width: 120px;
-  height: 12px;
-  background: #eee;
-  border-radius: 6px;
-  overflow: hidden;
-}
-.barra-progreso {
-  height: 100%;
-  transition: width 0.5s ease-in-out;
-}
 
 .calles-container {
   flex: 1;
@@ -187,8 +136,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin: 15px 0;
-  position: relative;
-  z-index: 20;
 }
 
 .btn-back-action {
@@ -205,7 +152,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   text-decoration: none;
   border: none;
   cursor: pointer;
-  pointer-events: auto !important;
+  transition: transform 0.2s;
 }
 
 .btn-back-action i {
@@ -224,9 +171,6 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   border-top: 0.5px solid rgba(0,0,0,0.1); 
   border-radius: 0 0 18px 18px;
   box-sizing: border-box;
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 20;
 }
 
 .btn-theme { 
@@ -308,7 +252,6 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
 </style>
-
 </head>
 <body>
 
@@ -380,8 +323,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
             <div class="grid">${lista.map((t, i) => {
                 let diasTotales = calcularDiasTotales(t.tiempo);
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
-                let porcentaje = Math.min(100, (diasTotales / 120) * 100);
-                
+                let textoFormateado = t.tiempo.replace(" y ", "<br><span style='font-size:0.7em;'>y</span><br>");
+                const radio = 35;
+                const circunferencia = 2 * Math.PI * radio;
+                const arcoTotal = (240 / 360) * circunferencia;
+                const porcentaje = Math.min(100, (diasTotales / 120) * 100);
+                const offset = arcoTotal - (porcentaje / 100) * arcoTotal;
                 const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
                 const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
@@ -396,18 +343,13 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
-                            
-                            <!-- ESTRUCTURA AJUSTADA: Separación forzada con padding-right -->
-                            <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
-                                <div style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
-                                    <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px; padding-right: 40px; white-space: nowrap;">TIEMPO RESTANTE</span>
-                                    <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
-                                </div>
-                                <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
-                                    <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
+                            <div class="anillo-wrapper">
+                                <div class="anillo-label">TIEMPO RESTANTE</div>
+                                <div class="anillo-svg-container">
+                                    <svg width="80" height="80" style="transform: rotate(90deg);"><circle cx="40" cy="40" r="${radio}" fill="none" stroke="#eee" stroke-width="8" stroke-dasharray="${arcoTotal} ${circunferencia}" /><circle cx="40" cy="40" r="${radio}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${arcoTotal} ${circunferencia}" stroke-dashoffset="${offset}" /></svg>
+                                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center;"><div class="texto-anillo-dinamico">${textoFormateado}</div></div>
                                 </div>
                             </div>
-
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
@@ -422,7 +364,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
-                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
+                                <button class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                             </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
@@ -430,10 +372,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 </div>`;
             }).join('')}</div>`;
 }
-
-
-
-
 
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
@@ -506,6 +444,5 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
   cargar();
 </script>
 </body>
-</html>
 </html>
 </html>
