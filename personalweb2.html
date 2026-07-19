@@ -41,7 +41,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .card-container { perspective: 1000px; width: 100%; }
 .card-inner { position: relative; width: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; will-change: transform; }
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
-
+.card-container.is-flipping .swipe-text,
+.card-container.is-flipping .icono-latido {
+  animation: none !important;
+  opacity: 0 !important;
+  transition: opacity 0.1s ease;
+}
+  .card-container.is-flipping {
+  pointer-events: none;
+}
 /* CARAS */
 .card-front, .card-back {
   width: 100%;
