@@ -92,22 +92,8 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 450px; /* Ajusta este valor al tamaño deseado */
-  display: flex;
-  
-  position: relative;
-  overflow: hidden;
-}
-/* El contenido central (Mapa / Lista de Calles) debe ocupar el espacio restante */
-.img-box-custom, .calles-container {
-  flex-grow: 1;
-  overflow-y: auto;
 }
 
-/* Los pies de tarjeta se mantienen en la base */
-.swipe-container { margin-top: auto; }
-.btn-more { flex-shrink: 0; }
-  
 .card-back {
   position: absolute;
   top: 0;
@@ -386,6 +372,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
       if (diasMatch) dias += parseInt(diasMatch[1]);
       return dias;
   }
+
 function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
 
@@ -395,59 +382,56 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
                 let porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 
-                const urlIncidencias = `https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+                const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
+                const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
                 let matches = (t.coords || "").match(/[-0-9.]+/g);
                 let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
                 let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
                 const nombreSeguro = encodeURIComponent(nombreH);
 
-                // Estilos comunes para asegurar la misma posición
-                const commonStyle = "height: 480px; display: flex; flex-direction: column; padding: 0;";
-                const headerStyle = "padding: 15px 20px; background: rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; height: 60px; box-sizing: border-box;";
-
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
-                        <!-- FRENTE -->
-                        <div class="card-front" style="${commonStyle}">
-                            <div class="card-header" style="${headerStyle}"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="img-box-custom" style="flex: 1;"><img src="${t.imgMini}" alt="Imagen"></div>
+                        <div class="card-front">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
+                            ${tieneIncidencias ? `<div style="padding:10px; font-size:0.9rem; border-bottom:0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
-                            <!-- Bloque de incidencias con altura reservada para no mover nada -->
-                            <div style="height: 40px; padding: 0 20px; font-size: 0.8rem; display: flex; align-items: center; color: #ff3b30;">
-                                ${tieneIncidencias ? `<i class="fa-solid fa-triangle-exclamation"></i>&nbsp; ${limpiarIncidencia(t.notes)}` : ''}
-                            </div>
-                            
-                            <div class="tiempo-container" style="padding: 10px 20px;">
-                                <div class="anillo-label">TIEMPO RESTANTE</div>
-                                <div class="texto-tiempo-grande">${t.tiempo.replace(" y ", " ")}</div>
-                                <div class="barra-container"><div class="barra-progreso" style="width: ${porcentaje}%; background-color: ${color};"></div></div>
+                            <!-- ESTRUCTURA AJUSTADA: Separación forzada con padding-right -->
+                            <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
+                                    <span class="anillo-label" style="font-size: 0.75rem; letter-spacing: 0.5px; padding-right: 40px; white-space: nowrap;">TIEMPO RESTANTE</span>
+                                    <div class="texto-tiempo-grande" style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">${t.tiempo.replace(" y ", " ")}</div>
+                                </div>
+                                <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
+                                    <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
+                                </div>
                             </div>
 
-                            <div class="swipe-container" style="margin: 10px 20px;">
+                            <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)"></div>
+                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
+                                     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
+                                </div>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin: 0 20px 15px 20px;">▼ MÁS DETALLES</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
-
-                        <!-- TRASERA -->
-                        <div class="card-back" style="${commonStyle}">
-                            <div class="card-header" style="${headerStyle}"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="calles-container" style="flex: 1; padding: 20px; overflow-y: auto;"><div class="calles-texto">${t.calles}</div></div>
-                            
-                            <!-- Bloque de botones original -->
-                            <div class="btns-back-row" style="padding: 0 20px; margin: 10px 0;">
+                        <div class="card-back">
+                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
+                            <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
-                                <button onclick="alert('Renovando...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
+                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                             </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})" style="margin: 0 20px 15px 20px;">▲ VOLVER</button>
+                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
                     </div>
                 </div>`;
             }).join('')}</div>`;
 }
+
+
 
 
 
