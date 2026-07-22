@@ -575,10 +575,16 @@ h2 {
       return dias;
   }
 
-   function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+     function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
-    // El selector de ordenación solo se muestra si la categoría tiene elementos y no está vacía
+    // ORDENAR POR DEFECTO: Tiempo restante (de menor a mayor tiempo restante)
+    lista.sort((a, b) => {
+      let diasA = calcularDiasTotales(a.tiempo || "0");
+      let diasB = calcularDiasTotales(b.tiempo || "0");
+      return diasA - diasB;
+    });
+
     let idGrid = `grid-${tipo}`;
     
     let htmlOrdenacion = `
@@ -586,7 +592,7 @@ h2 {
         <span class="ordenar-label">ORDENAR POR:</span>
         <select class="ordenar-select" onchange="cambiarOrden('${tipo}', this.value)">
           <option value="numero">Número</option>
-          <option value="tiempo">Tiempo restante</option>
+          <option value="tiempo" selected>Tiempo restante</option> <!-- SELECCIONADO POR DEFECTO -->
           <option value="cercania">Cercanía</option>
         </select>
       </div>`;
@@ -595,6 +601,7 @@ h2 {
             ${htmlOrdenacion}
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
+
 
   // Extraemos la generación de tarjetas a una función auxiliar para poder repintarlas al ordenar
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
@@ -831,13 +838,14 @@ function lanzarEfectoAleatorio(tarjeta) {
       });
       actualizarGridVisual(tipo, lista);
 
-    } else if (criterio === 'tiempo') {
+      } else if (criterio === 'tiempo') {
       lista.sort((a, b) => {
         let diasA = calcularDiasTotales(a.tiempo || "0");
         let diasB = calcularDiasTotales(b.tiempo || "0");
-        return diasA - diasB; // Ordena de menor a mayor tiempo restante (o viceversa según prefieras)
+        return diasA - diasB;
       });
       actualizarGridVisual(tipo, lista);
+
 
     } else if (criterio === 'cercania') {
       if (ubicacionUsuario) {
