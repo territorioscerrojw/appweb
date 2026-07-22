@@ -420,9 +420,10 @@ h2 {
 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
-/* Estilos para tarjetas bloqueadas durante campaña */
+/* Estilos actualizados para tarjetas bloqueadas durante campaña (translúcidas y menos borrosas) */
 .card-container.bloqueada .card-inner {
-  filter: blur(6px);
+  filter: blur(1.5px); /* Menos desenfoque para que se siga viendo la estructura */
+  opacity: 0.65;       /* Efecto translúcido para ver el fondo */
   pointer-events: none;
   user-select: none;
 }
@@ -440,16 +441,16 @@ h2 {
   z-index: 50;
   padding: 20px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.25); /* Fondo oscuro más suave para que no tape del todo */
   border-radius: 18px;
 }
 
 .texto-bloqueo {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 800;
   text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
 }
   
