@@ -217,7 +217,32 @@ body.dark-mode .card-header {
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
-.btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; }
+/* Botón de tema general (Modo Claro) */
+.btn-theme { 
+  position: absolute; 
+  right: 20px; 
+  top: 15px; 
+  width: 45px; 
+  height: 45px; 
+  border-radius: 50%; 
+  border: 0.5px solid rgba(0,0,0,0.1); 
+  background: #ffffff; /* Fondo blanco en modo claro */
+  color: #1c1c1e;     /* Icono oscuro en modo claro */
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  font-size: 1.3rem; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Botón de tema en Modo Oscuro */
+body.dark-mode .btn-theme {
+  background: #161b22; /* Fondo oscuro a juego con las tarjetas */
+  color: #f0f6fc;     /* Icono claro para que contraste */
+  border: 0.5px solid rgba(255, 255, 255, 0.15); /* Borde sutil iluminado */
+}
 
 .swipe-text {
   position: absolute; 
