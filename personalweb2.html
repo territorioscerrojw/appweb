@@ -92,25 +92,38 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; }
 .calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; }
 
-.btns-back-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 15px; padding: 0; flex-shrink: 0; }
+.btns-back-row { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 8px; /* Reducimos ligeramente el espacio entre botones para ganar margen */
+  margin: 12px 10px; /* Reducimos los márgenes laterales de 15px a 10px */
+  padding: 0; 
+  flex-shrink: 0; 
+  box-sizing: border-box;
+}
+
 .btn-back-action { 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
   justify-content: space-between; 
   aspect-ratio: 1 / 1; 
-  padding: 14px 10px 10px 10px; 
-  border-radius: 18px; 
+  padding: 10px 4px 8px 4px; /* Ajustamos el padding interno para aprovechar mejor el espacio */
+  border-radius: 16px; 
   font-weight: 700; 
-  font-size: 0.9rem; 
+  font-size: 0.65rem; /* Tu tamaño de letra */
   text-align: center; 
   border: none; 
   cursor: pointer; 
   color: white; 
   text-decoration: none;
+  box-sizing: border-box; /* Vital para que el padding y bordes no expandan el ancho real */
+  width: 100%; /* Forzamos a que respete estrictamente su columna del grid */
+  min-width: 0; /* Evita que los elementos flexibles fuercen el ancho del grid */
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35), inset 0 -3px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
+
 .btn-back-action:active {
   transform: translateY(2px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2);
