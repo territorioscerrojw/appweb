@@ -88,6 +88,13 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .card-zona { font-size: 1rem; color: #8e8e93; font-weight: 600; }
 .img-box-custom { height: 200px; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
+.etiqueta-calles {
+  padding: 12px 20px 0 20px;
+  font-size: 0.9rem; /* Cambia el tamaño aquí */
+  font-weight: 700;
+  color: #8e8e93;
+  letter-spacing: 0.5px;
+}
 
 .calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; }
 .calles-texto { font-size: 1rem; white-space: pre-line; line-height: 1.4; }
@@ -322,7 +329,7 @@ h2 {
                         <!-- CARA TRASERA -->
                         <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div style="padding: 12px 20px 0 20px; font-size: 0.75rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">NUMERACIÓN DE LAS CALLES</div>
+                            <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
                             <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
