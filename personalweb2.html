@@ -108,31 +108,35 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   align-items: center; 
   justify-content: space-between; 
   aspect-ratio: 1 / 1; 
-  padding: 10px 4px 8px 4px; /* Ajustamos el padding interno para aprovechar mejor el espacio */
+  padding: 14px 10px 10px 10px; 
   border-radius: 16px; 
   font-weight: 700; 
-  font-size: 0.9rem; /* Tu tamaño de letra */
+  font-size: 0.9rem; 
   text-align: center; 
   border: none; 
   cursor: pointer; 
   color: white; 
   text-decoration: none;
-  box-sizing: border-box; /* Vital para que el padding y bordes no expandan el ancho real */
-  width: 100%; /* Forzamos a que respete estrictamente su columna del grid */
-  min-width: 0; /* Evita que los elementos flexibles fuercen el ancho del grid */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35), inset 0 -3px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-sizing: border-box; 
+  width: 100%; 
+  min-width: 0; 
+  /* Diseño limpio y plano con una sombra muy sutil y moderna */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-back-action:active {
-  transform: translateY(2px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  transform: scale(0.96); /* Sutil efecto de presión moderno */
+  opacity: 0.9;
 }
+
 .btn-back-action i {
   font-size: 2.2rem !important; 
   margin-top: 4px;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  /* Eliminamos el relieve del icono para que sea limpio */
+  filter: none; 
 }
+
 
 .btn-more { 
   width: 100%; 
@@ -321,7 +325,7 @@ h2 {
                             <div style="padding: 12px 20px 0 20px; font-size: 0.75rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">NUMERACIÓN DE LAS CALLES</div>
                             <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
                             <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
                                 <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>
                            </div>
