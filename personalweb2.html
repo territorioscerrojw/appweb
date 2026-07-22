@@ -66,50 +66,47 @@ body.dark-mode .btn-more {
 
 body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--primary); transition: background 0.3s, color 0.3s; }
 
-header { text-align: center; padding: 15px 5px; background: transparent; backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(0,0,0,0.1); position: relative; }
-body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
-
-header.main-header {
+header { 
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 15px 20px;
-  background: transparent;
-  backdrop-filter: blur(20px);
-  border-bottom: 0.5px solid rgba(0,0,0,0.1);
-  position: relative;
+  padding: 15px 20px; 
+  background: transparent; 
+  backdrop-filter: blur(20px); 
+  border-bottom: 0.5px solid rgba(0,0,0,0.1); 
+  position: relative; 
   box-sizing: border-box;
   width: 100%;
 }
 
-body.dark-mode header.main-header { 
+body.dark-mode header { 
   background: rgba(0,0,0,0.3); 
   border-color: rgba(255,255,255,0.1); 
 }
 
-/* Contenedor que ocupa exactamente el hueco libre entre la izquierda y el botón */
+/* Contenedor que delimita exactamente el espacio libre entre el borde izquierdo y el botón */
 .user-name-container {
   position: absolute;
   left: 20px;
-  right: 80px; /* Deja el espacio exacto del botón de la derecha para que nunca se crucen */
+  right: 80px; /* Deja libre el espacio exacto del botón de tema para evitar solapes */
   display: flex;
-  justify-content: center; /* Centra el texto en ese espacio */
+  justify-content: center; /* Centra el nombre en ese espacio */
   align-items: center;
   overflow: hidden;
 }
 
-/* El texto de la cabecera */
 .user-name { 
   font-family: 'Whisper', cursive; 
-  font-size: 2.2rem; /* Puedes cambiar este valor al tamaño fijo que te guste */
+  font-size: clamp(1.5rem, 10vw, 2.8rem); 
   margin: 0; 
-  font-weight: 400;
-  white-space: nowrap; /* Mantiene el texto estrictamente en un solo renglón */
+  font-weight: 400; 
+  white-space: nowrap; /* Mantiene el nombre estrictamente en un solo renglón */
   text-align: center;
 }
 
+body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
 
-
+.user-name { font-family: 'Whisper', cursive; font-size: clamp(1.5rem, 10vw, 2.8rem); margin: 0; font-weight: 400; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
 /* ESTRUCTURA 3D */
@@ -400,16 +397,14 @@ h2 {
 </head>
 <body>
 
-<header class="main-header">
+<header>
   <div class="user-name-container">
-    <h1 class="user-name" id="user-display"></h1>
+    <div class="user-name" id="user-display"></div>
   </div>
   <button class="btn-theme" onclick="toggleTheme()">
     <i class="fa-solid fa-circle-half-stroke"></i>
   </button>
 </header>
-
-
 
 
 <div id="grid-container"></div>
@@ -618,7 +613,6 @@ h2 {
       const modal = document.getElementById('image-viewer-modal');
       modal.classList.remove('active');
   }
-
 
   cargar();
 </script>
