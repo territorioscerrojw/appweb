@@ -68,6 +68,50 @@ body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0
 
 header { text-align: center; padding: 15px 5px; background: transparent; backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(0,0,0,0.1); position: relative; }
 body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+header.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  position: relative;
+  box-sizing: border-box;
+}
+body.dark-mode header.main-header { 
+  background: rgba(0,0,0,0.3); 
+  border-color: rgba(255,255,255,0.1); 
+}
+
+/* Espaciador para equilibrar el ancho exacto del botón de la derecha (45px + márgenes) */
+.header-spacer {
+  width: 45px;
+  flex-shrink: 0;
+}
+
+/* Contenedor central que obliga al texto a centrarse en el espacio libre */
+.user-name-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+/* Nombre con tamaño adaptable en un solo renglón */
+.user-name { 
+  font-family: 'Whisper', cursive; 
+  /* Ajusta dinámicamente el tamaño entre 1.5rem y 2.6rem según la pantalla */
+  font-size: clamp(1.4rem, 5vw, 2.6rem); 
+  margin: 0; 
+  font-weight: 400;
+  white-space: nowrap; /* Fuerza a que esté estrictamente en un solo renglón */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Si el nombre fuera exageradamente largo, pone puntos suspensivos en vez de romper la línea */
+  text-align: center;
+}
 
 .user-name { font-family: 'Whisper', cursive; font-size: clamp(1.5rem, 10vw, 2.8rem); margin: 0; font-weight: 400; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
@@ -360,12 +404,15 @@ h2 {
 </head>
 <body>
 
-<header>
-  <div class="user-name" id="user-display"></div>
+<header class="main-header">
+  <div class="header-spacer"></div> <div class="user-name-container">
+    <h1 class="user-name" id="user-display"></h1>
+  </div>
   <button class="btn-theme" onclick="toggleTheme()">
     <i class="fa-solid fa-circle-half-stroke"></i>
   </button>
 </header>
+
 
 <div id="grid-container"></div>
 <div id="debug-log" style="color: #8e8e93; font-size: 11px; margin: 10px; padding: 8px; border: 1px dashed #ccc; text-align:center; border-radius:8px;">Esperando acciones...</div>
