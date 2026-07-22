@@ -72,7 +72,7 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 header.main-header {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Alinea los elementos hacia la derecha */
+  justify-content: flex-end;
   padding: 15px 20px;
   background: transparent;
   backdrop-filter: blur(20px);
@@ -82,34 +82,25 @@ header.main-header {
   width: 100%;
 }
 
-body.dark-mode header.main-header { 
-  background: rgba(0,0,0,0.3); 
-  border-color: rgba(255,255,255,0.1); 
-}
-
-/* Contenedor que ocupa absolutamente todo el espacio disponible a la izquierda del botón de tema */
 .user-name-container {
   position: absolute;
   left: 20px;
-  right: 80px; /* Deja espacio exacto para el botón de tema (45px del botón + márgenes) para que nunca se solapen */
+  right: 80px; /* Espacio libre exacto entre el borde izquierdo y el botón de tema */
   display: flex;
-  justify-content: center; /* Centra el nombre de forma milimétrica en ese espacio */
+  justify-content: center;
   align-items: center;
   overflow: hidden;
 }
 
-/* Nombre de usuario con ajuste automático y un solo renglón estricto */
 .user-name { 
   font-family: 'Whisper', cursive; 
-  font-size: clamp(1.2rem, 4vw, 2.4rem); /* Se reduce automáticamente si el nombre es muy largo */
   margin: 0; 
   font-weight: 400;
-  white-space: nowrap; /* Fuerza estricta a un único renglón */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Si superara el espacio, trunca con puntos suspensivos en lugar de bajar de línea */
+  white-space: nowrap; /* Impide que baje de renglón */
   text-align: center;
-  width: 100%;
+  /* El tamaño inicial no importa porque JavaScript lo calculará y ajustará al instante */
 }
+
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
@@ -618,6 +609,22 @@ h2 {
       const modal = document.getElementById('image-viewer-modal');
       modal.classList.remove('active');
   }
+function ajustarTamanioNombre() {
+    const contenedor = document.querySelector('.user-name-container');
+    const nombreEl = document.getElementById('user-display');
+    
+    if (!contenedor || !nombreEl) return;
+
+    // Empezamos probando con un tamaño grande (ej. 2.8rem)
+    let fontSize = 2.8; 
+    nombreEl.style.fontSize = fontSize + 'rem';
+
+    // Mientras el texto sea más ancho que el contenedor disponible, reducimos el tamaño poco a poco
+    while (nombreEl.scrollWidth > contenedor.clientWidth && fontSize > 1.0) {
+        fontSize -= 0.1;
+        nombreEl.style.fontSize = fontSize + 'rem';
+    }
+}
 
   cargar();
 </script>
