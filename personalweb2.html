@@ -579,7 +579,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
           
           // 3. Se elimina del DOM una vez completada la transición de salida
           setTimeout(() => elementoTarjeta.remove(), 400);
-      }, 1200); // <--- Aquí esperamos 1.2 segundos antes de que la tarjeta empiece a irse
+      }, 1000); // <--- Aquí esperamos 1.2 segundos antes de que la tarjeta empiece a irse
 
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
 
