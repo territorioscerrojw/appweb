@@ -134,6 +134,40 @@ body.dark-mode .btn-theme {
 }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
+/* Contenedor de la barra de ordenación */
+.ordenar-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: -10px 10px 15px 10px;
+  padding: 0 5px;
+}
+
+.ordenar-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8e8e93;
+  letter-spacing: 0.5px;
+}
+
+.ordenar-select {
+  background-color: #f2f2f7;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1c1c1e;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ordenar-select:focus {
+  border-color: var(--primary);
+  background-color: #fff;
+}
 
 /* ESTRUCTURA 3D */
 .card-container { perspective: 1000px; width: 100%; }
@@ -539,77 +573,96 @@ h2 {
       return dias;
   }
 
- function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+   function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
+    // El selector de ordenación solo se muestra si la categoría tiene elementos y no está vacía
+    let idGrid = `grid-${tipo}`;
+    
+    let htmlOrdenacion = `
+      <div class="ordenar-container">
+        <span class="ordenar-label">ORDENAR POR:</span>
+        <select class="ordenar-select" onchange="cambiarOrden('${tipo}', this.value)">
+          <option value="numero">Número</option>
+          <option value="tiempo">Tiempo restante</option>
+          <option value="cercania">Cercanía</option>
+        </select>
+      </div>`;
+
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
-            <div class="grid">${lista.map((t, i) => {
-                let diasTotales = calcularDiasTotales(t.tiempo || "0");
-                let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
-                let porcentaje = Math.min(100, (diasTotales / 120) * 100);
-                
-                const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-                const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
-                let matches = (t.coords || "").match(/[-0-9.]+/g);
-                let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
-                let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
-                const nombreSeguro = encodeURIComponent(nombreH);
+            ${htmlOrdenacion}
+            <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
+  }
 
-                let esCampana = (tipo === 'c');
-                // Si la lista es de personales o grupo, y hay campaña activa, se bloquea
-                let tarjetaBloqueada = (!esCampana && estaBloqueado);
+  // Extraemos la generación de tarjetas a una función auxiliar para poder repintarlas al ordenar
+  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+    return lista.map((t, i) => {
+        let diasTotales = calcularDiasTotales(t.tiempo || "0");
+        let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
+        let porcentaje = Math.min(100, (diasTotales / 120) * 100);
+        
+        const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
+        const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+        let matches = (t.coords || "").match(/[-0-9.]+/g);
+        let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
+        let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
+        const nombreSeguro = encodeURIComponent(nombreH);
 
-                return `
-                <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''}" id="card-container-${tipo}-${i}">
-                    ${tarjetaBloqueada ? `
-                        <div class="mensaje-bloqueo-overlay">
-                            <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRAS DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
+        let esCampana = (tipo === 'c');
+        let tarjetaBloqueada = (!esCampana && estaBloqueado);
+
+        return `
+        <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''}" id="card-container-${tipo}-${i}">
+            ${tarjetaBloqueada ? `
+                <div class="mensaje-bloqueo-overlay">
+                    <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRAS DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
+                </div>
+            ` : ''}
+            <div class="card-inner">
+                <!-- CARA FRONTAL -->
+                <div class="card-front">
+                    <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                    <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
+                    ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
+                    
+                    ${esCampana ? '' : `
+                      <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
+                            <div class="texto-tiempo-grande" style="font-size: 1.5rem; font-weight: 900; color: var(--primary); white-space: nowrap;">${t.tiempo.replace(" y ", " ")}</div>
                         </div>
-                    ` : ''}
-                    <div class="card-inner">
-                        <!-- CARA FRONTAL -->
-                        <div class="card-front">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
-                            ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
-                            
-                            ${esCampana ? '' : `
-                              <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                    <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                                    <div class="texto-tiempo-grande" style="font-size: 1.5rem; font-weight: 900; color: var(--primary); white-space: nowrap;">${t.tiempo.replace(" y ", " ")}</div>
-                                </div>
-                                <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
-                                    <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
-                                </div>
-                            </div>`}
-
-                            <div class="swipe-container">
-                                <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" data-tiporeg="${esCampana ? 'campaña' : 'normal'}" ontouchstart="iniciarSwipe(event)">
-                                     <i class="fa-solid fa-chevron-right"></i>
-                                </div>
-                            </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
+                        <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
+                            <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
                         </div>
+                    </div>`}
 
-                        <!-- CARA TRASERA -->
-                        <div class="card-back">
-                            <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                            <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
-                            <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
-                            
-                            <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
-                                ${esCampana ? '' : `<button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
-                            </div>
-                            <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+                    <div class="swipe-container">
+                        <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
+                        <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" data-tiporeg="${esCampana ? 'campaña' : 'normal'}" ontouchstart="iniciarSwipe(event)">
+                             <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>
-                </div>`;
-            }).join('')}</div>`;
+                    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
+                </div>
+
+                <!-- CARA TRASERA -->
+                <div class="card-back">
+                    <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                    <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
+                    <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
+                    
+                    <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
+                        <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
+                        <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
+                        ${esCampana ? '' : `<button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
+                    </div>
+                    <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
   }
+
 
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
@@ -756,6 +809,95 @@ function lanzarEfectoAleatorio(tarjeta) {
             break;
     }
 }
+
+  // Variable global para almacenar la ubicación actual del usuario una vez obtenida
+  let ubicacionUsuario = null;
+
+  function cambiarOrden(tipo, criterio) {
+    let lista = [];
+    if (tipo === 'c') lista = datosCargados.campaña;
+    if (tipo === 'p') lista = datosCargados.personales;
+    if (tipo === 'g') lista = datosCargados.grupo;
+
+    if (!lista || lista.length === 0) return;
+
+    if (criterio === 'numero') {
+      lista.sort((a, b) => {
+        let numA = parseInt(a.num.replace(/\D/g, '')) || 0;
+        let numB = parseInt(b.num.replace(/\D/g, '')) || 0;
+        return numA - numB;
+      });
+      actualizarGridVisual(tipo, lista);
+
+    } else if (criterio === 'tiempo') {
+      lista.sort((a, b) => {
+        let diasA = calcularDiasTotales(a.tiempo || "0");
+        let diasB = calcularDiasTotales(b.tiempo || "0");
+        return diasA - diasB; // Ordena de menor a mayor tiempo restante (o viceversa según prefieras)
+      });
+      actualizarGridVisual(tipo, lista);
+
+    } else if (criterio === 'cercania') {
+      if (ubicacionUsuario) {
+        ordenarPorCercania(tipo, lista, ubicacionUsuario);
+      } else {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              ubicacionUsuario = {
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
+              };
+              ordenarPorCercania(tipo, lista, ubicacionUsuario);
+            },
+            (error) => {
+              alert("No se pudo obtener tu ubicación GPS. Asegúrate de dar permisos en el navegador.");
+              console.error(error);
+            },
+            { enableHighAccuracy: true }
+          );
+        } else {
+          alert("Tu navegador no soporta geolocalización.");
+        }
+      }
+    }
+  }
+
+  function ordenarPorCercania(tipo, lista, coordsUsuario) {
+    lista.sort((a, b) => {
+      let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
+      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
+      return distA - distB; // Del más cercano al más lejano
+    });
+    actualizarGridVisual(tipo, lista);
+  }
+
+  // Fórmula de Haversine para calcular distancia en metros entre tu posición y las coordenadas del territorio (string "lat, lon")
+  function calcularDistanciaMetros(lat1, lon1, coordsString) {
+    let matches = (coordsString || "").match(/[-0-9.]+/g);
+    if (!matches || matches.length < 2) return Infinity; // Si no hay coordenadas, los manda al final
+    
+    let lat2 = parseFloat(matches[0]);
+    let lon2 = parseFloat(matches[1]);
+
+    const R = 6371e3; // Radio de la tierra en metros
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function actualizarGridVisual(tipo, listaOrdenada) {
+    let estaBloqueado = (tipo !== 'c' && campañaActivaGlobal !== "");
+    let gridElement = document.getElementById(`grid-${tipo}`);
+    if (gridElement) {
+      gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
+    }
+  }
+
   cargar();
 </script>
   <script>
