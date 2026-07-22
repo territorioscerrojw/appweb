@@ -85,14 +85,48 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .btn-more { width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.03); color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid rgba(0,0,0,0.1); margin-top: auto; flex-shrink: 0; }
 
 /* OTROS ELEMENTOS */
-.swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
-.swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; }
+
+.btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+.swipe-container { 
+  width: 90%; 
+  margin: 15px auto; 
+  height: 55px; 
+  background: rgba(0, 0, 0, 0.05); 
+  border-radius: 30px; 
+  position: relative; 
+  display: flex; 
+  align-items: center; 
+  padding: 0 5px; /* Añadimos padding para los bordes */
+  overflow: hidden; 
+  flex-shrink: 0; 
+}
+
+.swipe-handle { 
+  width: 45px; 
+  height: 45px; 
+  background: #34c759; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+  cursor: grab; 
+  z-index: 2; /* Asegura que el botón esté por encima del texto */
+  flex-shrink: 0;
+}
+
 .swipe-handle i {
   color: #fff !important; 
 }
-.btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
 .swipe-text {
-  position: absolute; width: 100%; text-align: center; font-weight: 700; color: #8e8e93; font-size: 1rem; pointer-events: none;
+  flex-grow: 1; /* Ocupa todo el espacio restante a la derecha del botón */
+  text-align: center; 
+  font-weight: 700; 
+  color: #8e8e93; 
+  font-size: 0.85rem; /* O el tamaño grande que le hayas puesto */
+  pointer-events: none;
   background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
   background-size: 200% auto;
   -webkit-background-clip: text;
