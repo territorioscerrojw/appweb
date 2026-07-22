@@ -47,48 +47,38 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   opacity: 0 !important;
   transition: opacity 0.1s ease;
 }
-  .card-container.is-flipping {
+.card-container.is-flipping {
   pointer-events: none;
 }
-/* CARAS */
+
 /* CARAS */
 .card-front, .card-back {
   width: 100%;
   display: flex;
   flex-direction: column;
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden; /* Vital para Safari / iOS */
+  -webkit-backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: 0.5px solid rgba(0,0,0,0.1);
   overflow: hidden;
 }
-
 .card-front { 
   position: relative; 
   z-index: 2;
-  transform: rotateY(0deg) translateZ(1px); /* Eleva ligeramente la cara frontal */
+  transform: rotateY(0deg) translateZ(1px);
 }
-
 .card-back { 
   position: absolute; 
   top: 0; 
   left: 0; 
   height: 100%; 
   z-index: 1;
-  transform: rotateY(180deg) translateZ(1px); /* Rota y separa la trasera */
+  transform: rotateY(180deg) translateZ(1px);
 }
 
-.card-container:not(.flipped) .card-back {
-  pointer-events: none;
-}
-
-.card-container.flipped .card-front {
-  pointer-events: none;
-}
-
-/* ANTI-PARPADEO: Se activa con JS */
+/* ANTI-PARPADEO */
 .card-container.is-flipping .swipe-text { animation: none !important; opacity: 0 !important; }
 .card-container.is-flipping .swipe-container { visibility: hidden !important; }
 
@@ -99,23 +89,15 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .img-box-custom { height: 200px; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 
-.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px; margin-top: 10px; }
+.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; }
 .calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; }
 
-.btns-back-row { 
-  display: grid; 
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 12px; 
-  margin: 15px; 
-  padding: 0; 
-  flex-shrink: 0; 
-}
-
+.btns-back-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 15px; padding: 0; flex-shrink: 0; }
 .btn-back-action { 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
-  justify-content: space-between; /* Distribuye el icono arriba y el texto abajo */
+  justify-content: space-between; 
   aspect-ratio: 1 / 1; 
   padding: 14px 10px 10px 10px; 
   border-radius: 18px; 
@@ -126,83 +108,37 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   cursor: pointer; 
   color: white; 
   text-decoration: none;
-  /* Efecto relieve y profundidad */
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35), inset 0 -3px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
-
 .btn-back-action:active {
   transform: translateY(2px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
-
-/* Icono extra grande */
 .btn-back-action i {
   font-size: 1.9rem !important; 
   margin-top: 4px;
-  /* Sutil relieve para el icono */
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
 }
 
 .btn-more { width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.03); color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid rgba(0,0,0,0.1); margin-top: auto; flex-shrink: 0; }
 
-/* OTROS ELEMENTOS */
+/* SWIPE Y ELEMENTOS */
+.swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
+.swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
+.swipe-handle i { color: #fff !important; }
 
-  .btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; 
-    font-size: 1.3rem;⁠
-
-  }
-
-.swipe-container { 
-  width: 90%; 
-  margin: 15px auto; 
-  height: 55px; 
-  background: rgba(0, 0, 0, 0.05); 
-  border-radius: 30px; 
-  position: relative; 
-  display: flex; 
-  align-items: center; 
-  overflow: hidden; 
-  flex-shrink: 0; 
-}
-
-.swipe-handle { 
-  width: 45px; 
-  height: 45px; 
-  background: #34c759; 
-  border-radius: 50%; 
-  position: absolute; /* Vuelve a estar anclado a la izquierda */
-  left: 5px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-  cursor: grab; 
-  z-index: 2; 
-}
-
-.swipe-handle i {
-  color: #fff !important; 
-}
+.btn-theme { position: absolute; right: 20px; top: 15px; width: 45px; height: 45px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.1); background: white; color: #1c1c1e; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; }
 
 .swipe-text {
-  position: absolute; 
-  width: 100%; 
-  text-align: center; 
-  font-weight: 700; 
-  color: #8e8e93; 
-  font-size: 1rem; /* O el tamaño grande que le hayas puesto */
-  pointer-events: none;
-  /* Añadimos un pequeño desplazamiento a la derecha para compensar el espacio que ocupa el botón inicial */
-  padding-left: 45px; 
-  box-sizing: border-box;
+  position: absolute; width: 100%; text-align: center; font-weight: 700; color: #8e8e93; font-size: 0.85rem; pointer-events: none;
+  padding-left: 45px; box-sizing: border-box;
   background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 2.5s infinite linear;
 }
-
 
 /* ANIMACIONES */
 @keyframes heartbeat-intenso {
@@ -214,7 +150,10 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   100% { transform: scale(1); }
 }
 .icono-latido { display: inline-block; animation: heartbeat-intenso 1.5s infinite; font-size: 1.2rem !important; margin-right: 10px; color: #ff3b30; }
-@keyframes shine { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes shine { 
+  0% { background-position: 200% 0; } 
+  100% { background-position: -200% 0; } 
+}
 
 h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
 .h2-personales { background: var(--azul-moderno); }
@@ -270,17 +209,13 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
-      // Añadimos la clase para congelar/ocultar las animaciones frontales
       contenedor.classList.add('is-flipping');
       contenedor.classList.toggle('flipped');
-      
-      // Removemos la clase justo al terminar la animación 3D (500ms)
       setTimeout(() => {
         contenedor.classList.remove('is-flipping');
-      }, 500);
+      }, 600);
     }
   }
-
 
   function calcularDiasTotales(tiempoString) {
       if (!tiempoString) return 0;
@@ -292,7 +227,7 @@ h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; tex
       return dias;
   }
 
-function renderizarLista(lista, titulo, icono, clase, tipo) {
+  function renderizarLista(lista, titulo, icono, clase, tipo) {
     if (!lista || lista.length === 0) return "";
 
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
@@ -315,8 +250,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                         <div class="card-front">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="img-box-custom"><img src="${t.imgMini}" alt="Imagen"></div>
-                        ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
-
+                            ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
                             <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                                 <div style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
@@ -331,33 +265,28 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
                                 <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
-                                     <i class="fa-solid fa-chevron-right" style="color:#007aff;"></i>
+                                     <i class="fa-solid fa-chevron-right"></i>
                                 </div>
                             </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
 
-                                                <!-- CARA TRASERA -->
+                        <!-- CARA TRASERA -->
                         <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div style="padding: 12px 20px 0 20px; font-size: 0.75rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">NUMERACIÓN DE LAS CALLES</div>
                             <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
-                                                       <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
-                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>
+                            <div class="btns-back-row">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
+                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
                            </div>
-
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
-
                     </div>
                 </div>`;
             }).join('')}</div>`;
-}
-
-
-
+  }
 
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
@@ -367,15 +296,12 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
       }).filter(i => i !== "").join("<br>");
   }
 
-    // 1. Modificación: Eliminamos la tarjeta visualmente al instante
   function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
-      // Eliminación visual instantánea
       elementoTarjeta.style.transition = "opacity 0.3s, transform 0.3s";
       elementoTarjeta.style.opacity = "0";
       elementoTarjeta.style.transform = "scale(0.8)";
       setTimeout(() => elementoTarjeta.remove(), 300);
 
-      // El registro sigue en segundo plano
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
 
       fetch(urlFinal)
@@ -383,19 +309,17 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
         .then(data => {
             if (data.resultado !== "OK") {
                 console.error("Error en servidor:", data.resultado);
-                // Opcional: mostrar una notificación discreta si falla
             }
         })
         .catch(err => console.error("Error de conexión:", err));
   }
 
-  // 2. Modificación: Pasamos el elementoTarjeta al iniciarSwipe
   function iniciarSwipe(e) {
       const handle = e.currentTarget;
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
       const nombreCodificado = handle.getAttribute('data-nombre');
-      const tarjeta = handle.closest('.card-container'); // Identificamos la tarjeta padre
+      const tarjeta = handle.closest('.card-container');
       
       const container = handle.parentElement;
       const startX = e.touches[0].clientX;
@@ -411,7 +335,6 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
           if (pos >= maxX * 0.95) {
               document.removeEventListener('touchmove', mover);
               document.removeEventListener('touchend', terminar);
-              // Llamamos a la función con el elemento para poder borrarlo
               enviarAlServidor(numT, zona, nombreCodificado, tarjeta);
           }
       }
@@ -426,10 +349,7 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
       document.addEventListener('touchend', terminar, {once: true});
   }
 
-
   cargar();
 </script>
 </body>
-</html>
-</html>
 </html>
