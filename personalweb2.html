@@ -68,52 +68,49 @@ body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0
 
 header { text-align: center; padding: 15px 5px; background: transparent; backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(0,0,0,0.1); position: relative; }
 body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+
 header.main-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end; /* Alinea los elementos hacia la derecha */
   padding: 15px 20px;
   background: transparent;
   backdrop-filter: blur(20px);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
   position: relative;
   box-sizing: border-box;
+  width: 100%;
 }
+
 body.dark-mode header.main-header { 
   background: rgba(0,0,0,0.3); 
   border-color: rgba(255,255,255,0.1); 
 }
 
-/* Espaciador para equilibrar el ancho exacto del botón de la derecha (45px + márgenes) */
-.header-spacer {
-  width: 45px;
-  flex-shrink: 0;
-}
-
-/* Contenedor central que obliga al texto a centrarse en el espacio libre */
+/* Contenedor que ocupa absolutamente todo el espacio disponible a la izquierda del botón de tema */
 .user-name-container {
-  flex-grow: 1;
+  position: absolute;
+  left: 20px;
+  right: 80px; /* Deja espacio exacto para el botón de tema (45px del botón + márgenes) para que nunca se solapen */
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centra el nombre de forma milimétrica en ese espacio */
   align-items: center;
   overflow: hidden;
-  padding: 0 10px;
 }
 
-/* Nombre con tamaño adaptable en un solo renglón */
+/* Nombre de usuario con ajuste automático y un solo renglón estricto */
 .user-name { 
   font-family: 'Whisper', cursive; 
-  /* Ajusta dinámicamente el tamaño entre 1.5rem y 2.6rem según la pantalla */
-  font-size: clamp(1.4rem, 5vw, 2.6rem); 
+  font-size: clamp(1.2rem, 4vw, 2.4rem); /* Se reduce automáticamente si el nombre es muy largo */
   margin: 0; 
   font-weight: 400;
-  white-space: nowrap; /* Fuerza a que esté estrictamente en un solo renglón */
+  white-space: nowrap; /* Fuerza estricta a un único renglón */
   overflow: hidden;
-  text-overflow: ellipsis; /* Si el nombre fuera exageradamente largo, pone puntos suspensivos en vez de romper la línea */
+  text-overflow: ellipsis; /* Si superara el espacio, trunca con puntos suspensivos en lugar de bajar de línea */
   text-align: center;
+  width: 100%;
 }
 
-.user-name { font-family: 'Whisper', cursive; font-size: clamp(1.5rem, 10vw, 2.8rem); margin: 0; font-weight: 400; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
 /* ESTRUCTURA 3D */
@@ -405,13 +402,14 @@ h2 {
 <body>
 
 <header class="main-header">
-  <div class="header-spacer"></div> <div class="user-name-container">
+  <div class="user-name-container">
     <h1 class="user-name" id="user-display"></h1>
   </div>
   <button class="btn-theme" onclick="toggleTheme()">
     <i class="fa-solid fa-circle-half-stroke"></i>
   </button>
 </header>
+
 
 
 <div id="grid-container"></div>
