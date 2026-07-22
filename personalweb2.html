@@ -370,6 +370,7 @@ h2 {
   box-sizing: border-box;
 }
 
+  .h2-campana { background: rgba(186, 85, 211, 0.8); } /* Un tono morado/violeta moderno para diferenciar Campaña */
 #image-viewer-modal.active {
   display: flex; /* Se muestra al activarlo */
 }
@@ -471,7 +472,9 @@ h2 {
       .then(r => r.json())
       .then(datos => {
         datosCargados = datos;
-        let html = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
+        // ORDEN: Campaña va primero, seguido de Personales y Grupo
+        let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c") +
+                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
         document.getElementById('grid-container').innerHTML = html;
       });
@@ -503,7 +506,7 @@ h2 {
 
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             <div class="grid">${lista.map((t, i) => {
-                let diasTotales = calcularDiasTotales(t.tiempo);
+                let diasTotales = calcularDiasTotales(t.tiempo || "0");
                 let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
                 let porcentaje = Math.min(100, (diasTotales / 120) * 100);
                 
@@ -514,15 +517,19 @@ h2 {
                 let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
                 const nombreSeguro = encodeURIComponent(nombreH);
 
+                // CONDICIONAL PARA CAMPAÑA (Tipo 'c') vs NORMAL (Tipo 'p' o 'g')
+                let esCampana = (tipo === 'c');
+
                 return `
                 <div class="card-container" id="card-container-${tipo}-${i}">
                     <div class="card-inner">
                         <!-- CARA FRONTAL -->
                         <div class="card-front">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
-                          <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
+                            <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
                             ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                             
+                            ${esCampana ? '' : `
                               <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                                     <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
@@ -531,11 +538,11 @@ h2 {
                                 <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
                                     <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
                                 </div>
-                            </div>
+                            </div>`}
 
                             <div class="swipe-container">
                                 <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" ontouchstart="iniciarSwipe(event)">
+                                <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" data-tiporeg="${esCampana ? 'campaña' : 'normal'}" ontouchstart="iniciarSwipe(event)">
                                      <i class="fa-solid fa-chevron-right"></i>
                                 </div>
                             </div>
@@ -546,12 +553,14 @@ h2 {
                         <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
-                           <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
-                            <div class="btns-back-row">
+                            <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
+                            
+                            <!-- BOTONES TRASEROS: 2 botones si es campaña, 3 botones si es normal -->
+                            <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
-                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>
-                           </div>
+                                ${esCampana ? '' : `<button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
+                            </div>
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
                     </div>
@@ -567,21 +576,17 @@ h2 {
       }).filter(i => i !== "").join("<br>");
   }
 
-function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
-      // 1. Lanzamos la animación aleatoria
+function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // 2. Damos un respiro (1.2 segundos) para que se aprecie el efecto antes de ocultar la tarjeta
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
           elementoTarjeta.style.transform = "scale(0.8)";
-          
-          // 3. Se elimina del DOM una vez completada la transición de salida
           setTimeout(() => elementoTarjeta.remove(), 400);
-      }, 600); // <--- Aquí esperamos 1.2 segundos antes de que la tarjeta empiece a irse
+      }, 600);
 
-      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
+      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
         .then(r => r.json())
@@ -604,6 +609,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
       const nombreCodificado = handle.getAttribute('data-nombre');
+      const tipoReg = handle.getAttribute('data-tiporeg') || 'normal';
       const tarjeta = handle.closest('.card-container');
       
       const container = handle.parentElement;
@@ -620,7 +626,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
           if (pos >= maxX * 0.95) {
               document.removeEventListener('touchmove', mover);
               document.removeEventListener('touchend', terminar);
-              enviarAlServidor(numT, zona, nombreCodificado, tarjeta);
+              enviarAlServidor(numT, zona, nombreCodificado, tipoReg, tarjeta);
           }
       }
 
