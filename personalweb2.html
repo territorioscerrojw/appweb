@@ -330,7 +330,7 @@ h2 {
                         <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                             <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
-                            <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
+                           <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
                             <div class="btns-back-row">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
@@ -367,6 +367,11 @@ h2 {
             }
         })
         .catch(err => console.error("Error de conexión:", err));
+  }
+  function formatearCalles(textoCalles) {
+      if (!textoCalles) return "";
+      // Reemplaza cualquier secuencia de números (incluso con guiones o barras si quieres) para ponerlos en negrita
+      return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
   }
 
   function iniciarSwipe(e) {
