@@ -82,24 +82,32 @@ header.main-header {
   width: 100%;
 }
 
+body.dark-mode header.main-header { 
+  background: rgba(0,0,0,0.3); 
+  border-color: rgba(255,255,255,0.1); 
+}
+
+/* Contenedor que ocupa exactamente el hueco libre entre la izquierda y el botón */
 .user-name-container {
   position: absolute;
   left: 20px;
-  right: 80px; /* Espacio libre exacto entre el borde izquierdo y el botón de tema */
+  right: 80px; /* Deja el espacio exacto del botón de la derecha para que nunca se crucen */
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centra el texto en ese espacio */
   align-items: center;
   overflow: hidden;
 }
 
+/* El texto de la cabecera */
 .user-name { 
   font-family: 'Whisper', cursive; 
+  font-size: 2.2rem; /* Puedes cambiar este valor al tamaño fijo que te guste */
   margin: 0; 
   font-weight: 400;
-  white-space: nowrap; /* Impide que baje de renglón */
+  white-space: nowrap; /* Mantiene el texto estrictamente en un solo renglón */
   text-align: center;
-  /* El tamaño inicial no importa porque JavaScript lo calculará y ajustará al instante */
 }
+
 
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
@@ -403,6 +411,7 @@ h2 {
 
 
 
+
 <div id="grid-container"></div>
 <div id="debug-log" style="color: #8e8e93; font-size: 11px; margin: 10px; padding: 8px; border: 1px dashed #ccc; text-align:center; border-radius:8px;">Esperando acciones...</div>
 <!-- Visor de imagen a pantalla completa -->
@@ -609,22 +618,7 @@ h2 {
       const modal = document.getElementById('image-viewer-modal');
       modal.classList.remove('active');
   }
-function ajustarTamanioNombre() {
-    const contenedor = document.querySelector('.user-name-container');
-    const nombreEl = document.getElementById('user-display');
-    
-    if (!contenedor || !nombreEl) return;
 
-    // Empezamos probando con un tamaño grande (ej. 2.8rem)
-    let fontSize = 2.8; 
-    nombreEl.style.fontSize = fontSize + 'rem';
-
-    // Mientras el texto sea más ancho que el contenedor disponible, reducimos el tamaño poco a poco
-    while (nombreEl.scrollWidth > contenedor.clientWidth && fontSize > 1.0) {
-        fontSize -= 0.1;
-        nombreEl.style.fontSize = fontSize + 'rem';
-    }
-}
 
   cargar();
 </script>
