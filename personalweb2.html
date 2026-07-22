@@ -644,13 +644,15 @@ h2 {
       modal.classList.remove('active');
   }
 function lanzarEfectoAleatorio(tarjeta) {
+    // Genera un número entero aleatorio exacto del 1 al 10
     const efecto = Math.floor(Math.random() * 10) + 1;
 
     switch(efecto) {
-        case 1: // Confeti clásico
+        case 1: // 1. Confeti clásico de colores
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             break;
-        case 2: // Fuegos artificiales
+            
+        case 2: // 2. Fuegos artificiales cruzados
             let duration = 1.2 * 1000;
             let animationEnd = Date.now() + duration;
             let interval = setInterval(function() {
@@ -659,10 +661,12 @@ function lanzarEfectoAleatorio(tarjeta) {
                 confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
             }, 200);
             break;
-        case 3: // Estrellas doradas
+            
+        case 3: // 3. Lluvia de estrellas doradas
             confetti({ particleCount: 50, spread: 100, colors: ['#ffd700', '#ffa500'], shapes: ['star'] });
             break;
-        case 4: // Rebote y resplandor verde (CSS)
+            
+        case 4: // 4. Rebote y resplandor verde (CSS)
             tarjeta.style.transition = "all 0.4s ease";
             tarjeta.style.transform = "scale(1.05)";
             tarjeta.style.boxShadow = "0 0 35px #34c759";
@@ -671,10 +675,12 @@ function lanzarEfectoAleatorio(tarjeta) {
                 tarjeta.style.opacity = "0";
             }, 300);
             break;
-        case 5: // Lluvia de éxito / tonos dorados y verdes
+            
+        case 5: // 5. Lluvia de éxito (Tonos dorados, verdes y amarillos)
             confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] });
             break;
-        case 6: // Neón rápido
+            
+        case 6: // 6. Neón rápido
             tarjeta.style.transition = "all 0.3s ease";
             tarjeta.style.filter = "brightness(1.5) hue-rotate(90deg)";
             setTimeout(() => {
@@ -682,22 +688,23 @@ function lanzarEfectoAleatorio(tarjeta) {
                 tarjeta.style.opacity = "0";
             }, 200);
             break;
-        case 7: // Burbujas suaves
+            
+        case 7: // 7. Burbujas suaves de colores
             confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] });
             break;
-        case 8: // Arcoíris completo
+            
+        case 8: // 8. Arcoíris completo
             confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] });
             break;
-        case 9: // Escarcha de diamantes
+            
+        case 9: // 9. Escarcha de diamantes
             confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 });
             break;
-        case 10: // Desintegración digital
+            
+        case 10: // 10. Desintegración digital
             tarjeta.style.transition = "all 0.4s ease";
             tarjeta.style.transform = "scale(0.9) skewX(10deg)";
             tarjeta.style.opacity = "0";
-            break;
-        default:
-            confetti({ particleCount: 80, spread: 60 });
             break;
     }
 }
