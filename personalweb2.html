@@ -649,8 +649,8 @@ function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
       modal.classList.remove('active');
   }
 function lanzarEfectoAleatorio(tarjeta) {
-    // Genera un número entero aleatorio exacto del 1 al 10
     const efecto = Math.floor(Math.random() * 10) + 1;
+    console.log("Efecto aleatorio seleccionado:", efecto); // Útil para depurar en la consola (F12)
 
     switch(efecto) {
         case 1: // 1. Confeti clásico de colores
@@ -675,23 +675,16 @@ function lanzarEfectoAleatorio(tarjeta) {
             tarjeta.style.transition = "all 0.4s ease";
             tarjeta.style.transform = "scale(1.05)";
             tarjeta.style.boxShadow = "0 0 35px #34c759";
-            setTimeout(() => {
-                tarjeta.style.transform = "scale(0.8)";
-                tarjeta.style.opacity = "0";
-            }, 300);
             break;
             
         case 5: // 5. Lluvia de éxito (Tonos dorados, verdes y amarillos)
             confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] });
             break;
             
-        case 6: // 6. Neón rápido
+        case 6: // 6. Neón rápido / Rayos de luz
             tarjeta.style.transition = "all 0.3s ease";
-            tarjeta.style.filter = "brightness(1.5) hue-rotate(90deg)";
-            setTimeout(() => {
-                tarjeta.style.transform = "scale(0.8)";
-                tarjeta.style.opacity = "0";
-            }, 200);
+            tarjeta.style.filter = "brightness(1.8) saturate(2) hue-rotate(90deg)";
+            tarjeta.style.boxShadow = "0 0 40px #007aff";
             break;
             
         case 7: // 7. Burbujas suaves de colores
@@ -707,9 +700,10 @@ function lanzarEfectoAleatorio(tarjeta) {
             break;
             
         case 10: // 10. Desintegración digital
-            tarjeta.style.transition = "all 0.4s ease";
-            tarjeta.style.transform = "scale(0.9) skewX(10deg)";
-            tarjeta.style.opacity = "0";
+            tarjeta.style.transition = "all 0.5s ease";
+            tarjeta.style.transform = "scale(0.85) skewX(15deg)";
+            tarjeta.style.filter = "blur(4px)";
+            tarjeta.style.opacity = "0.3";
             break;
     }
 }
