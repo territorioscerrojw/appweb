@@ -420,6 +420,39 @@ h2 {
 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
+/* Estilos para tarjetas bloqueadas durante campaña */
+.card-container.bloqueada .card-inner {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.card-container.bloqueada {
+  position: relative;
+}
+
+.mensaje-bloqueo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 18px;
+}
+
+.texto-bloqueo {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  line-height: 1.4;
+}
+  
 </style>
 </head>
 <body>
@@ -458,6 +491,8 @@ h2 {
     document.body.classList.add('dark-mode');
   }
 
+ let campañaActivaGlobal = ""; // Variable global para saber si hay campaña en curso
+
   function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
@@ -472,10 +507,12 @@ h2 {
       .then(r => r.json())
       .then(datos => {
         datosCargados = datos;
-        // ORDEN: Campaña va primero, seguido de Personales y Grupo
-        let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c") +
-                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p") +
-                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g");
+        campañaActivaGlobal = datos.campañaActiva || ""; // Guardamos el nombre de la campaña activa
+
+        let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
+                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
+                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
+                   
         document.getElementById('grid-container').innerHTML = html;
       });
   }
@@ -501,7 +538,7 @@ h2 {
       return dias;
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo) {
+ function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
@@ -517,11 +554,17 @@ h2 {
                 let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
                 const nombreSeguro = encodeURIComponent(nombreH);
 
-                // CONDICIONAL PARA CAMPAÑA (Tipo 'c') vs NORMAL (Tipo 'p' o 'g')
                 let esCampana = (tipo === 'c');
+                // Si la lista es de personales o grupo, y hay campaña activa, se bloquea
+                let tarjetaBloqueada = (!esCampana && estaBloqueado);
 
                 return `
-                <div class="card-container" id="card-container-${tipo}-${i}">
+                <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''}" id="card-container-${tipo}-${i}">
+                    ${tarjetaBloqueada ? `
+                        <div class="mensaje-bloqueo-overlay">
+                            <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRAS DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
+                        </div>
+                    ` : ''}
                     <div class="card-inner">
                         <!-- CARA FRONTAL -->
                         <div class="card-front">
@@ -555,7 +598,6 @@ h2 {
                             <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
                             <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
                             
-                            <!-- BOTONES TRASEROS: 2 botones si es campaña, 3 botones si es normal -->
                             <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
                                 <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                                 <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
