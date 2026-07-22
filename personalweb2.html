@@ -492,7 +492,7 @@ h2 {
     document.body.classList.add('dark-mode');
   }
 
- let campañaActivaGlobal = ""; // Variable global para saber si hay campaña en curso
+ let campañaActivaGlobal = "";
 
   function cargar() {
     const params = new URLSearchParams(window.location.search);
@@ -508,8 +508,9 @@ h2 {
       .then(r => r.json())
       .then(datos => {
         datosCargados = datos;
-        campañaActivaGlobal = datos.campañaActiva || ""; // Guardamos el nombre de la campaña activa
+        campañaActivaGlobal = datos.campañaActiva || "";
 
+        // Si la lista de campaña viene vacía (fuera de fecha), renderizarLista la ignorará y no la pintará
         let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
@@ -517,7 +518,6 @@ h2 {
         document.getElementById('grid-container').innerHTML = html;
       });
   }
-
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
