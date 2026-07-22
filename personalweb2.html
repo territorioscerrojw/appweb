@@ -182,7 +182,22 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
   100% { background-position: -200% 0; } 
 }
 
-h2 { position: sticky; top: 0; z-index: 20; color: white; font-size: 0.8rem; text-transform: uppercase; margin: 0; padding: 15px 20px; font-weight: 800; backdrop-filter: blur(15px); }
+h2 { 
+  position: sticky; 
+  top: 0; 
+  z-index: 20; 
+  color: white; 
+  font-size: 1.1rem; /* <--- Aumenta o disminuye el tamaño de la letra aquí */
+  text-transform: uppercase; 
+  margin: 0; 
+  padding: 15px 20px; 
+  font-weight: 800; 
+  backdrop-filter: blur(15px); 
+  display: flex;             /* Activamos flexbox para alinear el contenido */
+  justify-content: space-between; /* Separa el texto a la izquierda y el icono a la derecha */
+  align-items: center;       /* Centra verticalmente ambos elementos */
+}
+
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
 </style>
