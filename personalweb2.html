@@ -641,5 +641,15 @@ h2 {
 
   cargar();
 </script>
+  <script>
+  let ultimoToque = 0;
+  document.addEventListener('touchend', function (evento) {
+      let tiempoActual = new Date().getTime();
+      if (tiempoActual - ultimoToque < 300 && tiempoActual - ultimoToque > 0) {
+          evento.preventDefault();
+      }
+      ultimoToque = tiempoActual;
+  }, { passive: false });
+</script>
 </body>
 </html>
