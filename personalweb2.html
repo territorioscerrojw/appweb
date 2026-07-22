@@ -22,12 +22,47 @@
 }
 
 body.dark-mode {
-  --bg: #000000;
-  --card-bg: #1c2128;
-  --header-bg: #22272e;
-  --primary: #ffffff;
+  --bg: #0d1117;          /* Fondo general de la página un poco más profundo */
+  --card-bg: #161b22;     /* Fondo principal de la tarjeta */
+  --header-bg: #1f6feb;   
+  --primary: #f0f6fc;     /* Texto principal más nítido */
   --color-texto-anillo: #fff;
 }
+
+/* 1. Cabecera de la tarjeta en modo oscuro con distinción clara */
+body.dark-mode .card-header { 
+  background: rgba(255, 255, 255, 0.06); /* Un toque sutil de luz para separarla del cuerpo */
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1); 
+}
+
+/* 2. Bordes generales de la tarjeta más definidos en modo oscuro */
+body.dark-mode .card-front, 
+body.dark-mode .card-back {
+  border: 0.5px solid rgba(255, 255, 255, 0.12); /* Borde sutil que recorta la tarjeta del fondo negro */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   /* Sombra profunda para dar relieve real */
+}
+
+/* 3. Contenedor del tiempo y separadores con mejor contraste oscuro */
+body.dark-mode .tiempo-container {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+body.dark-mode .barra-container {
+  background: rgba(255, 255, 255, 0.1) !important; /* Fondo de la barra de progreso más visible */
+}
+
+/* 4. Contenedor del deslizador en modo oscuro */
+body.dark-mode .swipe-container {
+  background: rgba(255, 255, 255, 0.06); /* Se distingue perfectamente del fondo de la tarjeta */
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 5. Botón inferior MÁS DETALLES en modo oscuro */
+body.dark-mode .btn-more {
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: #8b949e; /* Un gris más claro para que se lea bien en oscuro */
+}
+
 
 body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--primary); transition: background 0.3s, color 0.3s; }
 
