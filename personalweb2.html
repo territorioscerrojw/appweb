@@ -567,14 +567,19 @@ h2 {
       }).filter(i => i !== "").join("<br>");
   }
 
-  function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
-      // Lanzamos una animación aleatoria de nuestra lista de 10
+function enviarAlServidor(numT, zona, nombreCodificado, elementoTarjeta) {
+      // 1. Lanzamos la animación aleatoria
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      elementoTarjeta.style.transition = "opacity 0.3s, transform 0.3s";
-      elementoTarjeta.style.opacity = "0";
-      elementoTarjeta.style.transform = "scale(0.8)";
-      setTimeout(() => elementoTarjeta.remove(), 300);
+      // 2. Damos un respiro (1.2 segundos) para que se aprecie el efecto antes de ocultar la tarjeta
+      setTimeout(() => {
+          elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+          elementoTarjeta.style.opacity = "0";
+          elementoTarjeta.style.transform = "scale(0.8)";
+          
+          // 3. Se elimina del DOM una vez completada la transición de salida
+          setTimeout(() => elementoTarjeta.remove(), 400);
+      }, 1200); // <--- Aquí esperamos 1.2 segundos antes de que la tarjeta empiece a irse
 
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}`;
 
@@ -586,7 +591,7 @@ h2 {
             }
         })
         .catch(err => console.error("Error de conexión:", err));
-}
+  }
   
   function formatearCalles(textoCalles) {
       if (!textoCalles) return "";
