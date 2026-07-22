@@ -79,8 +79,47 @@ body.dark-mode header { background: rgba(0,0,0,0.3); border-color: rgba(255,255,
 .calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px; margin-top: 10px; }
 .calles-texto { font-size: 0.95rem; white-space: pre-line; line-height: 1.4; }
 
-.btns-back-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; padding: 15px; flex-shrink: 0; }
-.btn-back-action { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1; padding: 10px; border-radius: 16px; font-weight: 700; font-size: 0.65rem; text-align: center; border: none; cursor: pointer; color: white; }
+.btns-back-row { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 12px; 
+  margin: 15px; 
+  padding: 0; 
+  flex-shrink: 0; 
+}
+
+.btn-back-action { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: space-between; /* Distribuye el icono arriba y el texto abajo */
+  aspect-ratio: 1 / 1; 
+  padding: 14px 10px 10px 10px; 
+  border-radius: 18px; 
+  font-weight: 700; 
+  font-size: 0.65rem; 
+  text-align: center; 
+  border: none; 
+  cursor: pointer; 
+  color: white; 
+  text-decoration: none;
+  /* Efecto relieve y profundidad */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35), inset 0 -3px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-back-action:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Icono extra grande */
+.btn-back-action i {
+  font-size: 1.9rem !important; 
+  margin-top: 4px;
+  /* Sutil relieve para el icono */
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
 
 .btn-more { width: 100%; padding: 18px; border: none; background: rgba(0,0,0,0.03); color: #007aff; font-weight: 800; cursor: pointer; border-top: 0.5px solid rgba(0,0,0,0.1); margin-top: auto; flex-shrink: 0; }
 
@@ -275,17 +314,20 @@ function renderizarLista(lista, titulo, icono, clase, tipo) {
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                         </div>
 
-                        <!-- CARA TRASERA -->
+                                                <!-- CARA TRASERA -->
                         <div class="card-back">
                             <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                            <div style="padding: 12px 20px 0 20px; font-size: 0.75rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">NUMERACIÓN DE LAS CALLES</div>
                             <div class="calles-container"><div class="calles-texto">${t.calles}</div></div>
-                            <div class="btns-back-row">
-                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800; color: #fff;"><i class="fa-solid fa-circle-plus"></i><span>INCIDENCIA</span></a>
-                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff; color: #fff;"><i class="fa-solid fa-location-arrow"></i><span>GPS</span></a>
-                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759; color: #fff;"><i class="fa-solid fa-rotate"></i><span>RENOVAR</span></button>
+                                                       <div class="btns-back-row">
+                                <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #e6b800;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
+                                <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
+                                <button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>
                            </div>
+
                             <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                         </div>
+
                     </div>
                 </div>`;
             }).join('')}</div>`;
