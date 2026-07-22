@@ -135,14 +135,16 @@ body.dark-mode .btn-theme {
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 /* Contenedor de la barra de ordenación */
+/* Contenedor de la barra de ordenación con separación superior */
 .ordenar-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin: -10px 10px 15px 10px;
+  margin: 15px 10px 15px 10px; /* Cambiado el margen superior de -10px a 15px para separarlo del título */
   padding: 0 5px;
 }
+
 
 .ordenar-label {
   font-size: 0.75rem;
