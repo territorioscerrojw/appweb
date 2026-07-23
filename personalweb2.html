@@ -779,11 +779,10 @@ body.dark-mode .tarjeta-caducada .card-back {
   }
 
 
-  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+    function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
         
-        // Detectar si está caducado (puedes ajustar el texto según lo devuelva tu API o Google Sheets)
         let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
 
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
@@ -816,7 +815,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                     ${esCampana ? '' : `
                       <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <span class="anillo-label ${esCaducado ? 'texto-blanco-forzado' : ''}" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
+                            <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
                             <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : t.tiempo.replace(" y ", " ")}</div>
                         </div>
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
@@ -850,6 +849,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>`;
     }).join('');
   }
+
 
 
   function limpiarIncidencia(texto) {
