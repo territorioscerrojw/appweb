@@ -448,7 +448,7 @@ h2 {
   line-height: 1.4;
 }
 
-/* Estilos de la barra de campaña general (superior) */
+/* Estilos de la barra de campaña general */
 .campaña-info-card {
   background: var(--card-bg);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
@@ -518,16 +518,17 @@ body.dark-mode .campaña-info-card {
       .then(datos => {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
-        const fechaInicioCamp = datos.fechaInicioCampaña;
-        const fechaFinCamp = datos.fechaFinCampaña;
+        
+        // Obtener fechas dando soporte a múltiples formatos por si la API varía el nombre del campo
+        const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
+        const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
 
         let htmlCampaña = "";
         
-        // Comprobar si hay campaña activa o fechas de campaña válidas para mostrar la barra y cabecera
+        // Se muestra si hay campaña activa declarada o si existen fechas de campaña
         if (campañaActivaGlobal !== "" || (fechaInicioCamp && fechaFinCamp)) {
             let listaCamp = datos.campaña || [];
             
-            // Renderizamos la barra de progreso general de la campaña justo encima de la etiqueta
             let htmlBarraCampaña = `
               <div class="campaña-info-card">
                 <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -550,11 +551,6 @@ body.dark-mode .campaña-info-card {
                         No tienes territorios de campaña asignados
                     </div>`;
             }
-            
-            // Procesar las fechas en la barra superior
-            setTimeout(() => {
-                procesarFechasYBarras(fechaInicioCamp, fechaFinCamp);
-            }, 50);
         }
 
         let html = htmlCampaña +
@@ -562,11 +558,17 @@ body.dark-mode .campaña-info-card {
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
                    
         document.getElementById('grid-container').innerHTML = html;
+
+        // Ejecutar inmediatamente después de inyectar el HTML en el DOM
+        if (fechaInicioCamp && fechaFinCamp) {
+            procesarFechasYBarras(fechaInicioCamp, fechaFinCamp);
+        }
       });
   }
 
   function procesarFechasYBarras(inicioStr, finStr) {
     if (!inicioStr || !finStr) return;
+    
     const ahora = new Date();
     const inicio = new Date(inicioStr);
     const fin = new Date(finStr);
@@ -577,7 +579,11 @@ body.dark-mode .campaña-info-card {
 
     const tiempoTotal = finDate - inicioDate;
     const tiempoTranscurrido = ahoraDate - inicioDate;
-    let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
+    
+    let porcentaje = 0;
+    if (tiempoTotal > 0) {
+        porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
+    }
     porcentaje = Math.max(0, Math.min(100, porcentaje));
     
     let msgTiempo = "";
@@ -592,21 +598,24 @@ body.dark-mode .campaña-info-card {
       porcentaje = 100;
     } else if (ahoraDate.getTime() === finDate.getTime()) {
       msgTiempo = "¡Último día de campaña!";
-      porcentaje = 99;
+      porcentaje = 100;
     } else {
       dias = Math.ceil((finDate - ahoraDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
     }
     
-    if (document.getElementById("lbl-tiempo-restante")) document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
-    if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
-    
+    const lblTiempo = document.getElementById("lbl-tiempo-restante");
+    const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
+
+    if (lblTiempo) lblTiempo.innerText = msgTiempo;
+    if (lblPorcentaje) lblPorcentaje.innerText = `${porcentaje}%`;
+    
     if (barra) {
       barra.style.width = `${porcentaje}%`;
       barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
       
-      if (ahoraDate >= inicioDate && now <= finDate) {
+      if (ahoraDate >= inicioDate && ahoraDate <= finDate) {
           if (dias <= 2 || ahoraDate.getTime() === finDate.getTime()) {
               barra.classList.add("neon-rojo");
           } else if (dias <= 7) {
