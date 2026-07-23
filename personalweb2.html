@@ -59,10 +59,12 @@ body.dark-mode .btn-more {
   color: #8b949e; 
 }
 
-/* Estilos para el acordeón y tarjetas compactas de campaña trabajadas */
+/* Estilos mejorados para el acordeón y tarjetas compactas apiladas */
 .trabajados-accordion-container {
-  grid-column: 1 / -1;
-  margin: 15px 20px 5px 20px;
+  width: 100%;
+  padding: 0 20px;
+  margin: 15px 0 10px 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -94,6 +96,7 @@ body.dark-mode .btn-more {
   flex-direction: column;
   gap: 8px;
   margin-top: 4px;
+  width: 100%;
 }
 
 .trabajados-list-wrapper.active {
@@ -110,6 +113,7 @@ body.dark-mode .btn-more {
   justify-content: space-between;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   box-sizing: border-box;
+  width: 100%;
 }
 
 body.dark-mode .card-trabajada-compacta {
@@ -226,8 +230,8 @@ body.dark-mode .btn-theme {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin: 12px 10px -5px 10px; 
-  padding: 0 5px;
+  margin: 12px 20px -5px 20px; 
+  padding: 0;
 }
 
 .ordenar-label {
