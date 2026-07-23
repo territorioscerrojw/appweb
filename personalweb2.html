@@ -483,6 +483,9 @@ body.dark-mode .campaña-info-card {
   background-color: #ffe5e5 !important; /* Fondo rojo muy suave para modo claro */
   border-color: #ff3b30 !important;
 }
+.tarjeta-caducada anillo-label {
+color: #3а3а3с !important; 
+}
 
 body.dark-mode .tarjeta-caducada .card-front,
 body.dark-mode .tarjeta-caducada .card-back {
@@ -506,7 +509,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 /* Animación de destello (blanco <-> amarillo) y aumento de tamaño para dar urgencia */
 @keyframes destelloCaducado {
   0% {
-    color: #ffffff;
+    color: #ff3b30;
     transform: scale(1);
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
   }
@@ -516,7 +519,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
   }
   100% {
-    color: #ffffff;
+    color: #ff3b30;
     transform: scale(1);
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
   }
