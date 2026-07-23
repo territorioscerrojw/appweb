@@ -735,12 +735,17 @@ function cerrarVisor() {
 function procesarFechasYBarras(inicioStr, finStr) {
   if (!inicioStr || !finStr) return;
   const ahora = new Date();
-  const fin = new Date(finStr);
   const inicio = new Date(inicioStr);
+  const fin = new Date(finStr);
   
+  // Normalizar fechas a medianoche para comparar días completos sin interferencia de horas
+  const ahoraDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+  const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
+  const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
+
   // Calcular porcentaje de tiempo transcurrido
-  const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = ahora - inicio;
+  const tiempoTotal = finDate - inicioDate;
+  const tiempoTranscurrido = ahoraDate - inicioDate;
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
@@ -748,18 +753,22 @@ function procesarFechasYBarras(inicioStr, finStr) {
   let msgTiempo = "";
   let dias = 0;
 
-  if (ahora < inicio) {
+  if (ahoraDate < inicioDate) {
     // Aún no ha empezado
-    dias = Math.ceil((inicio - ahora) / (1000 * 60 * 60 * 24));
+    dias = Math.ceil((inicioDate - ahoraDate) / (1000 * 60 * 60 * 24));
     msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
     porcentaje = 0; // Barra vacía si no ha empezado
-  } else if (ahora > fin) {
+  } else if (ahoraDate > finDate) {
     // Ya terminó
     msgTiempo = "Campaña concluida";
     porcentaje = 100;
+  } else if (ahoraDate.getTime() === finDate.getTime()) {
+    // Caso exacto para el último día de campaña
+    msgTiempo = "¡Último día de campaña!";
+    porcentaje = 99;
   } else {
     // Durante la campaña
-    dias = Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
+    dias = Math.ceil((finDate - ahoraDate) / (1000 * 60 * 60 * 24));
     msgTiempo = `Quedan ${dias} días de campaña`;
   }
   
@@ -775,8 +784,8 @@ function procesarFechasYBarras(inicioStr, finStr) {
     barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
     
     // Asignar color solo si la campaña está en curso (o cerca de terminar)
-    if (ahora >= inicio && ahora <= fin) {
-        if (dias <= 2) {
+    if (ahoraDate >= inicioDate && ahoraDate <= finDate) {
+        if (dias <= 2 || ahoraDate.getTime() === finDate.getTime()) {
             barra.classList.add("neon-rojo");
         } else if (dias <= 7) {
             barra.classList.add("neon-naranja");
@@ -786,6 +795,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
     }
   }
 }
+
 async function recargarApp() {
   const btn = document.getElementById("btn-refresh");
   const svg = btn.querySelector("svg");
