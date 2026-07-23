@@ -635,29 +635,16 @@ body.dark-mode .tarjeta-caducada .card-back {
       });
   }
 
-      function procesarFechasYBarras(datos) {
+        function procesarFechasYBarras(datos) {
     const lblTiempo = document.getElementById("lbl-tiempo-restante");
     const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
-
-    // DICCIONARIO EN LA WEB: Asocia el nombre exacto de la campaña con sus fechas de inicio y fin
-    const calendarioCampañas = {
-        "AR 2026": { inicio: "2026-06-24", fin: "2026-07-23" }, // <--- Pon aquí las fechas reales de tu campaña AR 2026
-        "OTRA CAMPAÑA": { inicio: "2026-09-01", fin: "2026-09-30" }
-    };
-
-    const nombreCampActual = datos.campañaActiva ? datos.campañaActiva.trim() : "";
     
-    let inicioStr = "";
-    let finStr = "";
+    // Recoge las fechas que vienen directamente de Google Sheets
+    const inicioStr = datos.fechaInicioCampaña;
+    const finStr = datos.fechaFinCampaña;
+    const nombreCampActual = datos.campañaActiva || "";
 
-    // Busca si la campaña activa coincide con alguna de la lista
-    if (nombreCampActual && calendarioCampañas[nombreCampActual]) {
-        inicioStr = calendarioCampañas[nombreCampActual].inicio;
-        finStr = calendarioCampañas[nombreCampActual].fin;
-    }
-
-    // Si por lo que sea no la encuentra, usa un respaldo limpio
     if (!inicioStr || !finStr) {
         if (lblTiempo) {
             lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
@@ -724,6 +711,22 @@ body.dark-mode .tarjeta-caducada .card-back {
       }
     }
   }
+
+  function renderizarBarraCampañaHTML() {
+    return `
+      <div class="campaña-info-card" style="background: transparent !important; box-shadow: none !important; border: none !important;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span id="lbl-tiempo-restante" style="font-size: 0.8rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">Cargando tiempo...</span>
+                <div id="lbl-porcentaje-tiempo" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">0%</div>
+            </div>
+            <div style="width: 100%; height: 10px; background: transparent; border-radius: 5px; overflow: hidden;">
+                <div id="barra-progreso-elemento" style="width: 0%; height: 100%; transition: width 0.5s;"></div>
+            </div>
+        </div>
+      </div>`;
+  }
+
 
 
 
