@@ -566,8 +566,20 @@ body.dark-mode .campaña-info-card {
       });
   }
 
-  function procesarFechasYBarras(inicioStr, finStr) {
-    if (!inicioStr || !finStr) return;
+  
+   function procesarFechasYBarras(inicioStr, finStr) {
+    const lblTiempo = document.getElementById("lbl-tiempo-restante");
+    const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
+    const barra = document.getElementById("barra-progreso-elemento");
+
+    // Si el Apps Script no envía fechas (inicioStr o finStr vacíos), 
+    // mostramos el nombre de la campaña activa de forma segura sin bloquearnos.
+    if (!inicioStr || !finStr) {
+        if (lblTiempo) lblTiempo.innerText = campañaActivaGlobal ? `Campaña: ${campañaActivaGlobal}` : "Campaña activa";
+        if (lblPorcentaje) lblPorcentaje.innerText = "";
+        if (barra) barra.style.width = "100%";
+        return;
+    }
     
     const ahora = new Date();
     const inicio = new Date(inicioStr);
@@ -598,16 +610,12 @@ body.dark-mode .campaña-info-card {
       porcentaje = 100;
     } else if (ahoraDate.getTime() === finDate.getTime()) {
       msgTiempo = "¡Último día de campaña!";
-      porcentaje = 100;
+      porcentaje = 99;
     } else {
       dias = Math.ceil((finDate - ahoraDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
     }
     
-    const lblTiempo = document.getElementById("lbl-tiempo-restante");
-    const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
-    const barra = document.getElementById("barra-progreso-elemento");
-
     if (lblTiempo) lblTiempo.innerText = msgTiempo;
     if (lblPorcentaje) lblPorcentaje.innerText = `${porcentaje}%`;
     
@@ -626,6 +634,7 @@ body.dark-mode .campaña-info-card {
       }
     }
   }
+
 
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
