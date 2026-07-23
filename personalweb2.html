@@ -64,11 +64,18 @@ body.dark-mode .btn-more {
 }
 body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--primary); transition: background 0.3s, color 0.3s; }
 .campaña-info-card {
-  background: var(--card-bg);
-  border-bottom: none; /* Elimina la línea divisoria */
-  padding: 15px 20px 0px 20px; /* Pon el padding inferior a 0 para que no deje espacio libre */
-  box-sizing: border-box;
+    background: transparent !important;
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    box-shadow: none !important;
+    padding: 15px 20px;
+    box-sizing: border-box;
 }
+
+body.dark-mode .campaña-info-card {
+    background: transparent !important;
+    border-bottom: 0.5px solid rgba(255,255,255,0.08);
+}
+
 
 
 header { 
@@ -688,7 +695,7 @@ body.dark-mode .campaña-info-card {
       return dias;
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+    function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
     lista.sort((a, b) => {
@@ -709,10 +716,14 @@ body.dark-mode .campaña-info-card {
         </select>
       </div>`;
 
-    return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
+    // AQUÍ ESTÁ LA MAGIA: Solo crea el <h2> si realmente hay un título
+    let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
+
+    return `${htmlTitulo}
             ${htmlOrdenacion}
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
+
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
