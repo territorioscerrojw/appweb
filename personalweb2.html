@@ -76,8 +76,6 @@ body.dark-mode .campaña-info-card {
     border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
 
-
-
 header { 
   display: flex;
   align-items: center;
@@ -116,8 +114,14 @@ body.dark-mode header {
   text-align: center;
 }
 
-.btn-theme { 
-  position: relative; 
+/* --- ESTILOS DEL BOTÓN DE AJUSTES Y MENÚ FLOTANTE ESTILO APPLE --- */
+.ajustes-container {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.btn-ajustes { 
   width: 45px; 
   height: 45px; 
   border-radius: 50%; 
@@ -128,17 +132,100 @@ body.dark-mode header {
   align-items: center; 
   justify-content: center; 
   cursor: pointer; 
-  font-size: 1.3rem; 
+  font-size: 1.2rem; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
-  flex-shrink: 0;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s;
 }
 
-body.dark-mode .btn-theme {
+.btn-ajustes:active {
+  transform: scale(0.92);
+}
+
+body.dark-mode .btn-ajustes {
   background: #161b22; 
   color: #f0f6fc;     
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
+
+/* Menú flotante translúcido minimalista estilo Apple (Glassmorphism) */
+.menu-flotante-apple {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 220px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px) scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1000;
+}
+
+body.dark-mode .menu-flotante-apple {
+  background: rgba(22, 27, 34, 0.8);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.menu-flotante-apple.activo {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.menu-item-apple {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background 0.2s, color 0.2s;
+}
+
+.menu-item-apple:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+body.dark-mode .menu-item-apple:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-item-apple i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.menu-divider {
+  height: 0.5px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 4px 8px;
+}
+
+body.dark-mode .menu-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
+/* ----------------------------------------------------------------- */
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
@@ -311,12 +398,6 @@ body.dark-mode .card-header {
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
-body.dark-mode .btn-theme {
-  background: #161b22; 
-  color: #f0f6fc;     
-  border: 0.5px solid rgba(255, 255, 255, 0.15); 
-}
-
 .swipe-text {
   position: absolute; 
   width: 100%; 
@@ -462,7 +543,6 @@ h2 {
   line-height: 1.4;
 }
 
-/* Estilos de la barra de campaña general */
 .campaña-info-card {
   background: var(--card-bg);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
@@ -477,23 +557,18 @@ body.dark-mode .campaña-info-card {
 .neon-naranja { background-color: var(--warning) !important; box-shadow: 0 0 10px var(--warning); }
 .neon-rojo { background-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
   
-  /* Estilos generales para tarjetas caducadas */
 .tarjeta-caducada .card-front,
 .tarjeta-caducada .card-back {
-  background-color: #ffe5e5 !important; /* Fondo rojo muy suave para modo claro */
+  background-color: #ffe5e5 !important;
   border-color: #ff3b30 !important;
-}
-.tarjeta-caducada anillo-label {
-color: #3а3а3с !important; 
 }
 
 body.dark-mode .tarjeta-caducada .card-front,
 body.dark-mode .tarjeta-caducada .card-back {
-  background-color: #3b0a0a !important; /* Fondo rojo oscuro para modo oscuro */
+  background-color: #3b0a0a !important;
   border-color: #ff3b30 !important;
 }
 
-/* Cabecera roja fija cuando está caducado */
 .header-caducado {
   background-color: #ff3b30 !important;
   color: #ffffff !important;
@@ -506,31 +581,16 @@ body.dark-mode .tarjeta-caducada .card-back {
   color: #ffffff !important;
 }
 
-/* Animación de destello (blanco <-> amarillo) y aumento de tamaño para dar urgencia */
 @keyframes destelloCaducado {
-  0% {
-    color: #ff3b30;
-    transform: scale(1);
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
-  }
-  50% {
-    color: #ffcc00; /* Amarillo destello */
-    transform: scale(1.12); /* Aumenta un poco de tamaño */
-    text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-  }
-  100% {
-    color: #ff3b30;
-    transform: scale(1);
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
-  }
+  0% { color: #ff3b30; transform: scale(1); text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); }
+  50% { color: #ffcc00; transform: scale(1.12); text-shadow: 0 0 10px rgba(255, 204, 0, 0.8); }
+  100% { color: #ff3b30; transform: scale(1); text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); }
 }
 
 .texto-caducado-animacion {
   animation: destelloCaducado 1s infinite ease-in-out;
   display: inline-block;
 }
-
-  
 </style>
 </head>
 <body>
@@ -539,11 +599,37 @@ body.dark-mode .tarjeta-caducada .card-back {
   <div class="user-name-container">
     <div class="user-name" id="user-display"></div>
   </div>
-  <button class="btn-theme" onclick="toggleTheme()">
-    <i class="fa-solid fa-circle-half-stroke"></i>
-  </button>
-</header>
+  
+  <!-- NUEVO CONTENEDOR DE AJUSTES CON MENÚ FLOTANTE APPLE -->
+  <div class="ajustes-container">
+    <button class="btn-ajustes" onclick="toggleMenuAjustes(event)" aria-label="Ajustes">
+      <i class="fa-solid fa-gear"></i>
+    </button>
+    
+    <div id="menu-flotante" class="menu-flotante-apple">
+      <!-- Botón Grupo (Condicional) -->
+      <a id="btn-menu-grupo" href="#" class="menu-item-apple" style="display: none;">
+        <i class="fa-solid fa-users-rectangle" style="color: #007aff;"></i>
+        <span>Grupo</span>
+      </a>
+      <div id="divider-grupo" class="menu-divider" style="display: none;"></div>
 
+      <!-- Cambiar Tema -->
+      <button class="menu-item-apple" onclick="toggleTheme(); cerrarMenuAjustes();">
+        <i class="fa-solid fa-circle-half-stroke" style="color: #ff9500;"></i>
+        <span>Cambiar tema</span>
+      </button>
+
+      <div class="menu-divider"></div>
+
+      <!-- Refrescar Web -->
+      <button class="menu-item-apple" onclick="location.reload();">
+        <i class="fa-solid fa-rotate-right" style="color: #34c759;"></i>
+        <span>Refrescar web</span>
+      </button>
+    </div>
+  </div>
+</header>
 
 <div id="grid-container"></div>
 
@@ -560,6 +646,26 @@ body.dark-mode .tarjeta-caducada .card-back {
   let nombreH = "";
   const urlAppScript = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
 
+  // Control del menú desplegable de ajustes
+  function toggleMenuAjustes(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('menu-flotante');
+    menu.classList.toggle('activo');
+  }
+
+  function cerrarMenuAjustes() {
+    const menu = document.getElementById('menu-flotante');
+    if (menu) menu.classList.remove('activo');
+  }
+
+  // Cerrar el menú si se hace clic fuera de él
+  document.addEventListener('click', function(event) {
+    const contenedor = document.querySelector('.ajustes-container');
+    if (contenedor && !contenedor.contains(event.target)) {
+      cerrarMenuAjustes();
+    }
+  });
+
   function toggleTheme() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
@@ -571,7 +677,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   let campañaActivaGlobal = "";
 
-    function cargar() {
+  function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
     if (!nombreRaw) { document.getElementById('user-display').innerText = "Usuario no identificado"; return; }
@@ -581,20 +687,32 @@ body.dark-mode .tarjeta-caducada .card-back {
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
 
-
     fetch(url)
       .then(r => r.json())
       .then(datos => {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
-        // Obtener fechas dando soporte a múltiples formatos por si la API varía el nombre del campo
+        // --- GESTIÓN DEL BOTÓN GRUPO CONDICIONAL ---
+        if (datos.esResponsable && datos.grupoUsuario) {
+            const btnGrupo = document.getElementById('btn-menu-grupo');
+            const dividerGrupo = document.getElementById('divider-grupo');
+            
+            // Extraer solo el número o formatear el grupo para la URL (ej: "GRUPO 1" -> "1" o codificado)
+            let numeroGrupoMatch = datos.grupoUsuario.match(/\d+/);
+            let numGrupo = numeroGrupoMatch ? numeroGrupoMatch[0] : datos.grupoUsuario;
+            
+            btnGrupo.href = `https://territorioscerrocamp.vercel.app/grupos.html?grupo=GRUPO%20${numGrupo}`;
+            btnGrupo.style.display = 'flex';
+            if (dividerGrupo) dividerGrupo.style.display = 'block';
+        }
+        // -------------------------------------------
+
         const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
         const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
 
         let htmlCampaña = "";
         
-        // Se muestra si hay campaña activa declarada o si existen fechas de campaña
         if (campañaActivaGlobal !== "" || (fechaInicioCamp && fechaFinCamp)) {
             let listaCamp = datos.campaña || [];
             
@@ -611,7 +729,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                 </div>
               </div>`;
 
-                        if (listaCamp.length > 0) {
+            if (listaCamp.length > 0) {
                 htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + renderizarLista(listaCamp, "", "", "", "c", false);
             } else {
                 htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + `
@@ -619,7 +737,6 @@ body.dark-mode .tarjeta-caducada .card-back {
                         No tienes territorios de campaña asignados
                     </div>`;
             }
-
         }
 
         let html = htmlCampaña +
@@ -628,14 +745,13 @@ body.dark-mode .tarjeta-caducada .card-back {
                    
         document.getElementById('grid-container').innerHTML = html;
 
-        // Ejecutar inmediatamente después de inyectar el HTML asegurando que el DOM lo pinte primero
         setTimeout(() => {
             procesarFechasYBarras(datos);
         }, 50);
       });
   }
 
-            function procesarFechasYBarras(datos) {
+  function procesarFechasYBarras(datos) {
     const inicioStr = datos.fechaInicioCampaña;
     const finStr = datos.fechaFinCampaña;
     const nombreCampActual = datos.campañaActiva || "";
@@ -661,7 +777,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     const inicio = new Date(inicioStr);
     const fin = new Date(finStr);
     
-    // Normalizar fechas a medianoche
     const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
     const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
     const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
@@ -682,14 +797,12 @@ body.dark-mode .tarjeta-caducada .card-back {
       msgTiempo = "Campaña concluida";
       porcentaje = 100;
     } else if (ahocheDate.getTime() === finDate.getTime()) {
-      // AQUÍ ESTÁ TU TEXTO EXACTO Y EL 99%
       msgTiempo = "¡Último día de la campaña!";
       porcentaje = 99;
     } else {
       dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
       
-      // Si por cálculo de días estamos en el último día pero las horas de las fechas difieren ligeramente:
       if (dias <= 1) {
           msgTiempo = "¡Último día de la campaña!";
           porcentaje = 99;
@@ -717,27 +830,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     }
   }
 
-
-
-  function renderizarBarraCampañaHTML() {
-    return `
-      <div class="campaña-info-card" style="background: transparent !important; box-shadow: none !important; border: none !important;">
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <span id="lbl-tiempo-restante" style="font-size: 0.8rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">Cargando tiempo...</span>
-                <div id="lbl-porcentaje-tiempo" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">0%</div>
-            </div>
-            <div style="width: 100%; height: 10px; background: transparent; border-radius: 5px; overflow: hidden;">
-                <div id="barra-progreso-elemento" style="width: 0%; height: 100%; transition: width 0.5s;"></div>
-            </div>
-        </div>
-      </div>`;
-  }
-
-
-
-
-
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
@@ -759,7 +851,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       return dias;
   }
 
-    function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
     lista.sort((a, b) => {
@@ -780,7 +872,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         </select>
       </div>`;
 
-    // AQUÍ ESTÁ LA MAGIA: Solo crea el <h2> si realmente hay un título
     let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
 
     return `${htmlTitulo}
@@ -788,13 +879,10 @@ body.dark-mode .tarjeta-caducada .card-back {
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
-
-    function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
-        
         let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
-
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
         
@@ -859,8 +947,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>`;
     }).join('');
   }
-
-
 
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
