@@ -538,7 +538,18 @@ h2 {
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
 }
-  
+  .trabajados-list-wrapper {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.trabajados-list-wrapper.active {
+  display: flex !important;
+}
+
 </style>
 </head>
 <body>
@@ -713,13 +724,17 @@ h2 {
     }
   }
 
-  function refrescarSeccionCampana() {
+    function refrescarSeccionCampana() {
     if (!datosCargados) return;
+    
+    // Volvemos a renderizar las tres secciones por completo para mantener la sincronización exacta
     let html = renderizarLista(datosCargados.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
                renderizarLista(datosCargados.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                renderizarLista(datosCargados.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
+               
     document.getElementById('grid-container').innerHTML = html;
   }
+
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
