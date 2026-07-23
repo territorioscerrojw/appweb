@@ -23,136 +23,45 @@
 }
 
 body.dark-mode {
-  --bg: #0d1117;          
-  --card-bg: #161b22;     
+  --bg: #0d1117;          /* Fondo general de la página un poco más profundo */
+  --card-bg: #161b22;     /* Fondo principal de la tarjeta */
   --header-bg: #1f6feb;   
-  --primary: #f0f6fc;     
+  --primary: #f0f6fc;     /* Texto principal más nítido */
   --color-texto-anillo: #fff;
 }
 
+/* 1. Cabecera de la tarjeta en modo oscuro con distinción clara */
 body.dark-mode .card-header { 
-  background: rgba(255, 255, 255, 0.06); 
+  background: rgba(255, 255, 255, 0.06); /* Un toque sutil de luz para separarla del cuerpo */
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.1); 
 }
 
+/* 2. Bordes generales de la tarjeta más definidos en modo oscuro */
 body.dark-mode .card-front, 
 body.dark-mode .card-back {
-  border: 0.5px solid rgba(255, 255, 255, 0.12); 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   
+  border: 0.5px solid rgba(255, 255, 255, 0.12); /* Borde sutil que recorta la tarjeta del fondo negro */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   /* Sombra profunda para dar relieve real */
 }
 
+/* 3. Contenedor del tiempo y separadores con mejor contraste oscuro */
 body.dark-mode .tiempo-container {
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 body.dark-mode .barra-container {
-  background: rgba(255, 255, 255, 0.1) !important; 
+  background: rgba(255, 255, 255, 0.1) !important; /* Fondo de la barra de progreso más visible */
 }
 
+/* 4. Contenedor del deslizador en modo oscuro */
 body.dark-mode .swipe-container {
-  background: rgba(255, 255, 255, 0.06); 
+  background: rgba(255, 255, 255, 0.06); /* Se distingue perfectamente del fondo de la tarjeta */
   border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
+/* 5. Botón inferior MÁS DETALLES en modo oscuro */
 body.dark-mode .btn-more {
   background: rgba(255, 255, 255, 0.03);
   border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-  color: #8b949e; 
-}
-
-.trabajados-accordion-container {
-  width: 100%;
-  padding: 0 20px;
-  margin: 15px 0 10px 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.trabajados-toggle-btn {
-  background: rgba(52, 199, 89, 0.12);
-  border: 1px dashed var(--success);
-  color: var(--success);
-  padding: 14px 20px;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.2s;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.trabajados-toggle-btn:hover {
-  background: rgba(52, 199, 89, 0.2);
-}
-
-.trabajados-list-wrapper {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-  width: 100%;
-}
-
-.trabajados-list-wrapper.active {
-  display: flex !important;
-}
-
-.card-trabajada-compacta {
-  background: var(--card-bg);
-  border: 0.5px solid rgba(0,0,0,0.1);
-  border-radius: 12px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-body.dark-mode .card-trabajada-compacta {
-  border: 0.5px solid rgba(255, 255, 255, 0.12);
-  background: #161b22;
-}
-
-.compacta-num {
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: var(--primary);
-  min-width: 60px;
-}
-
-.compacta-estado {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--success);
-  background: rgba(52, 199, 89, 0.15);
-  padding: 6px 14px;
-  border-radius: 20px;
-  letter-spacing: 0.5px;
-}
-
-.compacta-btn-retroceso {
-  background: transparent;
-  border: none;
-  color: #8e8e93;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s, transform 0.2s;
-}
-
-.compacta-btn-retroceso:hover {
-  color: var(--primary);
-  transform: scale(1.1);
+  color: #8b949e; /* Un gris más claro para que se lea bien en oscuro */
 }
 
 * {
@@ -164,8 +73,8 @@ header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 12px 20px; 
-  min-height: 70px;    
+  padding: 12px 20px; /* Asegura un espacio interior cómodo */
+  min-height: 70px;    /* Fuerza una altura mínima para que el botón de 45px quepa de sobra */
   background: transparent; 
   backdrop-filter: blur(20px); 
   border-bottom: 0.5px solid rgba(0,0,0,0.1); 
@@ -179,10 +88,11 @@ body.dark-mode header {
   border-color: rgba(255,255,255,0.1); 
 }
 
+/* Contenedor del nombre centrado exactamente en el espacio libre */
 .user-name-container {
   position: absolute;
   left: 20px;
-  right: 80px; 
+  right: 80px; /* Espacio reservado para el botón de la derecha */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -198,8 +108,9 @@ body.dark-mode header {
   text-align: center;
 }
 
+/* Aseguramos que el botón del tema esté perfectamente posicionado y visible */
 .btn-theme { 
-  position: relative; 
+  position: relative; /* Cambiado a relativo para que fluya con el flex de la cabecera y no se desplace */
   width: 45px; 
   height: 45px; 
   border-radius: 50%; 
@@ -223,15 +134,17 @@ body.dark-mode .btn-theme {
 }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-
+/* Contenedor de la barra de ordenación */
+/* Contenedor de la barra de ordenación con separación superior */
 .ordenar-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin: 12px 20px -5px 20px; 
-  padding: 0;
+  margin: 12px 10px -5px 10px; /* Cambiado el margen superior de -10px a 15px para separarlo del título */
+  padding: 0 5px;
 }
+
 
 .ordenar-label {
   font-size: 0.75rem;
@@ -258,6 +171,7 @@ body.dark-mode .btn-theme {
   background-color: #fff;
 }
 
+/* ESTRUCTURA 3D */
 .card-container { perspective: 1000px; width: 100%; }
 .card-inner { position: relative; width: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; will-change: transform; transform: translateZ(0);}
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
@@ -271,6 +185,7 @@ body.dark-mode .btn-theme {
   pointer-events: none;
 }
 
+/* CARAS */
 .card-front, .card-back {
   width: 100%;
   display: flex;
@@ -297,6 +212,11 @@ body.dark-mode .btn-theme {
   transform: rotateY(180deg) translateZ(1px);
 }
 
+/* ANTI-PARPADEO */
+.card-container.is-flipping .swipe-text { animation: none !important; opacity: 0 !important; }
+.card-container.is-flipping .swipe-container { visibility: hidden !important; }
+
+/* CONTENIDO */
 .card-header { 
   padding: 15px 20px; 
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08); 
@@ -306,8 +226,9 @@ body.dark-mode .btn-theme {
   flex-shrink: 0; 
 }
 
+/* Fondo sutil diferenciado para la cabecera en el Modo Oscuro */
 body.dark-mode .card-header { 
-  background: rgba(255, 255, 255, 0.04); 
+  background: rgba(255, 255, 255, 0.04); /* Fondo sutilmente más claro/luminoso en modo oscuro */
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); 
 }
 
@@ -317,7 +238,7 @@ body.dark-mode .card-header {
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 .etiqueta-calles {
   padding: 12px 20px 0 20px;
-  font-size: 0.9rem; 
+  font-size: 0.9rem; /* Cambia el tamaño aquí */
   font-weight: 700;
   color: #8e8e93;
   letter-spacing: 0.5px;
@@ -329,8 +250,8 @@ body.dark-mode .card-header {
 .btns-back-row { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
-  gap: 8px; 
-  margin: 12px 10px; 
+  gap: 8px; /* Reducimos ligeramente el espacio entre botones para ganar margen */
+  margin: 12px 10px; /* Reducimos los márgenes laterales de 15px a 10px */
   padding: 0; 
   flex-shrink: 0; 
   box-sizing: border-box;
@@ -354,29 +275,33 @@ body.dark-mode .card-header {
   box-sizing: border-box; 
   width: 100%; 
   min-width: 0; 
+  /* Diseño limpio y plano con una sombra muy sutil y moderna */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-back-action:active {
-  transform: scale(0.96); 
+  transform: scale(0.96); /* Sutil efecto de presión moderno */
   opacity: 0.9;
 }
 
 .btn-back-action i {
   font-size: 2.2rem !important; 
   margin-top: 4px;
+  /* Eliminamos el relieve del icono para que sea limpio */
+  filter: none; 
 }
+
 
 .btn-more { 
   width: 100%; 
   padding: 16px 0; 
   border: none; 
   background: rgba(0,0,0,0.03); 
-  color: #8e8e93; 
-  font-weight: 600; 
-  font-size: 0.75rem; 
-  letter-spacing: 3px; 
+  color: #8e8e93; /* Color gris */
+  font-weight: 600; /* Un poco de cuerpo para que se lea bien con tanta separación */
+  font-size: 0.75rem; /* Texto más pequeño */
+  letter-spacing: 3px; /* Letras mucho más separadas */
   text-align: center;
   cursor: pointer; 
   border-top: 0.5px solid rgba(0,0,0,0.1); 
@@ -385,9 +310,38 @@ body.dark-mode .card-header {
   box-sizing: border-box; 
 }
 
+
+/* SWIPE Y ELEMENTOS */
 .swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
+
+/* Botón de tema general (Modo Claro) */
+.btn-theme { 
+  position: absolute; 
+  right: 20px; 
+  top: 15px; 
+  width: 45px; 
+  height: 45px; 
+  border-radius: 50%; 
+  border: 0.5px solid rgba(0,0,0,0.1); 
+  background: #ffffff; /* Fondo blanco en modo claro */
+  color: #1c1c1e;     /* Icono oscuro en modo claro */
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  font-size: 1.3rem; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Botón de tema en Modo Oscuro */
+body.dark-mode .btn-theme {
+  background: #161b22; /* Fondo oscuro a juego con las tarjetas */
+  color: #f0f6fc;     /* Icono claro para que contraste */
+  border: 0.5px solid rgba(255, 255, 255, 0.15); /* Borde sutil iluminado */
+}
 
 .swipe-text {
   position: absolute; 
@@ -395,7 +349,7 @@ body.dark-mode .card-header {
   text-align: center; 
   font-weight: 700; 
   color: #8e8e93; 
-  font-size: 1rem; 
+  font-size: 1rem; /* <--- Cambia este valor (ej: 0.75rem para más pequeño o 0.95rem para más grande) */
   pointer-events: none;
   padding-left: 45px; 
   box-sizing: border-box;
@@ -406,6 +360,8 @@ body.dark-mode .card-header {
   animation: shine 2.5s infinite linear;
 }
 
+
+/* ANIMACIONES */
 @keyframes heartbeat-intenso {
   0% { transform: scale(1); }
   10% { transform: scale(1.3); }
@@ -425,19 +381,19 @@ h2 {
   top: 0; 
   z-index: 20; 
   color: white; 
-  font-size: 1.1rem; 
+  font-size: 1.1rem; /* <--- Aumenta o disminuye el tamaño de la letra aquí */
   text-transform: uppercase; 
   margin: 0; 
   padding: 15px 20px; 
   font-weight: 800; 
   backdrop-filter: blur(15px); 
-  display: flex;             
-  justify-content: space-between; 
-  align-items: center;       
+  display: flex;             /* Activamos flexbox para alinear el contenido */
+  justify-content: space-between; /* Separa el texto a la izquierda y el icono a la derecha */
+  align-items: center;       /* Centra verticalmente ambos elementos */
 }
-
+/* Estilos del visor de imágenes */
 #image-viewer-modal {
-  display: none; 
+  display: none; /* Oculto por defecto */
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -450,16 +406,16 @@ h2 {
   box-sizing: border-box;
 }
 
-.h2-campana { background: rgba(220, 53, 69, 0.85); } 
+ .h2-campana { background: rgba(220, 53, 69, 0.85); } /* Nuevo tono rojo */
 #image-viewer-modal.active {
-  display: flex; 
+  display: flex; /* Se muestra al activarlo */
 }
 
 .viewer-content {
   position: relative;
   max-width: 100%;
   max-height: 100%;
-  overflow: auto; 
+  overflow: auto; /* Permite hacer scroll/zoom si la imagen es grande */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -500,10 +456,10 @@ h2 {
 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
-
+/* Estilos actualizados para tarjetas bloqueadas durante campaña (translúcidas y menos borrosas) */
 .card-container.bloqueada .card-inner {
-  filter: blur(1.5px); 
-  opacity: 0.65;       
+  filter: blur(1.5px); /* Menos desenfoque para que se siga viendo la estructura */
+  opacity: 0.65;       /* Efecto translúcido para ver el fondo */
   pointer-events: none;
   user-select: none;
 }
@@ -521,7 +477,7 @@ h2 {
   z-index: 50;
   padding: 20px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.25); 
+  background: rgba(0, 0, 0, 0.25); /* Fondo oscuro más suave para que no tape del todo */
   border-radius: 18px;
 }
 
@@ -533,6 +489,7 @@ h2 {
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
 }
+  
 </style>
 </head>
 <body>
@@ -549,6 +506,7 @@ h2 {
 
 <div id="grid-container"></div>
 
+<!-- Visor de imagen a pantalla completa -->
 <div id="image-viewer-modal" onclick="cerrarVisor(event)">
     <button class="viewer-close" onclick="cerrarVisor()"><i class="fa-solid fa-xmark"></i></button>
     <div class="viewer-content">
@@ -559,7 +517,6 @@ h2 {
 <script>
   let datosCargados = null;
   let nombreH = "";
-  let trabajadosCampana = [];
   const urlAppScript = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
 
   function toggleTheme() {
@@ -571,7 +528,7 @@ h2 {
     document.body.classList.add('dark-mode');
   }
 
-  let campañaActivaGlobal = "";
+ let campañaActivaGlobal = "";
 
   function cargar() {
     const params = new URLSearchParams(window.location.search);
@@ -589,6 +546,7 @@ h2 {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
 
+        // Si la lista de campaña viene vacía (fuera de fecha), renderizarLista la ignorará y no la pintará
         let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
@@ -596,7 +554,6 @@ h2 {
         document.getElementById('grid-container').innerHTML = html;
       });
   }
-
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
@@ -618,109 +575,36 @@ h2 {
       return dias;
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
-    if (!lista) lista = [];
+     function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+    if (!lista || lista.length === 0) return "";
 
-    let listaPendientes = lista;
-    if (tipo === 'c') {
-      listaPendientes = lista.filter(t => !trabajadosCampana.some(item => item.num === t.num));
-    }
-
-    if (tipo === 'c') {
-      listaPendientes.sort((a, b) => {
-        let numA = parseInt(a.num.replace(/\D/g, '')) || 0;
-        let numB = parseInt(b.num.replace(/\D/g, '')) || 0;
-        return numA - numB;
-      });
-    } else {
-      listaPendientes.sort((a, b) => {
-        let diasA = calcularDiasTotales(a.tiempo || "0");
-        let diasB = calcularDiasTotales(b.tiempo || "0");
-        return diasA - diasB;
-      });
-    }
+    // ORDENAR POR DEFECTO: Tiempo restante (de menor a mayor tiempo restante)
+    lista.sort((a, b) => {
+      let diasA = calcularDiasTotales(a.tiempo || "0");
+      let diasB = calcularDiasTotales(b.tiempo || "0");
+      return diasA - diasB;
+    });
 
     let idGrid = `grid-${tipo}`;
     
     let htmlOrdenacion = `
       <div class="ordenar-container">
         <span class="ordenar-label">ORDENAR POR:</span>
-        <select class="ordenar-select" onclick="event.stopPropagation()" onchange="cambiarOrden('${tipo}', this.value)">
-          <option value="numero" ${tipo === 'c' ? 'selected' : ''}>Número</option>
-          <option value="tiempo" ${tipo !== 'c' ? 'selected' : ''}>Tiempo restante</option>
+        <select class="ordenar-select" onchange="cambiarOrden('${tipo}', this.value)">
+          <option value="numero">Número</option>
+          <option value="tiempo" selected>Tiempo restante</option> <!-- SELECCIONADO POR DEFECTO -->
           <option value="cercania">Cercanía</option>
         </select>
       </div>`;
 
-    let htmlTrabajadosSeccion = "";
-    if (tipo === 'c' && trabajadosCampana.length > 0) {
-      let tarjetasCompactasHTML = trabajadosCampana.map(t => `
-        <div class="card-trabajada-compacta">
-          <span class="compacta-num">${t.num}</span>
-          <span class="compacta-estado">Trabajado</span>
-          <button class="compacta-btn-retroceso" onclick="retrocederTrabajado('${t.num}')" title="Retroceder">
-            <i class="fa-solid fa-arrow-rotate-left"></i>
-          </button>
-        </div>
-      `).join('');
-
-      htmlTrabajadosSeccion = `
-        <div class="trabajados-accordion-container" id="trabajados-container-c">
-          <button class="trabajados-toggle-btn" onclick="toggleTrabajadosAcordeon()">
-            <span>Territorios de Campaña Trabajados (${trabajadosCampana.length})</span>
-            <i class="fa-solid fa-chevron-down" id="trabajados-chevron"></i>
-          </button>
-          <div class="trabajados-list-wrapper" id="trabajados-list-wrapper">
-            ${tarjetasCompactasHTML}
-          </div>
-        </div>`;
-    }
-
-    let contenidoGrid = generarTarjetasHTML(listaPendientes, tipo, estaBloqueado);
-    if (tipo === 'c' && listaPendientes.length === 0 && trabajadosCampana.length === 0) {
-      contenidoGrid = `<div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #8e8e93; font-weight: 600;">No hay territorios de campaña disponibles.</div>`;
-    }
-
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             ${htmlOrdenacion}
-            <div class="grid" id="${idGrid}">
-              ${contenidoGrid}
-            </div>
-            ${htmlTrabajadosSeccion}`;
+            <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
-  function toggleTrabajadosAcordeon() {
-    const wrapper = document.getElementById('trabajados-list-wrapper');
-    const chevron = document.getElementById('trabajados-chevron');
-    if (wrapper) {
-      wrapper.classList.toggle('active');
-      if (wrapper.classList.contains('active')) {
-        chevron.className = "fa-solid fa-chevron-up";
-      } else {
-        chevron.className = "fa-solid fa-chevron-down";
-      }
-    }
-  }
 
-  function retrocederTrabajado(num) {
-    let index = trabajadosCampana.findIndex(t => t.num === num);
-    if (index !== -1) {
-      trabajadosCampana.splice(index, 1);
-      refrescarSeccionCampana();
-    }
-  }
-
-  function refrescarSeccionCampana() {
-    if (!datosCargados) return;
-    let html = renderizarLista(datosCargados.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
-               renderizarLista(datosCargados.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
-               renderizarLista(datosCargados.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
-               
-    document.getElementById('grid-container').innerHTML = html;
-  }
-
+  // Extraemos la generación de tarjetas a una función auxiliar para poder repintarlas al ordenar
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
-    if (!lista || lista.length === 0) return "";
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
@@ -744,6 +628,7 @@ h2 {
                 </div>
             ` : ''}
             <div class="card-inner">
+                <!-- CARA FRONTAL -->
                 <div class="card-front">
                     <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                     <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
@@ -769,6 +654,7 @@ h2 {
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                 </div>
 
+                <!-- CARA TRASERA -->
                 <div class="card-back">
                     <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
                     <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
@@ -786,6 +672,7 @@ h2 {
     }).join('');
   }
 
+
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
       return limpio.split('|').map(item => {
@@ -794,23 +681,14 @@ h2 {
       }).filter(i => i !== "").join("<br>");
   }
 
-  function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
+function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
           elementoTarjeta.style.transform = "scale(0.8)";
-          setTimeout(() => {
-              elementoTarjeta.remove();
-              if (tipoReg === 'campaña') {
-                  let itemEncontrado = datosCargados.campaña.find(x => x.num === numT);
-                  if (itemEncontrado && !trabajadosCampana.some(x => x.num === numT)) {
-                      trabajadosCampana.push(itemEncontrado);
-                      refrescarSeccionCampana();
-                  }
-              }
-          }, 400);
+          setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
@@ -827,6 +705,7 @@ h2 {
   
   function formatearCalles(textoCalles) {
       if (!textoCalles) return "";
+      // Reemplaza cualquier secuencia de números (incluso con guiones o barras si quieres) para ponerlos en negrita
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
   }
 
@@ -865,7 +744,6 @@ h2 {
       document.addEventListener('touchmove', mover, {passive: false});
       document.addEventListener('touchend', terminar, {once: true});
   }
-
   function abrirVisor(urlImagen) {
       const modal = document.getElementById('image-viewer-modal');
       const img = document.getElementById('viewer-img');
@@ -874,18 +752,23 @@ h2 {
   }
 
   function cerrarVisor(event) {
+      // Si se pasa el evento, solo cierra si hacen clic en el fondo negro (fuera de la imagen)
       if (event && event.target.id !== 'image-viewer-modal' && !event.target.classList.contains('viewer-close') && !event.target.closest('.viewer-close')) {
           return;
       }
       const modal = document.getElementById('image-viewer-modal');
       modal.classList.remove('active');
   }
-
-  function lanzarEfectoAleatorio(tarjeta) {
+function lanzarEfectoAleatorio(tarjeta) {
     const efecto = Math.floor(Math.random() * 10) + 1;
+    console.log("Efecto aleatorio seleccionado:", efecto); // Útil para depurar en la consola (F12)
+
     switch(efecto) {
-        case 1: confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); break;
-        case 2: 
+        case 1: // 1. Confeti clásico de colores
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            break;
+            
+        case 2: // 2. Fuegos artificiales cruzados
             let duration = 1.2 * 1000;
             let animationEnd = Date.now() + duration;
             let interval = setInterval(function() {
@@ -894,30 +777,49 @@ h2 {
                 confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
             }, 200);
             break;
-        case 3: confetti({ particleCount: 50, spread: 100, colors: ['#ffd700', '#ffa500'], shapes: ['star'] }); break;
-        case 4: 
+            
+        case 3: // 3. Lluvia de estrellas doradas
+            confetti({ particleCount: 50, spread: 100, colors: ['#ffd700', '#ffa500'], shapes: ['star'] });
+            break;
+            
+        case 4: // 4. Rebote y resplandor verde (CSS)
             tarjeta.style.transition = "all 0.4s ease";
             tarjeta.style.transform = "scale(1.05)";
             tarjeta.style.boxShadow = "0 0 35px #34c759";
             break;
-        case 5: confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] }); break;
-        case 6: 
+            
+        case 5: // 5. Lluvia de éxito (Tonos dorados, verdes y amarillos)
+            confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] });
+            break;
+            
+        case 6: // 6. Neón rápido / Rayos de luz
             tarjeta.style.transition = "all 0.3s ease";
             tarjeta.style.filter = "brightness(1.8) saturate(2) hue-rotate(90deg)";
             tarjeta.style.boxShadow = "0 0 40px #007aff";
             break;
-        case 7: confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] }); break;
-        case 8: confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] }); break;
-        case 9: confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 }); break;
-        case 10: 
+            
+        case 7: // 7. Burbujas suaves de colores
+            confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] });
+            break;
+            
+        case 8: // 8. Arcoíris completo
+            confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] });
+            break;
+            
+        case 9: // 9. Escarcha de diamantes
+            confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 });
+            break;
+            
+        case 10: // 10. Desintegración digital
             tarjeta.style.transition = "all 0.5s ease";
             tarjeta.style.transform = "scale(0.85) skewX(15deg)";
             tarjeta.style.filter = "blur(4px)";
             tarjeta.style.opacity = "0.3";
             break;
     }
-  }
+}
 
+  // Variable global para almacenar la ubicación actual del usuario una vez obtenida
   let ubicacionUsuario = null;
 
   function cambiarOrden(tipo, criterio) {
@@ -936,13 +838,14 @@ h2 {
       });
       actualizarGridVisual(tipo, lista);
 
-    } else if (criterio === 'tiempo') {
+      } else if (criterio === 'tiempo') {
       lista.sort((a, b) => {
         let diasA = calcularDiasTotales(a.tiempo || "0");
         let diasB = calcularDiasTotales(b.tiempo || "0");
         return diasA - diasB;
       });
       actualizarGridVisual(tipo, lista);
+
 
     } else if (criterio === 'cercania') {
       if (ubicacionUsuario) {
@@ -974,19 +877,20 @@ h2 {
     lista.sort((a, b) => {
       let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
       let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
-      return distA - distB; 
+      return distA - distB; // Del más cercano al más lejano
     });
     actualizarGridVisual(tipo, lista);
   }
 
+  // Fórmula de Haversine para calcular distancia en metros entre tu posición y las coordenadas del territorio (string "lat, lon")
   function calcularDistanciaMetros(lat1, lon1, coordsString) {
     let matches = (coordsString || "").match(/[-0-9.]+/g);
-    if (!matches || matches.length < 2) return Infinity; 
+    if (!matches || matches.length < 2) return Infinity; // Si no hay coordenadas, los manda al final
     
     let lat2 = parseFloat(matches[0]);
     let lon2 = parseFloat(matches[1]);
 
-    const R = 6371e3; 
+    const R = 6371e3; // Radio de la tierra en metros
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -997,20 +901,16 @@ h2 {
   }
 
   function actualizarGridVisual(tipo, listaOrdenada) {
-    if (tipo === 'c') {
-      refrescarSeccionCampana();
-    } else {
-      let estaBloqueado = (campañaActivaGlobal !== "");
-      let gridElement = document.getElementById(`grid-${tipo}`);
-      if (gridElement) {
-        gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
-      }
+    let estaBloqueado = (tipo !== 'c' && campañaActivaGlobal !== "");
+    let gridElement = document.getElementById(`grid-${tipo}`);
+    if (gridElement) {
+      gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
   }
 
   cargar();
 </script>
-<script>
+  <script>
   let ultimoToque = 0;
   document.addEventListener('touchend', function (evento) {
       let tiempoActual = new Date().getTime();
