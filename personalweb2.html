@@ -23,45 +23,40 @@
 }
 
 body.dark-mode {
-  --bg: #0d1117;          /* Fondo general de la página un poco más profundo */
-  --card-bg: #161b22;     /* Fondo principal de la tarjeta */
+  --bg: #0d1117;          
+  --card-bg: #161b22;     
   --header-bg: #1f6feb;   
-  --primary: #f0f6fc;     /* Texto principal más nítido */
+  --primary: #f0f6fc;     
   --color-texto-anillo: #fff;
 }
 
-/* 1. Cabecera de la tarjeta en modo oscuro con distinción clara */
 body.dark-mode .card-header { 
-  background: rgba(255, 255, 255, 0.06); /* Un toque sutil de luz para separarla del cuerpo */
+  background: rgba(255, 255, 255, 0.06); 
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.1); 
 }
 
-/* 2. Bordes generales de la tarjeta más definidos en modo oscuro */
 body.dark-mode .card-front, 
 body.dark-mode .card-back {
-  border: 0.5px solid rgba(255, 255, 255, 0.12); /* Borde sutil que recorta la tarjeta del fondo negro */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   /* Sombra profunda para dar relieve real */
+  border: 0.5px solid rgba(255, 255, 255, 0.12); 
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   
 }
 
-/* 3. Contenedor del tiempo y separadores con mejor contraste oscuro */
 body.dark-mode .tiempo-container {
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 body.dark-mode .barra-container {
-  background: rgba(255, 255, 255, 0.1) !important; /* Fondo de la barra de progreso más visible */
+  background: rgba(255, 255, 255, 0.1) !important; 
 }
 
-/* 4. Contenedor del deslizador en modo oscuro */
 body.dark-mode .swipe-container {
-  background: rgba(255, 255, 255, 0.06); /* Se distingue perfectamente del fondo de la tarjeta */
+  background: rgba(255, 255, 255, 0.06); 
   border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
-/* 5. Botón inferior MÁS DETALLES en modo oscuro */
 body.dark-mode .btn-more {
   background: rgba(255, 255, 255, 0.03);
   border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-  color: #8b949e; /* Un gris más claro para que se lea bien en oscuro */
+  color: #8b949e; 
 }
 
 * {
@@ -73,8 +68,8 @@ header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 12px 20px; /* Asegura un espacio interior cómodo */
-  min-height: 70px;    /* Fuerza una altura mínima para que el botón de 45px quepa de sobra */
+  padding: 12px 20px; 
+  min-height: 70px;    
   background: transparent; 
   backdrop-filter: blur(20px); 
   border-bottom: 0.5px solid rgba(0,0,0,0.1); 
@@ -88,11 +83,10 @@ body.dark-mode header {
   border-color: rgba(255,255,255,0.1); 
 }
 
-/* Contenedor del nombre centrado exactamente en el espacio libre */
 .user-name-container {
   position: absolute;
   left: 20px;
-  right: 80px; /* Espacio reservado para el botón de la derecha */
+  right: 80px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,9 +102,8 @@ body.dark-mode header {
   text-align: center;
 }
 
-/* Aseguramos que el botón del tema esté perfectamente posicionado y visible */
 .btn-theme { 
-  position: relative; /* Cambiado a relativo para que fluya con el flex de la cabecera y no se desplace */
+  position: relative; 
   width: 45px; 
   height: 45px; 
   border-radius: 50%; 
@@ -134,17 +127,15 @@ body.dark-mode .btn-theme {
 }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
-/* Contenedor de la barra de ordenación */
-/* Contenedor de la barra de ordenación con separación superior */
+
 .ordenar-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin: 12px 10px -5px 10px; /* Cambiado el margen superior de -10px a 15px para separarlo del título */
+  margin: 12px 10px -5px 10px; 
   padding: 0 5px;
 }
-
 
 .ordenar-label {
   font-size: 0.75rem;
@@ -171,7 +162,6 @@ body.dark-mode .btn-theme {
   background-color: #fff;
 }
 
-/* ESTRUCTURA 3D */
 .card-container { perspective: 1000px; width: 100%; }
 .card-inner { position: relative; width: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; will-change: transform; transform: translateZ(0);}
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
@@ -185,7 +175,6 @@ body.dark-mode .btn-theme {
   pointer-events: none;
 }
 
-/* CARAS */
 .card-front, .card-back {
   width: 100%;
   display: flex;
@@ -212,11 +201,9 @@ body.dark-mode .btn-theme {
   transform: rotateY(180deg) translateZ(1px);
 }
 
-/* ANTI-PARPADEO */
 .card-container.is-flipping .swipe-text { animation: none !important; opacity: 0 !important; }
 .card-container.is-flipping .swipe-container { visibility: hidden !important; }
 
-/* CONTENIDO */
 .card-header { 
   padding: 15px 20px; 
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08); 
@@ -226,9 +213,8 @@ body.dark-mode .btn-theme {
   flex-shrink: 0; 
 }
 
-/* Fondo sutil diferenciado para la cabecera en el Modo Oscuro */
 body.dark-mode .card-header { 
-  background: rgba(255, 255, 255, 0.04); /* Fondo sutilmente más claro/luminoso en modo oscuro */
+  background: rgba(255, 255, 255, 0.04); 
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); 
 }
 
@@ -238,7 +224,7 @@ body.dark-mode .card-header {
 .img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
 .etiqueta-calles {
   padding: 12px 20px 0 20px;
-  font-size: 0.9rem; /* Cambia el tamaño aquí */
+  font-size: 0.9rem; 
   font-weight: 700;
   color: #8e8e93;
   letter-spacing: 0.5px;
@@ -250,8 +236,8 @@ body.dark-mode .card-header {
 .btns-back-row { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
-  gap: 8px; /* Reducimos ligeramente el espacio entre botones para ganar margen */
-  margin: 12px 10px; /* Reducimos los márgenes laterales de 15px a 10px */
+  gap: 8px; 
+  margin: 12px 10px; 
   padding: 0; 
   flex-shrink: 0; 
   box-sizing: border-box;
@@ -275,33 +261,30 @@ body.dark-mode .card-header {
   box-sizing: border-box; 
   width: 100%; 
   min-width: 0; 
-  /* Diseño limpio y plano con una sombra muy sutil y moderna */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-back-action:active {
-  transform: scale(0.96); /* Sutil efecto de presión moderno */
+  transform: scale(0.96); 
   opacity: 0.9;
 }
 
 .btn-back-action i {
   font-size: 2.2rem !important; 
   margin-top: 4px;
-  /* Eliminamos el relieve del icono para que sea limpio */
   filter: none; 
 }
-
 
 .btn-more { 
   width: 100%; 
   padding: 16px 0; 
   border: none; 
   background: rgba(0,0,0,0.03); 
-  color: #8e8e93; /* Color gris */
-  font-weight: 600; /* Un poco de cuerpo para que se lea bien con tanta separación */
-  font-size: 0.75rem; /* Texto más pequeño */
-  letter-spacing: 3px; /* Letras mucho más separadas */
+  color: #8e8e93; 
+  font-weight: 600; 
+  font-size: 0.75rem; 
+  letter-spacing: 3px; 
   text-align: center;
   cursor: pointer; 
   border-top: 0.5px solid rgba(0,0,0,0.1); 
@@ -310,37 +293,14 @@ body.dark-mode .card-header {
   box-sizing: border-box; 
 }
 
-
-/* SWIPE Y ELEMENTOS */
 .swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
-/* Botón de tema general (Modo Claro) */
-.btn-theme { 
-  position: absolute; 
-  right: 20px; 
-  top: 15px; 
-  width: 45px; 
-  height: 45px; 
-  border-radius: 50%; 
-  border: 0.5px solid rgba(0,0,0,0.1); 
-  background: #ffffff; /* Fondo blanco en modo claro */
-  color: #1c1c1e;     /* Icono oscuro en modo claro */
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  cursor: pointer; 
-  font-size: 1.3rem; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
-}
-
-/* Botón de tema en Modo Oscuro */
 body.dark-mode .btn-theme {
-  background: #161b22; /* Fondo oscuro a juego con las tarjetas */
-  color: #f0f6fc;     /* Icono claro para que contraste */
-  border: 0.5px solid rgba(255, 255, 255, 0.15); /* Borde sutil iluminado */
+  background: #161b22; 
+  color: #f0f6fc;     
+  border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
 .swipe-text {
@@ -349,7 +309,7 @@ body.dark-mode .btn-theme {
   text-align: center; 
   font-weight: 700; 
   color: #8e8e93; 
-  font-size: 1rem; /* <--- Cambia este valor (ej: 0.75rem para más pequeño o 0.95rem para más grande) */
+  font-size: 1rem; 
   pointer-events: none;
   padding-left: 45px; 
   box-sizing: border-box;
@@ -360,8 +320,6 @@ body.dark-mode .btn-theme {
   animation: shine 2.5s infinite linear;
 }
 
-
-/* ANIMACIONES */
 @keyframes heartbeat-intenso {
   0% { transform: scale(1); }
   10% { transform: scale(1.3); }
@@ -381,19 +339,19 @@ h2 {
   top: 0; 
   z-index: 20; 
   color: white; 
-  font-size: 1.1rem; /* <--- Aumenta o disminuye el tamaño de la letra aquí */
+  font-size: 1.1rem; 
   text-transform: uppercase; 
   margin: 0; 
   padding: 15px 20px; 
   font-weight: 800; 
   backdrop-filter: blur(15px); 
-  display: flex;             /* Activamos flexbox para alinear el contenido */
-  justify-content: space-between; /* Separa el texto a la izquierda y el icono a la derecha */
-  align-items: center;       /* Centra verticalmente ambos elementos */
+  display: flex;             
+  justify-content: space-between; 
+  align-items: center;       
 }
-/* Estilos del visor de imágenes */
+
 #image-viewer-modal {
-  display: none; /* Oculto por defecto */
+  display: none; 
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -406,16 +364,16 @@ h2 {
   box-sizing: border-box;
 }
 
- .h2-campana { background: rgba(220, 53, 69, 0.85); } /* Nuevo tono rojo */
+.h2-campana { background: rgba(220, 53, 69, 0.85); } 
 #image-viewer-modal.active {
-  display: flex; /* Se muestra al activarlo */
+  display: flex; 
 }
 
 .viewer-content {
   position: relative;
   max-width: 100%;
   max-height: 100%;
-  overflow: auto; /* Permite hacer scroll/zoom si la imagen es grande */
+  overflow: auto; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -456,10 +414,10 @@ h2 {
 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
-/* Estilos actualizados para tarjetas bloqueadas durante campaña (translúcidas y menos borrosas) */
+
 .card-container.bloqueada .card-inner {
-  filter: blur(1.5px); /* Menos desenfoque para que se siga viendo la estructura */
-  opacity: 0.65;       /* Efecto translúcido para ver el fondo */
+  filter: blur(1.5px); 
+  opacity: 0.65;       
   pointer-events: none;
   user-select: none;
 }
@@ -477,7 +435,7 @@ h2 {
   z-index: 50;
   padding: 20px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.25); /* Fondo oscuro más suave para que no tape del todo */
+  background: rgba(0, 0, 0, 0.25); 
   border-radius: 18px;
 }
 
@@ -489,6 +447,21 @@ h2 {
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
 }
+
+/* Estilos de la barra de campaña general (superior) */
+.campaña-info-card {
+  background: var(--card-bg);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  padding: 15px 20px;
+  box-sizing: border-box;
+}
+body.dark-mode .campaña-info-card {
+  background: var(--card-bg);
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
+}
+.neon-verde { background-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
+.neon-naranja { background-color: var(--warning) !important; box-shadow: 0 0 10px var(--warning); }
+.neon-rojo { background-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
   
 </style>
 </head>
@@ -528,7 +501,7 @@ h2 {
     document.body.classList.add('dark-mode');
   }
 
- let campañaActivaGlobal = "";
+  let campañaActivaGlobal = "";
 
   function cargar() {
     const params = new URLSearchParams(window.location.search);
@@ -545,15 +518,106 @@ h2 {
       .then(datos => {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
+        const fechaInicioCamp = datos.fechaInicioCampaña;
+        const fechaFinCamp = datos.fechaFinCampaña;
 
-        // Si la lista de campaña viene vacía (fuera de fecha), renderizarLista la ignorará y no la pintará
-        let html = renderizarLista(datos.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
+        let htmlCampaña = "";
+        
+        // Comprobar si hay campaña activa o fechas de campaña válidas para mostrar la barra y cabecera
+        if (campañaActivaGlobal !== "" || (fechaInicioCamp && fechaFinCamp)) {
+            let listaCamp = datos.campaña || [];
+            
+            // Renderizamos la barra de progreso general de la campaña justo encima de la etiqueta
+            let htmlBarraCampaña = `
+              <div class="campaña-info-card">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <span id="lbl-tiempo-restante" style="font-size: 0.8rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">Cargando tiempo...</span>
+                        <div id="lbl-porcentaje-tiempo" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">0%</div>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: rgba(0,0,0,0.08); border-radius: 5px; overflow: hidden;">
+                        <div id="barra-progreso-elemento" style="width: 0%; height: 100%; transition: width 0.5s;"></div>
+                    </div>
+                </div>
+              </div>`;
+
+            if (listaCamp.length > 0) {
+                htmlCampaña = htmlBarraCampaña + renderizarLista(listaCamp, "Campaña", "fa-bullhorn", "h2-campana", "c", false);
+            } else {
+                htmlCampaña = htmlBarraCampaña + `
+                    <h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>
+                    <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem;">
+                        No tienes territorios de campaña asignados
+                    </div>`;
+            }
+            
+            // Procesar las fechas en la barra superior
+            setTimeout(() => {
+                procesarFechasYBarras(fechaInicioCamp, fechaFinCamp);
+            }, 50);
+        }
+
+        let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
                    
         document.getElementById('grid-container').innerHTML = html;
       });
   }
+
+  function procesarFechasYBarras(inicioStr, finStr) {
+    if (!inicioStr || !finStr) return;
+    const ahora = new Date();
+    const inicio = new Date(inicioStr);
+    const fin = new Date(finStr);
+    
+    const ahoraDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
+    const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
+
+    const tiempoTotal = finDate - inicioDate;
+    const tiempoTranscurrido = ahoraDate - inicioDate;
+    let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
+    porcentaje = Math.max(0, Math.min(100, porcentaje));
+    
+    let msgTiempo = "";
+    let dias = 0;
+
+    if (ahoraDate < inicioDate) {
+      dias = Math.ceil((inicioDate - ahoraDate) / (1000 * 60 * 60 * 24));
+      msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
+      porcentaje = 0; 
+    } else if (ahoraDate > finDate) {
+      msgTiempo = "Campaña concluida";
+      porcentaje = 100;
+    } else if (ahoraDate.getTime() === finDate.getTime()) {
+      msgTiempo = "¡Último día de campaña!";
+      porcentaje = 99;
+    } else {
+      dias = Math.ceil((finDate - ahoraDate) / (1000 * 60 * 60 * 24));
+      msgTiempo = `Quedan ${dias} días de campaña`;
+    }
+    
+    if (document.getElementById("lbl-tiempo-restante")) document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
+    if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
+    
+    const barra = document.getElementById("barra-progreso-elemento");
+    if (barra) {
+      barra.style.width = `${porcentaje}%`;
+      barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
+      
+      if (ahoraDate >= inicioDate && now <= finDate) {
+          if (dias <= 2 || ahoraDate.getTime() === finDate.getTime()) {
+              barra.classList.add("neon-rojo");
+          } else if (dias <= 7) {
+              barra.classList.add("neon-naranja");
+          } else {
+              barra.classList.add("neon-verde");
+          }
+      }
+    }
+  }
+
   function girarTarjeta(tipo, index) {
     const contenedor = document.getElementById(`card-container-${tipo}-${index}`);
     if (contenedor) {
@@ -575,10 +639,9 @@ h2 {
       return dias;
   }
 
-     function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
 
-    // ORDENAR POR DEFECTO: Tiempo restante (de menor a mayor tiempo restante)
     lista.sort((a, b) => {
       let diasA = calcularDiasTotales(a.tiempo || "0");
       let diasB = calcularDiasTotales(b.tiempo || "0");
@@ -592,7 +655,7 @@ h2 {
         <span class="ordenar-label">ORDENAR POR:</span>
         <select class="ordenar-select" onchange="cambiarOrden('${tipo}', this.value)">
           <option value="numero">Número</option>
-          <option value="tiempo" selected>Tiempo restante</option> <!-- SELECCIONADO POR DEFECTO -->
+          <option value="tiempo" selected>Tiempo restante</option> 
           <option value="cercania">Cercanía</option>
         </select>
       </div>`;
@@ -602,8 +665,6 @@ h2 {
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
-
-  // Extraemos la generación de tarjetas a una función auxiliar para poder repintarlas al ordenar
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
@@ -672,7 +733,6 @@ h2 {
     }).join('');
   }
 
-
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
       return limpio.split('|').map(item => {
@@ -681,7 +741,7 @@ h2 {
       }).filter(i => i !== "").join("<br>");
   }
 
-function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
+  function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
       setTimeout(() => {
@@ -705,7 +765,6 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
   
   function formatearCalles(textoCalles) {
       if (!textoCalles) return "";
-      // Reemplaza cualquier secuencia de números (incluso con guiones o barras si quieres) para ponerlos en negrita
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
   }
 
@@ -744,6 +803,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
       document.addEventListener('touchmove', mover, {passive: false});
       document.addEventListener('touchend', terminar, {once: true});
   }
+
   function abrirVisor(urlImagen) {
       const modal = document.getElementById('image-viewer-modal');
       const img = document.getElementById('viewer-img');
@@ -752,74 +812,50 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
   }
 
   function cerrarVisor(event) {
-      // Si se pasa el evento, solo cierra si hacen clic en el fondo negro (fuera de la imagen)
       if (event && event.target.id !== 'image-viewer-modal' && !event.target.classList.contains('viewer-close') && !event.target.closest('.viewer-close')) {
           return;
       }
       const modal = document.getElementById('image-viewer-modal');
       modal.classList.remove('active');
   }
-function lanzarEfectoAleatorio(tarjeta) {
-    const efecto = Math.floor(Math.random() * 10) + 1;
-    console.log("Efecto aleatorio seleccionado:", efecto); // Útil para depurar en la consola (F12)
 
-    switch(efecto) {
-        case 1: // 1. Confeti clásico de colores
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            break;
-            
-        case 2: // 2. Fuegos artificiales cruzados
-            let duration = 1.2 * 1000;
-            let animationEnd = Date.now() + duration;
-            let interval = setInterval(function() {
-                if (Date.now() > animationEnd) { return clearInterval(interval); }
-                confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0 } });
-                confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
-            }, 200);
-            break;
-            
-        case 3: // 3. Lluvia de estrellas doradas
-            confetti({ particleCount: 50, spread: 100, colors: ['#ffd700', '#ffa500'], shapes: ['star'] });
-            break;
-            
-        case 4: // 4. Rebote y resplandor verde (CSS)
-            tarjeta.style.transition = "all 0.4s ease";
-            tarjeta.style.transform = "scale(1.05)";
-            tarjeta.style.boxShadow = "0 0 35px #34c759";
-            break;
-            
-        case 5: // 5. Lluvia de éxito (Tonos dorados, verdes y amarillos)
-            confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] });
-            break;
-            
-        case 6: // 6. Neón rápido / Rayos de luz
-            tarjeta.style.transition = "all 0.3s ease";
-            tarjeta.style.filter = "brightness(1.8) saturate(2) hue-rotate(90deg)";
-            tarjeta.style.boxShadow = "0 0 40px #007aff";
-            break;
-            
-        case 7: // 7. Burbujas suaves de colores
-            confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] });
-            break;
-            
-        case 8: // 8. Arcoíris completo
-            confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] });
-            break;
-            
-        case 9: // 9. Escarcha de diamantes
-            confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 });
-            break;
-            
-        case 10: // 10. Desintegración digital
-            tarjeta.style.transition = "all 0.5s ease";
-            tarjeta.style.transform = "scale(0.85) skewX(15deg)";
-            tarjeta.style.filter = "blur(4px)";
-            tarjeta.style.opacity = "0.3";
-            break;
-    }
-}
+  function lanzarEfectoAleatorio(tarjeta) {
+      const efecto = Math.floor(Math.random() * 10) + 1;
+      switch(efecto) {
+          case 1: confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); break;
+          case 2: 
+              let duration = 1.2 * 1000;
+              let animationEnd = Date.now() + duration;
+              let interval = setInterval(function() {
+                  if (Date.now() > animationEnd) { return clearInterval(interval); }
+                  confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0 } });
+                  confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
+              }, 200);
+              break;
+          case 3: confetti({ particleCount: 50, spread: 100, colors: ['#ffd700', '#ffa500'], shapes: ['star'] }); break;
+          case 4: 
+              tarjeta.style.transition = "all 0.4s ease";
+              tarjeta.style.transform = "scale(1.05)";
+              tarjeta.style.boxShadow = "0 0 35px #34c759";
+              break;
+          case 5: confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] }); break;
+          case 6: 
+              tarjeta.style.transition = "all 0.3s ease";
+              tarjeta.style.filter = "brightness(1.8) saturate(2) hue-rotate(90deg)";
+              tarjeta.style.boxShadow = "0 0 40px #007aff";
+              break;
+          case 7: confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] }); break;
+          case 8: confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] }); break;
+          case 9: confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 }); break;
+          case 10: 
+              tarjeta.style.transition = "all 0.5s ease";
+              tarjeta.style.transform = "scale(0.85) skewX(15deg)";
+              tarjeta.style.filter = "blur(4px)";
+              tarjeta.style.opacity = "0.3";
+              break;
+      }
+  }
 
-  // Variable global para almacenar la ubicación actual del usuario una vez obtenida
   let ubicacionUsuario = null;
 
   function cambiarOrden(tipo, criterio) {
@@ -837,16 +873,13 @@ function lanzarEfectoAleatorio(tarjeta) {
         return numA - numB;
       });
       actualizarGridVisual(tipo, lista);
-
-      } else if (criterio === 'tiempo') {
+    } else if (criterio === 'tiempo') {
       lista.sort((a, b) => {
         let diasA = calcularDiasTotales(a.tiempo || "0");
         let diasB = calcularDiasTotales(b.tiempo || "0");
         return diasA - diasB;
       });
       actualizarGridVisual(tipo, lista);
-
-
     } else if (criterio === 'cercania') {
       if (ubicacionUsuario) {
         ordenarPorCercania(tipo, lista, ubicacionUsuario);
@@ -877,20 +910,19 @@ function lanzarEfectoAleatorio(tarjeta) {
     lista.sort((a, b) => {
       let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
       let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
-      return distA - distB; // Del más cercano al más lejano
+      return distA - distB; 
     });
     actualizarGridVisual(tipo, lista);
   }
 
-  // Fórmula de Haversine para calcular distancia en metros entre tu posición y las coordenadas del territorio (string "lat, lon")
   function calcularDistanciaMetros(lat1, lon1, coordsString) {
     let matches = (coordsString || "").match(/[-0-9.]+/g);
-    if (!matches || matches.length < 2) return Infinity; // Si no hay coordenadas, los manda al final
+    if (!matches || matches.length < 2) return Infinity; 
     
     let lat2 = parseFloat(matches[0]);
     let lon2 = parseFloat(matches[1]);
 
-    const R = 6371e3; // Radio de la tierra en metros
+    const R = 6371e3; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -910,7 +942,7 @@ function lanzarEfectoAleatorio(tarjeta) {
 
   cargar();
 </script>
-  <script>
+<script>
   let ultimoToque = 0;
   document.addEventListener('touchend', function (evento) {
       let tiempoActual = new Date().getTime();
