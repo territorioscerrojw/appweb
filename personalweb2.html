@@ -114,14 +114,15 @@ body.dark-mode header {
   text-align: center;
 }
 
-/* --- ESTILOS DEL BOTÓN DE AJUSTES Y MENÚ FLOTANTE ESTILO APPLE --- */
-.ajustes-container {
+/* Botón de Ajustes y Menú Flotante Estilo Apple */
+.settings-container {
   position: relative;
+  display: inline-block;
   flex-shrink: 0;
-  z-index: 100;
 }
 
-.btn-ajustes { 
+.btn-settings { 
+  position: relative; 
   width: 45px; 
   height: 45px; 
   border-radius: 50%; 
@@ -132,23 +133,23 @@ body.dark-mode header {
   align-items: center; 
   justify-content: center; 
   cursor: pointer; 
-  font-size: 1.2rem; 
+  font-size: 1.3rem; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s;
 }
 
-.btn-ajustes:active {
+.btn-settings:active {
   transform: scale(0.92);
 }
 
-body.dark-mode .btn-ajustes {
+body.dark-mode .btn-settings {
   background: #161b22; 
   color: #f0f6fc;     
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* Menú flotante translúcido minimalista estilo Apple (Glassmorphism) */
-.menu-flotante-apple {
+/* Menú globo translúcido minimalista Apple */
+.apple-dropdown-menu {
   position: absolute;
   top: 60px;
   right: 0;
@@ -157,75 +158,64 @@ body.dark-mode .btn-ajustes {
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 0.5px solid rgba(0, 0, 0, 0.12);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  gap: 4px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-10px) scale(0.95);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  gap: 6px;
   z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body.dark-mode .menu-flotante-apple {
-  background: rgba(22, 27, 34, 0.8);
+body.dark-mode .apple-dropdown-menu {
+  background: rgba(30, 30, 35, 0.75);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.menu-flotante-apple.activo {
+.apple-dropdown-menu.show {
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
   transform: translateY(0) scale(1);
 }
 
-.menu-item-apple {
+.apple-menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   padding: 12px 14px;
-  border-radius: 10px;
-  background: transparent;
   border: none;
+  background: transparent;
   color: var(--primary);
   font-family: 'Outfit', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
-  cursor: pointer;
   text-align: left;
-  text-decoration: none;
-  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
   box-sizing: border-box;
+  text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
 
-.menu-item-apple:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-body.dark-mode .menu-item-apple:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.menu-item-apple i {
+.apple-menu-item i {
   font-size: 1.1rem;
   width: 20px;
   text-align: center;
 }
 
-.menu-divider {
-  height: 0.5px;
-  background: rgba(0, 0, 0, 0.1);
-  margin: 4px 8px;
+.apple-menu-item:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
-body.dark-mode .menu-divider {
+body.dark-mode .apple-menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-/* ----------------------------------------------------------------- */
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
@@ -582,9 +572,21 @@ body.dark-mode .tarjeta-caducada .card-back {
 }
 
 @keyframes destelloCaducado {
-  0% { color: #ff3b30; transform: scale(1); text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); }
-  50% { color: #ffcc00; transform: scale(1.12); text-shadow: 0 0 10px rgba(255, 204, 0, 0.8); }
-  100% { color: #ff3b30; transform: scale(1); text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); }
+  0% {
+    color: #ff3b30;
+    transform: scale(1);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    color: #ffcc00;
+    transform: scale(1.12);
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+  }
+  100% {
+    color: #ff3b30;
+    transform: scale(1);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
 }
 
 .texto-caducado-animacion {
@@ -600,32 +602,25 @@ body.dark-mode .tarjeta-caducada .card-back {
     <div class="user-name" id="user-display"></div>
   </div>
   
-  <!-- NUEVO CONTENEDOR DE AJUSTES CON MENÚ FLOTANTE APPLE -->
-  <div class="ajustes-container">
-    <button class="btn-ajustes" onclick="toggleMenuAjustes(event)" aria-label="Ajustes">
+  <!-- Contenedor del Botón de Ajustes y Menú Flotante -->
+  <div class="settings-container">
+    <button class="btn-settings" onclick="toggleSettingsMenu(event)" title="Ajustes">
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <div id="menu-flotante" class="menu-flotante-apple">
-      <!-- Botón Grupo (Condicional) -->
-      <a id="btn-menu-grupo" href="#" class="menu-item-apple" style="display: none;">
-        <i class="fa-solid fa-users-rectangle" style="color: #007aff;"></i>
-        <span>Grupo</span>
-      </a>
-      <div id="divider-grupo" class="menu-divider" style="display: none;"></div>
-
-      <!-- Cambiar Tema -->
-      <button class="menu-item-apple" onclick="toggleTheme(); cerrarMenuAjustes();">
-        <i class="fa-solid fa-circle-half-stroke" style="color: #ff9500;"></i>
-        <span>Cambiar tema</span>
+    <div id="apple-menu" class="apple-dropdown-menu">
+      <button class="apple-menu-item" onclick="toggleTheme()">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+        <span>Cambiar Tema</span>
       </button>
-
-      <div class="menu-divider"></div>
-
-      <!-- Refrescar Web -->
-      <button class="menu-item-apple" onclick="location.reload();">
-        <i class="fa-solid fa-rotate-right" style="color: #34c759;"></i>
-        <span>Refrescar web</span>
+      <button class="apple-menu-item" onclick="refrescarWeb()">
+        <i class="fa-solid fa-rotate-right"></i>
+        <span>Refrescar Web</span>
+      </button>
+      <!-- Botón de grupo condicional (Oculto por defecto) -->
+      <button id="btn-menu-grupo" class="apple-menu-item" style="display: none;" onclick="irAGrupo()">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Grupo</span>
       </button>
     </div>
   </div>
@@ -644,35 +639,51 @@ body.dark-mode .tarjeta-caducada .card-back {
 <script>
   let datosCargados = null;
   let nombreH = "";
+  let grupoUsuarioGlobal = "";
   const urlAppScript = "https://script.google.com/macros/s/AKfycbz3FNzhJoQFlp1mFebL89j__33o37ps9Y5LhcfQiwfrVXVhVkvuUKtZCz0qZvj7bxhd/exec";
-
-  // Control del menú desplegable de ajustes
-  function toggleMenuAjustes(event) {
-    event.stopPropagation();
-    const menu = document.getElementById('menu-flotante');
-    menu.classList.toggle('activo');
-  }
-
-  function cerrarMenuAjustes() {
-    const menu = document.getElementById('menu-flotante');
-    if (menu) menu.classList.remove('activo');
-  }
-
-  // Cerrar el menú si se hace clic fuera de él
-  document.addEventListener('click', function(event) {
-    const contenedor = document.querySelector('.ajustes-container');
-    if (contenedor && !contenedor.contains(event.target)) {
-      cerrarMenuAjustes();
-    }
-  });
 
   function toggleTheme() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    cerrarMenuAjustes();
   }
 
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
+  }
+
+  // Funciones del menú desplegable tipo Apple
+  function toggleSettingsMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('apple-menu');
+    menu.classList.toggle('show');
+  }
+
+  function cerrarMenuAjustes() {
+    const menu = document.getElementById('apple-menu');
+    if (menu) menu.classList.remove('show');
+  }
+
+  // Cerrar menú al hacer clic fuera
+  window.addEventListener('click', function(e) {
+    const container = document.querySelector('.settings-container');
+    if (container && !container.contains(e.target)) {
+      cerrarMenuAjustes();
+    }
+  });
+
+  function refrescarWeb() {
+    cerrarMenuAjustes();
+    window.location.reload();
+  }
+
+  function irAGrupo() {
+    cerrarMenuAjustes();
+    if (grupoUsuarioGlobal) {
+      // Formatear el grupo para la URL (ej: "GRUPO 1" -> "GRUPO%201")
+      let grupoEncoded = encodeURIComponent(grupoUsuarioGlobal);
+      window.location.href = `https://territorioscerrocamp.vercel.app/grupos.html?grupo=${grupoEncoded}`;
+    }
   }
 
   let campañaActivaGlobal = "";
@@ -693,21 +704,15 @@ body.dark-mode .tarjeta-caducada .card-back {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
-        // --- GESTIÓN DEL BOTÓN GRUPO CONDICIONAL ---
-        if (datos.esResponsable && datos.grupoUsuario) {
-            const btnGrupo = document.getElementById('btn-menu-grupo');
-            const dividerGrupo = document.getElementById('divider-grupo');
-            
-            // Extraer solo el número o formatear el grupo para la URL (ej: "GRUPO 1" -> "1" o codificado)
-            let numeroGrupoMatch = datos.grupoUsuario.match(/\d+/);
-            let numGrupo = numeroGrupoMatch ? numeroGrupoMatch[0] : datos.grupoUsuario;
-            
-            btnGrupo.href = `https://territorioscerrocamp.vercel.app/grupos.html?grupo=GRUPO%20${numGrupo}`;
+        // Gestionar visibilidad del botón Grupo si el usuario es responsable
+        if (datos.esResponsable) {
+          grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; // Valor por defecto o extraído
+          const btnGrupo = document.getElementById('btn-menu-grupo');
+          if (btnGrupo) {
             btnGrupo.style.display = 'flex';
-            if (dividerGrupo) dividerGrupo.style.display = 'block';
+          }
         }
-        // -------------------------------------------
-
+        
         const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
         const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
 
@@ -883,6 +888,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
         let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
+
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
         
