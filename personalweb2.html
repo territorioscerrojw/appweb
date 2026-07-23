@@ -570,19 +570,34 @@ body.dark-mode .campaña-info-card {
       });
   }
 
-  function procesarFechasYBarras(datos) {
+    function procesarFechasYBarras(datos) {
     const lblTiempo = document.getElementById("lbl-tiempo-restante");
     const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
 
-    // Buscamos las fechas intentando múltiples nombres comunes por si varían en tu JSON
-    const inicioStr = datos.fechaInicioCampaña || datos.inicioCampaña || datos.fechaInicio || datos.inicio;
-    const finStr = datos.fechaFinCampaña || datos.finCampaña || datos.fechaFin || datos.fin;
+    // 1. DICCIONARIO MANUAL DE CAMPAÑAS (Añade aquí tus campañas, nombre tal cual lo devuelva Google y sus fechas)
+    const calendarioCampañas = {
+        "AR2026": { inicio: "2026-03-01", fin: "2026-03-31" },
+        "VERANO2026": { inicio: "2026-07-01", fin: "2026-08-15" },
+        "NAVIDAD2026": { inicio: "2026-12-01", fin: "2026-12-31" }
+    };
 
-    // Si aun así no hay fechas válidas, mostramos la campaña activa de forma limpia
+    // Obtenemos el nombre de la campaña activa actual
+    const nombreCampActual = datos.campañaActiva || "";
+
+    // Buscamos si la campaña activa está en nuestro diccionario manual
+    let inicioStr = "";
+    let finStr = "";
+
+    if (nombreCampActual && calendarioCampañas[nombreCampActual]) {
+        inicioStr = calendarioCampañas[nombreCampActual].inicio;
+        finStr = calendarioCampañas[nombreCampActual].fin;
+    }
+
+    // Si no encuentra la campaña en el diccionario, muestra un estado limpio por defecto
     if (!inicioStr || !finStr) {
         if (lblTiempo) {
-            lblTiempo.innerText = datos.campañaActiva ? `Campaña: ${datos.campañaActiva}` : "Campaña activa";
+            lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
         }
         if (lblPorcentaje) lblPorcentaje.innerText = "";
         if (barra) {
@@ -593,6 +608,7 @@ body.dark-mode .campaña-info-card {
         return;
     }
     
+    // A partir de aquí, el código calcula los días y la barra con normalidad usando las fechas del diccionario
     const ahora = new Date();
     const inicio = new Date(inicioStr);
     const fin = new Date(finStr);
