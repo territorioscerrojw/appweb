@@ -161,57 +161,64 @@ function extraerNombresDeHermanos() {
 function procesarFechasYBarras(inicioStr, finStr) {
   if (!inicioStr || !finStr) return;
   const ahora = new Date();
-  const fin = new Date(finStr);
   const inicio = new Date(inicioStr);
+  const fin = new Date(finStr);
   
-  // Calcular porcentaje de tiempo transcurrido
-  const tiempoTotal = fin - inicio;
-  const tiempoTranscurrido = ahora - inicio;
+  // Normalizar fechas a medianoche para comparar días correctamente sin horas de por medio
+  const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+  const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
+  const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
+
+  const tiempoTotal = finDate - inicioDate;
+  const tiempoTranscurrido = ahocheDate - inicioDate;
   let porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
   porcentaje = Math.max(0, Math.min(100, porcentaje));
   
-  // Lógica de textos según el momento
   let msgTiempo = "";
   let dias = 0;
 
-  if (ahora < inicio) {
-    // Aún no ha empezado
-    dias = Math.ceil((inicio - ahora) / (1000 * 60 * 60 * 24));
+  if (ahocheDate < inicioDate) {
+    dias = Math.ceil((inicioDate - ahocheDate) / (1000 * 60 * 60 * 24));
     msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
-    porcentaje = 0; // Barra vacía si no ha empezado
-  } else if (ahora > fin) {
-    // Ya terminó
+    porcentaje = 0;
+  } else if (ahocheDate > finDate) {
     msgTiempo = "Campaña concluida";
     porcentaje = 100;
+  } else if (ahocheDate.getTime() === finDate.getTime()) {
+    // Caso exacto para el último día de campaña
+    msgTiempo = "¡Último día de campaña!";
+    porcentaje = 100;
   } else {
-    // Durante la campaña
-    dias = Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
+    dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
     msgTiempo = `Quedan ${dias} días de campaña`;
   }
   
-  // Actualizar etiquetas
-  if (document.getElementById("lbl-tiempo-restante")) document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
-  if (document.getElementById("lbl-porcentaje-tiempo")) document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
+  if (document.getElementById("lbl-tiempo-restante")) {
+    document.getElementById("lbl-tiempo-restante").innerText = msgTiempo;
+  }
+  if (document.getElementById("lbl-porcentaje-tiempo")) {
+    document.getElementById("lbl-porcentaje-tiempo").innerText = `${porcentaje}%`;
+  }
   
   const barra = document.getElementById("barra-progreso-elemento");
   if (barra) {
     barra.style.width = `${porcentaje}%`;
-    
-    // Limpiar clases
     barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
     
-    // Asignar color solo si la campaña está en curso (o cerca de terminar)
-    if (ahora >= inicio && ahora <= fin) {
-        if (dias <= 3) {
-            barra.classList.add("neon-rojo");
-        } else if (dias <= 7) {
-            barra.classList.add("neon-naranja");
-        } else {
-            barra.classList.add("neon-verde");
-        }
+    if (ahocheDate >= inicioDate && ahocheDate <= finDate) {
+      if (dias <= 1 || ahocheDate.getTime() === finDate.getTime()) {
+        barra.classList.add("neon-rojo");
+      } else if (dias <= 3) {
+        barra.classList.add("neon-rojo");
+      } else if (dias <= 7) {
+        barra.classList.add("neon-naranja");
+      } else {
+        barra.classList.add("neon-verde");
+      }
     }
   }
 }
+
 function actualizarAnillosEstadisticos() {
  
   // Si estamos en modo campana global, tomamos toda la base de datos.
