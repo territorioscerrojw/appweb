@@ -546,15 +546,15 @@ body.dark-mode .campaña-info-card {
                 </div>
               </div>`;
 
-            if (listaCamp.length > 0) {
-                htmlCampaña = htmlBarraCampaña + renderizarLista(listaCamp, "Campaña", "fa-bullhorn", "h2-campana", "c", false);
+                        if (listaCamp.length > 0) {
+                htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + renderizarLista(listaCamp, "", "", "", "c", false);
             } else {
-                htmlCampaña = htmlBarraCampaña + `
-                    <h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>
+                htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + `
                     <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem;">
                         No tienes territorios de campaña asignados
                     </div>`;
             }
+
         }
 
         let html = htmlCampaña +
