@@ -515,7 +515,8 @@ body.dark-mode .campaña-info-card {
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
     
-    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH);
+    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
+
 
     fetch(url)
       .then(r => r.json())
