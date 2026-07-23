@@ -503,7 +503,7 @@ body.dark-mode .campaña-info-card {
 
   let campañaActivaGlobal = "";
 
-  function cargar() {
+    function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
     if (!nombreRaw) { document.getElementById('user-display').innerText = "Usuario no identificado"; return; }
@@ -553,23 +553,20 @@ body.dark-mode .campaña-info-card {
             }
         }
 
-                let html = htmlCampaña +
+        let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
                    
         document.getElementById('grid-container').innerHTML = html;
 
-        // Forzar un pequeño respiro para que el DOM pinte la tarjeta antes de buscar los IDs
+        // Ejecutar inmediatamente después de inyectar el HTML asegurando que el DOM lo pinte primero
         setTimeout(() => {
             procesarFechasYBarras(datos);
         }, 50);
-
-       
+      });
   }
 
-  
-   
-    function procesarFechasYBarras(datos) {
+  function procesarFechasYBarras(datos) {
     const lblTiempo = document.getElementById("lbl-tiempo-restante");
     const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
