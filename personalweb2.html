@@ -568,23 +568,25 @@ body.dark-mode .campaña-info-card {
 
   
    
-  function procesarFechasYBarras(inicioStr, finStr) {
+    function procesarFechasYBarras(datos) {
     const lblTiempo = document.getElementById("lbl-tiempo-restante");
     const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
 
-    // Si no hay fechas proporcionadas pero sí hay campaña activa global, mostramos el nombre
+    // Buscamos las fechas intentando múltiples nombres comunes por si varían en tu JSON
+    const inicioStr = datos.fechaInicioCampaña || datos.inicioCampaña || datos.fechaInicio || datos.inicio;
+    const finStr = datos.fechaFinCampaña || datos.finCampaña || datos.fechaFin || datos.fin;
+
+    // Si aun así no hay fechas válidas, mostramos la campaña activa de forma limpia
     if (!inicioStr || !finStr) {
         if (lblTiempo) {
-            lblTiempo.innerText = campañaActivaGlobal ? `Campaña: ${campañaActivaGlobal}` : "Campaña activa";
+            lblTiempo.innerText = datos.campañaActiva ? `Campaña: ${datos.campañaActiva}` : "Campaña activa";
         }
-        if (lblPorcentaje) {
-            lblPorcentaje.innerText = "";
-        }
+        if (lblPorcentaje) lblPorcentaje.innerText = "";
         if (barra) {
             barra.style.width = "100%";
             barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
-            barra.classList.add("neon-verde"); // Para que tenga color y no se vea vacía o invisible
+            barra.classList.add("neon-verde");
         }
         return;
     }
