@@ -635,15 +635,14 @@ body.dark-mode .tarjeta-caducada .card-back {
       });
   }
 
-        function procesarFechasYBarras(datos) {
-    const lblTiempo = document.getElementById("lbl-tiempo-restante");
-    const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
-    const barra = document.getElementById("barra-progreso-elemento");
-    
-    // Recoge las fechas que vienen directamente de Google Sheets
+          function procesarFechasYBarras(datos) {
     const inicioStr = datos.fechaInicioCampaña;
     const finStr = datos.fechaFinCampaña;
     const nombreCampActual = datos.campañaActiva || "";
+
+    const lblTiempo = document.getElementById("lbl-tiempo-restante");
+    const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
+    const barra = document.getElementById("barra-progreso-elemento");
 
     if (!inicioStr || !finStr) {
         if (lblTiempo) {
@@ -657,39 +656,37 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
         return;
     }
-    
+
     const ahora = new Date();
     const inicio = new Date(inicioStr);
     const fin = new Date(finStr);
     
-    const ahoraDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    // Normalizar fechas a medianoche
+    const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
     const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
     const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
 
     const tiempoTotal = finDate - inicioDate;
-    const tiempoTranscurrido = ahoraDate - inicioDate;
-    
-    let porcentaje = 0;
-    if (tiempoTotal > 0) {
-        porcentaje = Math.floor((tiempoTranscurrido / tiempoTotal) * 100);
-    }
+    const tiempoTranscurrido = ahocheDate - inicioDate;
+    let porcentaje = tiempoTotal > 0 ? Math.floor((tiempoTranscurrido / tiempoTotal) * 100) : 0;
     porcentaje = Math.max(0, Math.min(100, porcentaje));
     
     let msgTiempo = "";
     let dias = 0;
 
-    if (ahoraDate < inicioDate) {
-      dias = Math.ceil((inicioDate - ahoraDate) / (1000 * 60 * 60 * 24));
+    if (ahocheDate < inicioDate) {
+      dias = Math.ceil((inicioDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
-      porcentaje = 0; 
-    } else if (ahoraDate > finDate) {
+      porcentaje = 0;
+    } else if (ahocheDate > finDate) {
       msgTiempo = "Campaña concluida";
       porcentaje = 100;
-    } else if (ahoraDate.getTime() === finDate.getTime()) {
-      msgTiempo = "¡Último día de campaña!";
+    } else if (ahocheDate.getTime() === finDate.getTime()) {
+      // Caso exacto para el último día de campaña con tu texto exacto
+      msgTiempo = "último día de la campaña";
       porcentaje = 99;
     } else {
-      dias = Math.ceil((finDate - ahoraDate) / (1000 * 60 * 60 * 24))-1;
+      dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
     }
     
@@ -700,8 +697,10 @@ body.dark-mode .tarjeta-caducada .card-back {
       barra.style.width = `${porcentaje}%`;
       barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
       
-      if (ahoraDate >= inicioDate && ahoraDate <= finDate) {
-          if (dias <= 2 || ahoraDate.getTime() === finDate.getTime()) {
+      if (ahocheDate >= inicioDate && ahocheDate <= finDate) {
+          if (dias <= 1 || ahocheDate.getTime() === finDate.getTime()) {
+              barra.classList.add("neon-rojo");
+          } else if (dias <= 3) {
               barra.classList.add("neon-rojo");
           } else if (dias <= 7) {
               barra.classList.add("neon-naranja");
@@ -711,6 +710,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       }
     }
   }
+
 
   function renderizarBarraCampañaHTML() {
     return `
