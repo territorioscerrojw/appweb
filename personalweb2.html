@@ -75,7 +75,6 @@ body.dark-mode .campaña-info-card {
     background: transparent !important;
     border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
-
 header { 
   display: flex;
   align-items: center;
@@ -88,6 +87,7 @@ header {
   position: relative; 
   box-sizing: border-box;
   width: 100%;
+  z-index: 100; /* Asegura que el header esté por encima del contenido general */
 }
 
 body.dark-mode header { 
@@ -102,23 +102,15 @@ body.dark-mode header {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: visible; /* Cambiado para evitar recortes */
 }
 
-.user-name { 
-  font-family: 'Whisper', cursive; 
-  font-size: clamp(1.5rem, 10vw, 2.8rem); 
-  margin: 0; 
-  font-weight: 400; 
-  white-space: nowrap; 
-  text-align: center;
-}
-
-/* Botón de Ajustes y Menú Flotante Estilo Apple */
+/* Contenedor del Botón de Ajustes y Menú Flotante */
 .settings-container {
   position: relative;
   display: inline-block;
   flex-shrink: 0;
+  z-index: 1000;
 }
 
 .btn-settings { 
@@ -148,23 +140,23 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* Menú globo translúcido minimalista Apple */
+/* Menú globo translúcido minimalista Apple con z-index alto */
 .apple-dropdown-menu {
   position: absolute;
-  top: 60px;
+  top: 55px;
   right: 0;
   width: 220px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 0.5px solid rgba(0, 0, 0, 0.12);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 1000;
+  z-index: 99999; /* Superpone absolutamente cualquier elemento como campañas o barras sticky */
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
@@ -172,9 +164,9 @@ body.dark-mode .btn-settings {
 }
 
 body.dark-mode .apple-dropdown-menu {
-  background: rgba(30, 30, 35, 0.75);
+  background: rgba(30, 30, 35, 0.85);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .apple-dropdown-menu.show {
@@ -182,6 +174,21 @@ body.dark-mode .apple-dropdown-menu {
   visibility: visible;
   transform: translateY(0) scale(1);
 }
+
+
+
+.user-name { 
+  font-family: 'Whisper', cursive; 
+  font-size: clamp(1.5rem, 10vw, 2.8rem); 
+  margin: 0; 
+  font-weight: 400; 
+  white-space: nowrap; 
+  text-align: center;
+}
+
+
+
+
 
 .apple-menu-item {
   display: flex;
