@@ -624,7 +624,7 @@ h2 {
       return dias;
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+    function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista) lista = [];
 
     let listaPendientes = lista;
@@ -658,6 +658,7 @@ h2 {
         </select>
       </div>`;
 
+    // 1. Generamos el HTML de las tarjetas trabajadas si es campaña
     let htmlTrabajadosSeccion = "";
     if (tipo === 'c' && trabajadosCampana.length > 0) {
       let tarjetasCompactasHTML = trabajadosCampana.map(t => `
@@ -682,6 +683,7 @@ h2 {
         </div>`;
     }
 
+    // 2. Devolvemos la estructura ordenada: Título -> Orden -> Grid Normal -> Acordeón Trabajados (Justo debajo)
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             ${htmlOrdenacion}
             <div class="grid" id="${idGrid}">
