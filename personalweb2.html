@@ -477,6 +477,57 @@ body.dark-mode .campaña-info-card {
 .neon-naranja { background-color: var(--warning) !important; box-shadow: 0 0 10px var(--warning); }
 .neon-rojo { background-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
   
+  /* Estilos generales para tarjetas caducadas */
+.tarjeta-caducada .card-front,
+.tarjeta-caducada .card-back {
+  background-color: #ffe5e5 !important; /* Fondo rojo muy suave para modo claro */
+  border-color: #ff3b30 !important;
+}
+
+body.dark-mode .tarjeta-caducada .card-front,
+body.dark-mode .tarjeta-caducada .card-back {
+  background-color: #3b0a0a !important; /* Fondo rojo oscuro para modo oscuro */
+  border-color: #ff3b30 !important;
+}
+
+/* Cabecera roja fija cuando está caducado */
+.header-caducado {
+  background-color: #ff3b30 !important;
+  color: #ffffff !important;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.header-caducado .card-num,
+.header-caducado .card-zona,
+.texto-blanco-forzado {
+  color: #ffffff !important;
+}
+
+/* Animación de destello (blanco <-> amarillo) y aumento de tamaño para dar urgencia */
+@keyframes destelloCaducado {
+  0% {
+    color: #ffffff;
+    transform: scale(1);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    color: #ffcc00; /* Amarillo destello */
+    transform: scale(1.12); /* Aumenta un poco de tamaño */
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+  }
+  100% {
+    color: #ffffff;
+    transform: scale(1);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.texto-caducado-animacion {
+  animation: destelloCaducado 1s infinite ease-in-out;
+  display: inline-block;
+}
+
+  
 </style>
 </head>
 <body>
@@ -728,6 +779,10 @@ body.dark-mode .campaña-info-card {
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
+        
+        // Detectar si está caducado (puedes ajustar el texto según lo devuelva tu API o Google Sheets)
+        let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
+
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
         
@@ -742,7 +797,7 @@ body.dark-mode .campaña-info-card {
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
 
         return `
-        <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''}" id="card-container-${tipo}-${i}">
+        <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''} ${esCaducado ? 'tarjeta-caducada' : ''}" id="card-container-${tipo}-${i}">
             ${tarjetaBloqueada ? `
                 <div class="mensaje-bloqueo-overlay">
                     <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRAS DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
@@ -751,18 +806,18 @@ body.dark-mode .campaña-info-card {
             <div class="card-inner">
                 <!-- CARA FRONTAL -->
                 <div class="card-front">
-                    <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                    <div class="card-header ${esCaducado ? 'header-caducado' : ''}"><span class="card-num">${t.num}</span><span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : ''}">${t.zona}</span></div>
                     <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
                     ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                     
                     ${esCampana ? '' : `
-                      <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                      <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                            <div class="texto-tiempo-grande" style="font-size: 1.5rem; font-weight: 900; color: var(--primary); white-space: nowrap;">${t.tiempo.replace(" y ", " ")}</div>
+                            <span class="anillo-label ${esCaducado ? 'texto-blanco-forzado' : ''}" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
+                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : t.tiempo.replace(" y ", " ")}</div>
                         </div>
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
-                            <div class="barra-progreso" style="width: ${porcentaje}%; height: 100%; background-color: ${color}; transition: width 0.5s;"></div>
+                            <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
                         </div>
                     </div>`}
 
@@ -777,7 +832,7 @@ body.dark-mode .campaña-info-card {
 
                 <!-- CARA TRASERA -->
                 <div class="card-back">
-                    <div class="card-header"><span class="card-num">${t.num}</span><span class="card-zona">${t.zona}</span></div>
+                    <div class="card-header ${esCaducado ? 'header-caducado' : ''}"><span class="card-num">${t.num}</span><span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : ''}">${t.zona}</span></div>
                     <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
                     <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
                     
@@ -792,6 +847,7 @@ body.dark-mode .campaña-info-card {
         </div>`;
     }).join('');
   }
+
 
   function limpiarIncidencia(texto) {
       let limpio = texto.replace(/📅/g, "");
