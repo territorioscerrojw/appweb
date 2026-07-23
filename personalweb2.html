@@ -553,17 +553,18 @@ body.dark-mode .campaña-info-card {
             }
         }
 
-        let html = htmlCampaña +
+                let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
                    
         document.getElementById('grid-container').innerHTML = html;
 
-        // Ejecutar inmediatamente después de inyectar el HTML en el DOM
-        if (fechaInicioCamp && fechaFinCamp) {
+        // Forzar un pequeño respiro para que el DOM pinte la tarjeta antes de buscar los IDs
+        setTimeout(() => {
             procesarFechasYBarras(datos);
-        }
-      });
+        }, 50);
+
+       
   }
 
   
