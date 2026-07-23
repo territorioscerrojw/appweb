@@ -187,7 +187,7 @@ function procesarFechasYBarras(inicioStr, finStr) {
   } else if (ahocheDate.getTime() === finDate.getTime()) {
     // Caso exacto para el último día de campaña
     msgTiempo = "¡Último día de campaña!";
-    porcentaje = 100;
+    porcentaje = 99;
   } else {
     dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
     msgTiempo = `Quedan ${dias} días de campaña`;
