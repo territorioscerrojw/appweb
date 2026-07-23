@@ -567,17 +567,25 @@ body.dark-mode .campaña-info-card {
   }
 
   
-   function procesarFechasYBarras(inicioStr, finStr) {
+   
+  function procesarFechasYBarras(inicioStr, finStr) {
     const lblTiempo = document.getElementById("lbl-tiempo-restante");
     const lblPorcentaje = document.getElementById("lbl-porcentaje-tiempo");
     const barra = document.getElementById("barra-progreso-elemento");
 
-    // Si el Apps Script no envía fechas (inicioStr o finStr vacíos), 
-    // mostramos el nombre de la campaña activa de forma segura sin bloquearnos.
+    // Si no hay fechas proporcionadas pero sí hay campaña activa global, mostramos el nombre
     if (!inicioStr || !finStr) {
-        if (lblTiempo) lblTiempo.innerText = campañaActivaGlobal ? `Campaña: ${campañaActivaGlobal}` : "Campaña activa";
-        if (lblPorcentaje) lblPorcentaje.innerText = "";
-        if (barra) barra.style.width = "100%";
+        if (lblTiempo) {
+            lblTiempo.innerText = campañaActivaGlobal ? `Campaña: ${campañaActivaGlobal}` : "Campaña activa";
+        }
+        if (lblPorcentaje) {
+            lblPorcentaje.innerText = "";
+        }
+        if (barra) {
+            barra.style.width = "100%";
+            barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
+            barra.classList.add("neon-verde"); // Para que tenga color y no se vea vacía o invisible
+        }
         return;
     }
     
@@ -634,6 +642,7 @@ body.dark-mode .campaña-info-card {
       }
     }
   }
+
 
 
   function girarTarjeta(tipo, index) {
