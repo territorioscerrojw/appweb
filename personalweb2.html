@@ -711,14 +711,22 @@ body.dark-mode .tarjeta-caducada .card-back {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
-        // Gestionar visibilidad del botón Grupo si el usuario es responsable
-        if (datos.esResponsable) {
-          grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; // Valor por defecto o extraído
+                // Gestionar visibilidad del botón Grupo si el usuario es responsable (Versión robusta)
+        const esAdminOResponsable = datos.esResponsable === true || 
+                                    datos.esResponsable === "TRUE" || 
+                                    datos.esResponsable === "true" || 
+                                    datos.esResponsable === 1 || 
+                                    datos.responsable === true ||
+                                    datos.rol === "responsable";
+
+        if (esAdminOResponsable) {
+          grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; 
           const btnGrupo = document.getElementById('btn-menu-grupo');
           if (btnGrupo) {
             btnGrupo.style.display = 'flex';
           }
         }
+
         
         const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
         const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
