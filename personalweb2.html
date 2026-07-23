@@ -635,7 +635,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       });
   }
 
-          function procesarFechasYBarras(datos) {
+            function procesarFechasYBarras(datos) {
     const inicioStr = datos.fechaInicioCampaña;
     const finStr = datos.fechaFinCampaña;
     const nombreCampActual = datos.campañaActiva || "";
@@ -682,12 +682,18 @@ body.dark-mode .tarjeta-caducada .card-back {
       msgTiempo = "Campaña concluida";
       porcentaje = 100;
     } else if (ahocheDate.getTime() === finDate.getTime()) {
-      // Caso exacto para el último día de campaña con tu texto exacto
+      // AQUÍ ESTÁ TU TEXTO EXACTO Y EL 99%
       msgTiempo = "¡Último día de la campaña!";
       porcentaje = 99;
     } else {
       dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
+      
+      // Si por cálculo de días estamos en el último día pero las horas de las fechas difieren ligeramente:
+      if (dias <= 1) {
+          msgTiempo = "¡Último día de la campaña!";
+          porcentaje = 99;
+      }
     }
     
     if (lblTiempo) lblTiempo.innerText = msgTiempo;
@@ -710,6 +716,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       }
     }
   }
+
 
 
   function renderizarBarraCampañaHTML() {
