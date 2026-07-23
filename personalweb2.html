@@ -59,7 +59,6 @@ body.dark-mode .btn-more {
   color: #8b949e; 
 }
 
-/* Estilos mejorados para el acordeón y tarjetas compactas apiladas */
 .trabajados-accordion-container {
   width: 100%;
   padding: 0 20px;
@@ -100,7 +99,7 @@ body.dark-mode .btn-more {
 }
 
 .trabajados-list-wrapper.active {
-  display: flex;
+  display: flex !important;
 }
 
 .card-trabajada-compacta {
@@ -298,9 +297,6 @@ body.dark-mode .btn-theme {
   transform: rotateY(180deg) translateZ(1px);
 }
 
-.card-container.is-flipping .swipe-text { animation: none !important; opacity: 0 !important; }
-.card-container.is-flipping .swipe-container { visibility: hidden !important; }
-
 .card-header { 
   padding: 15px 20px; 
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08); 
@@ -370,7 +366,6 @@ body.dark-mode .card-header {
 .btn-back-action i {
   font-size: 2.2rem !important; 
   margin-top: 4px;
-  filter: none; 
 }
 
 .btn-more { 
@@ -538,18 +533,6 @@ h2 {
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
 }
-  .trabajados-list-wrapper {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-  width: 100%;
-}
-
-.trabajados-list-wrapper.active {
-  display: flex !important;
-}
-
 </style>
 </head>
 <body>
@@ -635,7 +618,7 @@ h2 {
       return dias;
   }
 
-    function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
+  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
     if (!lista) lista = [];
 
     let listaPendientes = lista;
@@ -662,14 +645,13 @@ h2 {
     let htmlOrdenacion = `
       <div class="ordenar-container">
         <span class="ordenar-label">ORDENAR POR:</span>
-        <select class="ordenar-select" onchange="cambiarOrden('${tipo}', this.value)">
+        <select class="ordenar-select" onclick="event.stopPropagation()" onchange="cambiarOrden('${tipo}', this.value)">
           <option value="numero" ${tipo === 'c' ? 'selected' : ''}>Número</option>
           <option value="tiempo" ${tipo !== 'c' ? 'selected' : ''}>Tiempo restante</option>
           <option value="cercania">Cercanía</option>
         </select>
       </div>`;
 
-    // 1. Generamos el HTML de las tarjetas trabajadas si es campaña
     let htmlTrabajadosSeccion = "";
     if (tipo === 'c' && trabajadosCampana.length > 0) {
       let tarjetasCompactasHTML = trabajadosCampana.map(t => `
@@ -694,11 +676,15 @@ h2 {
         </div>`;
     }
 
-    // 2. Devolvemos la estructura ordenada: Título -> Orden -> Grid Normal -> Acordeón Trabajados (Justo debajo)
+    let contenidoGrid = generarTarjetasHTML(listaPendientes, tipo, estaBloqueado);
+    if (tipo === 'c' && listaPendientes.length === 0 && trabajadosCampana.length === 0) {
+      contenidoGrid = `<div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #8e8e93; font-weight: 600;">No hay territorios de campaña disponibles.</div>`;
+    }
+
     return `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>
             ${htmlOrdenacion}
             <div class="grid" id="${idGrid}">
-              ${generarTarjetasHTML(listaPendientes, tipo, estaBloqueado)}
+              ${contenidoGrid}
             </div>
             ${htmlTrabajadosSeccion}`;
   }
@@ -724,17 +710,14 @@ h2 {
     }
   }
 
-    function refrescarSeccionCampana() {
+  function refrescarSeccionCampana() {
     if (!datosCargados) return;
-    
-    // Volvemos a renderizar las tres secciones por completo para mantener la sincronización exacta
     let html = renderizarLista(datosCargados.campaña, "Campaña", "fa-bullhorn", "h2-campana", "c", false) +
                renderizarLista(datosCargados.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaGlobal !== "") +
                renderizarLista(datosCargados.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaGlobal !== "");
                
     document.getElementById('grid-container').innerHTML = html;
   }
-
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     if (!lista || lista.length === 0) return "";
