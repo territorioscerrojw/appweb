@@ -809,16 +809,13 @@ body.dark-mode .tarjeta-caducada .card-back {
     let msgTiempo = "";
     let dias = 0;
 
-    if (ahocheDate < inicioDate) {
+        if (ahocheDate < inicioDate) {
       dias = Math.ceil((inicioDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
       porcentaje = 0;
-    } else if (ahocheDate > finDate) {
+    } else if (ahocheDate >= finDate) {
       msgTiempo = "Campaña concluida";
       porcentaje = 100;
-    } else if (ahocheDate.getTime() === finDate.getTime()) {
-      msgTiempo = "¡Último día de la campaña!";
-      porcentaje = 99;
     } else {
       dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
@@ -828,6 +825,7 @@ body.dark-mode .tarjeta-caducada .card-back {
           porcentaje = 99;
       }
     }
+
     
     if (lblTiempo) lblTiempo.innerText = msgTiempo;
     if (lblPorcentaje) lblPorcentaje.innerText = `${porcentaje}%`;
