@@ -712,7 +712,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
-        // Gestionar visibilidad del botón Grupo si el usuario es responsable (Versión robusta)
         const esAdminOResponsable = datos.esResponsable === true || 
                                     datos.esResponsable === "TRUE" || 
                                     datos.esResponsable === "true" || 
@@ -734,18 +733,16 @@ body.dark-mode .tarjeta-caducada .card-back {
         let htmlCampaña = "";
         let campañaActivaReal = false;
 
-        // Comprobación estricta de fechas para saber si la campaña sigue vigente
+        // Comprobación real de fechas: si hoy es posterior a la fecha fin, la campaña ya NO está activa
         if (campañaActivaGlobal !== "" && fechaInicioCamp && fechaFinCamp) {
             const ahora = new Date();
             const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
             const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
 
-            // La campaña solo se considera activa si hoy es estrictamente menor o igual al día de fin
             if (ahocheDate <= finDate) {
                 campañaActivaReal = true;
             }
         } else if (campañaActivaGlobal !== "" && (!fechaInicioCamp || !fechaFinCamp)) {
-            // Si hay nombre de campaña activa pero faltan fechas por configurar, por seguridad la mantenemos activa
             campañaActivaReal = true;
         }
 
@@ -775,7 +772,7 @@ body.dark-mode .tarjeta-caducada .card-back {
             }
         }
 
-        // Si la campaña ya concluyó, campañaActivaReal será false, desbloqueando automáticamente las tarjetas personales y de grupo
+        // AQUÍ ESTÁ LA CLAVE: Si campañaActivaReal es false, pasamos 'false' a renderizarLista para que NO se bloqueen
         let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaReal) +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaReal);
@@ -789,6 +786,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
       });
   }
+
 
 
 
@@ -1187,13 +1185,29 @@ body.dark-mode .tarjeta-caducada .card-back {
     return R * c;
   }
 
-  function actualizarGridVisual(tipo, listaOrdenada) {
-    let estaBloqueado = (tipo !== 'c' && campañaActivaGlobal !== "");
+    function actualizarGridVisual(tipo, listaOrdenada) {
+    // Si es tipo 'c' (campaña), nunca se bloquea. Si es 'p' o 'g', se bloquea SOLO si la campaña sigue activa por fechas.
+    let fechaFinCamp = datosCargados.fechaFinCampaña || datosCargados.fechaFin || datosCargados.finCampaña;
+    let campañaActivaReal = false;
+    
+    if (datosCargados.campañaActiva && fechaFinCamp) {
+        const ahora = new Date();
+        const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+        const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
+        if (ahocheDate <= finDate) {
+            campañaActivaReal = true;
+        }
+    } else if (datosCargados.campañaActiva && !fechaFinCamp) {
+        campañaActivaReal = true;
+    }
+
+    let estaBloqueado = (tipo !== 'c' && campañaActivaReal);
     let gridElement = document.getElementById(`grid-${tipo}`);
     if (gridElement) {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
   }
+
 
   cargar();
 </script>
