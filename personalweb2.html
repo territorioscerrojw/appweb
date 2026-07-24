@@ -709,9 +709,27 @@ body.dark-mode .tarjeta-caducada .card-back {
     fetch(url)
       .then(r => r.json())
       .then(datos => {
+        // --- VALIDACIÓN ESTRICTA DE FECHAS DE CAMPAÑA ---
+        const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
+        const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
+        
+        if (datos.campañaActiva && fechaFinCamp) {
+            const ahora = new Date();
+            const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+            const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
+
+            // SI LA CAMPAÑA YA HA FINALIZADO: Anulamos todo rastro de campaña en los datos
+            if (ahocheDate > finDate) {
+                datos.campañaActiva = "";
+                datos.campaña = [];
+            }
+        }
+        // ------------------------------------------------
+
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
+        // Gestionar visibilidad del botón Grupo si el usuario es responsable
         const esAdminOResponsable = datos.esResponsable === true || 
                                     datos.esResponsable === "TRUE" || 
                                     datos.esResponsable === "true" || 
@@ -727,26 +745,10 @@ body.dark-mode .tarjeta-caducada .card-back {
           }
         }
 
-        const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
-        const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
-
         let htmlCampaña = "";
-        let campañaActivaReal = false;
-
-        // Comprobación real de fechas: si hoy es posterior a la fecha fin, la campaña ya NO está activa
-        if (campañaActivaGlobal !== "" && fechaInicioCamp && fechaFinCamp) {
-            const ahora = new Date();
-            const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-            const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
-
-            if (ahocheDate <= finDate) {
-                campañaActivaReal = true;
-            }
-        } else if (campañaActivaGlobal !== "" && (!fechaInicioCamp || !fechaFinCamp)) {
-            campañaActivaReal = true;
-        }
-
-        if (campañaActivaReal) {
+        
+        // Solo se dibuja la sección de campaña si el servidor aún tiene una campaña activa válida
+        if (campañaActivaGlobal !== "") {
             let listaCamp = datos.campaña || [];
             
             let htmlBarraCampaña = `
@@ -772,20 +774,23 @@ body.dark-mode .tarjeta-caducada .card-back {
             }
         }
 
-        // AQUÍ ESTÁ LA CLAVE: Si campañaActivaReal es false, pasamos 'false' a renderizarLista para que NO se bloqueen
+        // Si la campaña finalizó, campañaActivaGlobal es "", por lo que el último parámetro pasa a ser 'false' (desbloqueado)
+        let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
+
         let html = htmlCampaña +
-                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaReal) +
-                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaReal);
+                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral) +
+                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", estaBloqueadoGeneral);
                    
         document.getElementById('grid-container').innerHTML = html;
 
-        if (campañaActivaReal) {
+        if (campañaActivaGlobal !== "") {
             setTimeout(() => {
                 procesarFechasYBarras(datos);
             }, 50);
         }
       });
   }
+
 
 
 
