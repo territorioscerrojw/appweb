@@ -709,17 +709,28 @@ body.dark-mode .tarjeta-caducada .card-back {
     fetch(url)
       .then(r => r.json())
       .then(datos => {
-        // --- VALIDACIÓN ESTRICTA DE FECHAS DE CAMPAÑA ---
+                // --- VALIDACIÓN ESTRICTA DE FECHAS DE CAMPAÑA ---
         const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
         const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
         
         if (datos.campañaActiva && fechaFinCamp) {
             const ahora = new Date();
-            const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-            const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
+            
+            const anioActual = ahora.getFullYear();
+            const mesActual = ahora.getMonth();
+            const diaActual = ahora.getDate();
 
-            // SI LA CAMPAÑA YA HA FINALIZADO: Anulamos todo rastro de campaña en los datos
-            if (ahocheDate > finDate) {
+            const finDateObj = new Date(fechaFinCamp);
+            const anioFin = finDateObj.getFullYear();
+            const mesFin = finDateObj.getMonth();
+            const diaFin = finDateObj.getDate();
+
+            const hoyLimpio = new Date(anioActual, mesActual, diaActual);
+            const finLimpio = new Date(anioFin, mesFin, diaFin);
+
+            // CAMBIO CLAVE: Usamos mayor o igual (>=) 
+            // Si hoy es 24 y el fin era 24, hoyLimpio >= finLimpio se cumple, por lo que SE DESACTIVA.
+            if (hoyLimpio >= finLimpio) {
                 datos.campañaActiva = "";
                 datos.campaña = [];
             }
