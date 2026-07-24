@@ -696,8 +696,7 @@ body.dark-mode .tarjeta-caducada .card-back {
   let campañaActivaGlobal = "";
 
   
-        
-          function cargar() {
+  function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
     if (!nombreRaw) { document.getElementById('user-display').innerText = "Usuario no identificado"; return; }
@@ -735,15 +734,19 @@ body.dark-mode .tarjeta-caducada .card-back {
         let htmlCampaña = "";
         let campañaActivaReal = false;
 
+        // Comprobación estricta de fechas para saber si la campaña sigue vigente
         if (campañaActivaGlobal !== "" && fechaInicioCamp && fechaFinCamp) {
             const ahora = new Date();
             const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
             const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
 
-            // La campaña sigue activa solo si hoy es menor o igual al día de finalización
+            // La campaña solo se considera activa si hoy es estrictamente menor o igual al día de fin
             if (ahocheDate <= finDate) {
                 campañaActivaReal = true;
             }
+        } else if (campañaActivaGlobal !== "" && (!fechaInicioCamp || !fechaFinCamp)) {
+            // Si hay nombre de campaña activa pero faltan fechas por configurar, por seguridad la mantenemos activa
+            campañaActivaReal = true;
         }
 
         if (campañaActivaReal) {
@@ -772,7 +775,7 @@ body.dark-mode .tarjeta-caducada .card-back {
             }
         }
 
-        // Pasamos 'campañaActivaReal' como parámetro de bloqueo: si es falso, se desbloquean las tarjetas
+        // Si la campaña ya concluyó, campañaActivaReal será false, desbloqueando automáticamente las tarjetas personales y de grupo
         let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", campañaActivaReal) +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", campañaActivaReal);
@@ -786,6 +789,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
       });
   }
+
 
 
   function procesarFechasYBarras(datos) {
