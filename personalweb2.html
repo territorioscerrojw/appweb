@@ -1065,7 +1065,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       // 2. Enviar la petición en segundo plano al Google Apps Script
       const correoDestino = "territorioscerro.jw@gmail.com";
       const asunto = "Solicitud de renovacion";
-      const cuerpo = `Numero de territorio: ${numeroTerritorio}\nHermano que lo solicita: ${nombreH}`;
+      const cuerpo = `Territorio nº: ${numeroTerritorio}\nHermano/a que lo solicita: ${nombreH}`;
 
       const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
