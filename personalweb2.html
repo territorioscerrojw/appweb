@@ -87,7 +87,7 @@ header {
   position: relative; 
   box-sizing: border-box;
   width: 100%;
-  z-index: 100; /* Asegura que el header esté por encima del contenido general */
+  z-index: 100;
 }
 
 body.dark-mode header { 
@@ -102,10 +102,9 @@ body.dark-mode header {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible; /* Cambiado para evitar recortes */
+  overflow: visible;
 }
 
-/* Contenedor del Botón de Ajustes y Menú Flotante */
 .settings-container {
   position: relative;
   display: inline-block;
@@ -140,7 +139,6 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* Menú globo translúcido minimalista Apple con z-index alto */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
@@ -156,7 +154,7 @@ body.dark-mode .btn-settings {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 99999; /* Superpone absolutamente cualquier elemento como campañas o barras sticky */
+  z-index: 99999;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
@@ -175,8 +173,6 @@ body.dark-mode .apple-dropdown-menu {
   transform: translateY(0) scale(1);
 }
 
-
-
 .user-name { 
   font-family: 'Whisper', cursive; 
   font-size: clamp(1.5rem, 10vw, 2.8rem); 
@@ -185,10 +181,6 @@ body.dark-mode .apple-dropdown-menu {
   white-space: nowrap; 
   text-align: center;
 }
-
-
-
-
 
 .apple-menu-item {
   display: flex;
@@ -298,9 +290,6 @@ body.dark-mode .apple-menu-item:hover {
   z-index: 1;
   transform: rotateY(180deg) translateZ(1px);
 }
-
-.card-container.is-flipping .swipe-text { animation: none !important; opacity: 0 !important; }
-.card-container.is-flipping .swipe-container { visibility: hidden !important; }
 
 .card-header { 
   padding: 15px 20px; 
@@ -442,7 +431,7 @@ h2 {
   align-items: center;       
 }
 
-#image-viewer-modal {
+#image-viewer-modal, #renovacion-modal {
   display: none; 
   position: fixed;
   inset: 0;
@@ -456,8 +445,7 @@ h2 {
   box-sizing: border-box;
 }
 
-.h2-campana { background: rgba(220, 53, 69, 0.85); } 
-#image-viewer-modal.active {
+#image-viewer-modal.active, #renovacion-modal.active {
   display: flex; 
 }
 
@@ -504,6 +492,76 @@ h2 {
   background: rgba(255, 255, 255, 0.4);
 }
 
+/* Estilos personalizados para el Modal de Renovación Estilo Apple */
+.renovacion-card-modal {
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 420px;
+  border-radius: 24px;
+  padding: 30px 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  text-align: center;
+  box-sizing: border-box;
+  animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.renovacion-icon-box {
+  width: 64px;
+  height: 64px;
+  background: rgba(52, 199, 89, 0.15);
+  color: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 20px auto;
+}
+
+.renovacion-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 15px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.renovacion-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--primary);
+  opacity: 0.85;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.renovacion-btn-entendido {
+  width: 100%;
+  padding: 14px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.renovacion-btn-entendido:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.h2-campana { background: rgba(220, 53, 69, 0.85); } 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
 
@@ -609,7 +667,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     <div class="user-name" id="user-display"></div>
   </div>
   
-  <!-- Contenedor del Botón de Ajustes y Menú Flotante -->
   <div class="settings-container">
     <button class="btn-settings" onclick="toggleSettingsMenu(event)" title="Ajustes">
       <i class="fa-solid fa-gear"></i>
@@ -624,7 +681,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         <i class="fa-solid fa-rotate-right"></i>
         <span>Refrescar Web</span>
       </button>
-      <!-- Botón de grupo condicional (Oculto por defecto) -->
       <button id="btn-menu-grupo" class="apple-menu-item" style="display: none;" onclick="irAGrupo()">
         <i class="fa-solid fa-users-gear"></i>
         <span>Grupo</span>
@@ -640,6 +696,22 @@ body.dark-mode .tarjeta-caducada .card-back {
     <button class="viewer-close" onclick="cerrarVisor()"><i class="fa-solid fa-xmark"></i></button>
     <div class="viewer-content">
         <img id="viewer-img" src="" alt="Mapa ampliado">
+    </div>
+</div>
+
+<!-- Modal de Renovación Solicitada -->
+<div id="renovacion-modal" onclick="cerrarModalRenovacion(event)">
+    <div class="renovacion-card-modal">
+        <div class="renovacion-icon-box">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="renovacion-title">RENOVACIÓN SOLICITADA</div>
+        <div class="renovacion-text">
+            Se ha solicitado formalmente la renovación de este territorio al departamento correspondiente.<br><br>
+            Tenga en cuenta que la renovación está sujeta a la directriz de que los territorios se trabajen al menos una vez al año. Dependiendo de si se ha cumplido este requisito dentro del último año, la solicitud podrá ser aprobada.<br><br>
+            <em>Los hermanos del departamento de territorios verán reflejada esta actualización próximamente en la aplicación.</em>
+        </div>
+        <button class="renovacion-btn-entendido" onclick="cerrarModalRenovacionDirecto()">Entendido</button>
     </div>
 </div>
 
@@ -659,7 +731,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     document.body.classList.add('dark-mode');
   }
 
-  // Funciones del menú desplegable tipo Apple
   function toggleSettingsMenu(event) {
     event.stopPropagation();
     const menu = document.getElementById('apple-menu');
@@ -671,7 +742,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (menu) menu.classList.remove('show');
   }
 
-  // Cerrar menú al hacer clic fuera
   window.addEventListener('click', function(e) {
     const container = document.querySelector('.settings-container');
     if (container && !container.contains(e.target)) {
@@ -687,7 +757,6 @@ body.dark-mode .tarjeta-caducada .card-back {
   function irAGrupo() {
     cerrarMenuAjustes();
     if (grupoUsuarioGlobal) {
-      // Formatear el grupo para la URL (ej: "GRUPO 1" -> "GRUPO%201")
       let grupoEncoded = encodeURIComponent(grupoUsuarioGlobal);
       window.location.href = `https://territorioscerrocamp.vercel.app/grupos.html?grupo=${grupoEncoded}`;
     }
@@ -695,7 +764,6 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   let campañaActivaGlobal = "";
 
-  
   function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
@@ -709,13 +777,11 @@ body.dark-mode .tarjeta-caducada .card-back {
     fetch(url)
       .then(r => r.json())
       .then(datos => {
-                // --- VALIDACIÓN ESTRICTA DE FECHAS DE CAMPAÑA ---
         const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
         const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
         
         if (datos.campañaActiva && fechaFinCamp) {
             const ahora = new Date();
-            
             const anioActual = ahora.getFullYear();
             const mesActual = ahora.getMonth();
             const diaActual = ahora.getDate();
@@ -728,19 +794,15 @@ body.dark-mode .tarjeta-caducada .card-back {
             const hoyLimpio = new Date(anioActual, mesActual, diaActual);
             const finLimpio = new Date(anioFin, mesFin, diaFin);
 
-            // CAMBIO CLAVE: Usamos mayor o igual (>=) 
-            // Si hoy es 24 y el fin era 24, hoyLimpio >= finLimpio se cumple, por lo que SE DESACTIVA.
             if (hoyLimpio >= finLimpio) {
                 datos.campañaActiva = "";
                 datos.campaña = [];
             }
         }
-        // ------------------------------------------------
 
         datosCargados = datos;
         campañaActivaGlobal = datos.campañaActiva || "";
         
-        // Gestionar visibilidad del botón Grupo si el usuario es responsable
         const esAdminOResponsable = datos.esResponsable === true || 
                                     datos.esResponsable === "TRUE" || 
                                     datos.esResponsable === "true" || 
@@ -758,7 +820,6 @@ body.dark-mode .tarjeta-caducada .card-back {
 
         let htmlCampaña = "";
         
-        // Solo se dibuja la sección de campaña si el servidor aún tiene una campaña activa válida
         if (campañaActivaGlobal !== "") {
             let listaCamp = datos.campaña || [];
             
@@ -785,7 +846,6 @@ body.dark-mode .tarjeta-caducada .card-back {
             }
         }
 
-        // Si la campaña finalizó, campañaActivaGlobal es "", por lo que el último parámetro pasa a ser 'false' (desbloqueado)
         let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
 
         let html = htmlCampaña +
@@ -801,10 +861,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
       });
   }
-
-
-
-
 
   function procesarFechasYBarras(datos) {
     const inicioStr = datos.fechaInicioCampaña;
@@ -844,7 +900,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     let msgTiempo = "";
     let dias = 0;
 
-        if (ahocheDate < inicioDate) {
+    if (ahocheDate < inicioDate) {
       dias = Math.ceil((inicioDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Faltan ${dias} días para que empiece la campaña`;
       porcentaje = 0;
@@ -860,7 +916,6 @@ body.dark-mode .tarjeta-caducada .card-back {
           porcentaje = 99;
       }
     }
-
     
     if (lblTiempo) lblTiempo.innerText = msgTiempo;
     if (lblPorcentaje) lblPorcentaje.innerText = `${porcentaje}%`;
@@ -993,13 +1048,46 @@ body.dark-mode .tarjeta-caducada .card-back {
                     <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
                         <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                         <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
-                        ${esCampana ? '' : `<button onclick="alert('Renovando ${t.num}...')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
+                        ${esCampana ? '' : `<button onclick="solicitarRenovacion('${t.num}')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
                     </div>
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                 </div>
             </div>
         </div>`;
     }).join('');
+  }
+
+  function solicitarRenovacion(numeroTerritorio) {
+      // 1. Mostrar el modal profesional al usuario
+      const modal = document.getElementById('renovacion-modal');
+      if (modal) modal.classList.add('active');
+
+      // 2. Enviar la petición en segundo plano al Google Apps Script
+      const correoDestino = "territorioscerro.jw@gmail.com";
+      const asunto = "Solicitud de renovacion";
+      const cuerpo = `Numero de territorio: ${numeroTerritorio}\nHermano que lo solicita: ${nombreH}`;
+
+      const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
+
+      fetch(urlEmail)
+        .then(r => r.json())
+        .then(data => {
+            console.log("Solicitud de renovación enviada correctamente en segundo plano.");
+        })
+        .catch(err => {
+            console.error("Error al enviar la solicitud de renovación:", err);
+        });
+  }
+
+  function cerrarModalRenovacion(event) {
+      if (event && event.target.id === 'renovacion-modal') {
+          document.getElementById('renovacion-modal').classList.remove('active');
+      }
+  }
+
+  function cerrarModalRenovacionDirecto() {
+      const modal = document.getElementById('renovacion-modal');
+      if (modal) modal.classList.remove('active');
   }
 
   function limpiarIncidencia(texto) {
@@ -1201,8 +1289,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     return R * c;
   }
 
-    function actualizarGridVisual(tipo, listaOrdenada) {
-    // Si es tipo 'c' (campaña), nunca se bloquea. Si es 'p' o 'g', se bloquea SOLO si la campaña sigue activa por fechas.
+  function actualizarGridVisual(tipo, listaOrdenada) {
     let fechaFinCamp = datosCargados.fechaFinCampaña || datosCargados.fechaFin || datosCargados.finCampaña;
     let campañaActivaReal = false;
     
@@ -1223,7 +1310,6 @@ body.dark-mode .tarjeta-caducada .card-back {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
   }
-
 
   cargar();
 </script>
