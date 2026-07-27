@@ -757,10 +757,16 @@ body.dark-mode .tarjeta-caducada .card-back {
   function irAGrupo() {
     cerrarMenuAjustes();
     if (grupoUsuarioGlobal) {
-      let grupoEncoded = encodeURIComponent(grupoUsuarioGlobal);
+      // Si grupoUsuarioGlobal es solo un número (ej: "1"), esto lo transforma a "GRUPO 1"
+      let nombreGrupo = grupoUsuarioGlobal.toString().trim();
+      if (!nombreGrupo.toUpperCase().startsWith("GRUPO")) {
+          nombreGrupo = `GRUPO ${nombreGrupo}`;
+      }
+      
+      let grupoEncoded = encodeURIComponent(nombreGrupo);
       window.location.href = `https://territorioscerrocamp.vercel.app/grupos.html?grupo=${grupoEncoded}`;
     }
-  }
+}
 
   let campañaActivaGlobal = "";
 
