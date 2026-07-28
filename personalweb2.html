@@ -175,40 +175,16 @@ body.dark-mode .apple-dropdown-menu {
   transform: translateY(0) scale(1);
 }
 
-
-
-/* Capa del destello sutil que recorre el texto */
 .user-name { 
-  font-family: 'Whisper', cursive !important; 
+  font-family: 'Whisper', cursive; 
   font-size: clamp(1.5rem, 10vw, 2.8rem); 
   margin: 0; 
   font-weight: 400; 
   white-space: nowrap; 
   text-align: center;
-  color: var(--primary);
-  background: linear-gradient(90deg, var(--primary) 0%, #007aff 50%, var(--primary) 100%) !important;
-  background-size: 200% auto !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: brilloViajeroSimple 4s infinite linear !important;
 }
 
-body.dark-mode .user-name {
-  background: linear-gradient(90deg, var(--primary) 0%, #63b3ed 50%, var(--primary) 100%) !important;
-  background-size: 200% auto !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-}
-
-@keyframes brilloViajeroSimple {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-.apple-menu-item {
+  .apple-menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
