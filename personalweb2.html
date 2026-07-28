@@ -176,19 +176,24 @@ body.dark-mode .apple-dropdown-menu {
 }
 
 .user-name { 
-  font-family: 'Whisper', cursive; 
+  font-family: 'Whisper', cursive !important; 
   font-size: clamp(1.5rem, 10vw, 2.8rem); 
   margin: 0; 
   font-weight: 400; 
   white-space: nowrap; 
   text-align: center;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, var(--azul-elegante) 50%, var(--primary) 65%, var(--primary) 100%) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: brilloNombre 4.5s infinite linear !important;
 }
-/* Nuevos estilos para el efecto de brillo deslizante */
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, #007aff 50%, var(--primary) 65%, var(--primary) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: brilloNombre 4s infinite linear;
+
+body.dark-mode .user-name {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, #63b3ed 50%, var(--primary) 65%, var(--primary) 100%) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 @keyframes brilloNombre {
@@ -198,12 +203,6 @@ body.dark-mode .apple-dropdown-menu {
   100% {
     background-position: -200% 0;
   }
-}
-  body.dark-mode .user-name {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, #63b3ed 50%, var(--primary) 65%, var(--primary) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 .apple-menu-item {
   display: flex;
