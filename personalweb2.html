@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html>
 <head>
   <base target="_top">
@@ -386,6 +386,11 @@ body.dark-mode .card-header {
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
+/* Botón deslizar en rojo para tarjetas caducadas */
+.tarjeta-caducada .swipe-handle {
+  background: #ff3b30 !important;
+}
+
 .swipe-text {
   position: absolute; 
   width: 100%; 
@@ -613,17 +618,35 @@ body.dark-mode .campaña-info-card {
 .neon-verde { background-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
 .neon-naranja { background-color: var(--warning) !important; box-shadow: 0 0 10px var(--warning); }
 .neon-rojo { background-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
+
+/* Animación de parpadeo lento para el borde de la tarjeta caducada */
+@keyframes parpadeoBordeRojo {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 59, 48, 0.4), 0 4px 12px rgba(0,0,0,0.1);
+    border-color: rgba(255, 59, 48, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 59, 48, 0.9), 0 4px 15px rgba(255, 59, 48, 0.3);
+    border-color: rgba(255, 59, 48, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 59, 48, 0.4), 0 4px 12px rgba(0,0,0,0.1);
+    border-color: rgba(255, 59, 48, 0.6);
+  }
+}
   
 .tarjeta-caducada .card-front,
 .tarjeta-caducada .card-back {
   background-color: #ffe5e5 !important;
-  border-color: #ff3b30 !important;
+  border: 1.5px solid #ff3b30 !important;
+  animation: parpadeoBordeRojo 2.5s infinite ease-in-out;
 }
 
 body.dark-mode .tarjeta-caducada .card-front,
 body.dark-mode .tarjeta-caducada .card-back {
   background-color: #3b0a0a !important;
-  border-color: #ff3b30 !important;
+  border: 1.5px solid #ff3b30 !important;
+  animation: parpadeoBordeRojo 2.5s infinite ease-in-out;
 }
 
 .header-caducado {
@@ -687,7 +710,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       </button>
       <button class="apple-menu-item" onclick="refrescarWeb()">
         <i class="fa-solid fa-rotate-right"></i>
-        <span>Actualizar datos</span>
+        <span>Refrescar Web</span>
       </button>
       <button id="btn-menu-grupo" class="apple-menu-item" style="display: none;" onclick="irAGrupo()">
         <i class="fa-solid fa-users-gear"></i>
@@ -750,12 +773,10 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (menu) menu.classList.remove('show');
   }
 
-  // Función unificada para manejar clics y toques fuera del menú
   function manejarCierreFuera(e) {
     const container = document.querySelector('.settings-container');
     const menu = document.getElementById('apple-menu');
     
-    // Si el menú está abierto y se hace clic/toque fuera del contenedor de ajustes
     if (menu && menu.classList.contains('show') && container && !container.contains(e.target)) {
       cerrarMenuAjustes();
     }
@@ -867,7 +888,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
 
         let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
-let htmlPersonales = "";
+        let htmlPersonales = "";
         if (datos.personales && datos.personales.length > 0) {
             htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
         } else {
@@ -1044,7 +1065,6 @@ let htmlPersonales = "";
         let esCampana = (tipo === 'c');
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
 
-        // Comprobación de condiciones para el color azul elegante
         let numInt = parseInt(String(t.num).replace(/\D/g, '')) || 0;
         let zonaStr = String(t.zona || "").trim().toUpperCase();
         let aplicarAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS");
@@ -1109,11 +1129,9 @@ let htmlPersonales = "";
   }
 
   function solicitarRenovacion(numeroTerritorio) {
-      // 1. Mostrar el modal profesional al usuario
       const modal = document.getElementById('renovacion-modal');
       if (modal) modal.classList.add('active');
 
-      // 2. Enviar la petición en segundo plano al Google Apps Script
       const correoDestino = "territorioscerro.jw@gmail.com";
       const asunto = "Solicitud de renovacion";
       const cuerpo = `Territorio nº: ${numeroTerritorio}\nHermano/a que lo solicita: ${nombreH}`;
@@ -1357,12 +1375,6 @@ let htmlPersonales = "";
 
     let estaBloqueado = (tipo !== 'c' && campañaActivaReal);
     let gridElement = document.getElementById(`grid-${tipo}`);
-    
-    // Si la lista está vacía y es la sección personal, mantenemos el mensaje en lugar de vaciar el grid por completo
-    if ((!listaOrdenada || listaOrdenada.length === 0) && tipo === 'p') {
-        let contenedorPadre = gridElement ? gridElement.previousElementSibling : null;
-        // O alternativamente regeneramos a través de renderizarLista si lo prefieres manejar de forma limpia
-    }
 
     if (gridElement && listaOrdenada && listaOrdenada.length > 0) {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
