@@ -867,9 +867,19 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
 
         let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
-let mensajePersonalVacio = "NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.";
+let htmlPersonales = "";
+        if (datos.personales && datos.personales.length > 0) {
+            htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
+        } else {
+            htmlPersonales = `
+                <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
+                <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.
+                </div>`;
+        }
+
         let html = htmlCampaña +
-                   renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral) +
+                   htmlPersonales +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", estaBloqueadoGeneral);
                    
         document.getElementById('grid-container').innerHTML = html;
