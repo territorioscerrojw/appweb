@@ -750,12 +750,19 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (menu) menu.classList.remove('show');
   }
 
-  window.addEventListener('click', function(e) {
+  // Función unificada para manejar clics y toques fuera del menú
+  function manejarCierreFuera(e) {
     const container = document.querySelector('.settings-container');
-    if (container && !container.contains(e.target)) {
+    const menu = document.getElementById('apple-menu');
+    
+    // Si el menú está abierto y se hace clic/toque fuera del contenedor de ajustes
+    if (menu && menu.classList.contains('show') && container && !container.contains(e.target)) {
       cerrarMenuAjustes();
     }
-  });
+  }
+
+  window.addEventListener('click', manejarCierreFuera);
+  window.addEventListener('touchstart', manejarCierreFuera);
 
   function refrescarWeb() {
     cerrarMenuAjustes();
