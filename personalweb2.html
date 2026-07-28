@@ -182,26 +182,35 @@ body.dark-mode .apple-dropdown-menu {
   font-weight: 400; 
   white-space: nowrap; 
   text-align: center;
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, var(--azul-elegante) 50%, var(--primary) 65%, var(--primary) 100%) !important;
-  background-size: 200% auto !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: brilloNombre 4.5s infinite linear !important;
+  color: var(--primary);
+  animation: brilloTextoDesplazamiento 3.5s infinite ease-in-out;
+}
+
+@keyframes brilloTextoDesplazamiento {
+  0% {
+    text-shadow: -20px 0px 15px rgba(0, 122, 255, 0);
+  }
+  50% {
+    text-shadow: 0px 0px 12px rgba(0, 122, 255, 0.8), 0px 0px 20px rgba(99, 179, 237, 0.6);
+  }
+  100% {
+    text-shadow: 20px 0px 15px rgba(0, 122, 255, 0);
+  }
 }
 
 body.dark-mode .user-name {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 35%, #63b3ed 50%, var(--primary) 65%, var(--primary) 100%) !important;
-  background-size: 200% auto !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  animation: brilloTextoDesplazamientoDark 3.5s infinite ease-in-out;
 }
 
-@keyframes brilloNombre {
+@keyframes brilloTextoDesplazamientoDark {
   0% {
-    background-position: 200% 0;
+    text-shadow: -25px 0px 15px rgba(99, 179, 237, 0);
+  }
+  50% {
+    text-shadow: 0px 0px 15px rgba(99, 179, 237, 0.9), 0px 0px 25px rgba(255, 255, 255, 0.6);
   }
   100% {
-    background-position: -200% 0;
+    text-shadow: 25px 0px 15px rgba(99, 179, 237, 0);
   }
 }
 .apple-menu-item {
