@@ -387,17 +387,11 @@ body.dark-mode .card-header {
 .swipe-handle i { color: #fff !important; }
 
 
-/* Animación de pulso/latido sutil para el tirador caducado (permite deslizar) */
-@keyframes pulsoHandle {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-  100% { transform: scale(1); }
-}
 
 /* Aplicar el color rojo y la animación de pulso al tirador de tarjetas caducadas */
 .tarjeta-caducada .swipe-handle {
   background: #ff3b30 !important;
-  animation: pulsoHandle 1s infinite ease-in-out;
+ 
 }
 .swipe-text {
   position: absolute; 
