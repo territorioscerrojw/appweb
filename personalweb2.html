@@ -867,7 +867,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
 
         let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
-
+let mensajePersonalVacio = "NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.";
         let html = htmlCampaña +
                    renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral) +
                    renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", estaBloqueadoGeneral);
@@ -979,8 +979,17 @@ body.dark-mode .tarjeta-caducada .card-back {
       return dias;
   }
 
-  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado) {
-    if (!lista || lista.length === 0) return "";
+  function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado, mensajeVacio = "") {
+    if (!lista || lista.length === 0) {
+      if (mensajeVacio) {
+        let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
+        return `${htmlTitulo}
+                <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1);">
+                    ${mensajeVacio}
+                </div>`;
+      }
+      return "";
+    }
 
     lista.sort((a, b) => {
       let diasA = calcularDiasTotales(a.tiempo || "0");
@@ -1338,7 +1347,14 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     let estaBloqueado = (tipo !== 'c' && campañaActivaReal);
     let gridElement = document.getElementById(`grid-${tipo}`);
-    if (gridElement) {
+    
+    // Si la lista está vacía y es la sección personal, mantenemos el mensaje en lugar de vaciar el grid por completo
+    if ((!listaOrdenada || listaOrdenada.length === 0) && tipo === 'p') {
+        let contenedorPadre = gridElement ? gridElement.previousElementSibling : null;
+        // O alternativamente regeneramos a través de renderizarLista si lo prefieres manejar de forma limpia
+    }
+
+    if (gridElement && listaOrdenada && listaOrdenada.length > 0) {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
   }
