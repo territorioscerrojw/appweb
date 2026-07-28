@@ -183,34 +183,39 @@ body.dark-mode .apple-dropdown-menu {
   white-space: nowrap; 
   text-align: center;
   color: var(--primary);
-  animation: brilloTextoDesplazamiento 3.5s infinite ease-in-out;
+  position: relative;
+  display: inline-block;
 }
 
-@keyframes brilloTextoDesplazamiento {
+/* Capa del destello sutil que recorre el texto */
+.user-name::after {
+  content: attr(data-name);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #007aff; /* Color del brillo en modo claro */
+  text-shadow: 0 0 12px rgba(0, 122, 255, 0.7);
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  animation: destelloViajero 4.5s infinite ease-in-out;
+}
+
+body.dark-mode .user-name::after {
+  color: #63b3ed; /* Color del brillo en modo oscuro */
+  text-shadow: 0 0 15px rgba(99, 179, 237, 0.9), 0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes destelloViajero {
   0% {
-    text-shadow: -20px 0px 15px rgba(0, 122, 255, 0);
+    clip-path: inset(0 100% 0 0);
   }
   50% {
-    text-shadow: 0px 0px 12px rgba(0, 122, 255, 0.8), 0px 0px 20px rgba(99, 179, 237, 0.6);
+    clip-path: inset(0 0 0 0);
   }
   100% {
-    text-shadow: 20px 0px 15px rgba(0, 122, 255, 0);
-  }
-}
-
-body.dark-mode .user-name {
-  animation: brilloTextoDesplazamientoDark 3.5s infinite ease-in-out;
-}
-
-@keyframes brilloTextoDesplazamientoDark {
-  0% {
-    text-shadow: -25px 0px 15px rgba(99, 179, 237, 0);
-  }
-  50% {
-    text-shadow: 0px 0px 15px rgba(99, 179, 237, 0.9), 0px 0px 25px rgba(255, 255, 255, 0.6);
-  }
-  100% {
-    text-shadow: 25px 0px 15px rgba(99, 179, 237, 0);
+    clip-path: inset(0 0 0 100%);
   }
 }
 .apple-menu-item {
