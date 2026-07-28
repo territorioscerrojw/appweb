@@ -386,15 +386,18 @@ body.dark-mode .card-header {
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
-/* Botón deslizar en rojo para tarjetas caducadas */
+
+/* Animación de pulso/latido sutil para el tirador caducado (permite deslizar) */
+@keyframes pulsoHandle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* Aplicar el color rojo y la animación de pulso al tirador de tarjetas caducadas */
 .tarjeta-caducada .swipe-handle {
   background: #ff3b30 !important;
-  animation: sacudidaHandle 0.8s infinite ease-in-out;
-}
-@keyframes sacudidaHandle {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
+  animation: pulsoHandle 1s infinite ease-in-out;
 }
 .swipe-text {
   position: absolute; 
