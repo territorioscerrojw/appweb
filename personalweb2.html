@@ -817,102 +817,126 @@ body.dark-mode .tarjeta-caducada .card-back {
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
 
+    // CLAVE DE VELOCIDAD: Comprobamos si tenemos datos guardados en la sesión actual
+    const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
+    if (datosCache) {
+      try {
+        const datosParsed = JSON.parse(datosCache);
+        procesarYRenderizarDatos(datosParsed); // Pinta la pantalla al instante sin esperar a la red
+      } catch (e) {
+        console.error("Error al leer caché", e);
+      }
+    }
+
+    // Petición real en segundo plano para buscar datos frescos de Google Apps Script
     fetch(url)
       .then(r => r.json())
       .then(datos => {
-        const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
-        const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
+        // Guardamos los nuevos datos en la sesión temporal para la próxima recarga
+        sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
         
-        if (datos.campañaActiva && fechaFinCamp) {
-            const ahora = new Date();
-            const anioActual = ahora.getFullYear();
-            const mesActual = ahora.getMonth();
-            const diaActual = ahora.getDate();
+        // Renderizamos con los datos actualizados del servidor
+        procesarYRenderizarDatos(datos);
+      })
+      .catch(err => {
+        console.error("Error de red, manteniendo datos en caché si existían", err);
+      });
+  }
 
-            const finDateObj = new Date(fechaFinCamp);
-            const anioFin = finDateObj.getFullYear();
-            const mesFin = finDateObj.getMonth();
-            const diaFin = finDateObj.getDate();
+  // Nueva función auxiliar para aislar el procesamiento y renderizado de la interfaz
+  function procesarYRenderizarDatos(datos) {
+    const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
+    const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
+    
+    if (datos.campañaActiva && fechaFinCamp) {
+        const ahora = new Date();
+        const anioActual = ahora.getFullYear();
+        const mesActual = ahora.getMonth();
+        const diaActual = ahora.getDate();
 
-            const hoyLimpio = new Date(anioActual, mesActual, diaActual);
-            const finLimpio = new Date(anioFin, mesFin, diaFin);
+        const finDateObj = new Date(fechaFinCamp);
+        const anioFin = finDateObj.getFullYear();
+        const mesFin = finDateObj.getMonth();
+        const diaFin = finDateObj.getDate();
 
-            if (hoyLimpio >= finLimpio) {
-                datos.campañaActiva = "";
-                datos.campaña = [];
-            }
+        const hoyLimpio = new Date(anioActual, mesActual, diaActual);
+        const finLimpio = new Date(anioFin, mesFin, diaFin);
+
+        if (hoyLimpio >= finLimpio) {
+            datos.campañaActiva = "";
+            datos.campaña = [];
         }
+    }
 
-        datosCargados = datos;
-        campañaActivaGlobal = datos.campañaActiva || "";
+    datosCargados = datos;
+    campañaActivaGlobal = datos.campañaActiva || "";
+    
+    const esAdminOResponsable = datos.esResponsable === true || 
+                                datos.esResponsable === "TRUE" || 
+                                datos.esResponsable === "true" || 
+                                datos.esResponsable === 1 || 
+                                datos.responsable === true ||
+                                datos.rol === "responsable";
+
+    if (esAdminOResponsable) {
+      grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; 
+      const btnGrupo = document.getElementById('btn-menu-grupo');
+      if (btnGrupo) {
+        btnGrupo.style.display = 'flex';
+      }
+    }
+
+    let htmlCampaña = "";
+    
+    if (campañaActivaGlobal !== "") {
+        let listaCamp = datos.campaña || [];
         
-        const esAdminOResponsable = datos.esResponsable === true || 
-                                    datos.esResponsable === "TRUE" || 
-                                    datos.esResponsable === "true" || 
-                                    datos.esResponsable === 1 || 
-                                    datos.responsable === true ||
-                                    datos.rol === "responsable";
-
-        if (esAdminOResponsable) {
-          grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; 
-          const btnGrupo = document.getElementById('btn-menu-grupo');
-          if (btnGrupo) {
-            btnGrupo.style.display = 'flex';
-          }
-        }
-
-        let htmlCampaña = "";
-        
-        if (campañaActivaGlobal !== "") {
-            let listaCamp = datos.campaña || [];
-            
-            let htmlBarraCampaña = `
-              <div class="campaña-info-card">
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <span id="lbl-tiempo-restante" style="font-size: 0.8rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">Cargando tiempo...</span>
-                        <div id="lbl-porcentaje-tiempo" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">0%</div>
-                    </div>
-                    <div style="width: 100%; height: 10px; background: transparent; border-radius: 5px; overflow: hidden;">
-                        <div id="barra-progreso-elemento" style="width: 0%; height: 100%; transition: width 0.5s;"></div>
-                    </div>
+        let htmlBarraCampaña = `
+          <div class="campaña-info-card">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span id="lbl-tiempo-restante" style="font-size: 0.8rem; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px;">Cargando tiempo...</span>
+                    <div id="lbl-porcentaje-tiempo" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">0%</div>
                 </div>
-              </div>`;
+                <div style="width: 100%; height: 10px; background: transparent; border-radius: 5px; overflow: hidden;">
+                    <div id="barra-progreso-elemento" style="width: 0%; height: 100%; transition: width 0.5s;"></div>
+                </div>
+            </div>
+          </div>`;
 
-            if (listaCamp.length > 0) {
-                htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + renderizarLista(listaCamp, "", "", "", "c", false);
-            } else {
-                htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + `
-                    <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem;">
-                        No tienes territorios de campaña asignados
-                    </div>`;
-            }
-        }
-
-        let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
-        let htmlPersonales = "";
-        if (datos.personales && datos.personales.length > 0) {
-            htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
+        if (listaCamp.length > 0) {
+            htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + renderizarLista(listaCamp, "", "", "", "c", false);
         } else {
-            htmlPersonales = `
-                <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
-                <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                    NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.
+            htmlCampaña = `<h2 class="h2-campana">Campaña <i class="fa-solid fa-bullhorn"></i></h2>` + htmlBarraCampaña + `
+                <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem;">
+                    No tienes territorios de campaña asignados
                 </div>`;
         }
+    }
 
-        let html = htmlCampaña +
-                   htmlPersonales +
-                   renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", estaBloqueadoGeneral);
-                   
-        document.getElementById('grid-container').innerHTML = html;
+    let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
+    let htmlPersonales = "";
+    if (datos.personales && datos.personales.length > 0) {
+        htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
+    } else {
+        htmlPersonales = `
+            <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
+            <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.
+            </div>`;
+    }
 
-        if (campañaActivaGlobal !== "") {
-            setTimeout(() => {
-                procesarFechasYBarras(datos);
-            }, 50);
-        }
-      });
+    let html = htmlCampaña +
+               htmlPersonales +
+               renderizarLista(datos.grupo, "Territorios de Grupo", "fa-users", "h2-grupo", "g", estaBloqueadoGeneral);
+               
+    document.getElementById('grid-container').innerHTML = html;
+
+    if (campañaActivaGlobal !== "") {
+        setTimeout(() => {
+            procesarFechasYBarras(datos);
+        }, 50);
+    }
   }
 
   function procesarFechasYBarras(datos) {
