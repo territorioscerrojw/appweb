@@ -21,6 +21,10 @@
   --gris-apple: rgba(28, 28, 30, 0.9);
   --color-texto-anillo: #000;
   --azul-elegante: #007aff; /* Azul elegante para modo claro */
+    --borde-destello: 0 0 0 1.5px rgba(255, 255, 255, 0.5), /* Brillo exterior muy fino */
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.8), /* Borde interior */
+                    inset 0 0 20px rgba(255, 255, 255, 0.4); /* Resplandor interior */
+
 }
 
 body.dark-mode {
@@ -30,6 +34,9 @@ body.dark-mode {
   --primary: #f0f6fc;     
   --color-texto-anillo: #fff;
   --azul-elegante: #63b3ed; /* Azul elegante y luminoso para modo oscuro */
+    --borde-destello: 0 0 0 1px rgba(255, 255, 255, 0.1), /* Borde exterior fino */
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.2), /* Borde interior */
+                    inset 0 0 15px rgba(255, 255, 255, 0.05); /* Resplandor muy tenue */
 }
 
 body.dark-mode .card-header { 
@@ -275,10 +282,17 @@ body.dark-mode .apple-menu-item:hover {
   -webkit-backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border: 0.5px solid rgba(0,0,0,0.1);
   overflow: hidden;
+  box-shadow: var(--borde-destello), 0 5px 15px rgba(0,0,0,0.08); 
+  border: none !important;
 }
+
+body.dark-mode .card-front, 
+body.dark-mode .card-back {
+  box-shadow: var(--borde-destello), 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+  
 .card-front { 
   position: relative; 
   z-index: 2;
