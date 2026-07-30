@@ -1028,14 +1028,16 @@ body.dark-mode .tarjeta-caducada .card-back {
     }
   }
 
-  function calcularDiasTotales(tiempoString) {
+    function calcularDiasTotales(tiempoString) {
       if (!tiempoString) return 0;
       let dias = 0;
       const mesesMatch = tiempoString.match(/(\d+)\s*mes/i);
       const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
       if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
       if (diasMatch) dias += parseInt(diasMatch[1]);
-      return dias;
+      
+      // Limitamos el máximo a 120 días (4 meses exactos)
+      return Math.min(dias, 120);
   }
 
   function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado, mensajeVacio = "") {
@@ -1077,12 +1079,20 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     return lista.map((t, i) => {
-        let diasTotales = calcularDiasTotales(t.tiempo || "0");
+                let diasTotales = calcularDiasTotales(t.tiempo || "0");
         let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
+
+        // Forzamos a que si supera los 120 días, visualmente muestre el texto limitado a 4 meses
+        let textoTiempoMostrado = t.tiempo;
+        if (diasTotales >= 120 && !esCaducado) {
+            textoTiempoMostrado = "4 meses";
+        } else if (!esCaducado) {
+            textoTiempoMostrado = t.tiempo.replace(" y ", " ");
+        }
 
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
-        
+   
         const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
         const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
         let matches = (t.coords || "").match(/[-0-9.]+/g);
@@ -1117,10 +1127,11 @@ body.dark-mode .tarjeta-caducada .card-back {
                     
                     ${esCampana ? '' : `
                       <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                             <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : t.tiempo.replace(" y ", " ")}</div>
+                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
                         </div>
+
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
                             <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
                         </div>
