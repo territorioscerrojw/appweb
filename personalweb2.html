@@ -175,10 +175,15 @@ body.dark-mode .btn-settings {
   flex-direction: column;
   gap: 6px;
   z-index: 99999;
+  
+  /* Estado inicial: un poco más recogido y con desplazamiento lateral sutil */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px) scale(0.95);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(-12px) scale(0.9);
+  transform-origin: top right; /* Hace que el menú "nazca" exactamente desde el botón de ajustes */
+  
+  /* Curva de rebote estilo iOS nativo (overshoot) */
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 body.dark-mode .apple-dropdown-menu {
@@ -192,6 +197,7 @@ body.dark-mode .apple-dropdown-menu {
   visibility: visible;
   transform: translateY(0) scale(1);
 }
+
 
 .user-name { 
   font-family: 'Whisper', cursive; 
