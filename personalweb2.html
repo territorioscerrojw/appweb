@@ -383,6 +383,28 @@ body.dark-mode .card-header {
   margin-top: 4px;
   filter: none; 
 }
+body.dark-mode .btn-back-action {
+  background: #000000 !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),  /* Luz cenital superior */
+    inset 1px 0 1px rgba(255, 255, 255, 0.25), /* Luz lateral izquierda */
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8),       /* Sombra interior inferior (volumen) */
+    0 4px 12px rgba(0, 0, 0, 0.4);             /* Sombra exterior */
+}
+
+/* Colores específicos para cada botón en modo oscuro manteniendo su fondo negro y relieve */
+body.dark-mode .btn-back-action:nth-child(1) {
+  color: #f5a623 !important; /* Naranja para el botón de incidencias */
+}
+
+body.dark-mode .btn-back-action:nth-child(2) {
+  color: #007aff !important; /* Azul para el botón de cómo llegar */
+}
+
+body.dark-mode .btn-back-action:nth-child(3) {
+  color: #34c759 !important; /* Verde para el botón de renovación */
+}
 
 .btn-more { 
   width: 100%; 
