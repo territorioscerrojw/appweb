@@ -159,18 +159,19 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* Contenedor principal que se alinea con el botón de ajustes */
+
 .apple-dropdown-menu {
   position: absolute;
-  top: 55px;
-  right: 0;
+  /* Centramos el punto de origen exactamente donde está el botón de ajustes */
+  top: 22px; 
+  right: 22px;
   width: 0;
   height: 0;
   display: flex;
   flex-direction: column;
   z-index: 99999;
   pointer-events: none;
-  opacity: 1; /* El control de visibilidad lo llevan los elementos ahora */
+  opacity: 1;
   visibility: visible;
   transform: none;
   box-shadow: none;
@@ -179,16 +180,16 @@ body.dark-mode .btn-settings {
   backdrop-filter: none;
 }
 
-/* Estado activo de la rueda */
 .apple-dropdown-menu.show {
   pointer-events: auto;
 }
 
-/* Estilo individual de cada opción en forma de burbuja circular */
+/* Estilo de cada botón circular */
 .apple-dropdown-menu .apple-menu-item {
   position: absolute;
-  top: 0;
-  right: 0;
+  /* Ajustamos para que el centro de la burbuja coincida con el punto de origen */
+  top: -22px;
+  right: -22px;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -205,13 +206,12 @@ body.dark-mode .btn-settings {
   padding: 0;
   margin: 0;
   
-  /* Estado inicial oculto en el centro del botón de ajustes */
+  /* Estado inicial: ocultos exactamente en el centro del botón */
   transform: translate(0, 0) scale(0);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Ocultamos el texto secundario para que la rueda sea compacta e icónica (tipo Apple Watch) */
 .apple-dropdown-menu .apple-menu-item span {
   display: none; 
 }
@@ -238,24 +238,25 @@ body.dark-mode .apple-dropdown-menu .apple-menu-item {
   color: #ffffff;
 }
 
-/* Animación de expansión en abanico/rueda cuando el menú tiene la clase .show */
+/* Posiciones finales de expansión en abanico simétrico desde el centro */
 .apple-dropdown-menu.show .apple-menu-item:nth-child(1) {
-  transform: translate(-10px, -65px) scale(1);
+  transform: translate(0px, -60px) scale(1); /* Hacia arriba */
   opacity: 1;
   transition-delay: 0.05s;
 }
 
 .apple-dropdown-menu.show .apple-menu-item:nth-child(2) {
-  transform: translate(-65px, -50px) scale(1);
+  transform: translate(-52px, -30px) scale(1); /* Diagonal izquierda-arriba */
   opacity: 1;
   transition-delay: 0.1s;
 }
 
 .apple-dropdown-menu.show .apple-menu-item:nth-child(3) {
-  transform: translate(-80px, 5px) scale(1);
+  transform: translate(-60px, 30px) scale(1); /* Izquierda */
   opacity: 1;
   transition-delay: 0.15s;
 }
+
 
 
 
