@@ -167,76 +167,48 @@ body.dark-mode .btn-settings {
   width: 0;
   height: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
   z-index: 99999;
   pointer-events: none;
-  
-  /* Efecto cristal tipo Apple avanzado */
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  opacity: 1;
+  visibility: visible;
+  background: transparent;
+  border: none;
+}
+
+.apple-dropdown-menu.show {
+  pointer-events: auto;
+}
+
+/* Estilo de cada botón individual en forma de pastilla/círculo con icono y texto */
+.apple-dropdown-menu .apple-menu-item {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 44px;
+  padding: 0 16px 0 12px;
+  border-radius: 22px; /* Forma de píldora alargada elegante */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 0.5px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-  border-radius: 50px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1c1c1e;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
   
-  /* Estado inicial: un círculo microscópico oculto en el botón */
-  opacity: 0;
-  visibility: hidden;
+  /* Estado inicial: ocultos y colapsados en el centro del botón */
   transform: translate(0, 0) scale(0);
-  transform-origin: top right;
-  overflow: hidden;
+  opacity: 0;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-body.dark-mode .apple-dropdown-menu {
-  background: rgba(30, 30, 35, 0.75);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-/* Estado abierto: se expande hacia abajo y la izquierda formando una píldora/círculo flotante */
-.apple-dropdown-menu.show {
-  pointer-events: auto;
-  opacity: 1;
-  visibility: visible;
-  width: 200px;
-  height: auto;
-  padding: 16px;
-  transform: translate(-20px, 50px) scale(1);
-}
-
-/* Estilo de los elementos dentro del contenedor con aparición escalonada */
-.apple-dropdown-menu .apple-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 10px 14px;
-  background: transparent;
-  border: none;
-  border-radius: 12px;
-  color: #1c1c1e;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  
-  /* Animación interna para que los textos e iconos aparezcan al abrirse el contenedor */
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
-}
-
-body.dark-mode .apple-dropdown-menu .apple-menu-item {
-  color: #ffffff;
-}
-
-/* Mostramos los textos recuperando su estructura original legible */
 .apple-dropdown-menu .apple-menu-item span {
-  display: inline-block;
+  display: inline-block; /* Muestra el texto perfectamente */
 }
 
 .apple-dropdown-menu .apple-menu-item i {
@@ -244,27 +216,41 @@ body.dark-mode .apple-dropdown-menu .apple-menu-item {
   color: #007aff;
 }
 
-.apple-dropdown-menu .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.12);
+body.dark-mode .apple-dropdown-menu .apple-menu-item {
+  background: rgba(40, 40, 45, 0.85);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
 }
 
-/* Retraso escalonado (stagger) para los ítems al abrir el menú */
+.apple-dropdown-menu .apple-menu-item:hover {
+  transform: scale(1.05) !important;
+  background: #007aff;
+  color: #ffffff;
+}
+
+.apple-dropdown-menu .apple-menu-item:hover i {
+  color: #ffffff;
+}
+
+/* Animación de apertura en abanico radial (hacia la izquierda y abajo) con texto visible */
 .apple-dropdown-menu.show .apple-menu-item:nth-child(1) {
+  transform: translate(-130px, 0px) scale(1); /* Opción 1: se desplaza a la izquierda */
   opacity: 1;
-  transform: translateY(0);
+  transition-delay: 0.05s;
+}
+
+.apple-dropdown-menu.show .apple-menu-item:nth-child(2) {
+  transform: translate(-100px, 60px) scale(1); /* Opción 2: diagonal abajo-izquierda */
+  opacity: 1;
   transition-delay: 0.1s;
 }
-.apple-dropdown-menu.show .apple-menu-item:nth-child(2) {
+
+.apple-dropdown-menu.show .apple-menu-item:nth-child(3) {
+  transform: translate(0px, 110px) scale(1); /* Opción 3: hacia abajo */
   opacity: 1;
-  transform: translateY(0);
   transition-delay: 0.15s;
 }
-.apple-dropdown-menu.show .apple-menu-item:nth-child(3) {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.2s;
-}
-
 
 
 .user-name { 
