@@ -27,6 +27,11 @@
     inset 0 -1px 1px rgba(0, 0, 0, 0.08),      /* Sombra fina abajo */
     0 10px 25px rgba(0, 0, 0, 0.08);           /* Sombra exterior de elevación */
 }
+body.dark-mode .img-box-custom img {
+  /* Filtro inteligente: invierte los blancos a oscuros, pero preserva la saturación y el color original */
+  filter: invert(0.9) hue-rotate(180deg) brightness(1.1) contrast(1.1);
+  transition: filter 0.3s ease;
+}
 
 body.dark-mode {
   --bg: #0d1117;          
