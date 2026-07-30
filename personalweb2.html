@@ -21,10 +21,11 @@
   --gris-apple: rgba(28, 28, 30, 0.9);
   --color-texto-anillo: #000;
   --azul-elegante: #007aff; /* Azul elegante para modo claro */
-    --borde-destello: 0 0 0 1.5px rgba(255, 255, 255, 0.5), /* Brillo exterior muy fino */
-                    inset 0 0 0 1px rgba(255, 255, 255, 0.8), /* Borde interior */
-                    inset 0 0 20px rgba(255, 255, 255, 0.4); /* Resplandor interior */
-
+     --borde-destello: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),  /* Luz fuerte arriba (reflejo directo) */
+    inset 1px 0 1px rgba(255, 255, 255, 0.6),  /* Luz lateral izquierda */
+    inset 0 -1px 1px rgba(0, 0, 0, 0.08),      /* Sombra fina abajo */
+    0 10px 25px rgba(0, 0, 0, 0.08);           /* Sombra exterior de elevación */
 }
 
 body.dark-mode {
@@ -34,9 +35,11 @@ body.dark-mode {
   --primary: #f0f6fc;     
   --color-texto-anillo: #fff;
   --azul-elegante: #63b3ed; /* Azul elegante y luminoso para modo oscuro */
-    --borde-destello: 0 0 0 1px rgba(255, 255, 255, 0.1), /* Borde exterior fino */
-                    inset 0 0 0 1px rgba(255, 255, 255, 0.2), /* Borde interior */
-                    inset 0 0 15px rgba(255, 255, 255, 0.05); /* Resplandor muy tenue */
+     --borde-destello: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.35), /* Luz superior más tenue en oscuro */
+    inset 1px 0 1px rgba(255, 255, 255, 0.2),  /* Luz lateral izquierda */
+    inset 0 -1px 1px rgba(0, 0, 0, 0.6),       /* Sombra profunda abajo */
+    0 12px 30px rgba(0, 0, 0, 0.5);            /* Sombra exterior profunda */
 }
 
 body.dark-mode .card-header { 
@@ -282,16 +285,18 @@ body.dark-mode .apple-menu-item:hover {
   -webkit-backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
-  border: 0.5px solid rgba(0,0,0,0.1);
   overflow: hidden;
-  box-shadow: var(--borde-destello), 0 5px 15px rgba(0,0,0,0.08); 
-  border: none !important;
+  
+  /* Aplicamos el relieve de iOS con luces y sombras asimétricas */
+  box-shadow: var(--borde-destello);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
 }
 
 body.dark-mode .card-front, 
 body.dark-mode .card-back {
-  box-shadow: var(--borde-destello), 0 5px 20px rgba(0, 0, 0, 0.3);
-  }
+  border: 0.5px solid rgba(255, 255, 255, 0.08); 
+  box-shadow: var(--borde-destello);   
+}
   
 .card-front { 
   position: relative; 
