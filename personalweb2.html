@@ -162,9 +162,9 @@ body.dark-mode .btn-settings {
 
 .apple-dropdown-menu {
   position: absolute;
-  /* Centramos el punto de origen exactamente donde está el botón de ajustes */
-  top: 22px; 
-  right: 22px;
+  /* Anclamos el origen en la esquina inferior izquierda del botón de ajustes */
+  top: 45px; 
+  right: 0;
   width: 0;
   height: 0;
   display: flex;
@@ -187,9 +187,8 @@ body.dark-mode .btn-settings {
 /* Estilo de cada botón circular */
 .apple-dropdown-menu .apple-menu-item {
   position: absolute;
-  /* Ajustamos para que el centro de la burbuja coincida con el punto de origen */
-  top: -22px;
-  right: -22px;
+  top: 0;
+  right: 0;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -206,7 +205,7 @@ body.dark-mode .btn-settings {
   padding: 0;
   margin: 0;
   
-  /* Estado inicial: ocultos exactamente en el centro del botón */
+  /* Estado inicial: ocultos en el origen del botón */
   transform: translate(0, 0) scale(0);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -238,25 +237,24 @@ body.dark-mode .apple-dropdown-menu .apple-menu-item {
   color: #ffffff;
 }
 
-/* Posiciones finales de expansión en abanico simétrico desde el centro */
+/* Posiciones de expansión hacia la izquierda y hacia abajo */
 .apple-dropdown-menu.show .apple-menu-item:nth-child(1) {
-  transform: translate(0px, -60px) scale(1); /* Hacia arriba */
+  transform: translate(-60px, 0px) scale(1); /* Hacia la izquierda */
   opacity: 1;
   transition-delay: 0.05s;
 }
 
 .apple-dropdown-menu.show .apple-menu-item:nth-child(2) {
-  transform: translate(-52px, -30px) scale(1); /* Diagonal izquierda-arriba */
+  transform: translate(-50px, 50px) scale(1); /* En diagonal hacia abajo-izquierda */
   opacity: 1;
   transition-delay: 0.1s;
 }
 
 .apple-dropdown-menu.show .apple-menu-item:nth-child(3) {
-  transform: translate(-60px, 30px) scale(1); /* Izquierda */
+  transform: translate(0px, 60px) scale(1); /* Directamente hacia abajo */
   opacity: 1;
   transition-delay: 0.15s;
 }
-
 
 
 
