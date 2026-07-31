@@ -156,7 +156,7 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ FLOTANTE EN ABANICO TRANSLÚCIDO DIVIDIDO --- */
+/* --- NUEVO ESTILO DE MENÚ EN ABANICO (BURBUJAS INDEPENDIENTES) --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 0;
@@ -171,57 +171,37 @@ body.dark-mode .btn-settings {
   pointer-events: auto;
 }
 
-/* Contenedor translúcido general en abanico sectorial */
-.apple-menu-bg-fan {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 45px;
-  height: 45px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 0.5px solid rgba(0, 0, 0, 0.12);
-  border-radius: 30px;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-  opacity: 0;
-  transform-origin: top right;
-  transform: scale(0);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-  z-index: 1;
-  pointer-events: none;
-}
-
-body.dark-mode .apple-menu-bg-fan {
-  background: rgba(22, 27, 34, 0.85);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.5);
-}
-
-/* Opciones individuales dentro del abanico */
+/* Elementos individuales del abanico que brotan */
 .apple-menu-item {
   position: absolute;
-  top: 0;
-  right: 0;
-  height: 40px;
-  width: 145px;
-  border-radius: 20px;
-  background: transparent;
-  color: #1c1c1e;
+  top: 2px;
+  right: 2px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 18px;
+  border-radius: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  cursor: pointer;
-  z-index: 2;
+  gap: 10px;
   white-space: nowrap;
   opacity: 0;
+  transform: scale(0.4) translate(0, 0);
   transform-origin: top right;
-  transform: scale(0);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, opacity 0.3s;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  color: #1c1c1e;
+  text-decoration: none;
 }
 
 body.dark-mode .apple-menu-item {
-  color: #ffffff;
+  background: rgba(22, 27, 34, 0.95);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  color: #f0f6fc;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 .apple-menu-item:hover {
@@ -231,71 +211,36 @@ body.dark-mode .apple-menu-item {
 
 .apple-menu-item i {
   font-size: 1.1rem;
-  width: 24px;
+  width: 20px;
   text-align: center;
 }
 
 .menu-label {
   font-size: 0.85rem;
   font-weight: 600;
-  margin-left: 10px;
   letter-spacing: 0.3px;
 }
 
-/* Apertura Abanico 2 Opciones */
-.apple-dropdown-menu.show.count-2 .apple-menu-bg-fan {
-  width: 155px;
-  height: 102px;
-  transform: translate(-10px, 5px) scale(1);
+/* Animación de apertura en abanico según cantidad de elementos */
+.apple-dropdown-menu.show .apple-menu-item {
   opacity: 1;
-  border-radius: 26px;
 }
+
 .apple-dropdown-menu.show.count-2 .item-1 {
-  transform: translate(-5px, 8px) scale(1);
-  opacity: 1;
+  transform: scale(1) translate(-75px, -8px);
 }
 .apple-dropdown-menu.show.count-2 .item-2 {
-  transform: translate(-5px, 52px) scale(1);
-  opacity: 1;
+  transform: scale(1) translate(-110px, 50px);
 }
 
-/* Apertura Abanico 3 Opciones */
-.apple-dropdown-menu.show.count-3 .apple-menu-bg-fan {
-  width: 155px;
-  height: 146px;
-  transform: translate(-10px, 5px) scale(1);
-  opacity: 1;
-  border-radius: 26px;
-}
 .apple-dropdown-menu.show.count-3 .item-1 {
-  transform: translate(-5px, 6px) scale(1);
-  opacity: 1;
+  transform: scale(1) translate(-70px, -15px);
 }
 .apple-dropdown-menu.show.count-3 .item-2 {
-  transform: translate(-5px, 50px) scale(1);
-  opacity: 1;
+  transform: scale(1) translate(-120px, 35px);
 }
 .apple-dropdown-menu.show.count-3 .item-3 {
-  transform: translate(-5px, 94px) scale(1);
-  opacity: 1;
-}
-
-/* Líneas divisorias translúcidas entre porciones */
-.apple-dropdown-menu.show.count-2 .item-1 {
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-  border-radius: 20px 20px 0 0;
-}
-body.dark-mode .apple-dropdown-menu.show.count-2 .item-1 {
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-}
-
-.apple-dropdown-menu.show.count-3 .item-1,
-.apple-dropdown-menu.show.count-3 .item-2 {
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-}
-body.dark-mode .apple-dropdown-menu.show.count-3 .item-1,
-body.dark-mode .apple-dropdown-menu.show.count-3 .item-2 {
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  transform: scale(1) translate(-90px, 95px);
 }
 /* ------------------------------------------------------------- */
 
@@ -836,22 +781,20 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú flotante en abanico sectorial -->
+    <!-- Menú flotante en abanico libre de burbujas -->
     <div id="apple-menu" class="apple-dropdown-menu count-2">
-      <div class="apple-menu-bg-fan"></div>
-      
-      <button class="apple-menu-item item-1" onclick="toggleTheme()" title="Cambiar Tema">
+      <div class="apple-menu-item item-1" onclick="toggleTheme()" title="Cambiar Tema">
         <i class="fa-solid fa-circle-half-stroke"></i>
         <span class="menu-label">Tema</span>
-      </button>
-      <button class="apple-menu-item item-2" onclick="refrescarWeb()" title="Actualizar datos">
+      </div>
+      <div class="apple-menu-item item-2" onclick="refrescarWeb()" title="Actualizar datos">
         <i class="fa-solid fa-rotate-right"></i>
         <span class="menu-label">Actualizar</span>
-      </button>
-      <button id="btn-menu-grupo" class="apple-menu-item item-3" style="display: none;" onclick="irAGrupo()" title="Grupo">
+      </div>
+      <div id="btn-menu-grupo" class="apple-menu-item item-3" style="display: none;" onclick="irAGrupo()" title="Grupo">
         <i class="fa-solid fa-users-gear"></i>
         <span class="menu-label">Grupo</span>
-      </button>
+      </div>
     </div>
   </div>
 </header>
@@ -1255,7 +1198,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''} ${esCaducado ? 'tarjeta-caducada' : ''}" id="card-container-${tipo}-${i}">
             ${tarjetaBloqueada ? `
                 <div class="mensaje-bloqueo-overlay">
-                    <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRAS DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
+                    <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRES DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
                 </div>
             ` : ''}
             <div class="card-inner">
