@@ -157,33 +157,41 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- NUEVO MENÚ DESPLEGABLE LIMPIO Y ESTABLE --- */
+/* --- MENÚ ESTILO IOS "LIQUID GLASS" --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
   right: 0;
-  width: 180px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  width: 190px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.8),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  border: 0.5px solid rgba(255, 255, 255, 0.4);
   display: flex;
   flex-direction: column;
-  padding: 6px;
+  padding: 8px;
   gap: 4px;
   opacity: 0;
-  transform: translateY(-10px) scale(0.95);
+  transform: translateY(-12px) scale(0.94);
   pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1000;
 }
 
 body.dark-mode .apple-dropdown-menu {
-  background: rgba(22, 27, 34, 0.95);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: rgba(30, 35, 45, 0.55);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 .apple-dropdown-menu.show {
@@ -196,19 +204,28 @@ body.dark-mode .apple-dropdown-menu {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
   cursor: pointer;
   color: var(--primary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.apple-menu-item:active {
+  transform: scale(0.96);
 }
 
 .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.12);
+  background: rgba(0, 122, 255, 0.15);
   color: #007aff;
+}
+
+body.dark-mode .apple-menu-item:hover {
+  background: rgba(99, 179, 237, 0.2);
+  color: #63b3ed;
 }
 
 .apple-menu-item i {
@@ -216,7 +233,7 @@ body.dark-mode .apple-dropdown-menu {
   width: 20px;
   text-align: center;
 }
-/* --------------------------------------------- */
+/* ----------------------------------------------------- */
 
 .user-name { 
   font-family: 'Whisper', cursive; 
@@ -752,7 +769,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú desplegable limpio y directo -->
+    <!-- Menú desplegable con efecto iOS Liquid Glass -->
     <div id="apple-menu" class="apple-dropdown-menu">
       <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
         <i class="fa-solid fa-circle-half-stroke"></i>
