@@ -157,8 +157,8 @@ body.dark-mode .btn-settings {
 
 .apple-dropdown-menu {
   position: absolute;
-  top: 45px; /* Justo debajo del botón de ajustes */
-  right: 0;   /* Anclado al borde derecho del contenedor del botón */
+  top: 50px;
+  right: 0;
   width: 210px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px);
@@ -172,13 +172,13 @@ body.dark-mode .btn-settings {
   gap: 4px;
   z-index: 99999;
   
-  /* Estado oculto: encogido hacia la esquina superior derecha */
+  /* ESTADO CERRADO (Punto exacto del pivote del abanico) */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-8px) scale(0.85);
-  /* CLAVE: El origen de la transformación es exactamente el botón en la esquina */
-  transform-origin: top right; 
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Añadimos una ligera rotación inicial de 10deg para simular que las opciones están plegadas */
+  transform: translateY(-12px) scale(0.7) rotate(8deg);
+  transform-origin: top right; /* Ancla de rotación y escala en la esquina del botón */
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); /* Curva estilo muelle suave de iOS */
 }
 
 body.dark-mode .apple-dropdown-menu {
@@ -187,12 +187,12 @@ body.dark-mode .apple-dropdown-menu {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
-/* Estado activo (cuando se abre el menú) */
+/* ESTADO ABIERTO (Se abre el abanico) */
 .apple-dropdown-menu.show {
   opacity: 1;
   visibility: visible;
-  /* Efecto abanico desplegado por completo hacia abajo/izquierda */
-  transform: translateY(0) scale(1);
+  /* La rotación vuelve a 0 y la escala a 1 abriéndose con fluidez desde la esquina */
+  transform: translateY(0) scale(1) rotate(0deg);
 }
 
 .apple-dropdown-menu .apple-menu-item {
@@ -235,6 +235,7 @@ body.dark-mode .apple-dropdown-menu .apple-menu-item {
 .apple-dropdown-menu .apple-menu-item:active {
   transform: scale(0.97);
 }
+
 
 
 .user-name { 
