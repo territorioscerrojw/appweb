@@ -157,7 +157,7 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ ESTILO IOS "LIQUID GLASS" MEJORADO --- */
+/* --- MENÚ ESTILO IOS --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
@@ -243,7 +243,6 @@ body.dark-mode .apple-menu-item:hover {
 body.dark-mode .apple-menu-divider {
   background: rgba(255, 255, 255, 0.08);
 }
-/* ----------------------------------------------------- */
 
 .user-name { 
   font-family: 'Whisper', cursive; 
@@ -256,7 +255,7 @@ body.dark-mode .apple-menu-divider {
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
 
-/* --- BOTÓN QUIERO UN TERRITORIO (Sección Personal) --- */
+/* --- BOTÓN QUIERO UN TERRITORIO --- */
 .quiero-territorio-container {
   padding: 0 20px 25px 20px;
   display: flex;
@@ -352,15 +351,15 @@ body.dark-mode .preferencias-content {
   text-transform: uppercase;
 }
 
-/* Grilla de 3 columnas para Zonas */
+/* Grilla de 2 columnas para Zonas para mejor lectura */
 .pref-grid-zonas {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-bottom: 20px;
 }
 
-/* Grilla para Tipos (4 opciones, o adaptada) */
+/* Grilla para Tipos */
 .pref-grid-tipos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -374,8 +373,8 @@ body.dark-mode .preferencias-content {
   color: var(--primary);
   padding: 12px 8px;
   border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -383,6 +382,7 @@ body.dark-mode .preferencias-content {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1.2;
 }
 
 body.dark-mode .pref-btn-opcion {
@@ -434,7 +434,6 @@ body.dark-mode .pref-btn-opcion {
 body.dark-mode .pref-btn-cancelar {
   background: rgba(255, 255, 255, 0.1);
 }
-/* ------------------------------------------------ */
 
 .ordenar-container {
   display: flex;
@@ -1018,7 +1017,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         
         <div class="preferencias-section-label">1. ZONA</div>
         <div id="pref-zonas-container" class="pref-grid-zonas">
-            <!-- Se llenará dinámicamente con todas las barriadas/zonas existentes (excluyendo NEGOCIOS) + CUALQUIERA -->
+            <!-- Se poblará dinámicamente con todas las barriadas (excluyendo NEGOCIOS) -->
         </div>
 
         <div class="preferencias-section-label">2. TIPO</div>
@@ -1102,6 +1101,9 @@ body.dark-mode .tarjeta-caducada .card-back {
     
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
+
+    // Inicializar la grilla de zonas del modal de preferencias inmediatamente
+    poblarZonasModal();
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
 
@@ -1199,7 +1201,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
     
-    // Contenedor con botón "QUIERO UN TERRITORIO" debajo de las tarjetas personales
     let botonQuieroTerritorioHTML = `
       <div class="quiero-territorio-container">
         <button class="btn-quiero-territorio" onclick="abrirModalPreferencias()">
@@ -1224,9 +1225,6 @@ body.dark-mode .tarjeta-caducada .card-back {
                
     document.getElementById('grid-container').innerHTML = html;
 
-    // Poblar dinámicamente las zonas/barriadas únicas (excluyendo NEGOCIOS)
-    poblarZonasModal(datos);
-
     if (campañaActivaGlobal !== "") {
         setTimeout(() => {
             procesarFechasYBarras(datos);
@@ -1234,31 +1232,28 @@ body.dark-mode .tarjeta-caducada .card-back {
     }
   }
 
-  function poblarZonasModal(datos) {
-    let zonasSet = new Set();
-    
-    ['personales', 'grupo', 'campaña'].forEach(tipoArr => {
-        if (datos[tipoArr] && Array.isArray(datos[tipoArr])) {
-            datos[tipoArr].forEach(t => {
-                if (t.zona && t.zona.trim() !== "") {
-                    let zonaLimpiada = t.zona.trim().toUpperCase();
-                    // Excluir "NEGOCIOS" de la lista de zonas según lo solicitado
-                    if (zonaLimpiada !== "NEGOCIOS") {
-                        zonasSet.add(zonaLimpiada);
-                    }
-                }
-            });
-        }
-    });
+  // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
+  function poblarZonasModal() {
+    const listaZonas = [
+      "CERRO DEL ÁGUILA",
+      "GARCÍA LORCA",
+      "HUERTA DEL ÁGUILA",
+      "LA DOCTORA",
+      "LA NEGRILLA",
+      "LA PLATA",
+      "LAS ÁGUILAS",
+      "NERVIÓN",
+      "PADRE PÍO",
+      "ROCHELAMBERT",
+      "SAN JOSÉ DE PALMETE"
+    ];
 
-    let zonasArray = Array.from(zonasSet).sort();
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
-    // Primer botón fijo: CUALQUIERA
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    zonasArray.forEach(z => {
+    listaZonas.forEach(z => {
         htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
     });
 
@@ -1288,13 +1283,11 @@ body.dark-mode .tarjeta-caducada .card-back {
   function enviarPreferenciasTerritorio() {
     const modal = document.getElementById('preferencias-modal');
     
-    // Recolectar zonas seleccionadas
     let zonasSeleccionadas = [];
     document.querySelectorAll('#pref-zonas-container .pref-btn-opcion.selected').forEach(el => {
         zonasSeleccionadas.push(el.getAttribute('data-val'));
     });
 
-    // Recolectar tipos seleccionados
     let tiposSeleccionados = [];
     document.querySelectorAll('.pref-grid-tipos .pref-btn-opcion.selected').forEach(el => {
         tiposSeleccionados.push(el.getAttribute('data-val'));
@@ -1559,7 +1552,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       fetch(urlEmail)
         .then(r => r.json())
         .then(data => {
-            console.log("Solicitud de renovación enviada correctamente en segundo plano.");
+            console.log("Solicitud de renovación enviada correctamente.");
         })
         .catch(err => {
             console.error("Error al enviar la solicitud de renovación:", err);
