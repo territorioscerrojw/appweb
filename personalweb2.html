@@ -1004,7 +1004,7 @@ body.dark-mode .tarjeta-caducada .card-back {
             ¡Solicitud enviada con éxito! El departamento de territorios revisará tu petición de renovación.<br><br>
             Nota importante: La renovación requiere que el territorio se haya trabajado al menos una vez al año.<br><br>
             Si lleva más de un año sin trabajarse, no se podrá renovar.<br><br>
-            Si se ha trabajado dentro del último año, recibirás un plazo extra de 1 a 4 meses.<br><br>
+            Si se ha trabajado dentro último año, recibirás un plazo extra de 1 a 4 meses.<br><br>
              <em>Verás reflejada la actualización en la aplicación próximamente si la renovación es aprobada.</em>
         </div>
         <button class="renovacion-btn-entendido" onclick="cerrarModalRenovacionDirecto()">Entendido</button>
@@ -1018,7 +1018,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         
         <div class="preferencias-section-label">1. ZONA</div>
         <div id="pref-zonas-container" class="pref-grid-zonas">
-            <!-- Se llenará dinámicamente con todas las zonas existentes + CUALQUIERA -->
+            <!-- Se llenará dinámicamente con todas las barriadas/zonas existentes (excluyendo NEGOCIOS) + CUALQUIERA -->
         </div>
 
         <div class="preferencias-section-label">2. TIPO</div>
@@ -1224,7 +1224,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                
     document.getElementById('grid-container').innerHTML = html;
 
-    // Poblar dinámicamente las zonas únicas encontradas en todos los territorios disponibles (grupo, personales, campaña, etc.)
+    // Poblar dinámicamente las zonas/barriadas únicas (excluyendo NEGOCIOS)
     poblarZonasModal(datos);
 
     if (campañaActivaGlobal !== "") {
@@ -1241,7 +1241,11 @@ body.dark-mode .tarjeta-caducada .card-back {
         if (datos[tipoArr] && Array.isArray(datos[tipoArr])) {
             datos[tipoArr].forEach(t => {
                 if (t.zona && t.zona.trim() !== "") {
-                    zonasSet.add(t.zona.trim().toUpperCase());
+                    let zonaLimpiada = t.zona.trim().toUpperCase();
+                    // Excluir "NEGOCIOS" de la lista de zonas según lo solicitado
+                    if (zonaLimpiada !== "NEGOCIOS") {
+                        zonasSet.add(zonaLimpiada);
+                    }
                 }
             });
         }
