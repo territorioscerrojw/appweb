@@ -19,7 +19,6 @@
   --azul-moderno: rgba(28, 44, 66, 0.75);
   --verde-moderno: rgba(58, 77, 57, 0.75);
   --gris-apple: rgba(28, 28, 30, 0.9);
-  --color-texto-anillo: #1c1c1e;
   --azul-elegante: #007aff; 
   --borde-destello: 
     inset 0 1px 1px rgba(255, 255, 255, 0.9),  
@@ -33,7 +32,6 @@ body.dark-mode {
   --card-bg: #161b22;     
   --header-bg: #1f6feb;   
   --primary: #f0f6fc;     
-  --color-texto-anillo: #f0f6fc;
   --azul-elegante: #63b3ed; 
   --borde-destello: 
     inset 0 1px 1px rgba(255, 255, 255, 0.35), 
@@ -159,117 +157,58 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ RADIAL ALINEADO CORRECTAMENTE --- */
+/* --- NUEVO MENÚ DESPLEGABLE LIMPIO Y ESTABLE --- */
 .apple-dropdown-menu {
   position: absolute;
-  top: 0;
+  top: 55px;
   right: 0;
-  width: 45px;
-  height: 45px;
-  pointer-events: none;
-  z-index: 9;
-}
-
-.apple-dropdown-menu.show {
-  pointer-events: auto;
-}
-
-/* El panel translúcido anclado exactamente al botón para que se expanda hacia abajo/izquierda */
-.menu-ring-backdrop {
-  position: absolute;
-  top: 0px; 
-  right: 0px;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
+  width: 180px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transform: scale(0.2);
-  transform-origin: top right;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0;
-  z-index: 1;
+  border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
   pointer-events: none;
-  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
 }
 
-body.dark-mode .menu-ring-backdrop {
-  background: rgba(22, 27, 34, 0.9);
+body.dark-mode .apple-dropdown-menu {
+  background: rgba(22, 27, 34, 0.95);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.apple-dropdown-menu.show.count-2 .menu-ring-backdrop {
-  width: 250px;
-  height: 250px;
-  transform: scale(1);
+.apple-dropdown-menu.show {
   opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
-
-.apple-dropdown-menu.show.count-3 .menu-ring-backdrop {
-  width: 280px;
-  height: 280px;
-  transform: scale(1);
-  opacity: 1;
-}
-
-.ring-slice {
-  position: absolute;
-  width: 220px;
-  height: 220px;
-  top: 0;
-  right: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  transform-origin: top right;
-}
-
-.apple-dropdown-menu.show .ring-slice {
-  opacity: 1;
-}
-
-/* Distribución de sectores hacia el espacio inferior-izquierdo del botón */
-.apple-dropdown-menu.show.count-2 .slice-1 { transform: rotate(20deg); }
-.apple-dropdown-menu.show.count-2 .slice-2 { transform: rotate(85deg); }
-
-.apple-dropdown-menu.show.count-3 .slice-1 { transform: rotate(10deg); }
-.apple-dropdown-menu.show.count-3 .slice-2 { transform: rotate(55deg); }
-.apple-dropdown-menu.show.count-3 .slice-3 { transform: rotate(100deg); }
 
 .apple-menu-item {
-  position: absolute;
-  top: 55px;
-  right: 20px;
-  pointer-events: auto;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 10px 16px;
-  border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
-  gap: 10px;
-  white-space: nowrap;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
   cursor: pointer;
-  border: 0.5px solid rgba(0, 0, 0, 0.1);
   color: var(--primary);
   text-decoration: none;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-body.dark-mode .apple-menu-item {
-  background: rgba(33, 38, 45, 0.95);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
-  color: #f0f6fc;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.15);
+  background: rgba(0, 122, 255, 0.12);
   color: #007aff;
-  transform: scale(1.05);
 }
 
 .apple-menu-item i {
@@ -277,20 +216,7 @@ body.dark-mode .apple-menu-item {
   width: 20px;
   text-align: center;
 }
-
-.menu-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.apple-dropdown-menu.show.count-2 .slice-1 .apple-menu-item { right: 70px; top: 15px; }
-.apple-dropdown-menu.show.count-2 .slice-2 .apple-menu-item { right: 15px; top: 75px; }
-
-.apple-dropdown-menu.show.count-3 .slice-1 .apple-menu-item { right: 80px; top: 10px; }
-.apple-dropdown-menu.show.count-3 .slice-2 .apple-menu-item { right: 55px; top: 65px; }
-.apple-dropdown-menu.show.count-3 .slice-3 .apple-menu-item { right: 10px; top: 110px; }
-/* ------------------------------------------------------------- */
+/* --------------------------------------------- */
 
 .user-name { 
   font-family: 'Whisper', cursive; 
@@ -826,33 +752,21 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú radial alineado correctamente desde el botón de ajustes -->
-    <div id="apple-menu" class="apple-dropdown-menu count-2">
-      <!-- Panel translúcido de expansión -->
-      <div class="menu-ring-backdrop"></div>
-      
-      <!-- Opción 1: Tema -->
-      <div class="ring-slice slice-1">
-        <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
-          <i class="fa-solid fa-circle-half-stroke"></i>
-          <span class="menu-label">Tema</span>
-        </div>
+    <!-- Menú desplegable limpio y directo -->
+    <div id="apple-menu" class="apple-dropdown-menu">
+      <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+        <span>Tema</span>
       </div>
 
-      <!-- Opción 2: Actualizar -->
-      <div class="ring-slice slice-2">
-        <div class="apple-menu-item" onclick="refrescarWeb()" title="Actualizar datos">
-          <i class="fa-solid fa-rotate-right"></i>
-          <span class="menu-label">Actualizar</span>
-        </div>
+      <div class="apple-menu-item" onclick="refrescarWeb()" title="Actualizar datos">
+        <i class="fa-solid fa-rotate-right"></i>
+        <span>Actualizar</span>
       </div>
 
-      <!-- Opción 3: Grupo (Condicional) -->
-      <div id="btn-menu-grupo" class="ring-slice slice-3" style="display: none;">
-        <div class="apple-menu-item" onclick="irAGrupo()" title="Grupo">
-          <i class="fa-solid fa-users-gear"></i>
-          <span class="menu-label">Grupo</span>
-        </div>
+      <div id="btn-menu-grupo" class="apple-menu-item" onclick="irAGrupo()" style="display: none;" title="Grupo">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Grupo</span>
       </div>
     </div>
   </div>
@@ -902,23 +816,8 @@ body.dark-mode .tarjeta-caducada .card-back {
     document.body.classList.add('dark-mode');
   }
 
-  function actualizarConteoAbanico() {
-    const menu = document.getElementById('apple-menu');
-    const btnGrupo = document.getElementById('btn-menu-grupo');
-    if (menu && btnGrupo) {
-      if (btnGrupo.style.display !== 'none') {
-        menu.classList.remove('count-2');
-        menu.classList.add('count-3');
-      } else {
-        menu.classList.remove('count-3');
-        menu.classList.add('count-2');
-      }
-    }
-  }
-
   function toggleSettingsMenu(event) {
     event.stopPropagation();
-    actualizarConteoAbanico();
     const menu = document.getElementById('apple-menu');
     menu.classList.toggle('show');
   }
@@ -1032,7 +931,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         btnGrupo.style.display = 'flex';
       }
     }
-    actualizarConteoAbanico();
 
     let htmlCampaña = "";
     
@@ -1519,7 +1417,7 @@ body.dark-mode .tarjeta-caducada .card-back {
   function ordenarPorCercania(tipo, lista, coordsUsuario) {
     lista.sort((a, b) => {
       let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
-      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
+      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
       return distA - distB; 
     });
     actualizarGridVisual(tipo, lista);
