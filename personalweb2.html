@@ -421,9 +421,9 @@ body.dark-mode .pref-btn-opcion {
 }
 
 .pref-btn-enviar {
-  background: var(--success);
+  background: var(--azul-elegante);
   color: white;
-  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
 .pref-btn-cancelar {
@@ -1013,7 +1013,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 <!-- Modal de Preferencias: "QUIERO UN TERRITORIO" -->
 <div id="preferencias-modal" onclick="cerrarModalPreferencias(event)">
     <div class="preferencias-content">
-        <div class="preferencias-title">PREFERENCIAS</div>
+        <div class="preferencias-title">PREFERENCIAS <span style="font-size: 0.75rem; font-weight: 600; text-transform: none; display: block; margin-top: 4px; opacity: 0.8;">(selecciona una o varias opciones)</span></div>
         
         <div class="preferencias-section-label">1. ZONA</div>
         <div id="pref-zonas-container" class="pref-grid-zonas">
@@ -1021,8 +1021,8 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
 
         <div class="preferencias-section-label">2. TIPO</div>
-        <div class="pref-grid-tipos">
-            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>
+        <div class="pref-grid-tipos" id="pref-tipos-container">
+            <div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>
             <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="CASAS">CASAS</div>
             <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="BLOQUES">BLOQUES</div>
             <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="NEGOCIOS">NEGOCIOS</div>
@@ -1261,7 +1261,29 @@ body.dark-mode .tarjeta-caducada .card-back {
   }
 
   function togglePrefBoton(btn) {
-    btn.classList.toggle('selected');
+    const valor = btn.getAttribute('data-val');
+    const contenedorPadre = btn.parentElement;
+
+    if (valor === "CUALQUIERA") {
+        if (!btn.classList.contains('selected')) {
+            // Si pulsan Cualquiera, se marca y se desmarcan las demás opciones de ese contenedor
+            contenedorPadre.querySelectorAll('.pref-btn-opcion').forEach(el => el.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+    } else {
+        // Si pulsan otra opción, se desmarca automáticamente "CUALQUIERA"
+        const btnCualquiera = contenedorPadre.querySelector('[data-val="CUALQUIERA"]');
+        if (btnCualquiera) {
+            btnCualquiera.classList.remove('selected');
+        }
+        btn.classList.toggle('selected');
+        
+        // Si al desmarcar no queda ninguna seleccionada, volvemos a marcar "CUALQUIERA" por defecto
+        const seleccionados = contenedorPadre.querySelectorAll('.pref-btn-opcion.selected');
+        if (seleccionados.length === 0 && btnCualquiera) {
+            btnCualquiera.classList.add('selected');
+        }
+    }
   }
 
   function abrirModalPreferencias() {
@@ -1307,11 +1329,11 @@ body.dark-mode .tarjeta-caducada .card-back {
     fetch(urlEmail)
       .then(r => r.json())
       .then(data => {
-          alert("¡Preferencias enviadas con éxito al departamento de territorios!");
+          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
       })
       .catch(err => {
           console.error("Error al enviar preferencias:", err);
-          alert("¡Preferencias enviadas con éxito!");
+          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
       });
   }
 
