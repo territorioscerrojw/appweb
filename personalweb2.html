@@ -10,9 +10,9 @@
 <style>
 :root {
   --primary: #1c1c1e;
-  --bg: #e8e8ed;
+  --bg: #dedee3;
   --card-bg: #fcfcfc;
-  --header-bg: #fcfcfc;
+  --header-bg: rgba(0,0,0,0.03);
   --danger: #ff3b30;
   --success: #34c759;
   --warning: #ff9500;
@@ -20,7 +20,16 @@
   --verde-moderno: rgba(58, 77, 57, 0.75);
   --gris-apple: rgba(28, 28, 30, 0.9);
   --color-texto-anillo: #000;
-  --azul-elegante: #007aff;
+  --azul-elegante: #007aff; 
+     --borde-destello: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),  
+    inset 1px 0 1px rgba(255, 255, 255, 0.6),  
+    inset 0 -1px 1px rgba(0, 0, 0, 0.08),      
+    0 10px 25px rgba(0, 0, 0, 0.08);           
+}
+body.dark-mode .img-box-custom img {
+  filter: invert(0.85) hue-rotate(180deg) brightness(1.2) contrast(1.15);
+  transition: filter 0.3s ease;
 }
 
 body.dark-mode {
@@ -29,7 +38,12 @@ body.dark-mode {
   --header-bg: #1f6feb;   
   --primary: #f0f6fc;     
   --color-texto-anillo: #fff;
-  --azul-elegante: #63b3ed;
+  --azul-elegante: #63b3ed; 
+     --borde-destello: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.35), 
+    inset 1px 0 1px rgba(255, 255, 255, 0.2),  
+    inset 0 -1px 1px rgba(0, 0, 0, 0.6),       
+    0 12px 30px rgba(0, 0, 0, 0.5);            
 }
 
 body.dark-mode .card-header { 
@@ -143,9 +157,9 @@ body.dark-mode .btn-settings {
 
 .apple-dropdown-menu {
   position: absolute;
-  top: 55px;
+  top: 50px;
   right: 0;
-  width: 220px;
+  width: 210px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -155,12 +169,14 @@ body.dark-mode .btn-settings {
   padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   z-index: 99999;
+  
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px) scale(0.95);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(-10px) scale(0.9);
+  transform-origin: top right;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 body.dark-mode .apple-dropdown-menu {
@@ -173,6 +189,47 @@ body.dark-mode .apple-dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
+}
+
+.apple-dropdown-menu .apple-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: #1c1c1e;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+body.dark-mode .apple-dropdown-menu .apple-menu-item {
+  color: #ffffff;
+}
+
+.apple-dropdown-menu .apple-menu-item span {
+  display: inline-block;
+}
+
+.apple-dropdown-menu .apple-menu-item i {
+  font-size: 16px;
+  color: #007aff;
+  width: 20px;
+  text-align: center;
+}
+
+.apple-dropdown-menu .apple-menu-item:hover {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.apple-dropdown-menu .apple-menu-item:active {
+  transform: scale(0.97);
 }
 
 .user-name { 
@@ -275,10 +332,18 @@ body.dark-mode .apple-menu-item:hover {
   -webkit-backface-visibility: hidden;
   border-radius: 18px;
   background: var(--card-bg);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border: 0.5px solid rgba(0,0,0,0.1);
   overflow: hidden;
+  
+  box-shadow: var(--borde-destello);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
 }
+
+body.dark-mode .card-front, 
+body.dark-mode .card-back {
+  border: 0.5px solid rgba(255, 255, 255, 0.08); 
+  box-shadow: var(--borde-destello);   
+}
+  
 .card-front { 
   position: relative; 
   z-index: 2;
@@ -300,6 +365,7 @@ body.dark-mode .apple-menu-item:hover {
   justify-content: space-between; 
   align-items: center; 
   flex-shrink: 0; 
+  background: var(--header-bg); 
 }
 
 body.dark-mode .card-header { 
@@ -309,8 +375,27 @@ body.dark-mode .card-header {
 
 .card-num { font-size: 2.2rem; font-weight: 900; }
 .card-zona { font-size: 1.2rem; color: #8e8e93; font-weight: 600; }
-.img-box-custom { height: 200px; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
-.img-box-custom img { width: 100%; height: 100%; object-fit: cover; }
+.img-box-custom { 
+  height: 200px; 
+  margin: 12px 14px 0 14px; 
+  border-radius: 14px;      
+  overflow: hidden;         
+  border: 0.5px solid rgba(0, 0, 0, 0.1); 
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0; 
+}
+
+body.dark-mode .img-box-custom {
+  border: 0.5px solid rgba(255, 255, 255, 0.12); 
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.img-box-custom img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
 .etiqueta-calles {
   padding: 12px 20px 0 20px;
   font-size: 0.9rem; 
@@ -363,6 +448,27 @@ body.dark-mode .card-header {
   font-size: 2.2rem !important; 
   margin-top: 4px;
   filter: none; 
+}
+body.dark-mode .btn-back-action {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),  
+    inset 1px 0 1px rgba(255, 255, 255, 0.25), 
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8),       
+    0 4px 12px rgba(0, 0, 0, 0.4);             
+}
+
+body.dark-mode .btn-back-action:nth-child(1) {
+  color: #f5a623 !important; 
+}
+
+body.dark-mode .btn-back-action:nth-child(2) {
+  color: #63b3ed !important; 
+}
+
+body.dark-mode .btn-back-action:nth-child(3) {
+  color: #34c759 !important; 
 }
 
 .btn-more { 
@@ -733,9 +839,11 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
         <div class="renovacion-title">RENOVACIÓN SOLICITADA</div>
         <div class="renovacion-text">
-            ¡Solicitud enviada con éxito! Se ha notificado al departamento de territorios sobre tu petición de renovación.<br><br>
-            Nota importante: La renovación está sujeta a que el territorio se trabaje al menos una vez al año. Según este criterio, se asignará un plazo extra de 1 a 4 meses.<br><br>
-            <em>Verás reflejada la actualización en la aplicación próximamente si la renovación es aprobada.</em>
+            ¡Solicitud enviada con éxito! El departamento de territorios revisará tu petición de renovación.<br><br>
+            Nota importante: La renovación requiere que el territorio se haya trabajado al menos una vez al año.<br><br>
+            Si lleva más de un año sin trabajarse, no se podrá renovar.<br><br>
+            Si se ha trabajado dentro del último año, recibirás un plazo extra de 1 a 4 meses.<br><br>
+             <em>Verás reflejada la actualización en la aplicación próximamente si la renovación es aprobada.</em>
         </div>
         <button class="renovacion-btn-entendido" onclick="cerrarModalRenovacionDirecto()">Entendido</button>
     </div>
@@ -814,7 +922,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (datosCache) {
       try {
         const datosParsed = JSON.parse(datosCache);
-        procesarYRenderizarDatos(datosParsed);
+        procesarYRenderizarDatos(datosParsed); 
       } catch (e) {
         console.error("Error al leer caché", e);
       }
@@ -903,22 +1011,15 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
-    
-    const tienePersonales = datos.personales && datos.personales.length > 0;
-    const tieneGrupo = datos.grupo && datos.grupo.length > 0;
-    const tieneCampania = datos.campaña && datos.campaña.length > 0;
-
-    if (tienePersonales) {
+    if (datos.personales && datos.personales.length > 0) {
         htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
-    } else if (!tieneGrupo && !tieneCampania) {
-        // Solo se muestra si NO tiene personales Y TAMPOCO tiene de grupo ni de campaña
+    } else {
         htmlPersonales = `
             <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
             <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO. CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.
+                <div style="font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;">NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO.</div>
+                <div>CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.</div>
             </div>`;
-    } else {
-        htmlPersonales = ""; // No se muestra nada si no tiene personales pero sí tiene grupo o campaña
     }
 
     let html = htmlCampaña +
@@ -1028,7 +1129,8 @@ body.dark-mode .tarjeta-caducada .card-back {
       const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
       if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
       if (diasMatch) dias += parseInt(diasMatch[1]);
-      return dias;
+      
+      return Math.min(dias, 120);
   }
 
   function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado, mensajeVacio = "") {
@@ -1073,9 +1175,16 @@ body.dark-mode .tarjeta-caducada .card-back {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
         let esCaducado = (t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0;
 
+        let textoTiempoMostrado = t.tiempo;
+        if (diasTotales >= 120 && !esCaducado) {
+            textoTiempoMostrado = "4 MESES";
+        } else if (!esCaducado) {
+            textoTiempoMostrado = t.tiempo.replace(" y ", " ");
+        }
+
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
-        
+   
         const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
         const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
         let matches = (t.coords || "").match(/[-0-9.]+/g);
@@ -1099,6 +1208,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                 </div>
             ` : ''}
             <div class="card-inner">
+                <!-- CARA FRONTAL -->
                 <div class="card-front">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${t.num}</span>
@@ -1111,8 +1221,9 @@ body.dark-mode .tarjeta-caducada .card-back {
                       <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                             <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : t.tiempo.replace(" y ", " ")}</div>
+                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
                         </div>
+
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
                             <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
                         </div>
@@ -1127,6 +1238,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                 </div>
 
+                <!-- CARA TRASERA -->
                 <div class="card-back">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${t.num}</span>
