@@ -1320,7 +1320,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     const correoDestino = "territorioscerro.jw@gmail.com";
     const asunto = "Solicitud de nuevo territorio (Preferencias)";
-    const cuerpo = `La persona ${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
+    const cuerpo = `El/la hermano/a ${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
 
     const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
