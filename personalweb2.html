@@ -157,8 +157,8 @@ body.dark-mode .btn-settings {
 
 .apple-dropdown-menu {
   position: absolute;
-  top: 50px;
-  right: 0;
+  top: 45px; /* Justo debajo del botón de ajustes */
+  right: 0;   /* Anclado al borde derecho del contenedor del botón */
   width: 210px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px);
@@ -172,10 +172,12 @@ body.dark-mode .btn-settings {
   gap: 4px;
   z-index: 99999;
   
+  /* Estado oculto: encogido hacia la esquina superior derecha */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px) scale(0.9);
-  transform-origin: top right;
+  transform: translateY(-8px) scale(0.85);
+  /* CLAVE: El origen de la transformación es exactamente el botón en la esquina */
+  transform-origin: top right; 
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -185,9 +187,11 @@ body.dark-mode .apple-dropdown-menu {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
+/* Estado activo (cuando se abre el menú) */
 .apple-dropdown-menu.show {
   opacity: 1;
   visibility: visible;
+  /* Efecto abanico desplegado por completo hacia abajo/izquierda */
   transform: translateY(0) scale(1);
 }
 
@@ -231,6 +235,7 @@ body.dark-mode .apple-dropdown-menu .apple-menu-item {
 .apple-dropdown-menu .apple-menu-item:active {
   transform: scale(0.97);
 }
+
 
 .user-name { 
   font-family: 'Whisper', cursive; 
