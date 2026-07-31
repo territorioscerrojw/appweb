@@ -19,17 +19,13 @@
   --azul-moderno: rgba(28, 44, 66, 0.75);
   --verde-moderno: rgba(58, 77, 57, 0.75);
   --gris-apple: rgba(28, 28, 30, 0.9);
-  --color-texto-anillo: #000;
+  --color-texto-anillo: #1c1c1e;
   --azul-elegante: #007aff; 
-     --borde-destello: 
+  --borde-destello: 
     inset 0 1px 1px rgba(255, 255, 255, 0.9),  
     inset 1px 0 1px rgba(255, 255, 255, 0.6),  
     inset 0 -1px 1px rgba(0, 0, 0, 0.08),      
     0 10px 25px rgba(0, 0, 0, 0.08);           
-}
-body.dark-mode .img-box-custom img {
-  filter: invert(0.85) hue-rotate(180deg) brightness(1.2) contrast(1.15);
-  transition: filter 0.3s ease;
 }
 
 body.dark-mode {
@@ -37,13 +33,18 @@ body.dark-mode {
   --card-bg: #161b22;     
   --header-bg: #1f6feb;   
   --primary: #f0f6fc;     
-  --color-texto-anillo: #fff;
+  --color-texto-anillo: #f0f6fc;
   --azul-elegante: #63b3ed; 
-     --borde-destello: 
+  --borde-destello: 
     inset 0 1px 1px rgba(255, 255, 255, 0.35), 
     inset 1px 0 1px rgba(255, 255, 255, 0.2),  
     inset 0 -1px 1px rgba(0, 0, 0, 0.6),       
     0 12px 30px rgba(0, 0, 0, 0.5);            
+}
+
+body.dark-mode .img-box-custom img {
+  filter: invert(0.85) hue-rotate(180deg) brightness(1.2) contrast(1.15);
+  transition: filter 0.3s ease;
 }
 
 body.dark-mode .card-header { 
@@ -79,6 +80,7 @@ body.dark-mode .btn-more {
   touch-action: manipulation;
 }
 body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--primary); transition: background 0.3s, color 0.3s; }
+
 .campaña-info-card {
     background: transparent !important;
     border-bottom: 0.5px solid rgba(0,0,0,0.1);
@@ -91,6 +93,7 @@ body.dark-mode .campaña-info-card {
     background: transparent !important;
     border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
+
 header { 
   display: flex;
   align-items: center;
@@ -156,7 +159,7 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ RADIAL EN ANILLO POR PORCIONES --- */
+/* --- MENÚ RADIAL ALINEADO CORRECTAMENTE --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 0;
@@ -171,121 +174,78 @@ body.dark-mode .btn-settings {
   pointer-events: auto;
 }
 
-/* El panel translúcido en forma de anillo centrado exactamente en el botón de ajustes */
+/* El panel translúcido anclado exactamente al botón para que se expanda hacia abajo/izquierda */
 .menu-ring-backdrop {
   position: absolute;
-  top: 22.5px; 
-  right: 22.5px;
+  top: 0px; 
+  right: 0px;
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  transform: translate(50%, -50%) scale(0.3);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transform: scale(0.2);
+  transform-origin: top right;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   opacity: 0;
   z-index: 1;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   pointer-events: none;
   overflow: hidden;
 }
 
 body.dark-mode .menu-ring-backdrop {
-  background: rgba(22, 27, 34, 0.75);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(22, 27, 34, 0.9);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Tamaños y divisiones del anillo según el número de opciones (2 o 3 sectores) */
 .apple-dropdown-menu.show.count-2 .menu-ring-backdrop {
-  width: 280px;
-  height: 280px;
-  transform: translate(50%, -50%) scale(1);
+  width: 250px;
+  height: 250px;
+  transform: scale(1);
   opacity: 1;
-  background: 
-    conic-gradient(
-      from 0deg,
-      rgba(255, 255, 255, 0.15) 0deg 180deg,
-      rgba(200, 200, 200, 0.25) 180deg 180.5deg,
-      rgba(255, 255, 255, 0.3) 180.5deg 360deg
-    ),
-    rgba(255, 255, 255, 0.45);
-}
-
-body.dark-mode .apple-dropdown-menu.show.count-2 .menu-ring-backdrop {
-  background: 
-    conic-gradient(
-      from 0deg,
-      rgba(255, 255, 255, 0.03) 0deg 180deg,
-      rgba(255, 255, 255, 0.1) 180deg 180.5deg,
-      rgba(255, 255, 255, 0.05) 180.5deg 360deg
-    ),
-    rgba(22, 27, 34, 0.8);
 }
 
 .apple-dropdown-menu.show.count-3 .menu-ring-backdrop {
-  width: 300px;
-  height: 300px;
-  transform: translate(50%, -50%) scale(1);
+  width: 280px;
+  height: 280px;
+  transform: scale(1);
   opacity: 1;
-  background: 
-    conic-gradient(
-      from 0deg,
-      rgba(255, 255, 255, 0.15) 0deg 120deg,
-      rgba(200, 200, 200, 0.25) 120deg 120.5deg,
-      rgba(255, 255, 255, 0.3) 120.5deg 240deg,
-      rgba(200, 200, 200, 0.25) 240deg 240.5deg,
-      rgba(255, 255, 255, 0.15) 240.5deg 360deg
-    ),
-    rgba(255, 255, 255, 0.45);
 }
 
-body.dark-mode .apple-dropdown-menu.show.count-3 .menu-ring-backdrop {
-  background: 
-    conic-gradient(
-      from 0deg,
-      rgba(255, 255, 255, 0.03) 0deg 120deg,
-      rgba(255, 255, 255, 0.1) 120deg 120.5deg,
-      rgba(255, 255, 255, 0.05) 120.5deg 240deg,
-      rgba(255, 255, 255, 0.1) 240deg 240.5deg,
-      rgba(255, 255, 255, 0.03) 240.5deg 360deg
-    ),
-    rgba(22, 27, 34, 0.8);
-}
-
-/* Contenedores de cada porción radial para alinear perfectamente los botones */
 .ring-slice {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 220px;
+  height: 220px;
   top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  right: 0;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  transform-origin: top right;
 }
 
 .apple-dropdown-menu.show .ring-slice {
   opacity: 1;
 }
 
-/* Ángulos distribuidos por porciones */
-.apple-dropdown-menu.show.count-2 .slice-1 { transform: rotate(45deg); }
-.apple-dropdown-menu.show.count-2 .slice-2 { transform: rotate(225deg); }
+/* Distribución de sectores hacia el espacio inferior-izquierdo del botón */
+.apple-dropdown-menu.show.count-2 .slice-1 { transform: rotate(20deg); }
+.apple-dropdown-menu.show.count-2 .slice-2 { transform: rotate(85deg); }
 
-.apple-dropdown-menu.show.count-3 .slice-1 { transform: rotate(30deg); }
-.apple-dropdown-menu.show.count-3 .slice-2 { transform: rotate(150deg); }
-.apple-dropdown-menu.show.count-3 .slice-3 { transform: rotate(270deg); }
+.apple-dropdown-menu.show.count-3 .slice-1 { transform: rotate(10deg); }
+.apple-dropdown-menu.show.count-3 .slice-2 { transform: rotate(55deg); }
+.apple-dropdown-menu.show.count-3 .slice-3 { transform: rotate(100deg); }
 
-/* Opciones individuales flotantes dentro de sus porciones */
 .apple-menu-item {
+  position: absolute;
+  top: 55px;
+  right: 20px;
   pointer-events: auto;
   background: rgba(255, 255, 255, 0.95);
-  padding: 10px 18px;
+  padding: 10px 16px;
   border-radius: 30px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
   display: flex;
@@ -294,21 +254,20 @@ body.dark-mode .apple-dropdown-menu.show.count-3 .menu-ring-backdrop {
   white-space: nowrap;
   cursor: pointer;
   border: 0.5px solid rgba(0, 0, 0, 0.1);
-  color: #1c1c1e;
+  color: var(--primary);
   text-decoration: none;
   transition: transform 0.2s ease, background 0.2s ease;
-  margin-top: 35px; /* Distancia radial desde el centro */
 }
 
 body.dark-mode .apple-menu-item {
-  background: rgba(22, 27, 34, 0.95);
+  background: rgba(33, 38, 45, 0.95);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
   color: #f0f6fc;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.12);
+  background: rgba(0, 122, 255, 0.15);
   color: #007aff;
   transform: scale(1.05);
 }
@@ -325,13 +284,12 @@ body.dark-mode .apple-menu-item {
   letter-spacing: 0.3px;
 }
 
-/* Contrarrestar la rotación del sector para que el texto e iconos queden siempre derechos */
-.apple-dropdown-menu.show.count-2 .slice-1 .apple-menu-item { transform: rotate(-45deg); }
-.apple-dropdown-menu.show.count-2 .slice-2 .apple-menu-item { transform: rotate(-225deg); }
+.apple-dropdown-menu.show.count-2 .slice-1 .apple-menu-item { right: 70px; top: 15px; }
+.apple-dropdown-menu.show.count-2 .slice-2 .apple-menu-item { right: 15px; top: 75px; }
 
-.apple-dropdown-menu.show.count-3 .slice-1 .apple-menu-item { transform: rotate(-30deg); }
-.apple-dropdown-menu.show.count-3 .slice-2 .apple-menu-item { transform: rotate(-150deg); }
-.apple-dropdown-menu.show.count-3 .slice-3 .apple-menu-item { transform: rotate(-270deg); }
+.apple-dropdown-menu.show.count-3 .slice-1 .apple-menu-item { right: 80px; top: 10px; }
+.apple-dropdown-menu.show.count-3 .slice-2 .apple-menu-item { right: 55px; top: 65px; }
+.apple-dropdown-menu.show.count-3 .slice-3 .apple-menu-item { right: 10px; top: 110px; }
 /* ------------------------------------------------------------- */
 
 .user-name { 
@@ -516,6 +474,7 @@ body.dark-mode .img-box-custom {
   margin-top: 4px;
   filter: none; 
 }
+
 body.dark-mode .btn-back-action {
   background: rgba(255, 255, 255, 0.05) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
@@ -526,17 +485,9 @@ body.dark-mode .btn-back-action {
     0 4px 12px rgba(0, 0, 0, 0.4);             
 }
 
-body.dark-mode .btn-back-action:nth-child(1) {
-  color: #f5a623 !important; 
-}
-
-body.dark-mode .btn-back-action:nth-child(2) {
-  color: #63b3ed !important; 
-}
-
-body.dark-mode .btn-back-action:nth-child(3) {
-  color: #34c759 !important; 
-}
+body.dark-mode .btn-back-action:nth-child(1) { color: #f5a623 !important; }
+body.dark-mode .btn-back-action:nth-child(2) { color: #63b3ed !important; }
+body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
 
 .btn-more { 
   width: 100%; 
@@ -562,6 +513,7 @@ body.dark-mode .btn-back-action:nth-child(3) {
 .tarjeta-caducada .swipe-handle {
   background: #ff3b30 !important;
 }
+
 .swipe-text {
   position: absolute; 
   width: 100%; 
@@ -588,6 +540,7 @@ body.dark-mode .btn-back-action:nth-child(3) {
   100% { transform: scale(1); }
 }
 .icono-latido { display: inline-block; animation: heartbeat-intenso 1.5s infinite; font-size: 1.2rem !important; margin-right: 10px; color: #ff3b30; }
+
 @keyframes shine { 
   0% { background-position: 200% 0; } 
   100% { background-position: -200% 0; } 
@@ -781,10 +734,12 @@ h2 {
   padding: 15px 20px;
   box-sizing: border-box;
 }
+
 body.dark-mode .campaña-info-card {
   background: var(--card-bg);
   border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
+
 .neon-verde { background-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
 .neon-naranja { background-color: var(--warning) !important; box-shadow: 0 0 10px var(--warning); }
 .neon-rojo { background-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
@@ -871,12 +826,12 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú radial con panel translúcido en forma de anillo estructurado por porciones -->
+    <!-- Menú radial alineado correctamente desde el botón de ajustes -->
     <div id="apple-menu" class="apple-dropdown-menu count-2">
-      <!-- El panel de cristal translúcido con divisiones de sectores detrás de las opciones -->
+      <!-- Panel translúcido de expansión -->
       <div class="menu-ring-backdrop"></div>
       
-      <!-- Porción 1: Tema -->
+      <!-- Opción 1: Tema -->
       <div class="ring-slice slice-1">
         <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
           <i class="fa-solid fa-circle-half-stroke"></i>
@@ -884,7 +839,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
       </div>
 
-      <!-- Porción 2: Actualizar -->
+      <!-- Opción 2: Actualizar -->
       <div class="ring-slice slice-2">
         <div class="apple-menu-item" onclick="refrescarWeb()" title="Actualizar datos">
           <i class="fa-solid fa-rotate-right"></i>
@@ -892,7 +847,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
       </div>
 
-      <!-- Porción 3: Grupo (Condicional) -->
+      <!-- Opción 3: Grupo (Condicional) -->
       <div id="btn-menu-grupo" class="ring-slice slice-3" style="display: none;">
         <div class="apple-menu-item" onclick="irAGrupo()" title="Grupo">
           <i class="fa-solid fa-users-gear"></i>
