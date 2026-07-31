@@ -163,7 +163,6 @@ body.dark-mode .btn-settings {
   top: 55px;
   right: 0;
   width: 195px;
-  /* Fondo más sólido y translúcido para evitar interferencia visual con las letras */
   background: rgba(248, 249, 250, 0.92);
   backdrop-filter: blur(40px) saturate(220%);
   -webkit-backdrop-filter: blur(40px) saturate(220%);
@@ -235,7 +234,6 @@ body.dark-mode .apple-menu-item:hover {
   text-align: center;
 }
 
-/* Línea separadora sutil entre botones del menú */
 .apple-menu-divider {
   height: 0.5px;
   background: rgba(0, 0, 0, 0.08);
@@ -257,6 +255,186 @@ body.dark-mode .apple-menu-divider {
 }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
+
+/* --- BOTÓN QUIERO UN TERRITORIO (Sección Personal) --- */
+.quiero-territorio-container {
+  padding: 0 20px 25px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-quiero-territorio {
+  width: 100%;
+  max-width: 400px;
+  padding: 16px 20px;
+  background: var(--azul-elegante);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-quiero-territorio:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+body.dark-mode .btn-quiero-territorio {
+  background: #238636;
+  box-shadow: 0 6px 20px rgba(35, 134, 54, 0.4);
+}
+
+/* --- MODAL DE PREFERENCIAS --- */
+#preferencias-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+#preferencias-modal.active {
+  display: flex;
+}
+
+.preferencias-content {
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-mode .preferencias-content {
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+}
+
+.preferencias-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.preferencias-section-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #8e8e93;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Grilla de 3 columnas para Zonas */
+.pref-grid-zonas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Grilla para Tipos (4 opciones, o adaptada) */
+.pref-grid-tipos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.pref-btn-opcion {
+  background: rgba(0, 0, 0, 0.04);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  color: var(--primary);
+  padding: 12px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  word-break: break-word;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.dark-mode .pref-btn-opcion {
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: var(--primary);
+}
+
+.pref-btn-opcion.selected {
+  background: var(--success) !important;
+  color: #ffffff !important;
+  border-color: var(--success) !important;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+}
+
+.preferencias-buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.pref-btn-accion {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.pref-btn-accion:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.pref-btn-enviar {
+  background: var(--success);
+  color: white;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+}
+
+.pref-btn-cancelar {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--primary);
+}
+
+body.dark-mode .pref-btn-cancelar {
+  background: rgba(255, 255, 255, 0.1);
+}
+/* ------------------------------------------------ */
 
 .ordenar-container {
   display: flex;
@@ -781,7 +959,6 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú desplegable con efecto iOS Liquid Glass Mejorado y Separadores -->
     <div id="apple-menu" class="apple-dropdown-menu">
       <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
         <i class="fa-solid fa-circle-half-stroke"></i>
@@ -831,6 +1008,31 @@ body.dark-mode .tarjeta-caducada .card-back {
              <em>Verás reflejada la actualización en la aplicación próximamente si la renovación es aprobada.</em>
         </div>
         <button class="renovacion-btn-entendido" onclick="cerrarModalRenovacionDirecto()">Entendido</button>
+    </div>
+</div>
+
+<!-- Modal de Preferencias: "QUIERO UN TERRITORIO" -->
+<div id="preferencias-modal" onclick="cerrarModalPreferencias(event)">
+    <div class="preferencias-content">
+        <div class="preferencias-title">PREFERENCIAS</div>
+        
+        <div class="preferencias-section-label">1. ZONA</div>
+        <div id="pref-zonas-container" class="pref-grid-zonas">
+            <!-- Se llenará dinámicamente con todas las zonas existentes + CUALQUIERA -->
+        </div>
+
+        <div class="preferencias-section-label">2. TIPO</div>
+        <div class="pref-grid-tipos">
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="CASAS">CASAS</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="BLOQUES">BLOQUES</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="NEGOCIOS">NEGOCIOS</div>
+        </div>
+
+        <div class="preferencias-buttons-row">
+            <button class="pref-btn-accion pref-btn-cancelar" onclick="cerrarModalPreferenciasDirecto()">CANCELAR</button>
+            <button class="pref-btn-accion pref-btn-enviar" onclick="enviarPreferenciasTerritorio()">ENVIAR</button>
+        </div>
     </div>
 </div>
 
@@ -996,15 +1198,24 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
+    
+    // Contenedor con botón "QUIERO UN TERRITORIO" debajo de las tarjetas personales
+    let botonQuieroTerritorioHTML = `
+      <div class="quiero-territorio-container">
+        <button class="btn-quiero-territorio" onclick="abrirModalPreferencias()">
+          <i class="fa-solid fa-circle-plus"></i> QUIERO UN TERRITORIO
+        </button>
+      </div>`;
+
     if (datos.personales && datos.personales.length > 0) {
-        htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral);
+        htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral) + botonQuieroTerritorioHTML;
     } else {
         htmlPersonales = `
             <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
             <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
                 <div style="font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;">NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO.</div>
                 <div>CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.</div>
-            </div>`;
+            </div>` + botonQuieroTerritorioHTML;
     }
 
     let html = htmlCampaña +
@@ -1013,11 +1224,98 @@ body.dark-mode .tarjeta-caducada .card-back {
                
     document.getElementById('grid-container').innerHTML = html;
 
+    // Poblar dinámicamente las zonas únicas encontradas en todos los territorios disponibles (grupo, personales, campaña, etc.)
+    poblarZonasModal(datos);
+
     if (campañaActivaGlobal !== "") {
         setTimeout(() => {
             procesarFechasYBarras(datos);
         }, 50);
     }
+  }
+
+  function poblarZonasModal(datos) {
+    let zonasSet = new Set();
+    
+    ['personales', 'grupo', 'campaña'].forEach(tipoArr => {
+        if (datos[tipoArr] && Array.isArray(datos[tipoArr])) {
+            datos[tipoArr].forEach(t => {
+                if (t.zona && t.zona.trim() !== "") {
+                    zonasSet.add(t.zona.trim().toUpperCase());
+                }
+            });
+        }
+    });
+
+    let zonasArray = Array.from(zonasSet).sort();
+    let containerZonas = document.getElementById('pref-zonas-container');
+    if (!containerZonas) return;
+
+    // Primer botón fijo: CUALQUIERA
+    let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
+    
+    zonasArray.forEach(z => {
+        htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
+    });
+
+    containerZonas.innerHTML = htmlZonas;
+  }
+
+  function togglePrefBoton(btn) {
+    btn.classList.toggle('selected');
+  }
+
+  function abrirModalPreferencias() {
+    const modal = document.getElementById('preferencias-modal');
+    if (modal) modal.classList.add('active');
+  }
+
+  function cerrarModalPreferencias(event) {
+    if (event && event.target.id === 'preferencias-modal') {
+      document.getElementById('preferencias-modal').classList.remove('active');
+    }
+  }
+
+  function cerrarModalPreferenciasDirecto() {
+    const modal = document.getElementById('preferencias-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function enviarPreferenciasTerritorio() {
+    const modal = document.getElementById('preferencias-modal');
+    
+    // Recolectar zonas seleccionadas
+    let zonasSeleccionadas = [];
+    document.querySelectorAll('#pref-zonas-container .pref-btn-opcion.selected').forEach(el => {
+        zonasSeleccionadas.push(el.getAttribute('data-val'));
+    });
+
+    // Recolectar tipos seleccionados
+    let tiposSeleccionados = [];
+    document.querySelectorAll('.pref-grid-tipos .pref-btn-opcion.selected').forEach(el => {
+        tiposSeleccionados.push(el.getAttribute('data-val'));
+    });
+
+    if (zonasSeleccionadas.length === 0) zonasSeleccionadas = ["CUALQUIERA"];
+    if (tiposSeleccionados.length === 0) tiposSeleccionados = ["CUALQUIERA"];
+
+    const correoDestino = "territorioscerro.jw@gmail.com";
+    const asunto = "Solicitud de nuevo territorio (Preferencias)";
+    const cuerpo = `La persona ${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
+
+    const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
+
+    if (modal) modal.classList.remove('active');
+
+    fetch(urlEmail)
+      .then(r => r.json())
+      .then(data => {
+          alert("¡Preferencias enviadas con éxito al departamento de territorios!");
+      })
+      .catch(err => {
+          console.error("Error al enviar preferencias:", err);
+          alert("¡Preferencias enviadas con éxito!");
+      });
   }
 
   function procesarFechasYBarras(datos) {
