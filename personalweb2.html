@@ -157,25 +157,26 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ ESTILO IOS "LIQUID GLASS" --- */
+/* --- MENÚ ESTILO IOS "LIQUID GLASS" MEJORADO --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
   right: 0;
-  width: 190px;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  width: 195px;
+  /* Fondo más sólido y translúcido para evitar interferencia visual con las letras */
+  background: rgba(248, 249, 250, 0.92);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
   border-radius: 20px;
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.15),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.8),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9);
-  border: 0.5px solid rgba(255, 255, 255, 0.4);
+    0 25px 50px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 1);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   padding: 8px;
-  gap: 4px;
+  gap: 2px;
   opacity: 0;
   transform: translateY(-12px) scale(0.94);
   pointer-events: none;
@@ -184,14 +185,14 @@ body.dark-mode .btn-settings {
 }
 
 body.dark-mode .apple-dropdown-menu {
-  background: rgba(30, 35, 45, 0.55);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(22, 27, 34, 0.90);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.15),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    0 25px 50px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
 }
 
 .apple-dropdown-menu.show {
@@ -204,7 +205,7 @@ body.dark-mode .apple-dropdown-menu {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 14px;
+  padding: 12px 14px;
   border-radius: 12px;
   cursor: pointer;
   color: var(--primary);
@@ -219,12 +220,12 @@ body.dark-mode .apple-dropdown-menu {
 }
 
 .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.15);
+  background: rgba(0, 122, 255, 0.12);
   color: #007aff;
 }
 
 body.dark-mode .apple-menu-item:hover {
-  background: rgba(99, 179, 237, 0.2);
+  background: rgba(99, 179, 237, 0.18);
   color: #63b3ed;
 }
 
@@ -232,6 +233,17 @@ body.dark-mode .apple-menu-item:hover {
   font-size: 1.1rem;
   width: 20px;
   text-align: center;
+}
+
+/* Línea separadora sutil entre botones del menú */
+.apple-menu-divider {
+  height: 0.5px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 4px 8px;
+}
+
+body.dark-mode .apple-menu-divider {
+  background: rgba(255, 255, 255, 0.08);
 }
 /* ----------------------------------------------------- */
 
@@ -769,21 +781,26 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <!-- Menú desplegable con efecto iOS Liquid Glass -->
+    <!-- Menú desplegable con efecto iOS Liquid Glass Mejorado y Separadores -->
     <div id="apple-menu" class="apple-dropdown-menu">
       <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
         <i class="fa-solid fa-circle-half-stroke"></i>
         <span>Tema</span>
       </div>
 
+      <div class="apple-menu-divider"></div>
+
       <div class="apple-menu-item" onclick="refrescarWeb()" title="Actualizar datos">
         <i class="fa-solid fa-rotate-right"></i>
         <span>Actualizar</span>
       </div>
 
-      <div id="btn-menu-grupo" class="apple-menu-item" onclick="irAGrupo()" style="display: none;" title="Grupo">
-        <i class="fa-solid fa-users-gear"></i>
-        <span>Grupo</span>
+      <div id="btn-menu-grupo" style="display: none; flex-direction: column;">
+        <div class="apple-menu-divider"></div>
+        <div class="apple-menu-item" onclick="irAGrupo()" title="Grupo">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>Grupo</span>
+        </div>
       </div>
     </div>
   </div>
