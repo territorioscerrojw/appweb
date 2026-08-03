@@ -1303,74 +1303,54 @@ function abrirModalTrabajados() {
       if (modal) modal.style.display = 'none';
   }
 
- function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
+function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
+      if (!window.datosCargados) return;
+
       let index = datosCargados.campaña.findIndex(t => String(t.num) === String(numTerritorio));
       
       if (index !== -1) {
           let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
           
-          // MANTENEMOS la fecha de entrega que viene de la Columna N (o ponemos un texto predeterminado si viniera vacía)
-          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || "Sin fecha";
+          // Asignar fecha temporal si no la trae, para que aparezca al instante
+          let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
+          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
           
-          // (Opcional) Si quieres guardar la hora exacta a la que se trabajó en la web para el modal sin tocar la Columna N:
-          let ahora = new Date();
-          territorioTerminado.fechaTrabajadoWeb = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
+          // ACTUALIZA LA VISTA AL INSTANTE (Suma en el contador y redibuja)
           procesarYRenderizarDatos(datosCargados);
       }
 
-      // Sincronización en segundo plano con Apps Script
+      // Petición en segundo plano al servidor
       const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
-      
-      fetch(urlAccion)
-          .then(r => r.json())
-          .then(res => {
-              if (res.resultado !== "OK") {
-                  console.error("Error al guardar en el servidor:", res.resultado);
-              }
-          })
-          .catch(err => console.error("Error de red:", err));
+      fetch(urlAccion).catch(err => console.error("Error de red:", err));
   }
   
   function reactivarTerritorioCampaña(numTerritorio) {
-      if (!confirm(`¿Estás seguro de que deseas reactivar el territorio nº ${numTerritorio}? Volverá a estar disponible en la sección de campaña.`)) {
-          return;
+      if (!window.datosCargados) return;
+
+      if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
+      let index = datosCargados.campañaTrabajados.findIndex(t => String(t.num) === String(numTerritorio));
+      
+      if (index !== -1) {
+          // Lo sacamos de trabajados
+          let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
+          
+          // Lo devolvemos a la campaña activa
+          if (!datosCargados.campaña) datosCargados.campaña = [];
+          datosCargados.campaña.push(territorioReactivado);
+          
+          // ACTUALIZA LA VISTA AL INSTANTE (Resta en el contador y redibuja)
+          procesarYRenderizarDatos(datosCargados);
+          
+          // Actualiza el contenido del modal abierto para que el territorio desaparezca de ahí también al momento
+          abrirModalTrabajados();
       }
 
-      // 1. Actualización instantánea en la interfaz (Cliente)
-      if (datosCargados && datosCargados.campañaTrabajados) {
-          let index = datosCargados.campañaTrabajados.findIndex(t => String(t.num) === String(numTerritorio));
-          if (index !== -1) {
-              // Sacarlo de trabajados
-              let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
-              
-              // Meterlo de vuelta en campaña activa
-              if (!datosCargados.campaña) datosCargados.campaña = [];
-              datosCargados.campaña.push(territorioReactivado);
-              
-              // Refrescar la vista y el modal al instante
-              procesarYRenderizarDatos(datosCargados);
-              abrirModalTrabajados(); // Actualiza el contenido del modal abierto
-          }
-      }
-
-      // 2. Sincronización en segundo plano con Google Apps Script (Hoja de cálculo)
-      const nombreSeguro = encodeURIComponent(nombreH);
-      const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${nombreSeguro}`;
-
-      fetch(urlReactivar)
-        .then(r => r.json())
-        .then(data => {
-            if (data.resultado !== "OK") {
-                console.warn("Aviso de sincronización en segundo plano:", data.resultado);
-            }
-        })
-        .catch(err => {
-            console.error("Error de red en segundo plano:", err);
-        });
+      // Petición en segundo plano al servidor para limpiar la casilla en la hoja de cálculo
+      const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}`;
+      fetch(urlReactivar).catch(err => console.error("Error de red:", err));
   }
   // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
   function poblarZonasModal() {
