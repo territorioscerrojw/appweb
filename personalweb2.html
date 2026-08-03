@@ -1113,7 +1113,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
 
-    // Inicializar la grilla de zonas del modal de preferencias inmediatamente
     poblarZonasModal();
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
@@ -1207,7 +1206,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                     No tienes territorios de campaña asignados
                 </div>`;
         }
-      // --- NUEVO: Campo de Territorios Trabajados y Botón VER ---
+
         let countTrabajados = (datos.campañaTrabajados || []).length;
         htmlCampaña += `
           <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -1223,7 +1222,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
     
-    // Definir la variable del botón solo si NO hay campaña activa
     let botonQuieroTerritorioHTML = "";
     if (campañaActivaGlobal === "") {
         botonQuieroTerritorioHTML = `
@@ -1257,7 +1255,8 @@ body.dark-mode .tarjeta-caducada .card-back {
         }, 50);
     }
   }
-function abrirModalTrabajados() {
+
+  function abrirModalTrabajados() {
       const modal = document.getElementById('modal-trabajados-campaña');
       const container = document.getElementById('lista-trabajados-container');
       
@@ -1270,7 +1269,7 @@ function abrirModalTrabajados() {
           trabajados.forEach(t => {
               let numTerritorio = t.num !== undefined ? t.num : t.numero;
               let imgMini = t.imgMini || '';
-              let fechaEntrega = t.fechaEntrega || 'Sin fecha'; // Fecha exacta de la Columna N
+              let fechaEntrega = t.fechaEntrega || 'Completado';
 
               htmlItems += `
                 <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.03); padding: 12px 14px; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.06); gap: 12px;">
@@ -1279,7 +1278,7 @@ function abrirModalTrabajados() {
                     </div>
                     <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px;">
                         <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary);">Nº ${numTerritorio}</div>
-                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: 600;">Fecha Entrega: ${fechaEntrega}</div>
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: 600;">Fecha: ${fechaEntrega}</div>
                     </div>
                     <button onclick="reactivarTerritorioCampaña('${numTerritorio}')" style="background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; box-shadow: 0 3px 8px rgba(52,199,89,0.3);">
                         REACTIVAR
@@ -1303,7 +1302,7 @@ function abrirModalTrabajados() {
       if (modal) modal.style.display = 'none';
   }
 
-function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
+  function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
       if (!window.datosCargados) return;
 
       let index = datosCargados.campaña.findIndex(t => String(t.num) === String(numTerritorio));
@@ -1312,26 +1311,21 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
           let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
           
           let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
-          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
+          territorioTerminado.fechaEntrega = territoryTerminado.fechaEntrega || fechaActualStr;
           
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
-          // Actualiza la interfaz localmente al instante (contador y secciones)
           procesarYRenderizarDatos(datosCargados);
       }
 
-      // Petición única y directa a Google Apps Script para activar la Columna G en la tabla[cite: 1]
       const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
       fetch(urlAccion)
         .then(r => r.json())
-        .then(data => {
-            console.log("Sincronizado con Google Sheets correctamente:", data);
-        })
-        .catch(err => console.error("Error al actualizar la tabla en segundo plano:", err));
-}
+        .catch(err => console.error("Error de red en segundo plano:", err));
+  }
   
-function reactivarTerritorioCampaña(numTerritorio) {
+  function reactivarTerritorioCampaña(numTerritorio) {
       if (!window.datosCargados) return;
 
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
@@ -1343,31 +1337,21 @@ function reactivarTerritorioCampaña(numTerritorio) {
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
           
-          // Redibuja la interfaz para actualizar los contadores y secciones
           procesarYRenderizarDatos(datosCargados);
-          
-          // Actualiza visualmente el modal abierto para que el elemento desaparezca de inmediato
           abrirModalTrabajados();
       }
 
-      // Petición en segundo plano para desactivar la casilla de la columna G
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}`;
-      fetch(urlReactivar).catch(err => console.error("Error de red:", err));
-}
-  // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
+      fetch(urlReactivar)
+        .then(r => r.json())
+        .catch(err => console.error("Error de red al reactivar:", err));
+  }
+
   function poblarZonasModal() {
     const listaZonas = [
-      "CERRO DEL ÁGUILA",
-      "GARCÍA LORCA",
-      "HUERTA DEL ÁGUILA",
-      "LA DOCTORA",
-      "LA NEGRILLA",
-      "LA PLATA",
-      "LAS ÁGUILAS",
-      "NERVIÓN",
-      "PADRE PÍO",
-      "ROCHELAMBERT",
-      "SAN JOSÉ DE PALMETE"
+      "CERRO DEL ÁGUILA", "GARCÍA LORCA", "HUERTA DEL ÁGUILA",
+      "LA DOCTORA", "LA NEGRILLA", "LA PLATA", "LAS ÁGUILAS",
+      "NERVIÓN", "PADRE PÍO", "ROCHELAMBERT", "SAN JOSÉ DE PALMETE"
     ];
 
     let containerZonas = document.getElementById('pref-zonas-container');
@@ -1388,23 +1372,16 @@ function reactivarTerritorioCampaña(numTerritorio) {
 
     if (valor === "CUALQUIERA") {
         if (!btn.classList.contains('selected')) {
-            // Si pulsan Cualquiera, se marca y se desmarcan las demás opciones de ese contenedor
             contenedorPadre.querySelectorAll('.pref-btn-opcion').forEach(el => el.classList.remove('selected'));
             btn.classList.add('selected');
         }
     } else {
-        // Si pulsan otra opción, se desmarca automáticamente "CUALQUIERA"
         const btnCualquiera = contenedorPadre.querySelector('[data-val="CUALQUIERA"]');
-        if (btnCualquiera) {
-            btnCualquiera.classList.remove('selected');
-        }
+        if (btnCualquiera) btnCualquiera.classList.remove('selected');
         btn.classList.toggle('selected');
         
-        // Si al desmarcar no queda ninguna seleccionada, volvemos a marcar "CUALQUIERA" por defecto
         const seleccionados = contenedorPadre.querySelectorAll('.pref-btn-opcion.selected');
-        if (seleccionados.length === 0 && btnCualquiera) {
-            btnCualquiera.classList.add('selected');
-        }
+        if (seleccionados.length === 0 && btnCualquiera) btnCualquiera.classList.add('selected');
     }
   }
 
@@ -1448,15 +1425,8 @@ function reactivarTerritorioCampaña(numTerritorio) {
 
     if (modal) modal.classList.remove('active');
 
-    fetch(urlEmail)
-      .then(r => r.json())
-      .then(data => {
-          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
-      })
-      .catch(err => {
-          console.error("Error al enviar preferencias:", err);
-          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
-      });
+    fetch(urlEmail).catch(err => console.error("Error al enviar preferencias:", err));
+    alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
   }
 
   function procesarFechasYBarras(datos) {
@@ -1469,9 +1439,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
     const barra = document.getElementById("barra-progreso-elemento");
 
     if (!inicioStr || !finStr) {
-        if (lblTiempo) {
-            lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
-        }
+        if (lblTiempo) lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
         if (lblPorcentaje) lblPorcentaje.innerText = "";
         if (barra) {
             barra.style.width = "100%";
@@ -1507,7 +1475,6 @@ function reactivarTerritorioCampaña(numTerritorio) {
     } else {
       dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
-      
       if (dias <= 1) {
           msgTiempo = "¡Último día de la campaña!";
           porcentaje = 99;
@@ -1520,17 +1487,10 @@ function reactivarTerritorioCampaña(numTerritorio) {
     if (barra) {
       barra.style.width = `${porcentaje}%`;
       barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
-      
       if (ahocheDate >= inicioDate && ahocheDate <= finDate) {
-          if (dias <= 1 || ahocheDate.getTime() === finDate.getTime()) {
-              barra.classList.add("neon-rojo");
-          } else if (dias <= 3) {
-              barra.classList.add("neon-rojo");
-          } else if (dias <= 7) {
-              barra.classList.add("neon-naranja");
-          } else {
-              barra.classList.add("neon-verde");
-          }
+          if (dias <= 3) barra.classList.add("neon-rojo");
+          else if (dias <= 7) barra.classList.add("neon-naranja");
+          else barra.classList.add("neon-verde");
       }
     }
   }
@@ -1540,9 +1500,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
     if (contenedor) {
       contenedor.classList.add('is-flipping');
       contenedor.classList.toggle('flipped');
-      setTimeout(() => {
-        contenedor.classList.remove('is-flipping');
-      }, 600);
+      setTimeout(() => contenedor.classList.remove('is-flipping'), 600);
     }
   }
 
@@ -1553,7 +1511,6 @@ function reactivarTerritorioCampaña(numTerritorio) {
       const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
       if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
       if (diasMatch) dias += parseInt(diasMatch[1]);
-      
       return Math.min(dias, 120);
   }
 
@@ -1561,22 +1518,16 @@ function reactivarTerritorioCampaña(numTerritorio) {
     if (!lista || lista.length === 0) {
       if (mensajeVacio) {
         let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
-        return `${htmlTitulo}
-                <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1);">
-                    ${mensajeVacio}
-                </div>`;
+        return `${htmlTitulo}<div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1);">${mensajeVacio}</div>`;
       }
       return "";
     }
 
-    lista.sort((a, b) => {
-      let diasA = calcularDiasTotales(a.tiempo || "0");
-      let diasB = calcularDiasTotales(b.tiempo || "0");
-      return diasA - diasB;
-    });
+    if (tipo !== 'c') {
+        lista.sort((a, b) => calcularDiasTotales(a.tiempo || "0") - calcularDiasTotales(b.tiempo || "0"));
+    }
 
     let idGrid = `grid-${tipo}`;
-    
     let htmlOrdenacion = `
       <div class="ordenar-container">
         <span class="ordenar-label">ORDENAR POR:</span>
@@ -1588,27 +1539,19 @@ function reactivarTerritorioCampaña(numTerritorio) {
       </div>`;
 
     let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
-
-    return `${htmlTitulo}
-            ${htmlOrdenacion}
-            <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
+    return `${htmlTitulo}${htmlOrdenacion}<div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
- function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     let esCampana = (tipo === 'c');
 
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
-        
-        // Los territorios de campaña nunca se marcan como caducados
         let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
 
         let textoTiempoMostrado = t.tiempo;
-        if (diasTotales >= 120 && !esCaducado) {
-            textoTiempoMostrado = "4 MESES";
-        } else if (!esCaducado && t.tiempo) {
-            textoTiempoMostrado = t.tiempo.replace(" y ", " ");
-        }
+        if (diasTotales >= 120 && !esCaducado) textoTiempoMostrado = "4 MESES";
+        else if (!esCaducado && t.tiempo) textoTiempoMostrado = t.tiempo.replace(" y ", " ");
 
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
@@ -1623,21 +1566,14 @@ function reactivarTerritorioCampaña(numTerritorio) {
         const nombreSeguro = encodeURIComponent(nombreH);
 
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
-
         let numInt = parseInt(String(numeroTerritorio).replace(/\D/g, '')) || 0;
         let zonaStr = String(t.zona || "").trim().toUpperCase();
-        let aplicarAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS");
-        let claseAzulElegante = aplicarAzulElegante ? "azul-elegante-texto" : "";
+        let claseAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS") ? "azul-elegante-texto" : "";
 
         return `
         <div class="card-container ${tarjetaBloqueada ? 'bloqueada' : ''} ${esCaducado ? 'tarjeta-caducada' : ''}" id="card-container-${tipo}-${i}">
-            ${tarjetaBloqueada ? `
-                <div class="mensaje-bloqueo-overlay">
-                    <div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRES DURE LA CAMPAÑA ${campañaActivaGlobal}</div>
-                </div>
-            ` : ''}
+            ${tarjetaBloqueada ? `<div class="mensaje-bloqueo-overlay"><div class="texto-bloqueo">TERRITORIO BLOQUEADO MIENTRES DURE LA CAMPAÑA ${campañaActivaGlobal}</div></div>` : ''}
             <div class="card-inner">
-                <!-- CARA FRONTAL -->
                 <div class="card-front">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
@@ -1647,14 +1583,13 @@ function reactivarTerritorioCampaña(numTerritorio) {
                     ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                     
                     ${esCampana ? '' : `
-                      <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                      <div class="tiempo-container" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
+                            <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; color: #8e8e93;">TIEMPO RESTANTE</span>
+                            <div class="texto-tiempo-grande" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
                         </div>
-
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
-                            <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
+                            <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color};"></div>
                         </div>
                     </div>`}
 
@@ -1667,7 +1602,6 @@ function reactivarTerritorioCampaña(numTerritorio) {
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                 </div>
 
-                <!-- CARA TRASERA -->
                 <div class="card-back">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
@@ -1695,17 +1629,9 @@ function reactivarTerritorioCampaña(numTerritorio) {
       const correoDestino = "territorioscerro.jw@gmail.com";
       const asunto = "Solicitud de renovacion";
       const cuerpo = `Territorio nº: ${numeroTerritorio}\nHermano/a que lo solicita: ${nombreH}`;
-
       const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
-      fetch(urlEmail)
-        .then(r => r.json())
-        .then(data => {
-            console.log("Solicitud de renovación enviada correctamente.");
-        })
-        .catch(err => {
-            console.error("Error al enviar la solicitud de renovación:", err);
-        });
+      fetch(urlEmail).catch(err => console.error("Error al enviar renovación:", err));
   }
 
   function cerrarModalRenovacion(event) {
@@ -1727,34 +1653,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
       }).filter(i => i !== "").join("<br>");
   }
 
-  function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
-      lanzarEfectoAleatorio(elementoTarjeta);
-
-      setTimeout(() => {
-          elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-          elementoTarjeta.style.opacity = "0";
-          elementoTarjeta.style.transform = "scale(0.8)";
-          setTimeout(() => elementoTarjeta.remove(), 400);
-      }, 600);
-
-      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
-
-      fetch(urlFinal)
-        .then(r => r.json())
-        .then(data => {
-            if (data.resultado !== "OK") {
-                console.error("Error en servidor:", data.resultado);
-            }
-        })
-        .catch(err => console.error("Error de conexión:", err));
-  }
-  
-  function formatearCalles(textoCalles) {
-      if (!textoCalles) return "";
-      return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
-  }
-
-function iniciarSwipe(e) {
+  function iniciarSwipe(e) {
       const handle = e.currentTarget;
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
@@ -1783,7 +1682,6 @@ function iniciarSwipe(e) {
               tarjeta.style.transform = "scale(0.8)";
               setTimeout(() => tarjeta.remove(), 400);
 
-              // Validación limpia según el tipo de territorio
               if (tipoReg === 'campaña') {
                   registrarCampañaExitoso(numT, zona);
               } else {
@@ -1802,6 +1700,11 @@ function iniciarSwipe(e) {
       document.addEventListener('touchmove', mover, {passive: false});
       document.addEventListener('touchend', terminar, {once: true});
   }
+  
+  function formatearCalles(textoCalles) {
+      if (!textoCalles) return "";
+      return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
+  }
 
   function abrirVisor(urlImagen) {
       const modal = document.getElementById('image-viewer-modal');
@@ -1814,8 +1717,7 @@ function iniciarSwipe(e) {
       if (event && event.target.id !== 'image-viewer-modal' && !event.target.classList.contains('viewer-close') && !event.target.closest('.viewer-close')) {
           return;
       }
-      const modal = document.getElementById('image-viewer-modal');
-      modal.classList.remove('active');
+      document.getElementById('image-viewer-modal').classList.remove('active');
   }
 
   function lanzarEfectoAleatorio(tarjeta) {
@@ -1826,7 +1728,7 @@ function iniciarSwipe(e) {
               let duration = 1.2 * 1000;
               let animationEnd = Date.now() + duration;
               let interval = setInterval(function() {
-                  if (Date.now() > animationEnd) { return clearInterval(interval); }
+                  if (Date.now() > animationEnd) return clearInterval(interval);
                   confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0 } });
                   confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
               }, 200);
@@ -1866,89 +1768,56 @@ function iniciarSwipe(e) {
     if (!lista || lista.length === 0) return;
 
     if (criterio === 'numero') {
-      lista.sort((a, b) => {
-        let numA = parseInt(a.num.replace(/\D/g, '')) || 0;
-        let numB = parseInt(b.num.replace(/\D/g, '')) || 0;
-        return numA - numB;
-      });
+      lista.sort((a, b) => (parseInt(String(a.num).replace(/\D/g, '')) || 0) - (parseInt(String(b.num).replace(/\D/g, '')) || 0));
       actualizarGridVisual(tipo, lista);
     } else if (criterio === 'tiempo') {
-      lista.sort((a, b) => {
-        let diasA = calcularDiasTotales(a.tiempo || "0");
-        let diasB = calcularDiasTotales(b.tiempo || "0");
-        return diasA - diasB;
-      });
+      lista.sort((a, b) => calcularDiasTotales(a.tiempo || "0") - calcularDiasTotales(b.tiempo || "0"));
       actualizarGridVisual(tipo, lista);
     } else if (criterio === 'cercania') {
       if (ubicacionUsuario) {
         ordenarPorCercania(tipo, lista, ubicacionUsuario);
-      } else {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              ubicacionUsuario = {
-                lat: position.coords.latitude,
-                lon: position.coords.longitude
-              };
-              ordenarPorCercania(tipo, lista, ubicacionUsuario);
-            },
-            (error) => {
-              alert("No se pudo obtener tu ubicación GPS. Asegúrate de dar permisos en el navegador.");
-              console.error(error);
-            },
-            { enableHighAccuracy: true }
-          );
-        } else {
-          alert("Tu navegador no soporta geolocalización.");
-        }
+      } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            ubicacionUsuario = { lat: position.coords.latitude, lon: position.coords.longitude };
+            ordenarPorCercania(tipo, lista, ubicacionUsuario);
+          },
+          (error) => alert("No se pudo obtener tu ubicación GPS."),
+          { enableHighAccuracy: true }
+        );
       }
     }
   }
 
   function ordenarPorCercania(tipo, lista, coordsUsuario) {
-    lista.sort((a, b) => {
-      let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
-      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
-      return distA - distB; 
-    });
+    lista.sort((a, b) => calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords) - calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords));
     actualizarGridVisual(tipo, lista);
   }
 
   function calcularDistanciaMetros(lat1, lon1, coordsString) {
     let matches = (coordsString || "").match(/[-0-9.]+/g);
     if (!matches || matches.length < 2) return Infinity; 
-    
-    let lat2 = parseFloat(matches[0]);
-    let lon2 = parseFloat(matches[1]);
-
+    let lat2 = parseFloat(matches[0]), lon2 = parseFloat(matches[1]);
     const R = 6371e3; 
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2)**2;
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
   }
 
   function actualizarGridVisual(tipo, listaOrdenada) {
     let fechaFinCamp = datosCargados.fechaFinCampaña || datosCargados.fechaFin || datosCargados.finCampaña;
     let campañaActivaReal = false;
-    
     if (datosCargados.campañaActiva && fechaFinCamp) {
         const ahora = new Date();
         const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
         const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
-        if (ahocheDate <= finDate) {
-            campañaActivaReal = true;
-        }
-    } else if (datosCargados.campañaActiva && !fechaFinCamp) {
+        if (ahocheDate <= finDate) campañaActivaReal = true;
+    } else if (datosCargados.campañaActiva) {
         campañaActivaReal = true;
     }
 
     let estaBloqueado = (tipo !== 'c' && campañaActivaReal);
     let gridElement = document.getElementById(`grid-${tipo}`);
-
     if (gridElement && listaOrdenada && listaOrdenada.length > 0) {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
