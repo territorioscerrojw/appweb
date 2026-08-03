@@ -1201,12 +1201,16 @@ body.dark-mode .tarjeta-caducada .card-back {
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
     
-    let botonQuieroTerritorioHTML = `
-      <div class="quiero-territorio-container">
-        <button class="btn-quiero-territorio" onclick="abrirModalPreferencias()">
-          <i class="fa-solid fa-circle-plus"></i> QUIERO UN TERRITORIO
-        </button>
-      </div>`;
+    // Definir la variable del botón solo si NO hay campaña activa
+    let botonQuieroTerritorioHTML = "";
+    if (campañaActivaGlobal === "") {
+        botonQuieroTerritorioHTML = `
+          <div class="quiero-territorio-container">
+            <button class="btn-quiero-territorio" onclick="abrirModalPreferencias()">
+              <i class="fa-solid fa-circle-plus"></i> QUIERO UN TERRITORIO
+            </button>
+          </div>`;
+    }
 
     if (datos.personales && datos.personales.length > 0) {
         htmlPersonales = renderizarLista(datos.personales, "Mis Territorios", "fa-user-circle", "h2-personales", "p", estaBloqueadoGeneral) + botonQuieroTerritorioHTML;
