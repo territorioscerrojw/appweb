@@ -1473,9 +1473,10 @@ body.dark-mode .tarjeta-caducada .card-back {
   }
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+    let esCampana = (tipo === 'c'); 
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
-       let esCampana = (tipo === 'c');  
+       
       let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
 
         let textoTiempoMostrado = t.tiempo;
