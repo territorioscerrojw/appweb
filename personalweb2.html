@@ -1294,29 +1294,46 @@ function abrirModalTrabajados() {
   }
 
   function reactivarTerritorioCampaña(numTerritorio, zonaTerritorio) {
-      if (!window.datosCargados) return;
+      console.log("Intentando reactivar territorio:", numTerritorio, "Zona:", zonaTerritorio);
+      
+      if (!window.datosCargados) {
+          console.error("Error: window.datosCargados no está definido.");
+          return;
+      }
 
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
-      let index = datosCargados.campañaTrabajados.findIndex(t => String(t.num || t.numero) === String(numTerritorio));
       
+      // Buscamos coincidiendo tanto el número como la zona para mayor precisión
+      let index = datosCargados.campañaTrabajados.findIndex(t => 
+          String(t.num || t.numero) === String(numTerritorio) && 
+          String(t.zona || '') === String(zonaTerritorio || '')
+      );
+      
+      console.log("Índice encontrado en campañaTrabajados:", index);
+
       if (index !== -1) {
-          // Extraemos el territorio de la lista de trabajados
           let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
           
-          // Lo devolvemos a la campaña activa
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
           
-          // Actualizamos la vista principal de la web al instante
-          procesarYRenderizarDatos(datosCargados);
+          if (typeof procesarYRenderizarDatos === 'function') {
+              procesarYRenderizarDatos(datosCargados);
+          } else {
+              console.warn("La función procesarYRenderizarDatos no existe.");
+          }
           
-          // Refrescamos el contenido interno del modal para que desaparezca visualmente de la lista de trabajados
           abrirModalTrabajados();
+      } else {
+          console.error("No se encontró el territorio en la lista local de trabajados.");
       }
 
-      // Petición en segundo plano al servidor Google Apps Script para actualizar la hoja
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&zona=${encodeURIComponent(zonaTerritorio)}&nombre=${encodeURIComponent(nombreH)}`;
-      fetch(urlReactivar).catch(err => console.error("Error de red al reactivar:", err));
+      
+      fetch(urlReactivar)
+          .then(response => response.text())
+          .then(data => console.log("Respuesta del servidor al reactivar:", data))
+          .catch(err => console.error("Error de red al reactivar:", err));
   }
 
   function cerrarModalTrabajados(event) {
