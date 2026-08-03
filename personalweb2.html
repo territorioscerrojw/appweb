@@ -1311,47 +1311,44 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
       if (index !== -1) {
           let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
           
-          // Asignar fecha temporal si no la trae, para que aparezca al instante
           let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
           territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
           
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
-          // ACTUALIZA LA VISTA AL INSTANTE (Suma en el contador y redibuja)
+          // Redibuja la interfaz para actualizar la sección campaña y el contador de trabajados
           procesarYRenderizarDatos(datosCargados);
       }
 
-      // Petición en segundo plano al servidor
+      // Petición en segundo plano para activar la casilla de la columna G (col g activa)
       const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
       fetch(urlAccion).catch(err => console.error("Error de red:", err));
-  }
+}
   
-  function reactivarTerritorioCampaña(numTerritorio) {
+function reactivarTerritorioCampaña(numTerritorio) {
       if (!window.datosCargados) return;
 
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
       let index = datosCargados.campañaTrabajados.findIndex(t => String(t.num) === String(numTerritorio));
       
       if (index !== -1) {
-          // Lo sacamos de trabajados
           let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
           
-          // Lo devolvemos a la campaña activa
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
           
-          // ACTUALIZA LA VISTA AL INSTANTE (Resta en el contador y redibuja)
+          // Redibuja la interfaz para actualizar los contadores y secciones
           procesarYRenderizarDatos(datosCargados);
           
-          // Actualiza el contenido del modal abierto para que el territorio desaparezca de ahí también al momento
+          // Actualiza visualmente el modal abierto para que el elemento desaparezca de inmediato
           abrirModalTrabajados();
       }
 
-      // Petición en segundo plano al servidor para limpiar la casilla en la hoja de cálculo
+      // Petición en segundo plano para desactivar la casilla de la columna G
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}`;
       fetch(urlReactivar).catch(err => console.error("Error de red:", err));
-  }
+}
   // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
   function poblarZonasModal() {
     const listaZonas = [
