@@ -1294,6 +1294,9 @@ function abrirModalTrabajados() {
   }
 
   function reactivarTerritorioCampaña(numTerritorio, zonaTerritorio) {
+     
+      console.log("Botón reactivar pulsado para el territorio:", numTerritorio); // <--- Mira si esto sale en la consola F12
+      
       if (!window.datosCargados) {
           console.error("Error: window.datosCargados no está definido.");
           return;
