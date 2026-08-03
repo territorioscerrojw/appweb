@@ -1273,7 +1273,7 @@ body.dark-mode .tarjeta-caducada .card-back {
           container.innerHTML = `<div style="text-align: center; padding: 30px; color: #8e8e93; font-weight: 600;">No hay territorios trabajados todavía.</div>`;
       } else {
           let htmlItems = "";
-          trabajados.forEach(t => {
+          trabajados.slice().reverse().forEach(t => {
               let numTerritorio = t.num !== undefined ? t.num : t.numero;
               let zonaTerritorio = t.zona || ''; 
               let imgMini = t.imgMini || '';
