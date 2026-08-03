@@ -163,33 +163,35 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ EN ABANICO DESDE LA ESQUINA SUPERIOR DERECHA --- */
+/* --- MENÚ EN ABANICO CENTRADO EN EL BOTÓN DE AJUSTES --- */
 .wheel-menu {
   position: absolute;
-  /* Posicionado justo debajo y a la izquierda del botón de ajustes */
-  top: 45px;
-  right: 0;
-  width: 140px;
-  height: 140px;
+  /* Centramos el contenedor de 200px justo encima del botón (que está a 12px de arriba y 20px de la derecha) */
+  top: -78px;   /* (45px del botón / 2) - 100px de radio */
+  right: -78px; /* (45px del botón / 2) - 100px de radio */
+  width: 200px;
+  height: 200px;
   pointer-events: none;
-  transform: scale(0);
-  /* El origen de apertura es la esquina superior derecha (donde está el botón) */
-  transform-origin: top right;
+  transform: scale(0) rotate(-45deg);
+  transform-origin: center; /* El centro exacto está sobre el botón */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-  opacity: 0;
+  opacity: 0.05;
   z-index: 999;
 }
 
 .wheel-menu.show {
   pointer-events: auto;
-  transform: scale(1);
+  transform: scale(1) rotate(0deg);
   opacity: 1;
 }
 
 .wheel-slice {
   position: absolute;
-  width: 140px;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.75);
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 0.5px solid rgba(0, 0, 0, 0.1);
@@ -201,13 +203,13 @@ body.dark-mode .btn-settings {
   box-sizing: border-box;
   transition: background 0.2s, transform 0.2s;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 body.dark-mode .wheel-slice {
-  background: rgba(22, 27, 34, 0.82);
+  background: rgba(22, 27, 34, 0.9);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
   color: #f0f6fc;
 }
 
@@ -225,38 +227,43 @@ body.dark-mode .wheel-slice:hover {
   transform: scale(0.95);
 }
 
-/* Distribución de las opciones hacia la izquierda y hacia abajo del botón */
-.wheel-menu.items-2 .wheel-slice:nth-child(1) {
-  top: 0px;
-  right: 0px;
-  width: 140px;
-  height: 140px;
-  border-radius: 140px 0 0 140px;
-  padding: 20px 25px 15px 15px;
+/* Distribución exacta en abanico alrededor del botón central según tu dibujo */
+/* TEMA (Arriba / Izquierda) */
+.wheel-menu .wheel-slice:nth-child(1) {
+  margin-top: -100px;
+  margin-left: -100px;
+  border-radius: 100px 0 0 0;
+  padding: 30px 15px 10px 30px;
 }
 
-.wheel-menu.items-2 .wheel-slice:nth-child(2) {
-  top: 0px;
-  right: 0px;
-  width: 140px;
-  height: 140px;
-  border-radius: 0 0 0 140px;
-  padding: 15px 15px 20px 25px;
+/* ACTUALIZAR (Izquierda / Centro) */
+.wheel-menu .wheel-slice:nth-child(2) {
+  margin-top: -50px;
+  margin-left: -100px;
+  border-radius: 0 0 0 100px;
+  padding: 15px 15px 15px 30px;
+}
+
+/* GRUPO (Abajo / Derecha - si tienes 3 opciones) */
+.wheel-menu .wheel-slice:nth-child(3) {
+  margin-top: 0px;
+  margin-left: -50px;
+  border-radius: 0 0 100px 0;
+  padding: 15px 30px 30px 15px;
 }
 
 .wheel-slice i {
-  font-size: 1.2rem;
-  margin-bottom: 4px;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
 }
 
 .wheel-slice span {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  line-height: 1.1;
+  line-height: 1;
 }
-
 .user-name { 
   font-family: 'Whisper', cursive; 
   font-size: clamp(1.5rem, 10vw, 2.8rem); 
