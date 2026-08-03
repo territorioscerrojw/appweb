@@ -1709,7 +1709,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // Animación de salida de la tarjeta
+      // Animación de salida de la tarjeta al deslizar
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
@@ -1717,42 +1717,39 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // Si es campaña, actualizamos los datos locales de inmediato
+      // Si es campaña, actualizamos los datos locales al instante
       if (tipoReg === 'campaña' && window.datosCargados) {
           if (!datosCargados.campaña) datosCargados.campaña = [];
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
 
-          // Buscamos en la lista de campaña activos
+          // Buscamos el índice del territorio exacto en la campaña activa
           let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero) === String(numT));
           
           let territorioTerminado = null;
           if (index !== -1) {
-              // Lo sacamos de campaña activos
+              // Extraemos el objeto completo original (con su imgMini, zona, etc.)
               territorioTerminado = datosCargados.campaña.splice(index, 1)[0];
           } else {
-              // Por si acaso ya no estaba ahí, creamos un objeto básico para asegurarnos de que se añada
-              territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado };
+              // Plan de respaldo por si no se encuentra por índice exacto
+              territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado, imgMini: '' };
           }
 
-          // Lo metemos en trabajados si no está ya duplicado
+          // Evitamos duplicados en trabajados
           let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero) === String(numT));
           if (!yaExiste) {
               datosCargados.campañaTrabajados.push(territorioTerminado);
           }
 
-          // 1. ACTUALIZAR EL CONTADOR VISUAL DE FORMA DIRECTA
+          // 1. ACTUALIZAR EL CONTADOR VISUAL AL VUELO DE FORMA DIRECTA
           let spanContador = document.getElementById('contador-campaña-trabajados');
           if (spanContador) {
               spanContador.innerText = datosCargados.campañaTrabajados.length;
           }
 
-          // 2. FORZAR LA ACTUALIZACIÓN DEL MODAL SI ESTÁ ABIERTO
+          // 2. SI EL MODAL ESTÁ ABIERTO, REFRESCARLO AL INSTANTE
           const modal = document.getElementById('modal-trabajados-campaña');
-          // Comprobamos si el modal está visible (puede ser 'flex', 'block' o tener la clase activo)
-          if (modal && (modal.style.display === 'flex' || modal.style.display === 'block' || window.getComputedStyle(modal).display !== 'none')) {
-              if (typeof abrirModalTrabajados === 'function') {
-                  abrirModalTrabajados();
-              }
+          if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
+              abrirModalTrabajados();
           }
       }
 
