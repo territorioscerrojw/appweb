@@ -1758,13 +1758,23 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           }
       }
 
-      // Petición al servidor (respetando intacta tu columna N de la fecha)
+     // Petición al servidor
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado !== "OK") {
+            if (data.resultado === "OK") {
+                // Si el servidor nos devolvió la fecha exacta de la Columna N, la actualizamos en el objeto
+                if (data.fechaEntrega && territorioTerminado) {
+                    territorioTerminado.fechaEntrega = data.fechaEntrega;
+                    // Si el modal está abierto, lo refrescamos para que pinte la fecha real de la hoja
+                    const modal = document.getElementById('modal-trabajados-campaña');
+                    if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
+                        abrirModalTrabajados();
+                    }
+                }
+            } else {
                 console.error("Error en servidor:", data.resultado);
             }
         })
