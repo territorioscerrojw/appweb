@@ -589,14 +589,26 @@ function procesarAsignacionMultiple() {
   if (!nombreH || territoriosSeleccionados.length === 0) return;
 
   const opcionSeleccionada = selector.options[selector.selectedIndex];
-  const textoVisible = opcionSeleccionada.innerText; 
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
+  
+  // 1. Extraemos los nuevos atributos que ahora vienen de la estructura del servidor (Columna E y Columna F)
+  const infoHermano = diccionarioGruposHermanos[nombreH];
+  let enlacePersonal = "";
+  let yaEnviado = false;
 
-  if (textoVisible.includes("₍₋₎") && telefonoWhatsApp !== "") {
-    const enlacePersonal = `https://project-n5rfv.vercel.app/personalweb.html?id=${encodeURIComponent(nombreH.trim())}`;
+  if (infoHermano && typeof infoHermano === 'object') {
+    enlacePersonal = infoHermano.enlace || "";
+    yaEnviado = infoHermano.enviado === true; // true si la casilla de la Col F está marcada
+  }
+
+  // 2. Condición: Si NO ha sido enviado antes (casilla F desactivada), tiene teléfono y tiene enlace en la Col E
+  if (!yaEnviado && telefonoWhatsApp !== "" && enlacePersonal !== "") {
+    
+    // Construimos el mensaje con el enlace directo de la columna E
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios para la campaña. 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
+    // Abrimos WhatsApp de forma automática
     const enlaceFantasma = document.createElement("a");
     enlaceFantasma.href = urlWhatsApp;
     enlaceFantasma.target = "_blank";
@@ -604,16 +616,25 @@ function procesarAsignacionMultiple() {
     document.body.appendChild(enlaceFantasma);
     enlaceFantasma.click();
     enlaceFantasma.remove();
+    
+    // 3. Llamamos al Apps Script para que active la casilla de la columna F en la hoja HERMANOS
+    marcarEnviadoEnHojaServidor(nombreH);
+    
+    // Actualizamos localmente para evitar que se vuelva a mandar si vuelve a asignar en la misma sesión
+    if (typeof infoHermano === 'object') {
+      infoHermano.enviado = true;
+    }
   }
 
   const copiaSeleccionados = [...territoriosSeleccionados];
 
+  // Asignamos los mapas seleccionados al hermano
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
       mapa.hermano = nombreH;
       mapa.fechaEntrega = new Date().toISOString();
-      mapa.trabajado = false; // NUEVA LÓGICA: Se guarda en FALSO al asignar (Significa Pendiente/En la calle)
+      mapa.trabajado = false; 
     }
   });
 
@@ -623,6 +644,15 @@ function procesarAsignacionMultiple() {
   filtrarYRenderizar(); 
 
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
+}
+
+// Función auxiliar para enviar la orden al Apps Script de activar la casilla (Columna F)
+function marcarEnviadoEnHojaServidor(nombreHermano) {
+  const scriptTag = document.createElement("script");
+  scriptTag.src = `${URL_API_SHEETS}?accion=marcarEnviadoHermano&hermano=${encodeURIComponent(nombreHermano)}`;
+  scriptTag.onload = () => { scriptTag.remove(); };
+  scriptTag.onerror = () => { scriptTag.remove(); };
+  document.body.appendChild(scriptTag);
 }
 
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
