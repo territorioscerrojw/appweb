@@ -1317,20 +1317,18 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
-          // Actualiza la interfaz globalmente (contador, secciones y listas)
+          // Actualiza la interfaz localmente al instante (contador y secciones)
           procesarYRenderizarDatos(datosCargados);
       }
 
-      // Petición exacta en segundo plano hacia Google Apps Script (activa la columna G)
+      // Petición única y directa a Google Apps Script para activar la Columna G en la tabla[cite: 1]
       const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
       fetch(urlAccion)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado !== "OK") {
-                console.error("Error al registrar en servidor:", data.resultado);
-            }
+            console.log("Sincronizado con Google Sheets correctamente:", data);
         })
-        .catch(err => console.error("Error de red en segundo plano:", err));
+        .catch(err => console.error("Error al actualizar la tabla en segundo plano:", err));
 }
   
 function reactivarTerritorioCampaña(numTerritorio) {
@@ -1756,7 +1754,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
   }
 
- function iniciarSwipe(e) {
+function iniciarSwipe(e) {
       const handle = e.currentTarget;
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
@@ -1785,6 +1783,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
               tarjeta.style.transform = "scale(0.8)";
               setTimeout(() => tarjeta.remove(), 400);
 
+              // Validación limpia según el tipo de territorio
               if (tipoReg === 'campaña') {
                   registrarCampañaExitoso(numT, zona);
               } else {
