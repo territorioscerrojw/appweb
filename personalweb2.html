@@ -1706,7 +1706,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       }).filter(i => i !== "").join("<br>");
   }
 
-  function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
+ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
       setTimeout(() => {
@@ -1716,34 +1716,35 @@ body.dark-mode .tarjeta-caducada .card-back {
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
-
-      // Si es territorio de campaña, actualizamos instantáneamente el estado local, la lista de trabajados y el contador visual
+      // Si es territorio de campaña, actualizamos el array, el contador y el modal al instante
       if (tipoReg === 'campaña' && window.datosCargados) {
           let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero) === String(numT));
           if (index !== -1) {
               let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
-              territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
               
               if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
               datosCargados.campañaTrabajados.push(territorioTerminado);
               
-             // Actualizar el contador instantáneamente en la interfaz
-const spanContador = document.getElementById('contador-trabajados-campaña');
-if (spanContador) {
-    spanContador.innerText = datosCargados.campañaTrabajados.length;
-}
+              // 1. REFRESCAR EL CONTADOR VISUAL AL INSTANTE
+              let countTrabajados = datosCargados.campañaTrabajados.length;
+              let contenedoresInfo = document.querySelectorAll('div[style*="margin: 15px 20px"]');
+              contenedoresInfo.forEach(cont => {
+                  if (cont.innerHTML.includes("Territorios Trabajados:")) {
+                      let spanNum = cont.querySelector('span[style*="color: var(--success)"]');
+                      if (spanNum) spanNum.innerText = countTrabajados;
+                  }
+              });
 
-// Si el modal de trabajados está abierto, actualizamos su contenido al vuelo
-const modalTrabajados = document.getElementById('modal-trabajados-campaña');
-if (modalTrabajados && modalTrabajados.style.display === 'flex') {
-    abrirModalTrabajados();
-}
+              // 2. SI EL MODAL ESTÁ ABIERTO, ACTUALIZARLO AUTOMÁTICAMENTE AL VUELO
+              const modal = document.getElementById('modal-trabajados-campaña');
+              if (modal && modal.style.display === 'flex') {
+                  abrirModalTrabajados();
+              }
           }
       }
 
-      // Añadimos el parámetro fecha explícitamente para evitar que se borre en la columna N de Sheets
-      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}&fecha=${encodeURIComponent(fechaActualStr)}`;
+      // Petición al servidor sin alterar la fecha de la columna N
+      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
         .then(r => r.json())
