@@ -1771,7 +1771,21 @@ function reactivarTerritorioCampaña(numTerritorio) {
           if (pos >= maxX * 0.95) {
               document.removeEventListener('touchmove', mover);
               document.removeEventListener('touchend', terminar);
-              enviarAlServidor(numT, zona, nombreCodificado, tipoReg, tarjeta);
+              
+              // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+              if (tipoReg === 'campaña') {
+                  // Lanza efectos visuales de éxito y actualiza al instante datos, contador y modal
+                  lanzarEfectoAleatorio(tarjeta);
+                  tarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                  tarjeta.style.opacity = "0";
+                  tarjeta.style.transform = "scale(0.8)";
+                  setTimeout(() => tarjeta.remove(), 400);
+
+                  registrarCampañaExitoso(numT, zona);
+              } else {
+                  // Comportamiento normal para territorios personales o de grupo
+                  enviarAlServidor(numT, zona, nombreCodificado, tipoReg, tarjeta);
+              }
           }
       }
 
