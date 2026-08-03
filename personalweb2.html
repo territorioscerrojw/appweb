@@ -1034,6 +1034,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
     </div>
 </div>
+
 <!-- Modal de Territorios Trabajados de Campaña -->
 <div id="modal-trabajados-campaña" onclick="cerrarModalTrabajados(event)" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
     <div style="background: var(--card-bg); width: 100%; max-width: 480px; max-height: 85vh; border-radius: 24px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; box-sizing: border-box; animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -1046,6 +1047,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
     </div>
 </div>
+
 <script>
   let datosCargados = null;
   let nombreH = "";
@@ -1207,7 +1209,7 @@ body.dark-mode .tarjeta-caducada .card-back {
                     No tienes territorios de campaña asignados
                 </div>`;
         }
-      // --- NUEVO: Campo de Territorios Trabajados y Botón VER ---
+        
         let countTrabajados = (datos.campañaTrabajados || []).length;
         htmlCampaña += `
           <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -1223,7 +1225,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
     let htmlPersonales = "";
     
-    // Definir la variable del botón solo si NO hay campaña activa
     let botonQuieroTerritorioHTML = "";
     if (campañaActivaGlobal === "") {
         botonQuieroTerritorioHTML = `
@@ -1257,7 +1258,8 @@ body.dark-mode .tarjeta-caducada .card-back {
         }, 50);
     }
   }
-function abrirModalTrabajados() {
+
+  function abrirModalTrabajados() {
       const modal = document.getElementById('modal-trabajados-campaña');
       const container = document.getElementById('lista-trabajados-container');
       
@@ -1294,40 +1296,28 @@ function abrirModalTrabajados() {
   }
 
   function reactivarTerritorioCampaña(numTerritorio, zonaTerritorio) {
-     
-      console.log("Botón reactivar pulsado para el territorio:", numTerritorio); // <--- Mira si esto sale en la consola F12
-      
-      if (!window.datosCargados) {
-          console.error("Error: window.datosCargados no está definido.");
+      if (!datosCargados) {
+          console.error("Error: datosCargados no está definido.");
           return;
       }
 
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
       
-      // Buscar índice del territorio en campañaTrabajados
       let index = datosCargados.campañaTrabajados.findIndex(t => 
           String(t.num || t.numero) === String(numTerritorio) && 
           String(t.zona || '').trim().toUpperCase() === String(zonaTerritorio || '').trim().toUpperCase()
       );
 
       if (index !== -1) {
-          // Extraer de trabajados
           let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
           
-          // Asegurar inserción en array de campaña
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
           
-          // Refrescar inmediatamente la vista principal de la web
           procesarYRenderizarDatos(datosCargados);
-          
-          // Actualizar dinámicamente el modal para que el elemento desaparezca de la lista de trabajados
           abrirModalTrabajados();
-      } else {
-          console.warn("No se encontró el territorio localmente para reactivar, intentando sincronización con servidor...");
       }
 
-      // Petición al backend (Google Apps Script) para actualizar Google Sheets (desmarcar casilla trabajado)
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&zona=${encodeURIComponent(zonaTerritorio)}&nombre=${encodeURIComponent(nombreH)}`;
       
       fetch(urlReactivar)
@@ -1349,32 +1339,6 @@ function abrirModalTrabajados() {
       if (modal) modal.style.display = 'none';
   }
 
-function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
-      if (!window.datosCargados) return;
-
-      let index = datosCargados.campaña.findIndex(t => String(t.num) === String(numTerritorio));
-      
-      if (index !== -1) {
-          let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
-          
-          // Asignar fecha temporal si no la trae, para que aparezca al instante
-          let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
-          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
-          
-          if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
-          datosCargados.campañaTrabajados.push(territorioTerminado);
-          
-          // ACTUALIZA LA VISTA AL INSTANTE (Suma en el contador y redibuja)
-          procesarYRenderizarDatos(datosCargados);
-      }
-
-      // Petición en segundo plano al servidor
-      const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
-      fetch(urlAccion).catch(err => console.error("Error de red:", err));
-  }
-  
-
-  // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
   function poblarZonasModal() {
     const listaZonas = [
       "CERRO DEL ÁGUILA",
@@ -1408,19 +1372,16 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
 
     if (valor === "CUALQUIERA") {
         if (!btn.classList.contains('selected')) {
-            // Si pulsan Cualquiera, se marca y se desmarcan las demás opciones de ese contenedor
             contenedorPadre.querySelectorAll('.pref-btn-opcion').forEach(el => el.classList.remove('selected'));
             btn.classList.add('selected');
         }
     } else {
-        // Si pulsan otra opción, se desmarca automáticamente "CUALQUIERA"
         const btnCualquiera = contenedorPadre.querySelector('[data-val="CUALQUIERA"]');
         if (btnCualquiera) {
             btnCualquiera.classList.remove('selected');
         }
         btn.classList.toggle('selected');
         
-        // Si al desmarcar no queda ninguna seleccionada, volvemos a marcar "CUALQUIERA" por defecto
         const seleccionados = contenedorPadre.querySelectorAll('.pref-btn-opcion.selected');
         if (seleccionados.length === 0 && btnCualquiera) {
             btnCualquiera.classList.add('selected');
@@ -1614,13 +1575,11 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
- function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
     let esCampana = (tipo === 'c');
 
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
-        
-        // Los territorios de campaña nunca se marcan como caducados
         let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
 
         let textoTiempoMostrado = t.tiempo;
@@ -1756,6 +1715,21 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
           elementoTarjeta.style.transform = "scale(0.8)";
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
+
+      // Si es territorio de campaña, actualizamos también el contador visual al instante
+      if (tipoReg === 'campaña' && window.datosCargados) {
+          let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero) === String(numT));
+          if (index !== -1) {
+              let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
+              let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
+              territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
+              
+              if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
+              datosCargados.campañaTrabajados.push(territorioTerminado);
+              
+              procesarYRenderizarDatos(datosCargados);
+          }
+      }
 
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
@@ -1915,7 +1889,7 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
   function ordenarPorCercania(tipo, lista, coordsUsuario) {
     lista.sort((a, b) => {
       let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
-      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
+      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords); // Corregido de a.coords a b.coords
       return distA - distB; 
     });
     actualizarGridVisual(tipo, lista);
@@ -1963,6 +1937,7 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
 
   cargar();
 </script>
+
 <script>
   let ultimoToque = 0;
   document.addEventListener('touchend', function (evento) {
@@ -1973,5 +1948,6 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
       ultimoToque = tiempoActual;
   }, { passive: false });
 </script>
+
 </body>
 </html>
