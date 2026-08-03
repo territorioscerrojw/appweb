@@ -1302,29 +1302,64 @@ function abrirModalTrabajados() {
       const modal = document.getElementById('modal-trabajados-campaña');
       if (modal) modal.style.display = 'none';
   }
-
+// Ejemplo dentro de tu lógica de deslizamiento (cuando el registro en campaña es exitoso):
+  function registrarCampañaExitoso(numTerritorio) {
+      // 1. Buscar el territorio en la lista de campaña activa
+      let index = datosCargados.campaña.findIndex(t => String(t.num) === String(numTerritorio));
+      
+      if (index !== -1) {
+          // Extraerlo de la lista de campaña pendiente
+          let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
+          
+          // Añadirle la fecha actual para que aparezca bien en el modal
+          territorioTerminado.fechaEntrega = "Hoy"; 
+          
+          // Asegurarnos de que el array de trabajados exista y añadirlo
+          if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
+          datosCargados.campañaTrabajados.push(territorioTerminado);
+          
+          // 2. Volver a renderizar la interfaz web instantáneamente
+          procesarYRenderizarDatos(datosCargados);
+      }
+      
+      // En segundo plano se ejecuta la llamada a tu Apps Script para guardar los cambios en Google Sheets
+      // fetch(`${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${nombreH}&tipo=campaña`) ...
+  }
   function reactivarTerritorioCampaña(numTerritorio) {
       if (!confirm(`¿Estás seguro de que deseas reactivar el territorio nº ${numTerritorio}? Volverá a estar disponible en la sección de campaña.`)) {
           return;
       }
 
+      // 1. Actualización instantánea en la interfaz (Cliente)
+      if (datosCargados && datosCargados.campañaTrabajados) {
+          let index = datosCargados.campañaTrabajados.findIndex(t => String(t.num) === String(numTerritorio));
+          if (index !== -1) {
+              // Sacarlo de trabajados
+              let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
+              
+              // Meterlo de vuelta en campaña activa
+              if (!datosCargados.campaña) datosCargados.campaña = [];
+              datosCargados.campaña.push(territorioReactivado);
+              
+              // Refrescar la vista y el modal al instante
+              procesarYRenderizarDatos(datosCargados);
+              abrirModalTrabajados(); // Actualiza el contenido del modal abierto
+          }
+      }
+
+      // 2. Sincronización en segundo plano con Google Apps Script (Hoja de cálculo)
       const nombreSeguro = encodeURIComponent(nombreH);
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${nombreSeguro}`;
 
       fetch(urlReactivar)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado === "OK") {
-                alert("Territorio reactivado con éxito.");
-                cerrarModalTrabajadosDirecto();
-                refrescarWeb(); // Recarga la web para actualizar los datos automáticamente
-            } else {
-                alert("Hubo un problema al reactivar el territorio.");
+            if (data.resultado !== "OK") {
+                console.warn("Aviso de sincronización en segundo plano:", data.resultado);
             }
         })
         .catch(err => {
-            console.error("Error de conexión:", err);
-            alert("Error de conexión al intentar reactivar.");
+            console.error("Error de red en segundo plano:", err);
         });
   }
   // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
