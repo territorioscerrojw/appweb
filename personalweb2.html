@@ -1728,11 +1728,17 @@ body.dark-mode .tarjeta-caducada .card-back {
               if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
               datosCargados.campañaTrabajados.push(territorioTerminado);
               
-              // Actualizar el contador instantáneamente en la interfaz
-              const spanContador = document.getElementById('contador-trabajados-campaña');
-              if (spanContador) {
-                  spanContador.innerText = datosCargados.campañaTrabajados.length;
-              }
+             // Actualizar el contador instantáneamente en la interfaz
+const spanContador = document.getElementById('contador-trabajados-campaña');
+if (spanContador) {
+    spanContador.innerText = datosCargados.campañaTrabajados.length;
+}
+
+// Si el modal de trabajados está abierto, actualizamos su contenido al vuelo
+const modalTrabajados = document.getElementById('modal-trabajados-campaña');
+if (modalTrabajados && modalTrabajados.style.display === 'flex') {
+    abrirModalTrabajados();
+}
           }
       }
 
