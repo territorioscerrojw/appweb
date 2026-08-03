@@ -591,24 +591,21 @@ function procesarAsignacionMultiple() {
   const opcionSeleccionada = selector.options[selector.selectedIndex];
   const telefonoWhatsApp = opcionSeleccionada.getAttribute("data-telefono") || "";
   
-  // 1. Extraemos los nuevos atributos que ahora vienen de la estructura del servidor (Columna E y Columna F)
+  // 1. Obtenemos la información estructurada del hermano desde el diccionario
   const infoHermano = diccionarioGruposHermanos[nombreH];
   let enlacePersonal = "";
   let yaEnviado = false;
 
   if (infoHermano && typeof infoHermano === 'object') {
     enlacePersonal = infoHermano.enlace || "";
-    yaEnviado = infoHermano.enviado === true; // true si la casilla de la Col F está marcada
+    yaEnviado = infoHermano.enviado === true; // Verifica si la columna F (ENVIADO) está marcada
   }
 
-  // 2. Condición: Si NO ha sido enviado antes (casilla F desactivada), tiene teléfono y tiene enlace en la Col E
+  // 2. Condición actualizada: Envía si la casilla F NO está marcada, hay teléfono y hay un enlace en la Columna E
   if (!yaEnviado && telefonoWhatsApp !== "" && enlacePersonal !== "") {
-    
-    // Construimos el mensaje con el enlace directo de la columna E
     const mensaje = `Hola ${nombreH.trim()}, te damos la bienvenida a tu panel personal de territorios para la campaña. 🗺️\n\nDesde este enlace podrás ver y gestionar todos los territorios que se te vayan asignando:\n\n${enlacePersonal}\n\n¡Muchas gracias por tu apoyo!`;
     const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
-    // Abrimos WhatsApp de forma automática
     const enlaceFantasma = document.createElement("a");
     enlaceFantasma.href = urlWhatsApp;
     enlaceFantasma.target = "_blank";
@@ -617,18 +614,17 @@ function procesarAsignacionMultiple() {
     enlaceFantasma.click();
     enlaceFantasma.remove();
     
-    // 3. Llamamos al Apps Script para que active la casilla de la columna F en la hoja HERMANOS
+    // 3. Activamos la casilla en Google Sheets (Columna F) para que no se vuelva a enviar
     marcarEnviadoEnHojaServidor(nombreH);
     
-    // Actualizamos localmente para evitar que se vuelva a mandar si vuelve a asignar en la misma sesión
-    if (typeof infoHermano === 'object') {
+    // Actualizamos el estado en memoria para esta sesión
+    if (infoHermano && typeof infoHermano === 'object') {
       infoHermano.enviado = true;
     }
   }
 
   const copiaSeleccionados = [...territoriosSeleccionados];
 
-  // Asignamos los mapas seleccionados al hermano
   baseDatosCompleta.forEach(mapa => {
     if (copiaSeleccionados.includes(mapa.id.toString())) {
       mapa.entregado = true;
@@ -646,7 +642,7 @@ function procesarAsignacionMultiple() {
   ejecutarEnvioParaleloServidor(copiaSeleccionados, nombreH);
 }
 
-// Función auxiliar para enviar la orden al Apps Script de activar la casilla (Columna F)
+// Función auxiliar para ordenar a Apps Script que marque la Columna F como TRUE
 function marcarEnviadoEnHojaServidor(nombreHermano) {
   const scriptTag = document.createElement("script");
   scriptTag.src = `${URL_API_SHEETS}?accion=marcarEnviadoHermano&hermano=${encodeURIComponent(nombreHermano)}`;
