@@ -1214,7 +1214,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         htmlCampaña += `
           <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
               <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
-                  Territorios Trabajados: <span style="color: var(--success); font-size: 1.1rem; margin-left: 5px;">${countTrabajados}</span>
+                  Territorios Trabajados: <span style="color: var(--success); font-size: 1.1rem; margin-left: 5px;" id="contador-trabajados-campaña">${countTrabajados}</span>
               </div>
               <button onclick="abrirModalTrabajados()" style="background: var(--azul-elegante); color: white; border: none; padding: 8px 20px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);">
                   VER
@@ -1716,22 +1716,28 @@ body.dark-mode .tarjeta-caducada .card-back {
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // Si es territorio de campaña, actualizamos también el contador visual al instante
+      let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+      // Si es territorio de campaña, actualizamos instantáneamente el estado local, la lista de trabajados y el contador visual
       if (tipoReg === 'campaña' && window.datosCargados) {
           let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero) === String(numT));
           if (index !== -1) {
               let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
-              let fechaActualStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
               territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || fechaActualStr;
               
               if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
               datosCargados.campañaTrabajados.push(territorioTerminado);
               
-              procesarYRenderizarDatos(datosCargados);
+              // Actualizar el contador instantáneamente en la interfaz
+              const spanContador = document.getElementById('contador-trabajados-campaña');
+              if (spanContador) {
+                  spanContador.innerText = datosCargados.campañaTrabajados.length;
+              }
           }
       }
 
-      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
+      // Añadimos el parámetro fecha explícitamente para evitar que se borre en la columna N de Sheets
+      const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}&fecha=${encodeURIComponent(fechaActualStr)}`;
 
       fetch(urlFinal)
         .then(r => r.json())
@@ -1889,7 +1895,7 @@ body.dark-mode .tarjeta-caducada .card-back {
   function ordenarPorCercania(tipo, lista, coordsUsuario) {
     lista.sort((a, b) => {
       let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
-      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords); // Corregido de a.coords a b.coords
+      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
       return distA - distB; 
     });
     actualizarGridVisual(tipo, lista);
