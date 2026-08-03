@@ -1499,7 +1499,8 @@ body.dark-mode .tarjeta-caducada .card-back {
        
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
 
-        let numInt = parseInt(String(t.num).replace(/\D/g, '')) || 0;
+       let numeroTerritorio = t.num !== undefined ? t.num : (t.numero !== undefined ? t.numero : 0);
+let numInt = parseInt(String(numeroTerritorio).replace(/\D/g, '')) || 0;
         let zonaStr = String(t.zona || "").trim().toUpperCase();
         let aplicarAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS");
         let claseAzulElegante = aplicarAzulElegante ? "azul-elegante-texto" : "";
