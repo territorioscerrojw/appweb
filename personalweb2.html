@@ -128,10 +128,14 @@ body.dark-mode header {
   right: 20px;
   display: inline-block;
   z-index: 1000;
+  width: 45px;
+  height: 45px;
 }
 
 .btn-settings { 
-  position: relative; 
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 45px; 
   height: 45px; 
   border-radius: 50%; 
@@ -158,19 +162,18 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ TIPO RUEDA / ABANICO FIJADO AL BOTÓN --- */
-/* --- MENÚ TIPO RUEDA / ABANICO CORREGIDO --- */
+/* --- MENÚ EN ABANICO DESDE LA ESQUINA SUPERIOR DERECHA --- */
 .wheel-menu {
   position: absolute;
-  top: 0;
+  /* Posicionado justo debajo y a la izquierda del botón de ajustes */
+  top: 45px;
   right: 0;
   width: 140px;
   height: 140px;
   pointer-events: none;
-  /* Hacemos que el eje de rotación y apertura nazca desde la esquina inferior izquierda del menú, 
-     que coincide justamente con la zona del botón */
-  transform-origin: bottom left;
-  transform: scale(0) rotate(45deg);
+  transform: scale(0);
+  /* El origen de apertura es la esquina superior derecha (donde está el botón) */
+  transform-origin: top right;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
   z-index: 999;
@@ -178,7 +181,7 @@ body.dark-mode .btn-settings {
 
 .wheel-menu.show {
   pointer-events: auto;
-  transform: scale(1) rotate(0deg);
+  transform: scale(1);
   opacity: 1;
 }
 
@@ -222,19 +225,23 @@ body.dark-mode .wheel-slice:hover {
   transform: scale(0.95);
 }
 
-/* Posicionamiento exacto en cuadrante inferior-izquierdo respecto al botón */
+/* Distribución de las opciones hacia la izquierda y hacia abajo del botón */
 .wheel-menu.items-2 .wheel-slice:nth-child(1) {
   top: 0px;
-  left: -140px;
+  right: 0px;
+  width: 140px;
+  height: 140px;
   border-radius: 140px 0 0 140px;
-  padding: 20px 15px 15px 25px;
+  padding: 20px 25px 15px 15px;
 }
 
 .wheel-menu.items-2 .wheel-slice:nth-child(2) {
-  top: 140px;
-  left: 0px;
-  border-radius: 0 0 140px 140px;
-  padding: 25px 15px 15px 15px;
+  top: 0px;
+  right: 0px;
+  width: 140px;
+  height: 140px;
+  border-radius: 0 0 0 140px;
+  padding: 15px 15px 20px 25px;
 }
 
 .wheel-slice i {
