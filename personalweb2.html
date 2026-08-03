@@ -158,15 +158,16 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ TIPO RUEDA / ABANICO (GLASS APPLE) --- */
+/* --- MENÚ TIPO RUEDA / ABANICO (GLASS APPLE CORREGIDO) --- */
 .wheel-menu {
   position: absolute;
-  top: 22px;
-  right: 22px;
-  width: 280px;
-  height: 280px;
+  top: 0;       /* Cambiado para que ancle correctamente arriba */
+  right: 0;     /* Cambiado para que ancle correctamente a la derecha */
+  width: 140px; /* Ajustado al tamaño real del cuadrante del abanico */
+  height: 140px;
   pointer-events: none;
   transform: scale(0) rotate(-90deg);
-  transform-origin: top right;
+  transform-origin: top right; /* El abanico nace exactamente desde la esquina superior derecha del botón */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
   z-index: 999;
