@@ -1709,7 +1709,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // Animación de salida de la tarjeta
+      // Animación de salida de la tarjeta al deslizar
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
@@ -1717,7 +1717,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // Actualización local al instante
+      // Actualización local al instante para el contador y el modal
       if (tipoReg === 'campaña') {
           if (!window.datosCargados) window.datosCargados = {};
           if (!datosCargados.campaña) datosCargados.campaña = [];
@@ -1732,37 +1732,51 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
               territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado, imgMini: '' };
           }
 
+          // Si el objeto ya traía una fecha de la tabla, la mantenemos; si no, ponemos un texto limpio temporal
+          if (!territorioTerminado.fechaEntrega) {
+              territorioTerminado.fechaEntrega = "Cargando fecha...";
+          }
+
           let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero).trim() === String(numT).trim());
           if (!yaExiste) {
               datosCargados.campañaTrabajados.push(territorioTerminado);
           }
 
+          // Actualizar el contador visual
           let spanContador = document.getElementById('contador-campaña-trabajados');
           if (spanContador) {
               spanContador.innerText = datosCargados.campañaTrabajados.length;
           }
-
-          const modal = document.getElementById('modal-trabajados-campaña');
-          if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
-              if (typeof abrirModalTrabajados === 'function') {
-                  abrirModalTrabajados();
-              }
-          }
       }
 
-      // Petición al servidor
+      // Petición al servidor para que registre y nos devuelva la fecha exacta de la Columna N
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado !== "OK") {
+            if (data.resultado === "OK") {
+                // Si el servidor nos devuelve la fecha oficial leída de la Columna N, la inyectamos
+                if (data.fechaEntrega && tipoReg === 'campaña' && window.datosCargados && datosCargados.campañaTrabajados) {
+                    let tTrabajado = datosCargados.campañaTrabajados.find(t => String(t.num || t.numero).trim() === String(numT).trim());
+                    if (tTrabajado) {
+                        tTrabajado.fechaEntrega = data.fechaEntrega;
+                    }
+                }
+
+                // Refrescamos el modal automáticamente si está abierto para mostrar la fecha real
+                const modal = document.getElementById('modal-trabajados-campaña');
+                if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
+                    if (typeof abrirModalTrabajados === 'function') {
+                        abrirModalTrabajados();
+                    }
+                }
+            } else {
                 console.error("Error en servidor:", data.resultado);
             }
         })
         .catch(err => console.error("Error de conexión:", err));
   }
-  
   function formatearCalles(textoCalles) {
       if (!textoCalles) return "";
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
