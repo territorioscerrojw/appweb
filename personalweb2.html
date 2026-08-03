@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 <html>
 <head>
   <base target="_top">
@@ -157,91 +157,114 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ ESTILO IOS --- */
-.apple-dropdown-menu {
+/* --- MENÚ TIPO RUEDA / ABANICO (GLASS APPLE) --- */
+.wheel-menu {
   position: absolute;
-  top: 55px;
+  top: 22px;
+  right: 22px;
+  width: 280px;
+  height: 280px;
+  pointer-events: none;
+  transform: scale(0) rotate(-90deg);
+  transform-origin: top right;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+  z-index: 999;
+}
+
+.wheel-menu.show {
+  pointer-events: auto;
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+.wheel-slice {
+  position: absolute;
+  top: 0;
   right: 0;
-  width: 195px;
-  background: rgba(248, 249, 250, 0.92);
-  backdrop-filter: blur(40px) saturate(220%);
-  -webkit-backdrop-filter: blur(40px) saturate(220%);
-  border-radius: 20px;
-  box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
-    inset 0 2px 4px rgba(255, 255, 255, 1);
-  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  gap: 2px;
-  opacity: 0;
-  transform: translateY(-12px) scale(0.94);
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 1000;
-}
-
-body.dark-mode .apple-dropdown-menu {
-  background: rgba(22, 27, 34, 0.90);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 0.5px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.6),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 2px 4px rgba(255, 255, 255, 0.15);
-}
-
-.apple-dropdown-menu.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.apple-menu-item {
-  display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  justify-content: center;
   cursor: pointer;
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  box-sizing: border-box;
+  transition: background 0.2s, transform 0.2s;
+  text-align: center;
+  padding: 15px 10px 10px 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-.apple-menu-item:active {
-  transform: scale(0.96);
+body.dark-mode .wheel-slice {
+  background: rgba(22, 27, 34, 0.82);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  color: #f0f6fc;
 }
 
-.apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.12);
+.wheel-slice:hover {
+  background: rgba(0, 122, 255, 0.15);
   color: #007aff;
 }
 
-body.dark-mode .apple-menu-item:hover {
-  background: rgba(99, 179, 237, 0.18);
+body.dark-mode .wheel-slice:hover {
+  background: rgba(99, 179, 237, 0.2);
   color: #63b3ed;
 }
 
-.apple-menu-item i {
-  font-size: 1.1rem;
-  width: 20px;
-  text-align: center;
+.wheel-slice:active {
+  transform: scale(0.95);
 }
 
-.apple-menu-divider {
-  height: 0.5px;
-  background: rgba(0, 0, 0, 0.08);
-  margin: 4px 8px;
+/* Posicionamiento de las porciones del abanico (esquina superior derecha) */
+/* Slice 1: Tema (Arriba a la izquierda del cuadrante) */
+.wheel-slice:nth-child(1) {
+  top: 0px;
+  right: 140px;
+  border-radius: 140px 0 0 0;
+  padding: 25px 25px 10px 10px;
 }
 
-body.dark-mode .apple-menu-divider {
-  background: rgba(255, 255, 255, 0.08);
+/* Slice 2: Actualizar (Abajo a la derecha del cuadrante) */
+.wheel-slice:nth-child(2) {
+  top: 140px;
+  right: 0px;
+  border-radius: 0 0 140px 0;
+  padding: 10px 10px 25px 25px;
+}
+
+/* Slice 3 (Opcional - Grupo): En el centro de la curva o distribuido si son 3 */
+.wheel-slice:nth-child(3) {
+  top: 70px;
+  right: 70px;
+  border-radius: 0 0 0 140px;
+  padding: 15px 15px 15px 15px;
+}
+
+/* Ajustes especiales cuando son exactamente 2 o 3 elementos */
+.wheel-menu.items-2 .wheel-slice:nth-child(1) {
+  top: 0px; right: 140px; width: 140px; height: 140px; border-radius: 140px 0 0 0; padding: 25px 20px 10px 15px;
+}
+.wheel-menu.items-2 .wheel-slice:nth-child(2) {
+  top: 140px; right: 0px; width: 140px; height: 140px; border-radius: 0 0 140px 0; padding: 15px 10px 20px 25px;
+}
+
+.wheel-slice i {
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+.wheel-slice span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
 }
 
 .user-name { 
@@ -351,7 +374,6 @@ body.dark-mode .preferencias-content {
   text-transform: uppercase;
 }
 
-/* Grilla de 2 columnas para Zonas para mejor lectura */
 .pref-grid-zonas {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -359,7 +381,6 @@ body.dark-mode .preferencias-content {
   margin-bottom: 20px;
 }
 
-/* Grilla para Tipos */
 .pref-grid-tipos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -958,25 +979,21 @@ body.dark-mode .tarjeta-caducada .card-back {
       <i class="fa-solid fa-gear"></i>
     </button>
     
-    <div id="apple-menu" class="apple-dropdown-menu">
-      <div class="apple-menu-item" onclick="toggleTheme()" title="Cambiar Tema">
+    <!-- MENÚ RUEDA / ABANICO -->
+    <div id="apple-menu" class="wheel-menu items-2">
+      <div class="wheel-slice" onclick="toggleTheme()" title="Cambiar Tema">
         <i class="fa-solid fa-circle-half-stroke"></i>
         <span>Tema</span>
       </div>
 
-      <div class="apple-menu-divider"></div>
-
-      <div class="apple-menu-item" onclick="refrescarWeb()" title="Actualizar datos">
+      <div class="wheel-slice" onclick="refrescarWeb()" title="Actualizar datos">
         <i class="fa-solid fa-rotate-right"></i>
         <span>Actualizar</span>
       </div>
 
-      <div id="btn-menu-grupo" style="display: none; flex-direction: column;">
-        <div class="apple-menu-divider"></div>
-        <div class="apple-menu-item" onclick="irAGrupo()" title="Grupo">
-          <i class="fa-solid fa-users-gear"></i>
-          <span>Grupo</span>
-        </div>
+      <div class="wheel-slice" id="btn-menu-grupo" style="display: none;" onclick="irAGrupo()" title="Grupo">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Grupo</span>
       </div>
     </div>
   </div>
@@ -1017,7 +1034,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         
         <div class="preferencias-section-label">1. ZONA</div>
         <div id="pref-zonas-container" class="pref-grid-zonas">
-            <!-- Se poblará dinámicamente con todas las barriadas (excluyendo NEGOCIOS) -->
+            <!-- Se poblará dinámicamente -->
         </div>
 
         <div class="preferencias-section-label">2. TIPO</div>
@@ -1115,7 +1132,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
 
-    // Inicializar la grilla de zonas del modal de preferencias inmediatamente
     poblarZonasModal();
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
@@ -1137,7 +1153,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         procesarYRenderizarDatos(datos);
       })
       .catch(err => {
-        console.error("Error de red, manteniendo datos en caché si existían", err);
+        console.error("Error de red", err);
       });
   }
 
@@ -1151,17 +1167,9 @@ body.dark-mode .tarjeta-caducada .card-back {
     
     if (datos.campañaActiva && fechaFinCamp) {
         const ahora = new Date();
-        const anioActual = ahora.getFullYear();
-        const mesActual = ahora.getMonth();
-        const diaActual = ahora.getDate();
-
         const finDateObj = new Date(fechaFinCamp);
-        const anioFin = finDateObj.getFullYear();
-        const mesFin = finDateObj.getMonth();
-        const diaFin = finDateObj.getDate();
-
-        const hoyLimpio = new Date(anioActual, mesActual, diaActual);
-        const finLimpio = new Date(anioFin, mesFin, diaFin);
+        const hoyLimpio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+        const finLimpio = new Date(finDateObj.getFullYear(), finDateObj.getMonth(), finDateObj.getDate());
 
         if (hoyLimpio >= finLimpio) {
             datos.campañaActiva = "";
@@ -1179,11 +1187,24 @@ body.dark-mode .tarjeta-caducada .card-back {
                                 datos.responsable === true ||
                                 datos.rol === "responsable";
 
+    const menuRueda = document.getElementById('apple-menu');
+    const btnGrupo = document.getElementById('btn-menu-grupo');
+
     if (esAdminOResponsable) {
       grupoUsuarioGlobal = datos.grupoNombre || "GRUPO 1"; 
-      const btnGrupo = document.getElementById('btn-menu-grupo');
       if (btnGrupo) {
         btnGrupo.style.display = 'flex';
+      }
+      if (menuRueda) {
+        menuRueda.classList.remove('items-2');
+        // Ajustar CSS dinámico para 3 porciones si es necesario
+      }
+    } else {
+      if (btnGrupo) {
+        btnGrupo.style.display = 'none';
+      }
+      if (menuRueda) {
+        menuRueda.classList.add('items-2');
       }
     }
 
@@ -1300,11 +1321,7 @@ body.dark-mode .tarjeta-caducada .card-back {
   }
 
   function reactivarTerritorioCampaña(numTerritorio, zonaTerritorio) {
-      if (!datosCargados) {
-          console.error("Error: datosCargados no está definido.");
-          return;
-      }
-
+      if (!datosCargados) return;
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
       
       let index = datosCargados.campañaTrabajados.findIndex(t => 
@@ -1314,28 +1331,18 @@ body.dark-mode .tarjeta-caducada .card-back {
 
       if (index !== -1) {
           let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
-          
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
-          
           procesarYRenderizarDatos(datosCargados);
           abrirModalTrabajados();
       }
 
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&zona=${encodeURIComponent(zonaTerritorio)}&nombre=${encodeURIComponent(nombreH)}`;
-      
-      fetch(urlReactivar)
-          .then(response => response.text())
-          .then(data => {
-              console.log("Respuesta del servidor al reactivar en Sheets:", data);
-          })
-          .catch(err => console.error("Error de red al reactivar en Google Sheets:", err));
+      fetch(urlReactivar).catch(err => console.error(err));
   }
 
   function cerrarModalTrabajados(event) {
-      if (event && event.target.id === 'modal-trabajados-campaña') {
-          cerrarModalTrabajadosDirecto();
-      }
+      if (event && event.target.id === 'modal-trabajados-campaña') cerrarModalTrabajadosDirecto();
   }
 
   function cerrarModalTrabajadosDirecto() {
@@ -1345,28 +1352,18 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   function poblarZonasModal() {
     const listaZonas = [
-      "CERRO DEL ÁGUILA",
-      "GARCÍA LORCA",
-      "HUERTA DEL ÁGUILA",
-      "LA DOCTORA",
-      "LA NEGRILLA",
-      "LA PLATA",
-      "LAS ÁGUILAS",
-      "NERVIÓN",
-      "PADRE PÍO",
-      "ROCHELAMBERT",
-      "SAN JOSÉ DE PALMETE"
+      "CERRO DEL ÁGUILA", "GARCÍA LORCA", "HUERTA DEL ÁGUILA", "LA DOCTORA", 
+      "LA NEGRILLA", "LA PLATA", "LAS ÁGUILAS", "NERVIÓN", "PADRE PÍO", 
+      "ROCHELAMBERT", "SAN JOSÉ DE PALMETE"
     ];
 
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
-    
     listaZonas.forEach(z => {
         htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
     });
-
     containerZonas.innerHTML = htmlZonas;
   }
 
@@ -1381,15 +1378,11 @@ body.dark-mode .tarjeta-caducada .card-back {
         }
     } else {
         const btnCualquiera = contenedorPadre.querySelector('[data-val="CUALQUIERA"]');
-        if (btnCualquiera) {
-            btnCualquiera.classList.remove('selected');
-        }
+        if (btnCualquiera) btnCualquiera.classList.remove('selected');
         btn.classList.toggle('selected');
         
         const seleccionados = contenedorPadre.querySelectorAll('.pref-btn-opcion.selected');
-        if (seleccionados.length === 0 && btnCualquiera) {
-            btnCualquiera.classList.add('selected');
-        }
+        if (seleccionados.length === 0 && btnCualquiera) btnCualquiera.classList.add('selected');
     }
   }
 
@@ -1411,16 +1404,11 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   function enviarPreferenciasTerritorio() {
     const modal = document.getElementById('preferencias-modal');
-    
     let zonasSeleccionadas = [];
-    document.querySelectorAll('#pref-zonas-container .pref-btn-opcion.selected').forEach(el => {
-        zonasSeleccionadas.push(el.getAttribute('data-val'));
-    });
+    document.querySelectorAll('#pref-zonas-container .pref-btn-opcion.selected').forEach(el => zonasSeleccionadas.push(el.getAttribute('data-val')));
 
     let tiposSeleccionados = [];
-    document.querySelectorAll('.pref-grid-tipos .pref-btn-opcion.selected').forEach(el => {
-        tiposSeleccionados.push(el.getAttribute('data-val'));
-    });
+    document.querySelectorAll('.pref-grid-tipos .pref-btn-opcion.selected').forEach(el => tiposSeleccionados.push(el.getAttribute('data-val')));
 
     if (zonasSeleccionadas.length === 0) zonasSeleccionadas = ["CUALQUIERA"];
     if (tiposSeleccionados.length === 0) tiposSeleccionados = ["CUALQUIERA"];
@@ -1428,20 +1416,14 @@ body.dark-mode .tarjeta-caducada .card-back {
     const correoDestino = "territorioscerro.jw@gmail.com";
     const asunto = "Solicitud de nuevo territorio (Preferencias)";
     const cuerpo = `El/la hermano/a ${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
-
     const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
     if (modal) modal.classList.remove('active');
 
     fetch(urlEmail)
       .then(r => r.json())
-      .then(data => {
-          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
-      })
-      .catch(err => {
-          console.error("Error al enviar preferencias:", err);
-          alert("Solicitud enviada al departamento de territorios. En breve recibirás respuesta.");
-      });
+      .then(data => alert("Solicitud enviada al departamento de territorios."))
+      .catch(err => alert("Solicitud enviada al departamento de territorios."));
   }
 
   function procesarFechasYBarras(datos) {
@@ -1454,25 +1436,19 @@ body.dark-mode .tarjeta-caducada .card-back {
     const barra = document.getElementById("barra-progreso-elemento");
 
     if (!inicioStr || !finStr) {
-        if (lblTiempo) {
-            lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
-        }
+        if (lblTiempo) lblTiempo.innerText = nombreCampActual ? `Campaña: ${nombreCampActual}` : "Campaña activa";
         if (lblPorcentaje) lblPorcentaje.innerText = "";
         if (barra) {
             barra.style.width = "100%";
-            barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
             barra.classList.add("neon-verde");
         }
         return;
     }
 
     const ahora = new Date();
-    const inicio = new Date(inicioStr);
-    const fin = new Date(finStr);
-    
     const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-    const inicioDate = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
-    const finDate = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
+    const inicioDate = new Date(new Date(inicioStr).getFullYear(), new Date(inicioStr).getMonth(), new Date(inicioStr).getDate());
+    const finDate = new Date(new Date(finStr).getFullYear(), new Date(finStr).getMonth(), new Date(finStr).getDate());
 
     const tiempoTotal = finDate - inicioDate;
     const tiempoTranscurrido = ahocheDate - inicioDate;
@@ -1492,7 +1468,6 @@ body.dark-mode .tarjeta-caducada .card-back {
     } else {
       dias = Math.ceil((finDate - ahocheDate) / (1000 * 60 * 60 * 24));
       msgTiempo = `Quedan ${dias} días de campaña`;
-      
       if (dias <= 1) {
           msgTiempo = "¡Último día de la campaña!";
           porcentaje = 99;
@@ -1505,17 +1480,10 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (barra) {
       barra.style.width = `${porcentaje}%`;
       barra.classList.remove("neon-verde", "neon-naranja", "neon-rojo");
-      
       if (ahocheDate >= inicioDate && ahocheDate <= finDate) {
-          if (dias <= 1 || ahocheDate.getTime() === finDate.getTime()) {
-              barra.classList.add("neon-rojo");
-          } else if (dias <= 3) {
-              barra.classList.add("neon-rojo");
-          } else if (dias <= 7) {
-              barra.classList.add("neon-naranja");
-          } else {
-              barra.classList.add("neon-verde");
-          }
+          if (dias <= 3) barra.classList.add("neon-rojo");
+          else if (dias <= 7) barra.classList.add("neon-naranja");
+          else barra.classList.add("neon-verde");
       }
     }
   }
@@ -1525,9 +1493,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (contenedor) {
       contenedor.classList.add('is-flipping');
       contenedor.classList.toggle('flipped');
-      setTimeout(() => {
-        contenedor.classList.remove('is-flipping');
-      }, 600);
+      setTimeout(() => contenedor.classList.remove('is-flipping'), 600);
     }
   }
 
@@ -1538,30 +1504,15 @@ body.dark-mode .tarjeta-caducada .card-back {
       const diasMatch = tiempoString.match(/(\d+)\s*d[ií]a/i);
       if (mesesMatch) dias += parseInt(mesesMatch[1]) * 30;
       if (diasMatch) dias += parseInt(diasMatch[1]);
-      
       return Math.min(dias, 120);
   }
 
   function renderizarLista(lista, titulo, icono, clase, tipo, estaBloqueado, mensajeVacio = "") {
-    if (!lista || lista.length === 0) {
-      if (mensajeVacio) {
-        let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
-        return `${htmlTitulo}
-                <div style="padding: 30px; text-align: center; color: #8e8e93; font-weight: 600; font-size: 1rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1);">
-                    ${mensajeVacio}
-                </div>`;
-      }
-      return "";
-    }
+    if (!lista || lista.length === 0) return "";
 
-    lista.sort((a, b) => {
-      let diasA = calcularDiasTotales(a.tiempo || "0");
-      let diasB = calcularDiasTotales(b.tiempo || "0");
-      return diasA - diasB;
-    });
+    lista.sort((a, b) => calcularDiasTotales(a.tiempo || "0") - calcularDiasTotales(b.tiempo || "0"));
 
     let idGrid = `grid-${tipo}`;
-    
     let htmlOrdenacion = `
       <div class="ordenar-container">
         <span class="ordenar-label">ORDENAR POR:</span>
@@ -1573,10 +1524,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       </div>`;
 
     let htmlTitulo = titulo ? `<h2 class="${clase}">${titulo} <i class="fa-solid ${icono}"></i></h2>` : "";
-
-    return `${htmlTitulo}
-            ${htmlOrdenacion}
-            <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
+    return `${htmlTitulo}${htmlOrdenacion}<div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
   function generarTarjetasHTML(lista, tipo, estaBloqueado) {
@@ -1587,11 +1535,8 @@ body.dark-mode .tarjeta-caducada .card-back {
         let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
 
         let textoTiempoMostrado = t.tiempo;
-        if (diasTotales >= 120 && !esCaducado) {
-            textoTiempoMostrado = "4 MESES";
-        } else if (!esCaducado && t.tiempo) {
-            textoTiempoMostrado = t.tiempo.replace(" y ", " ");
-        }
+        if (diasTotales >= 120 && !esCaducado) textoTiempoMostrado = "4 MESES";
+        else if (!esCaducado && t.tiempo) textoTiempoMostrado = t.tiempo.replace(" y ", " ");
 
         let color = diasTotales > 90 ? "#34c759" : diasTotales > 60 ? "#ffcc00" : diasTotales > 30 ? "#ff9500" : "#ff3b30";
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
@@ -1606,7 +1551,6 @@ body.dark-mode .tarjeta-caducada .card-back {
         const nombreSeguro = encodeURIComponent(nombreH);
 
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
-
         let numInt = parseInt(String(numeroTerritorio).replace(/\D/g, '')) || 0;
         let zonaStr = String(t.zona || "").trim().toUpperCase();
         let aplicarAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS");
@@ -1620,7 +1564,6 @@ body.dark-mode .tarjeta-caducada .card-back {
                 </div>
             ` : ''}
             <div class="card-inner">
-                <!-- CARA FRONTAL -->
                 <div class="card-front">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
@@ -1635,7 +1578,6 @@ body.dark-mode .tarjeta-caducada .card-back {
                             <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
                             <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
                         </div>
-
                         <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
                             <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
                         </div>
@@ -1650,7 +1592,6 @@ body.dark-mode .tarjeta-caducada .card-back {
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">MÁS DETALLES</button>
                 </div>
 
-                <!-- CARA TRASERA -->
                 <div class="card-back">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                       <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
@@ -1678,23 +1619,13 @@ body.dark-mode .tarjeta-caducada .card-back {
       const correoDestino = "territorioscerro.jw@gmail.com";
       const asunto = "Solicitud de renovacion";
       const cuerpo = `Territorio nº: ${numeroTerritorio}\nHermano/a que lo solicita: ${nombreH}`;
-
       const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
-      fetch(urlEmail)
-        .then(r => r.json())
-        .then(data => {
-            console.log("Solicitud de renovación enviada correctamente.");
-        })
-        .catch(err => {
-            console.error("Error al enviar la solicitud de renovación:", err);
-        });
+      fetch(urlEmail).catch(err => console.error(err));
   }
 
   function cerrarModalRenovacion(event) {
-      if (event && event.target.id === 'renovacion-modal') {
-          document.getElementById('renovacion-modal').classList.remove('active');
-      }
+      if (event && event.target.id === 'renovacion-modal') document.getElementById('renovacion-modal').classList.remove('active');
   }
 
   function cerrarModalRenovacionDirecto() {
@@ -1710,10 +1641,9 @@ body.dark-mode .tarjeta-caducada .card-back {
       }).filter(i => i !== "").join("<br>");
   }
 
-function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
+  function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // Animación de salida de la tarjeta al deslizar
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
@@ -1721,14 +1651,12 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // Actualización local al instante para el contador y el modal
       if (tipoReg === 'campaña') {
           if (!window.datosCargados) window.datosCargados = {};
           if (!datosCargados.campaña) datosCargados.campaña = [];
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
 
           let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero).trim() === String(numT).trim());
-          
           let territorioTerminado = null;
           if (index !== -1) {
               territorioTerminado = datosCargados.campaña.splice(index, 1)[0];
@@ -1736,51 +1664,27 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
               territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado, imgMini: '' };
           }
 
-          // Si el objeto ya traía una fecha de la tabla, la mantenemos; si no, ponemos un texto limpio temporal
-          if (!territorioTerminado.fechaEntrega) {
-              territorioTerminado.fechaEntrega = "Cargando fecha...";
-          }
+          if (!territorioTerminado.fechaEntrega) territorioTerminado.fechaEntrega = "Cargando fecha...";
 
           let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero).trim() === String(numT).trim());
-          if (!yaExiste) {
-              datosCargados.campañaTrabajados.push(territorioTerminado);
-          }
+          if (!yaExiste) datosCargados.campañaTrabajados.push(territorioTerminado);
 
-          // Actualizar el contador visual
           let spanContador = document.getElementById('contador-campaña-trabajados');
-          if (spanContador) {
-              spanContador.innerText = datosCargados.campañaTrabajados.length;
-          }
+          if (spanContador) spanContador.innerText = datosCargados.campañaTrabajados.length;
       }
 
-      // Petición al servidor para que registre y nos devuelva la fecha exacta de la Columna N
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
-
       fetch(urlFinal)
         .then(r => r.json())
         .then(data => {
-            if (data.resultado === "OK") {
-                // Si el servidor nos devuelve la fecha oficial leída de la Columna N, la inyectamos
-                if (data.fechaEntrega && tipoReg === 'campaña' && window.datosCargados && datosCargados.campañaTrabajados) {
-                    let tTrabajado = datosCargados.campañaTrabajados.find(t => String(t.num || t.numero).trim() === String(numT).trim());
-                    if (tTrabajado) {
-                        tTrabajado.fechaEntrega = data.fechaEntrega;
-                    }
-                }
-
-                // Refrescamos el modal automáticamente si está abierto para mostrar la fecha real
-                const modal = document.getElementById('modal-trabajados-campaña');
-                if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
-                    if (typeof abrirModalTrabajados === 'function') {
-                        abrirModalTrabajados();
-                    }
-                }
-            } else {
-                console.error("Error en servidor:", data.resultado);
+            if (data.resultado === "OK" && data.fechaEntrega && tipoReg === 'campaña' && window.datosCargados && datosCargados.campañaTrabajados) {
+                let tTrabajado = datosCargados.campañaTrabajados.find(t => String(t.num || t.numero).trim() === String(numT).trim());
+                if (tTrabajado) tTrabajado.fechaEntrega = data.fechaEntrega;
             }
         })
-        .catch(err => console.error("Error de conexión:", err));
+        .catch(err => console.error(err));
   }
+
   function formatearCalles(textoCalles) {
       if (!textoCalles) return "";
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
@@ -1830,11 +1734,8 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
   }
 
   function cerrarVisor(event) {
-      if (event && event.target.id !== 'image-viewer-modal' && !event.target.classList.contains('viewer-close') && !event.target.closest('.viewer-close')) {
-          return;
-      }
-      const modal = document.getElementById('image-viewer-modal');
-      modal.classList.remove('active');
+      if (event && event.target.id !== 'image-viewer-modal' && !event.target.classList.contains('viewer-close') && !event.target.closest('.viewer-close')) return;
+      document.getElementById('image-viewer-modal').classList.remove('active');
   }
 
   function lanzarEfectoAleatorio(tarjeta) {
@@ -1845,7 +1746,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
               let duration = 1.2 * 1000;
               let animationEnd = Date.now() + duration;
               let interval = setInterval(function() {
-                  if (Date.now() > animationEnd) { return clearInterval(interval); }
+                  if (Date.now() > animationEnd) return clearInterval(interval);
                   confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0 } });
                   confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1 } });
               }, 200);
@@ -1856,21 +1757,7 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
               tarjeta.style.transform = "scale(1.05)";
               tarjeta.style.boxShadow = "0 0 35px #34c759";
               break;
-          case 5: confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#ffe600'] }); break;
-          case 6: 
-              tarjeta.style.transition = "all 0.3s ease";
-              tarjeta.style.filter = "brightness(1.8) saturate(2) hue-rotate(90deg)";
-              tarjeta.style.boxShadow = "0 0 40px #007aff";
-              break;
-          case 7: confetti({ particleCount: 60, spread: 60, scalar: 1.2, colors: ['#007aff', '#5ac8fa', '#4cd964'] }); break;
-          case 8: confetti({ particleCount: 120, spread: 100, colors: ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff', '#af52de'] }); break;
-          case 9: confetti({ particleCount: 50, spread: 70, colors: ['#ffffff', '#e8e8ed', '#8e8e93'], scalar: 0.7 }); break;
-          case 10: 
-              tarjeta.style.transition = "all 0.5s ease";
-              tarjeta.style.transform = "scale(0.85) skewX(15deg)";
-              tarjeta.style.filter = "blur(4px)";
-              tarjeta.style.opacity = "0.3";
-              break;
+          default: confetti({ particleCount: 70, spread: 90, colors: ['#f5a623', '#34c759', '#007aff'] }); break;
       }
   }
 
@@ -1885,69 +1772,38 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
     if (!lista || lista.length === 0) return;
 
     if (criterio === 'numero') {
-      lista.sort((a, b) => {
-        let numA = parseInt(a.num.replace(/\D/g, '')) || 0;
-        let numB = parseInt(b.num.replace(/\D/g, '')) || 0;
-        return numA - numB;
-      });
+      lista.sort((a, b) => (parseInt(a.num.replace(/\D/g, '')) || 0) - (parseInt(b.num.replace(/\D/g, '')) || 0));
       actualizarGridVisual(tipo, lista);
     } else if (criterio === 'tiempo') {
-      lista.sort((a, b) => {
-        let diasA = calcularDiasTotales(a.tiempo || "0");
-        let diasB = calcularDiasTotales(b.tiempo || "0");
-        return diasA - diasB;
-      });
+      lista.sort((a, b) => calcularDiasTotales(a.tiempo || "0") - calcularDiasTotales(b.tiempo || "0"));
       actualizarGridVisual(tipo, lista);
     } else if (criterio === 'cercania') {
-      if (ubicacionUsuario) {
-        ordenarPorCercania(tipo, lista, ubicacionUsuario);
-      } else {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              ubicacionUsuario = {
-                lat: position.coords.latitude,
-                lon: position.coords.longitude
-              };
-              ordenarPorCercania(tipo, lista, ubicacionUsuario);
-            },
-            (error) => {
-              alert("No se pudo obtener tu ubicación GPS. Asegúrate de dar permisos en el navegador.");
-              console.error(error);
-            },
-            { enableHighAccuracy: true }
-          );
-        } else {
-          alert("Tu navegador no soporta geolocalización.");
-        }
+      if (ubicacionUsuario) ordenarPorCercania(tipo, lista, ubicacionUsuario);
+      else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            ubicacionUsuario = { lat: position.coords.latitude, lon: position.coords.longitude };
+            ordenarPorCercania(tipo, lista, ubicacionUsuario);
+          },
+          (error) => alert("No se pudo obtener tu ubicación GPS.")
+        );
       }
     }
   }
 
   function ordenarPorCercania(tipo, lista, coordsUsuario) {
-    lista.sort((a, b) => {
-      let distA = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords);
-      let distB = calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords);
-      return distA - distB; 
-    });
+    lista.sort((a, b) => calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, a.coords) - calcularDistanciaMetros(coordsUsuario.lat, coordsUsuario.lon, b.coords));
     actualizarGridVisual(tipo, lista);
   }
 
   function calcularDistanciaMetros(lat1, lon1, coordsString) {
     let matches = (coordsString || "").match(/[-0-9.]+/g);
     if (!matches || matches.length < 2) return Infinity; 
-    
-    let lat2 = parseFloat(matches[0]);
-    let lon2 = parseFloat(matches[1]);
-
+    let lat2 = parseFloat(matches[0]), lon2 = parseFloat(matches[1]);
     const R = 6371e3; 
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
   }
 
   function actualizarGridVisual(tipo, listaOrdenada) {
@@ -1958,33 +1814,19 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
         const ahora = new Date();
         const ahocheDate = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
         const finDate = new Date(new Date(fechaFinCamp).getFullYear(), new Date(fechaFinCamp).getMonth(), new Date(fechaFinCamp).getDate());
-        if (ahocheDate <= finDate) {
-            campañaActivaReal = true;
-        }
+        if (ahocheDate <= finDate) campañaActivaReal = true;
     } else if (datosCargados.campañaActiva && !fechaFinCamp) {
         campañaActivaReal = true;
     }
 
     let estaBloqueado = (tipo !== 'c' && campañaActivaReal);
     let gridElement = document.getElementById(`grid-${tipo}`);
-
     if (gridElement && listaOrdenada && listaOrdenada.length > 0) {
       gridElement.innerHTML = generarTarjetasHTML(listaOrdenada, tipo, estaBloqueado);
     }
   }
 
   cargar();
-</script>
-
-<script>
-  let ultimoToque = 0;
-  document.addEventListener('touchend', function (evento) {
-      let tiempoActual = new Date().getTime();
-      if (tiempoActual - ultimoToque < 300 && tiempoActual - ultimoToque > 0) {
-          evento.preventDefault();
-      }
-      ultimoToque = tiempoActual;
-  }, { passive: false });
 </script>
 
 </body>
