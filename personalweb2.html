@@ -1142,6 +1142,10 @@ body.dark-mode .tarjeta-caducada .card-back {
   }
 
   function procesarYRenderizarDatos(datos) {
+    if (datos && datos.campaña && datos.campañaTrabajados) {
+          let numerosTrabajados = new Set(datos.campañaTrabajados.map(t => String(t.num || t.numero).trim()));
+          datos.campaña = datos.campaña.filter(t => !numerosTrabajados.has(String(t.num || t.numero).trim()));
+      }
     const fechaInicioCamp = datos.fechaInicioCampaña || datos.fechaInicio || datos.inicioCampaña;
     const fechaFinCamp = datos.fechaFinCampaña || datos.fechaFin || datos.finCampaña;
     
