@@ -1034,7 +1034,18 @@ body.dark-mode .tarjeta-caducada .card-back {
         </div>
     </div>
 </div>
-
+<!-- Modal de Territorios Trabajados de Campaña -->
+<div id="modal-trabajados-campaña" onclick="cerrarModalTrabajados(event)" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
+    <div style="background: var(--card-bg); width: 100%; max-width: 480px; max-height: 85vh; border-radius: 24px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; box-sizing: border-box; animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.1rem; font-weight: 800; text-transform: uppercase; color: var(--primary);">Territorios de Campaña Trabajados</div>
+            <button onclick="cerrarModalTrabajadosDirecto()" style="background: rgba(0,0,0,0.1); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="lista-trabajados-container" style="overflow-y: auto; display: flex; flex-direction: column; gap: 12px; max-height: 60vh; padding-right: 4px;">
+            <!-- Se poblará dinámicamente -->
+        </div>
+    </div>
+</div>
 <script>
   let datosCargados = null;
   let nombreH = "";
@@ -1196,6 +1207,17 @@ body.dark-mode .tarjeta-caducada .card-back {
                     No tienes territorios de campaña asignados
                 </div>`;
         }
+      // --- NUEVO: Campo de Territorios Trabajados y Botón VER ---
+        let countTrabajados = (datos.campañaTrabajados || []).length;
+        htmlCampaña += `
+          <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+              <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                  Territorios Trabajados: <span style="color: var(--success); font-size: 1.1rem; margin-left: 5px;">${countTrabajados}</span>
+              </div>
+              <button onclick="abrirModalTrabajados()" style="background: var(--azul-elegante); color: white; border: none; padding: 8px 20px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);">
+                  VER
+              </button>
+          </div>`;
     }
 
     let estaBloqueadoGeneral = (campañaActivaGlobal !== "");
@@ -1235,7 +1257,76 @@ body.dark-mode .tarjeta-caducada .card-back {
         }, 50);
     }
   }
+function abrirModalTrabajados() {
+      const modal = document.getElementById('modal-trabajados-campaña');
+      const container = document.getElementById('lista-trabajados-container');
+      
+      let trabajados = (datosCargados && datosCargados.campañaTrabajados) ? datosCargados.campañaTrabajados : [];
 
+      if (trabajados.length === 0) {
+          container.innerHTML = `<div style="text-align: center; padding: 30px; color: #8e8e93; font-weight: 600;">No hay territorios trabajados todavía.</div>`;
+      } else {
+          let htmlItems = "";
+          trabajados.forEach(t => {
+              let numTerritorio = t.num !== undefined ? t.num : t.numero;
+              let imgMini = t.imgMini || '';
+              let fechaEntrega = t.fechaEntrega || 'Fecha no disponible';
+
+              htmlItems += `
+                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.03); padding: 10px 14px; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.06); gap: 12px;">
+                    <div style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.1); cursor: pointer;" onclick="abrirVisor('${imgMini}')">
+                        <img src="${imgMini}" style="width: 100%; height: 100%; object-fit: cover;" alt="Miniatura">
+                    </div>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary);">Nº ${numTerritorio}</div>
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: 600; margin-top: 2px;">Entregado: ${fechaEntrega}</div>
+                    </div>
+                    <button onclick="reactivarTerritorioCampaña('${numTerritorio}')" style="background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; box-shadow: 0 3px 8px rgba(52,199,89,0.3);">
+                        REACTIVAR
+                    </button>
+                </div>`;
+          });
+          container.innerHTML = htmlItems;
+      }
+
+      if (modal) modal.style.display = 'flex';
+  }
+
+  function cerrarModalTrabajados(event) {
+      if (event && event.target.id === 'modal-trabajados-campaña') {
+          cerrarModalTrabajadosDirecto();
+      }
+  }
+
+  function cerrarModalTrabajadosDirecto() {
+      const modal = document.getElementById('modal-trabajados-campaña');
+      if (modal) modal.style.display = 'none';
+  }
+
+  function reactivarTerritorioCampaña(numTerritorio) {
+      if (!confirm(`¿Estás seguro de que deseas reactivar el territorio nº ${numTerritorio}? Volverá a estar disponible en la sección de campaña.`)) {
+          return;
+      }
+
+      const nombreSeguro = encodeURIComponent(nombreH);
+      const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&nombre=${nombreSeguro}`;
+
+      fetch(urlReactivar)
+        .then(r => r.json())
+        .then(data => {
+            if (data.resultado === "OK") {
+                alert("Territorio reactivado con éxito.");
+                cerrarModalTrabajadosDirecto();
+                refrescarWeb(); // Recarga la web para actualizar los datos automáticamente
+            } else {
+                alert("Hubo un problema al reactivar el territorio.");
+            }
+        })
+        .catch(err => {
+            console.error("Error de conexión:", err);
+            alert("Error de conexión al intentar reactivar.");
+        });
+  }
   // Carga explícita de las barriadas exactamente como aparecen en tu captura (excluyendo NEGOCIOS)
   function poblarZonasModal() {
     const listaZonas = [
