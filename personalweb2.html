@@ -1317,13 +1317,20 @@ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
-          // Redibuja la interfaz para actualizar la sección campaña y el contador de trabajados
+          // Actualiza la interfaz globalmente (contador, secciones y listas)
           procesarYRenderizarDatos(datosCargados);
       }
 
-      // Petición en segundo plano para activar la casilla de la columna G (col g activa)
+      // Petición exacta en segundo plano hacia Google Apps Script (activa la columna G)
       const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
-      fetch(urlAccion).catch(err => console.error("Error de red:", err));
+      fetch(urlAccion)
+        .then(r => r.json())
+        .then(data => {
+            if (data.resultado !== "OK") {
+                console.error("Error al registrar en servidor:", data.resultado);
+            }
+        })
+        .catch(err => console.error("Error de red en segundo plano:", err));
 }
   
 function reactivarTerritorioCampaña(numTerritorio) {
@@ -1749,7 +1756,7 @@ function reactivarTerritorioCampaña(numTerritorio) {
       return textoCalles.replace(/(\b\d+[\d\-/*]*\b)/g, '<b>$1</b>');
   }
 
-  function iniciarSwipe(e) {
+ function iniciarSwipe(e) {
       const handle = e.currentTarget;
       const numT = handle.getAttribute('data-num');
       const zona = handle.getAttribute('data-zona');
@@ -1772,19 +1779,17 @@ function reactivarTerritorioCampaña(numTerritorio) {
               document.removeEventListener('touchmove', mover);
               document.removeEventListener('touchend', terminar);
               
-              // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
-              if (tipoReg === 'campaña') {
-                  // Lanza efectos visuales de éxito y actualiza al instante datos, contador y modal
-                  lanzarEfectoAleatorio(tarjeta);
-                  tarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-                  tarjeta.style.opacity = "0";
-                  tarjeta.style.transform = "scale(0.8)";
-                  setTimeout(() => tarjeta.remove(), 400);
+              lanzarEfectoAleatorio(tarjeta);
+              tarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+              tarjeta.style.opacity = "0";
+              tarjeta.style.transform = "scale(0.8)";
+              setTimeout(() => tarjeta.remove(), 400);
 
+              if (tipoReg === 'campaña') {
                   registrarCampañaExitoso(numT, zona);
               } else {
-                  // Comportamiento normal para territorios personales o de grupo
-                  enviarAlServidor(numT, zona, nombreCodificado, tipoReg, tarjeta);
+                  const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
+                  fetch(urlFinal).catch(err => console.error("Error de conexión:", err));
               }
           }
       }
