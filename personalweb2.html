@@ -162,32 +162,36 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ EN ABANICO (1/4 DE CÍRCULO EXACTO) --- */
+/* --- MENÚ EN ABANICO RADIAL DESDE EL CENTRO DEL BOTÓN --- */
 .wheel-menu {
   position: absolute;
-  top: 45px; /* Justo debajo del botón */
-  right: 0;  /* Pegado a la derecha */
-  width: 150px;
-  height: 150px;
+  /* Posicionamos el centro exacto del menú circular de 240px sobre el centro del botón de ajustes */
+  top: -97.5px;   /* (45px del botón / 2) - (240px del radio / 2) */
+  right: -97.5px; /* (45px del botón / 2) - (240px del radio / 2) */
+  width: 240px;
+  height: 240px;
   pointer-events: none;
-  transform: scale(0);
-  transform-origin: top right; /* Nace directamente desde la esquina del botón */
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  transform: scale(0) rotate(-20deg);
+  transform-origin: center; /* El eje de rotación es el centro exacto del botón */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
   z-index: 999;
 }
 
 .wheel-menu.show {
   pointer-events: auto;
-  transform: scale(1);
+  transform: scale(1) rotate(0deg);
   opacity: 1;
 }
 
 .wheel-slice {
   position: absolute;
-  width: 150px;
-  height: 150px;
-  background: rgba(255, 255, 255, 0.85);
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  /* Efecto Apple Glass exacto */
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 0.5px solid rgba(0, 0, 0, 0.1);
@@ -199,13 +203,13 @@ body.dark-mode .btn-settings {
   box-sizing: border-box;
   transition: background 0.2s, transform 0.2s;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 body.dark-mode .wheel-slice {
-  background: rgba(22, 27, 34, 0.9);
+  background: rgba(22, 27, 34, 0.85);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   color: #f0f6fc;
 }
 
@@ -223,37 +227,29 @@ body.dark-mode .wheel-slice:hover {
   transform: scale(0.95);
 }
 
-/* Las 3 opciones repartidas exactamente dentro del mismo cuadrante de 1/4 de círculo (90 grados) */
-/* Opción 1 (Tema - Arriba) */
+/* Distribución exacta de las 3 porciones radiales alrededor del botón según tu dibujo */
+/* 1. TEMA (Arriba / Izquierda - Color Amarillo en tu esquema) */
 .wheel-menu .wheel-slice:nth-child(1) {
-  top: 0;
-  right: 0;
-  width: 150px;
-  height: 150px;
-  clip-path: polygon(100% 0, 0 0, 0 100%);
-  border-radius: 0 0 0 150px;
-  padding: 15px 45px 35px 15px;
+  margin-top: -120px;
+  margin-left: -120px;
+  border-radius: 120px 0 0 0;
+  padding: 35px 20px 10px 40px;
 }
 
-/* Opción 2 (Actualizar - Centro) */
+/* 2. ACTUALIZAR (Izquierda / Centro - Color Verde en tu esquema) */
 .wheel-menu .wheel-slice:nth-child(2) {
-  top: 0;
-  right: 0;
-  width: 150px;
-  height: 150px;
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-  border-radius: 0 0 0 150px;
-  padding: 35px 15px 15px 45px;
+  margin-top: -60px;
+  margin-left: -120px;
+  border-radius: 0 0 0 120px;
+  padding: 20px 20px 20px 40px;
 }
 
-/* Opción 3 (Grupo - Abajo / si aplica) */
+/* 3. GRUPO (Abajo / Derecha - Color Rojo en tu esquema) */
 .wheel-menu .wheel-slice:nth-child(3) {
-  top: 0;
-  right: 0;
-  width: 150px;
-  height: 150px;
-  border-radius: 0 0 0 150px;
-  padding: 30px;
+  margin-top: 0px;
+  margin-left: -60px;
+  border-radius: 0 0 120px 0;
+  padding: 20px 40px 35px 20px;
 }
 
 .wheel-slice i {
