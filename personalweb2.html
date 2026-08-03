@@ -1305,27 +1305,38 @@ function abrirModalTrabajados() {
       if (modal) modal.style.display = 'none';
   }
 
-  function registrarCampañaExitoso(numTerritorio) {
+ function registrarCampañaExitoso(numTerritorio, zonaTerritorio) {
+      // 1. Localizar el territorio en la lista de campaña activa local
       let index = datosCargados.campaña.findIndex(t => String(t.num) === String(numTerritorio));
       
       if (index !== -1) {
+          // Extraerlo de campaña activa
           let [territorioTerminado] = datosCargados.campaña.splice(index, 1);
           
-          // Generamos la fecha actual en formato corto para la fecha de trabajado en la web
+          // Asignar fecha de trabajado actual de la web
           let ahora = new Date();
-          let fechaTrabajadoLocal = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + " " + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+          territorioTerminado.fechaTrabajado = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + " " + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || "Registrado hoy";
           
-          territorioTerminado.fechaTrabajado = fechaTrabajadoLocal;
-          
-          // Si por lo que sea la Columna N no trajera fecha de entrega, dejamos un texto por defecto
-          territorioTerminado.fechaEntrega = territorioTerminado.fechaEntrega || "No especificada"; 
-          
+          // Añadirlo a la lista de trabajados local
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
           datosCargados.campañaTrabajados.push(territorioTerminado);
           
-          // Refresca la vista al instante para actualizar el contador y el modal
+          // 2. Refrescar la pantalla al instante (contador, tarjetas y modal)
           procesarYRenderizarDatos(datosCargados);
       }
+
+      // 3. Enviar la petición al Apps Script en segundo plano para actualizar la hoja de cálculo
+      const urlAccion = `${urlAppScript}?action=registrar&num=${numTerritorio}&nombre=${encodeURIComponent(nombreH)}&zona=${encodeURIComponent(zonaTerritorio)}&tipo=campaña`;
+      
+      fetch(urlAccion)
+          .then(r => r.json())
+          .then(res => {
+              if (res.resultado !== "OK") {
+                  console.error("Error al guardar en el servidor:", res.resultado);
+              }
+          })
+          .catch(err => console.error("Error de red:", err));
   }
   function reactivarTerritorioCampaña(numTerritorio) {
       if (!confirm(`¿Estás seguro de que deseas reactivar el territorio nº ${numTerritorio}? Volverá a estar disponible en la sección de campaña.`)) {
