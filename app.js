@@ -650,6 +650,14 @@ function marcarEnviadoEnHojaServidor(nombreHermano) {
   scriptTag.onerror = () => { scriptTag.remove(); };
   document.body.appendChild(scriptTag);
 }
+// Función auxiliar para ordenar a Apps Script que marque la Columna F como TRUE
+function marcarEnviadoEnHojaServidor(nombreHermano) {
+  const scriptTag = document.createElement("script");
+  scriptTag.src = `${URL_API_SHEETS}?accion=marcarEnviadoHermano&hermano=${encodeURIComponent(nombreHermano)}`;
+  scriptTag.onload = () => { scriptTag.remove(); };
+  scriptTag.onerror = () => { scriptTag.remove(); };
+  document.body.appendChild(scriptTag);
+}
 
 async function ejecutarEnvioParaleloServidor(listaIds, nombreHermano) {
   try {
