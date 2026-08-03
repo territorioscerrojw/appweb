@@ -1709,7 +1709,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // Animación de salida de la tarjeta
+      // Animación de salida de la tarjeta al deslizar
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
@@ -1717,62 +1717,52 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // FORZAMOS LA ACTUALIZACIÓN LOCAL DE MANERA INFALIBLE
-      if (tipoReg === 'campaña') {
-          if (!window.datosCargados) window.datosCargados = {};
+      if (tipoReg === 'campaña' && window.datosCargados) {
           if (!datosCargados.campaña) datosCargados.campaña = [];
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
 
-          // Buscamos convirtiendo ambos a String para evitar errores de tipo (texto vs número)
           let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero).trim() === String(numT).trim());
           
           let territorioTerminado = null;
           if (index !== -1) {
               territorioTerminado = datosCargados.campaña.splice(index, 1)[0];
           } else {
-              // Si no lo encuentra en el array por lo que sea, lo creamos al vuelo para que no falle
               territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado, imgMini: '' };
           }
 
-          // Verificamos si ya está en trabajados para no duplicarlo
+          // De momento dejamos un texto de carga para que no se invente fechas erróneas
+          territorioTerminado.fechaEntrega = "Guardando fecha...";
+
           let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero).trim() === String(numT).trim());
           if (!yaExiste) {
               datosCargados.campañaTrabajados.push(territorioTerminado);
           }
 
-          // 1. ACTUALIZAR EL CONTADOR VISUAL AL INSTANTE
           let spanContador = document.getElementById('contador-campaña-trabajados');
           if (spanContador) {
               spanContador.innerText = datosCargados.campañaTrabajados.length;
-              console.log("Contador actualizado a:", datosCargados.campañaTrabajados.length);
-          } else {
-              console.error("No se encontró el span con id 'contador-campaña-trabajados'");
-          }
-
-          // 2. ACTUALIZAR EL MODAL SI ESTÁ ABIERTO
-          const modal = document.getElementById('modal-trabajados-campaña');
-          if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
-              if (typeof abrirModalTrabajados === 'function') {
-                  abrirModalTrabajados();
-              }
           }
       }
 
-     // Petición al servidor
+      // Petición al servidor para registrar y obtener la fecha real de la Columna N
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
         .then(r => r.json())
         .then(data => {
             if (data.resultado === "OK") {
-                // Si el servidor nos devolvió la fecha exacta de la Columna N, la actualizamos en el objeto
-                if (data.fechaEntrega && territorioTerminado) {
-                    territorioTerminado.fechaEntrega = data.fechaEntrega;
-                    // Si el modal está abierto, lo refrescamos para que pinte la fecha real de la hoja
-                    const modal = document.getElementById('modal-trabajados-campaña');
-                    if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
-                        abrirModalTrabajados();
+                // Si el servidor nos devuelve la fecha oficial de la Columna N, la actualizamos
+                if (data.fechaEntrega && tipoReg === 'campaña') {
+                    let tTrabajado = datosCargados.campañaTrabajados.find(t => String(t.num || t.numero).trim() === String(numT).trim());
+                    if (tTrabajado) {
+                        tTrabajado.fechaEntrega = data.fechaEntrega;
                     }
+                }
+
+                // Refrescamos el modal si está abierto para que muestre la fecha idéntica a la tabla
+                const modal = document.getElementById('modal-trabajados-campaña');
+                if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
+                    abrirModalTrabajados();
                 }
             } else {
                 console.error("Error en servidor:", data.resultado);
