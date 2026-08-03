@@ -1709,7 +1709,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
       lanzarEfectoAleatorio(elementoTarjeta);
 
-      // Animación de salida de la tarjeta al deslizar
+      // Animación de salida de la tarjeta
       setTimeout(() => {
           elementoTarjeta.style.transition = "opacity 0.4s ease, transform 0.4s ease";
           elementoTarjeta.style.opacity = "0";
@@ -1717,43 +1717,48 @@ function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta
           setTimeout(() => elementoTarjeta.remove(), 400);
       }, 600);
 
-      // Si es campaña, actualizamos los datos locales al instante
-      if (tipoReg === 'campaña' && window.datosCargados) {
+      // FORZAMOS LA ACTUALIZACIÓN LOCAL DE MANERA INFALIBLE
+      if (tipoReg === 'campaña') {
+          if (!window.datosCargados) window.datosCargados = {};
           if (!datosCargados.campaña) datosCargados.campaña = [];
           if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
 
-          // Buscamos el índice del territorio exacto en la campaña activa
-          let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero) === String(numT));
+          // Buscamos convirtiendo ambos a String para evitar errores de tipo (texto vs número)
+          let index = datosCargados.campaña.findIndex(t => String(t.num || t.numero).trim() === String(numT).trim());
           
           let territorioTerminado = null;
           if (index !== -1) {
-              // Extraemos el objeto completo original (con su imgMini, zona, etc.)
               territorioTerminado = datosCargados.campaña.splice(index, 1)[0];
           } else {
-              // Plan de respaldo por si no se encuentra por índice exacto
+              // Si no lo encuentra en el array por lo que sea, lo creamos al vuelo para que no falle
               territorioTerminado = { num: numT, zona: zona, nombre: nombreCodificado, imgMini: '' };
           }
 
-          // Evitamos duplicados en trabajados
-          let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero) === String(numT));
+          // Verificamos si ya está en trabajados para no duplicarlo
+          let yaExiste = datosCargados.campañaTrabajados.some(t => String(t.num || t.numero).trim() === String(numT).trim());
           if (!yaExiste) {
               datosCargados.campañaTrabajados.push(territorioTerminado);
           }
 
-          // 1. ACTUALIZAR EL CONTADOR VISUAL AL VUELO DE FORMA DIRECTA
+          // 1. ACTUALIZAR EL CONTADOR VISUAL AL INSTANTE
           let spanContador = document.getElementById('contador-campaña-trabajados');
           if (spanContador) {
               spanContador.innerText = datosCargados.campañaTrabajados.length;
+              console.log("Contador actualizado a:", datosCargados.campañaTrabajados.length);
+          } else {
+              console.error("No se encontró el span con id 'contador-campaña-trabajados'");
           }
 
-          // 2. SI EL MODAL ESTÁ ABIERTO, REFRESCARLO AL INSTANTE
+          // 2. ACTUALIZAR EL MODAL SI ESTÁ ABIERTO
           const modal = document.getElementById('modal-trabajados-campaña');
           if (modal && (modal.style.display === 'flex' || modal.style.display === 'block')) {
-              abrirModalTrabajados();
+              if (typeof abrirModalTrabajados === 'function') {
+                  abrirModalTrabajados();
+              }
           }
       }
 
-      // Petición al servidor (sin tocar la columna N de la fecha)
+      // Petición al servidor (respetando intacta tu columna N de la fecha)
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
