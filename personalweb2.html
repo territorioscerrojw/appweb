@@ -162,19 +162,17 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(255, 255, 255, 0.15); 
 }
 
-/* --- MENÚ EN ABANICO DESDE LA ESQUINA SUPERIOR DERECHA --- */
-/* --- MENÚ EN ABANICO PERFECTAMENTE CENTRADO EN EL BOTÓN --- */
+/* --- MENÚ EN ABANICO (1/4 DE CÍRCULO EXACTO) --- */
 .wheel-menu {
   position: absolute;
-  /* Posicionamos la esquina superior derecha del menú exactamente sobre el botón de ajustes */
-  top: 0;
-  right: 0;
-  width: 140px;
-  height: 140px;
+  top: 45px; /* Justo debajo del botón */
+  right: 0;  /* Pegado a la derecha */
+  width: 150px;
+  height: 150px;
   pointer-events: none;
   transform: scale(0);
-  transform-origin: top right; /* El eje de apertura nace justo en el botón */
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  transform-origin: top right; /* Nace directamente desde la esquina del botón */
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
   z-index: 999;
 }
@@ -187,8 +185,8 @@ body.dark-mode .btn-settings {
 
 .wheel-slice {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -225,29 +223,37 @@ body.dark-mode .wheel-slice:hover {
   transform: scale(0.95);
 }
 
-/* Distribución limpia en abanico saliendo desde el botón hacia la izquierda y abajo */
-/* Opción 1: TEMA (Arriba-Izquierda) */
+/* Las 3 opciones repartidas exactamente dentro del mismo cuadrante de 1/4 de círculo (90 grados) */
+/* Opción 1 (Tema - Arriba) */
 .wheel-menu .wheel-slice:nth-child(1) {
-  top: 0px;
-  right: 95px;
-  border-radius: 100px 0 0 0;
-  padding: 20px 15px 10px 25px;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  clip-path: polygon(100% 0, 0 0, 0 100%);
+  border-radius: 0 0 0 150px;
+  padding: 15px 45px 35px 15px;
 }
 
-/* Opción 2: ACTUALIZAR (Izquierda-Centro) */
+/* Opción 2 (Actualizar - Centro) */
 .wheel-menu .wheel-slice:nth-child(2) {
-  top: 70px;
-  right: 95px;
-  border-radius: 0 0 0 100px;
-  padding: 15px 15px 15px 25px;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  border-radius: 0 0 0 150px;
+  padding: 35px 15px 15px 45px;
 }
 
-/* Opción 3: GRUPO (Abajo - si son 3 opciones) */
+/* Opción 3 (Grupo - Abajo / si aplica) */
 .wheel-menu .wheel-slice:nth-child(3) {
-  top: 95px;
-  right: 25px;
-  border-radius: 0 0 100px 0;
-  padding: 15px 25px 20px 15px;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  border-radius: 0 0 0 150px;
+  padding: 30px;
 }
 
 .wheel-slice i {
