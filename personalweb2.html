@@ -1269,7 +1269,7 @@ function abrirModalTrabajados() {
           let htmlItems = "";
           trabajados.forEach(t => {
               let numTerritorio = t.num !== undefined ? t.num : t.numero;
-              let zonaTerritorio = t.zona || ''; // <- CORRECCIÓN: Capturamos la zona correctamente
+              let zonaTerritorio = t.zona || ''; 
               let imgMini = t.imgMini || '';
               let fechaEntrega = t.fechaEntrega || 'Sin fecha';
 
@@ -1294,8 +1294,6 @@ function abrirModalTrabajados() {
   }
 
   function reactivarTerritorioCampaña(numTerritorio, zonaTerritorio) {
-      console.log("Intentando reactivar territorio:", numTerritorio, "Zona:", zonaTerritorio);
-      
       if (!window.datosCargados) {
           console.error("Error: window.datosCargados no está definido.");
           return;
@@ -1303,37 +1301,38 @@ function abrirModalTrabajados() {
 
       if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
       
-      // Buscamos coincidiendo tanto el número como la zona para mayor precisión
+      // Buscar índice del territorio en campañaTrabajados
       let index = datosCargados.campañaTrabajados.findIndex(t => 
           String(t.num || t.numero) === String(numTerritorio) && 
-          String(t.zona || '') === String(zonaTerritorio || '')
+          String(t.zona || '').trim().toUpperCase() === String(zonaTerritorio || '').trim().toUpperCase()
       );
-      
-      console.log("Índice encontrado en campañaTrabajados:", index);
 
       if (index !== -1) {
+          // Extraer de trabajados
           let [territorioReactivado] = datosCargados.campañaTrabajados.splice(index, 1);
           
+          // Asegurar inserción en array de campaña
           if (!datosCargados.campaña) datosCargados.campaña = [];
           datosCargados.campaña.push(territorioReactivado);
           
-          if (typeof procesarYRenderizarDatos === 'function') {
-              procesarYRenderizarDatos(datosCargados);
-          } else {
-              console.warn("La función procesarYRenderizarDatos no existe.");
-          }
+          // Refrescar inmediatamente la vista principal de la web
+          procesarYRenderizarDatos(datosCargados);
           
+          // Actualizar dinámicamente el modal para que el elemento desaparezca de la lista de trabajados
           abrirModalTrabajados();
       } else {
-          console.error("No se encontró el territorio en la lista local de trabajados.");
+          console.warn("No se encontró el territorio localmente para reactivar, intentando sincronización con servidor...");
       }
 
+      // Petición al backend (Google Apps Script) para actualizar Google Sheets (desmarcar casilla trabajado)
       const urlReactivar = `${urlAppScript}?action=reactivarCampaña&num=${numTerritorio}&zona=${encodeURIComponent(zonaTerritorio)}&nombre=${encodeURIComponent(nombreH)}`;
       
       fetch(urlReactivar)
           .then(response => response.text())
-          .then(data => console.log("Respuesta del servidor al reactivar:", data))
-          .catch(err => console.error("Error de red al reactivar:", err));
+          .then(data => {
+              console.log("Respuesta del servidor al reactivar en Sheets:", data);
+          })
+          .catch(err => console.error("Error de red al reactivar en Google Sheets:", err));
   }
 
   function cerrarModalTrabajados(event) {
