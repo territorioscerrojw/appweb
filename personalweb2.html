@@ -159,16 +159,18 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ TIPO RUEDA / ABANICO FIJADO AL BOTÓN --- */
+/* --- MENÚ TIPO RUEDA / ABANICO CORREGIDO --- */
 .wheel-menu {
   position: absolute;
-  /* Lo alineamos con la esquina superior derecha exacta del botón de 45x45px */
   top: 0;
   right: 0;
   width: 140px;
   height: 140px;
   pointer-events: none;
-  transform: scale(0) rotate(-90deg);
-  transform-origin: top right;
+  /* Hacemos que el eje de rotación y apertura nazca desde la esquina inferior izquierda del menú, 
+     que coincide justamente con la zona del botón */
+  transform-origin: bottom left;
+  transform: scale(0) rotate(45deg);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   opacity: 0;
   z-index: 999;
@@ -182,8 +184,6 @@ body.dark-mode .btn-settings {
 
 .wheel-slice {
   position: absolute;
-  top: 0;
-  right: 0;
   width: 140px;
   height: 140px;
   background: rgba(255, 255, 255, 0.75);
@@ -198,9 +198,9 @@ body.dark-mode .btn-settings {
   box-sizing: border-box;
   transition: background 0.2s, transform 0.2s;
   text-align: center;
-  padding: 15px 10px 10px 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
+
 body.dark-mode .wheel-slice {
   background: rgba(22, 27, 34, 0.82);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
@@ -222,37 +222,19 @@ body.dark-mode .wheel-slice:hover {
   transform: scale(0.95);
 }
 
-/* Posicionamiento de las porciones del abanico (esquina superior derecha) */
-/* Slice 1: Tema (Arriba a la izquierda del cuadrante) */
-.wheel-slice:nth-child(1) {
-  top: 0px;
-  right: 140px;
-  border-radius: 140px 0 0 0;
-  padding: 25px 25px 10px 10px;
-}
-
-/* Slice 2: Actualizar (Abajo a la derecha del cuadrante) */
-.wheel-slice:nth-child(2) {
-  top: 140px;
-  right: 0px;
-  border-radius: 0 0 140px 0;
-  padding: 10px 10px 25px 25px;
-}
-
-/* Slice 3 (Opcional - Grupo): En el centro de la curva o distribuido si son 3 */
-.wheel-slice:nth-child(3) {
-  top: 70px;
-  right: 70px;
-  border-radius: 0 0 0 140px;
-  padding: 15px 15px 15px 15px;
-}
-
-/* Ajustes especiales cuando son exactamente 2 o 3 elementos */
+/* Posicionamiento exacto en cuadrante inferior-izquierdo respecto al botón */
 .wheel-menu.items-2 .wheel-slice:nth-child(1) {
-  top: 0px; right: 140px; width: 140px; height: 140px; border-radius: 140px 0 0 0; padding: 25px 20px 10px 15px;
+  top: 0px;
+  left: -140px;
+  border-radius: 140px 0 0 140px;
+  padding: 20px 15px 15px 25px;
 }
+
 .wheel-menu.items-2 .wheel-slice:nth-child(2) {
-  top: 140px; right: 0px; width: 140px; height: 140px; border-radius: 0 0 140px 0; padding: 15px 10px 20px 25px;
+  top: 140px;
+  left: 0px;
+  border-radius: 0 0 140px 140px;
+  padding: 25px 15px 15px 15px;
 }
 
 .wheel-slice i {
