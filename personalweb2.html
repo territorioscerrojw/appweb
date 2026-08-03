@@ -1472,17 +1472,19 @@ body.dark-mode .tarjeta-caducada .card-back {
             <div class="grid" id="${idGrid}">${generarTarjetasHTML(lista, tipo, estaBloqueado)}</div>`;
   }
 
-  function generarTarjetasHTML(lista, tipo, estaBloqueado) {
-    let esCampana = (tipo === 'c'); 
+ function generarTarjetasHTML(lista, tipo, estaBloqueado) {
+    let esCampana = (tipo === 'c');
+
     return lista.map((t, i) => {
         let diasTotales = calcularDiasTotales(t.tiempo || "0");
-       
-      let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
+        
+        // Los territorios de campaña nunca se marcan como caducados
+        let esCaducado = !esCampana && ((t.tiempo && t.tiempo.toUpperCase().includes("CADUCADO")) || diasTotales <= 0);
 
         let textoTiempoMostrado = t.tiempo;
         if (diasTotales >= 120 && !esCaducado) {
             textoTiempoMostrado = "4 MESES";
-        } else if (!esCaducado) {
+        } else if (!esCaducado && t.tiempo) {
             textoTiempoMostrado = t.tiempo.replace(" y ", " ");
         }
 
@@ -1490,17 +1492,17 @@ body.dark-mode .tarjeta-caducada .card-back {
         let porcentaje = Math.min(100, (diasTotales / 120) * 100);
    
         const baseUrlInc = "https://docs.google.com/forms/d/e/1FAIpQLSde5txBH7G1COpGGaDw8B88l0YWvuIA_0RF7_QVmoszehqpLw/viewform";
-        const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${t.num}&entry.281107512=${encodeURIComponent(nombreH)}`;
+        const numeroTerritorio = (t.num !== undefined && t.num !== null) ? t.num : (t.numero || 0);
+        const urlIncidencias = `${baseUrlInc}?usp=pp_url&entry.1249287665=${numeroTerritorio}&entry.281107512=${encodeURIComponent(nombreH)}`;
+        
         let matches = (t.coords || "").match(/[-0-9.]+/g);
         let urlNavegacion = (matches && matches.length >= 2) ? `https://www.google.com/maps/dir/?api=1&destination=${matches[0]},${matches[1]}&travelmode=driving` : "#";
         let tieneIncidencias = t.notes && t.notes.trim() !== "" && t.notes !== "No hay incidencias.";
         const nombreSeguro = encodeURIComponent(nombreH);
 
-       
         let tarjetaBloqueada = (!esCampana && estaBloqueado);
 
-       let numeroSeguro = (t.num !== undefined && t.num !== null) ? t.num : (t.numero || 0);
-let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
+        let numInt = parseInt(String(numeroTerritorio).replace(/\D/g, '')) || 0;
         let zonaStr = String(t.zona || "").trim().toUpperCase();
         let aplicarAzulElegante = (numInt > 500 || zonaStr === "NEGOCIOS");
         let claseAzulElegante = aplicarAzulElegante ? "azul-elegante-texto" : "";
@@ -1516,10 +1518,10 @@ let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
                 <!-- CARA FRONTAL -->
                 <div class="card-front">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
-                      <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${t.num}</span>
-                      <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona}</span>
+                      <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
+                      <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona || ''}</span>
                     </div>
-                    <div class="img-box-custom" onclick="abrirVisor('${t.imgMini}')" style="cursor: pointer;"><img src="${t.imgMini}" alt="Imagen"></div>
+                    <div class="img-box-custom" onclick="abrirVisor('${t.imgMini || ''}')" style="cursor: pointer;"><img src="${t.imgMini || ''}" alt="Imagen"></div>
                     ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                     
                     ${esCampana ? '' : `
@@ -1536,7 +1538,7 @@ let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
 
                     <div class="swipe-container">
                         <div class="swipe-text">DESLIZAR PARA ENTREGAR</div>
-                        <div class="swipe-handle" data-num="${t.num}" data-zona="${t.zona}" data-nombre="${nombreSeguro}" data-tiporeg="${esCampana ? 'campaña' : 'normal'}" ontouchstart="iniciarSwipe(event)">
+                        <div class="swipe-handle" data-num="${numeroTerritorio}" data-zona="${t.zona || ''}" data-nombre="${nombreSeguro}" data-tiporeg="${esCampana ? 'campaña' : 'normal'}" ontouchstart="iniciarSwipe(event)">
                              <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>
@@ -1546,8 +1548,8 @@ let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
                 <!-- CARA TRASERA -->
                 <div class="card-back">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
-                      <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${t.num}</span>
-                      <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona}</span>
+                      <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
+                      <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona || ''}</span>
                     </div>
                     <div class="etiqueta-calles">NUMERACIÓN DE LAS CALLES</div>
                     <div class="calles-container"><div class="calles-texto">${formatearCalles(t.calles)}</div></div>
@@ -1555,7 +1557,7 @@ let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
                     <div class="btns-back-row" style="${esCampana ? 'grid-template-columns: repeat(2, 1fr);' : ''}">
                         <a href="${urlIncidencias}" target="_blank" class="btn-back-action" style="background: #f5a623;"><i class="fa-solid fa-circle-plus"></i><span>AÑADIR INCIDENCIA</span></a>
                         <a href="${urlNavegacion}" target="_blank" class="btn-back-action" style="background: #007aff;"><i class="fa-solid fa-location-arrow"></i><span>CÓMO LLEGAR</span></a>
-                        ${esCampana ? '' : `<button onclick="solicitarRenovacion('${t.num}')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
+                        ${esCampana ? '' : `<button onclick="solicitarRenovacion('${numeroTerritorio}')" class="btn-back-action" style="background: #34c759;"><i class="fa-solid fa-rotate"></i><span>SOLICITAR RENOVACIÓN</span></button>`}
                     </div>
                     <button class="btn-more" onclick="girarTarjeta('${tipo}', ${i})">VOLVER</button>
                 </div>
@@ -1563,7 +1565,7 @@ let numInt = parseInt(String(numeroSeguro).replace(/\D/g, '')) || 0;
         </div>`;
     }).join('');
   }
-
+  
   function solicitarRenovacion(numeroTerritorio) {
       const modal = document.getElementById('renovacion-modal');
       if (modal) modal.classList.add('active');
