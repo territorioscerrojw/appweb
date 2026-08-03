@@ -158,6 +158,7 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ ESTILO IOS MEJORADO --- */
+/* --- MENÚ ESTILO IOS MEJORADO (CON ANIMACIÓN SUAVE SIN BUG) --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
@@ -177,10 +178,17 @@ body.dark-mode .btn-settings {
   padding: 10px;
   gap: 4px;
   opacity: 0;
-  transform: translateY(-12px) scale(0.94);
+  transform: translateY(-8px); /* Eliminamos el scale inicial para evitar el salto */
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1000;
+  will-change: transform, opacity; /* Forzamos aceleración por hardware */
+}
+
+.apple-dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 body.dark-mode .apple-dropdown-menu {
@@ -194,11 +202,6 @@ body.dark-mode .apple-dropdown-menu {
     inset 0 2px 4px rgba(255, 255, 255, 0.15);
 }
 
-.apple-dropdown-menu.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
 
 /* Cabecera interna del menú */
 .apple-menu-header {
