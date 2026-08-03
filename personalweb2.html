@@ -1214,7 +1214,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         htmlCampaña += `
           <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
               <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
-                  Territorios Trabajados: <span style="color: var(--success); font-size: 1.1rem; margin-left: 5px;" id="contador-trabajados-campaña">${countTrabajados}</span>
+                  Territorios Trabajados: <span id="contador-campaña-trabajados" style="color: var(--success); font-size: 1.1rem; margin-left: 5px;">${countTrabajados}</span>
               </div>
               <button onclick="abrirModalTrabajados()" style="background: var(--azul-elegante); color: white; border: none; padding: 8px 20px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);">
                   VER
@@ -1725,17 +1725,13 @@ body.dark-mode .tarjeta-caducada .card-back {
               if (!datosCargados.campañaTrabajados) datosCargados.campañaTrabajados = [];
               datosCargados.campañaTrabajados.push(territorioTerminado);
               
-              // 1. REFRESCAR EL CONTADOR VISUAL AL INSTANTE
-              let countTrabajados = datosCargados.campañaTrabajados.length;
-              let contenedoresInfo = document.querySelectorAll('div[style*="margin: 15px 20px"]');
-              contenedoresInfo.forEach(cont => {
-                  if (cont.innerHTML.includes("Territorios Trabajados:")) {
-                      let spanNum = cont.querySelector('span[style*="color: var(--success)"]');
-                      if (spanNum) spanNum.innerText = countTrabajados;
-                  }
-              });
+              // 1. ACTUALIZAR CONTADOR AL INSTANTE USANDO SU ID
+              let spanContador = document.getElementById('contador-campaña-trabajados');
+              if (spanContador) {
+                  spanContador.innerText = datosCargados.campañaTrabajados.length;
+              }
 
-              // 2. SI EL MODAL ESTÁ ABIERTO, ACTUALIZARLO AUTOMÁTICAMENTE AL VUELO
+              // 2. SI EL MODAL ESTÁ ABIERTO, REFRESCAR SU CONTENIDO AL VUELO
               const modal = document.getElementById('modal-trabajados-campaña');
               if (modal && modal.style.display === 'flex') {
                   abrirModalTrabajados();
@@ -1743,7 +1739,7 @@ body.dark-mode .tarjeta-caducada .card-back {
           }
       }
 
-      // Petición al servidor sin alterar la fecha de la columna N
+      // Petición al servidor sin alterar ni borrar la fecha de la columna N
       const urlFinal = `${urlAppScript}?action=registrar&num=${numT}&zona=${encodeURIComponent(zona)}&nombre=${nombreCodificado}&tipo=${tipoReg}`;
 
       fetch(urlFinal)
