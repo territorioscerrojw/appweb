@@ -1544,30 +1544,33 @@ body.dark-mode .tarjeta-caducada .card-back {
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
-    // El botón "CUALQUIERA" se mantiene interactivo por defecto
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    // Obtenemos las zonas disponibles enviadas desde el backend (si no llega por alguna razón, se queda vacío)
-    const zonasValidas = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
+    // Obtenemos las zonas válidas y las normalizamos también
+    const zonasValidasRaw = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
+    const zonasValidas = zonasValidasRaw.map(z => z.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase());
 
-   listaZonas.forEach(z => {
-        let estaDisponible = zonasValidas.includes(z);
+    listaZonas.forEach(z => {
+        let zNormalizada = z.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        let estaDisponible = zonasValidas.includes(zNormalizada);
 
         if (estaDisponible) {
-            // Si SÍ está disponible: botón normal
+            // Si tiene fechas anteriores a hace 6 meses: DISPONIBLE
             htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
         } else {
-            // Si NO está disponible: el texto va dentro del botón
+            // Si no tiene registros antiguos (es reciente): NO DISPONIBLE con sello rojo
             htmlZonas += `
-                <div class="pref-btn-opcion" style="opacity: 0.5; cursor: not-allowed; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;" data-val="${z}">
-                    <span>${z}</span>
-                    <span style="font-size: 8px; color: #ff3b30; font-weight: 700; margin-top: 2px;">NO DISPONIBLE</span>
+                <div class="pref-btn-opcion" style="position: relative; opacity: 0.6; cursor: not-allowed; overflow: hidden; background-color: #f2f2f2;" data-val="${z}">
+                    <span style="opacity: 0.4;">${z}</span>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background-color: rgba(255, 59, 48, 0.9); color: white; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                        NO DISPONIBLE
+                    </div>
                 </div>`;
         }
     });
+
     containerZonas.innerHTML = htmlZonas;
   }
-
   function togglePrefBoton(btn) {
     const valor = btn.getAttribute('data-val');
     const contenedorPadre = btn.parentElement;
