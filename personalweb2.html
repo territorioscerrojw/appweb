@@ -1546,19 +1546,16 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    // Obtenemos las zonas válidas y las normalizamos también
-    const zonasValidasRaw = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
-    const zonasValidas = zonasValidasRaw.map(z => z.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase());
+    const zonasValidas = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
 
     listaZonas.forEach(z => {
-        let zNormalizada = z.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        let estaDisponible = zonasValidas.includes(zNormalizada);
+        let estaDisponible = zonasValidas.includes(z);
 
         if (estaDisponible) {
-            // Si tiene fechas anteriores a hace 6 meses: DISPONIBLE
+            // Si SÍ está dentro del rango de los últimos 6 meses: botón interactivo normal
             htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
         } else {
-            // Si no tiene registros antiguos (es reciente): NO DISPONIBLE con sello rojo
+            // Si su última vez fue ANTERIOR a hace 6 meses (o no tiene registro reciente): bloqueado con sello en diagonal
             htmlZonas += `
                 <div class="pref-btn-opcion" style="position: relative; opacity: 0.6; cursor: not-allowed; overflow: hidden; background-color: #f2f2f2;" data-val="${z}">
                     <span style="opacity: 0.4;">${z}</span>
