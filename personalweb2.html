@@ -177,16 +177,17 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ ESTILO IOS MEJORADO --- */
+/* --- MENÚ ESTILO IOS MEJORADO (BOTONES SEPARADOS) --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
   right: 0;
   width: 230px;
   max-width: calc(100vw - 40px);
-  background: rgba(248, 249, 250, 0.88);
+  background: rgba(248, 249, 250, 0.82);
   backdrop-filter: blur(40px) saturate(220%);
   -webkit-backdrop-filter: blur(40px) saturate(220%);
-  border-radius: 22px;
+  border-radius: 20px;
   box-shadow: 
     0 30px 60px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.9),
@@ -194,8 +195,8 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  gap: 4px;
+  padding: 8px;
+  gap: 6px; /* Espaciado clave para separar los botones */
   opacity: 0;
   transform: translateY(-8px);
   pointer-events: none;
@@ -211,7 +212,7 @@ body.dark-mode .btn-settings {
 }
 
 body.dark-mode .apple-dropdown-menu {
-  background: rgba(22, 27, 34, 0.88);
+  background: rgba(22, 27, 34, 0.82);
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   border: 0.5px solid rgba(255, 255, 255, 0.18);
@@ -222,16 +223,20 @@ body.dark-mode .apple-dropdown-menu {
 }
 
 .apple-menu-header {
-  padding: 10px 12px 12px 12px;
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-  margin-bottom: 4px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 0.5px solid rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6);
 }
 
 body.dark-mode .apple-menu-header {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .apple-menu-avatar {
@@ -270,18 +275,29 @@ body.dark-mode .apple-menu-header {
   font-weight: 600;
 }
 
+/* --- CADA OPCIÓN CONVERTIDA EN UN BOTÓN FLOTANTE INDEPENDIENTE --- */
 .apple-menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 11px 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
   color: var(--primary);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  /* Efecto Glass individual para cada botón */
+  background: rgba(255, 255, 255, 0.5);
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 2px 5px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-mode .apple-menu-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .apple-menu-item-content {
@@ -295,13 +311,17 @@ body.dark-mode .apple-menu-header {
 }
 
 .apple-menu-item:hover {
-  background: rgba(0, 122, 255, 0.1);
+  background: rgba(0, 122, 255, 0.12);
+  border-color: rgba(0, 122, 255, 0.3);
   color: #007aff;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 4px 10px rgba(0, 122, 255, 0.15);
 }
 
 body.dark-mode .apple-menu-item:hover {
   background: rgba(99, 179, 237, 0.15);
+  border-color: rgba(99, 179, 237, 0.4);
   color: #63b3ed;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .apple-menu-item i {
@@ -310,15 +330,13 @@ body.dark-mode .apple-menu-item:hover {
   text-align: center;
 }
 
+/* El divisor ya no es necesario con botones separados, pero si lo dejas, se convierte en un espaciador sutil */
 .apple-menu-divider {
-  height: 0.5px;
-  background: rgba(0, 0, 0, 0.08);
-  margin: 4px 8px;
+  height: 2px;
+  background: transparent;
+  margin: 2px 0;
 }
 
-body.dark-mode .apple-menu-divider {
-  background: rgba(255, 255, 255, 0.08);
-}
 
 .user-name {  
   font-family: 'Whisper', cursive;  
