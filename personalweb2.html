@@ -1526,7 +1526,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       if (modal) modal.style.display = 'none';
   }
 
-  function poblarZonasModal() {
+ function poblarZonasModal(datosPortal) {
     const listaZonas = [
       "CERRO DEL ÁGUILA",
       "GARCÍA LORCA",
@@ -1544,12 +1544,27 @@ body.dark-mode .tarjeta-caducada .card-back {
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
+    // El botón "CUALQUIERA" se mantiene interactivo por defecto
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    listaZonas.forEach(z => {
-        htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
-    });
+    // Obtenemos las zonas disponibles enviadas desde el backend (si no llega por alguna razón, se queda vacío)
+    const zonasValidas = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
 
+   listaZonas.forEach(z => {
+        let estaDisponible = zonasValidas.includes(z);
+
+        if (estaDisponible) {
+            // Si SÍ está disponible: botón normal
+            htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
+        } else {
+            // Si NO está disponible: el texto va dentro del botón
+            htmlZonas += `
+                <div class="pref-btn-opcion" style="opacity: 0.5; cursor: not-allowed; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;" data-val="${z}">
+                    <span>${z}</span>
+                    <span style="font-size: 8px; color: #ff3b30; font-weight: 700; margin-top: 2px;">NO DISPONIBLE</span>
+                </div>`;
+        }
+    });
     containerZonas.innerHTML = htmlZonas;
   }
 
