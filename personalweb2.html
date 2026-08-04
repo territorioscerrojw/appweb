@@ -76,8 +76,23 @@ body.dark-mode .btn-more {
 
 * {
   touch-action: manipulation;
+  box-sizing: border-box; /* Asegurar cálculo correcto de anchos y paddings */
 }
-body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--primary); transition: background 0.3s, color 0.3s; }
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden; /* Evitar desbordamiento horizontal global */
+}
+
+body { 
+  font-family: 'Outfit', sans-serif; 
+  background-color: var(--bg); 
+  margin: 0; 
+  padding: 0; 
+  color: var(--primary); 
+  transition: background 0.3s, color 0.3s; 
+}
 
 .campaña-info-card {
     background: transparent !important;
@@ -85,6 +100,7 @@ body { font-family: 'Outfit', sans-serif; background-color: var(--bg); margin: 0
     box-shadow: none !important;
     padding: 15px 20px;
     box-sizing: border-box;
+    width: 100%;
 }
 
 body.dark-mode .campaña-info-card {
@@ -104,6 +120,7 @@ header {
   position: relative; 
   box-sizing: border-box;
   width: 100%;
+  max-width: 100vw;
   z-index: 100;
 }
 
@@ -119,7 +136,8 @@ body.dark-mode header {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible;
+  overflow: hidden; /* Evitar que el nombre desborde */
+  text-overflow: ellipsis;
 }
 
 .settings-container {
@@ -158,12 +176,12 @@ body.dark-mode .btn-settings {
 }
 
 /* --- MENÚ ESTILO IOS MEJORADO --- */
-/* --- MENÚ ESTILO IOS MEJORADO (CON ANIMACIÓN SUAVE SIN BUG) --- */
 .apple-dropdown-menu {
   position: absolute;
   top: 55px;
   right: 0;
   width: 230px;
+  max-width: calc(100vw - 40px);
   background: rgba(248, 249, 250, 0.88);
   backdrop-filter: blur(40px) saturate(220%);
   -webkit-backdrop-filter: blur(40px) saturate(220%);
@@ -178,11 +196,11 @@ body.dark-mode .btn-settings {
   padding: 10px;
   gap: 4px;
   opacity: 0;
-  transform: translateY(-8px); /* Eliminamos el scale inicial para evitar el salto */
+  transform: translateY(-8px);
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1000;
-  will-change: transform, opacity; /* Forzamos aceleración por hardware */
+  will-change: transform, opacity;
 }
 
 .apple-dropdown-menu.show {
@@ -202,8 +220,6 @@ body.dark-mode .apple-dropdown-menu {
     inset 0 2px 4px rgba(255, 255, 255, 0.15);
 }
 
-
-/* Cabecera interna del menú */
 .apple-menu-header {
   padding: 10px 12px 12px 12px;
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
@@ -305,20 +321,38 @@ body.dark-mode .apple-menu-divider {
 
 .user-name { 
   font-family: 'Whisper', cursive; 
-  font-size: clamp(1.5rem, 10vw, 2.8rem); 
+  font-size: clamp(1.5rem, 8vw, 2.8rem); 
   margin: 0; 
   font-weight: 400; 
   white-space: nowrap; 
   text-align: center;
 }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 20px; }
+/* --- SOLUCIÓN ANCHO DE TARJETAS CON ZOOM --- */
+#grid-container {
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); 
+  gap: 20px; 
+  padding: 20px; 
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
 
 /* --- BOTÓN QUIERO UN TERRITORIO --- */
 .quiero-territorio-container {
   padding: 0 20px 25px 20px;
   display: flex;
   justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .btn-quiero-territorio {
@@ -339,6 +373,7 @@ body.dark-mode .apple-menu-divider {
   gap: 10px;
   box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
   transition: transform 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
 }
 
 .btn-quiero-territorio:active {
@@ -364,6 +399,8 @@ body.dark-mode .btn-quiero-territorio {
   align-items: center;
   padding: 15px;
   box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
 }
 
 #preferencias-modal.active {
@@ -440,6 +477,7 @@ body.dark-mode .preferencias-content {
   align-items: center;
   justify-content: center;
   line-height: 1.2;
+  box-sizing: border-box;
 }
 
 body.dark-mode .pref-btn-opcion {
@@ -470,6 +508,7 @@ body.dark-mode .pref-btn-opcion {
   cursor: pointer;
   border: none;
   transition: transform 0.2s, opacity 0.2s;
+  box-sizing: border-box;
 }
 
 .pref-btn-accion:active {
@@ -497,8 +536,9 @@ body.dark-mode .pref-btn-cancelar {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin: 15px 10px -5px 10px; 
+  margin: 15px 15px -5px 15px; 
   padding: 0 5px;
+  box-sizing: border-box;
 }
 
 .ordenar-label {
@@ -519,6 +559,7 @@ body.dark-mode .pref-btn-cancelar {
   outline: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .ordenar-select:focus {
@@ -526,8 +567,22 @@ body.dark-mode .pref-btn-cancelar {
   background-color: #fff;
 }
 
-.card-container { perspective: 1000px; width: 100%; }
-.card-inner { position: relative; width: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; will-change: transform; transform: translateZ(0);}
+.card-container { 
+  perspective: 1000px; 
+  width: 100%; 
+  max-width: 100%;
+  box-sizing: border-box; 
+}
+.card-inner { 
+  position: relative; 
+  width: 100%; 
+  max-width: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+  transform-style: preserve-3d; 
+  will-change: transform; 
+  transform: translateZ(0);
+  box-sizing: border-box;
+}
 .card-container.flipped .card-inner { transform: rotateY(180deg); }
 .card-container.is-flipping .swipe-text,
 .card-container.is-flipping .icono-latido {
@@ -541,6 +596,7 @@ body.dark-mode .pref-btn-cancelar {
 
 .card-front, .card-back {
   width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   backface-visibility: hidden;
@@ -550,6 +606,7 @@ body.dark-mode .pref-btn-cancelar {
   overflow: hidden;
   box-shadow: var(--borde-destello);
   border: 0.5px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
 }
 
 body.dark-mode .card-front, 
@@ -580,6 +637,8 @@ body.dark-mode .card-back {
   align-items: center; 
   flex-shrink: 0; 
   background: var(--header-bg); 
+  box-sizing: border-box;
+  width: 100%;
 }
 
 body.dark-mode .card-header { 
@@ -588,7 +647,7 @@ body.dark-mode .card-header {
 }
 
 .card-num { font-size: 2.2rem; font-weight: 900; }
-.card-zona { font-size: 1.2rem; color: #8e8e93; font-weight: 600; }
+.card-zona { font-size: 1.2rem; color: #8e8e93; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
 .img-box-custom { 
   height: 200px; 
   margin: 12px 14px 0 14px; 
@@ -597,6 +656,7 @@ body.dark-mode .card-header {
   border: 0.5px solid rgba(0, 0, 0, 0.1); 
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05);
   flex-shrink: 0; 
+  box-sizing: border-box;
 }
 
 body.dark-mode .img-box-custom {
@@ -616,10 +676,11 @@ body.dark-mode .img-box-custom {
   font-weight: 700;
   color: #8e8e93;
   letter-spacing: 0.5px;
+  box-sizing: border-box;
 }
 
-.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; }
-.calles-texto { font-size: 1rem; white-space: pre-line; line-height: 1.4; }
+.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; box-sizing: border-box; width: 100%; }
+.calles-texto { font-size: 1rem; white-space: pre-line; line-height: 1.4; word-break: break-word; }
 
 .btns-back-row { 
   display: grid; 
@@ -629,6 +690,7 @@ body.dark-mode .img-box-custom {
   padding: 0; 
   flex-shrink: 0; 
   box-sizing: border-box;
+  width: calc(100% - 20px);
 }
 
 .btn-back-action { 
@@ -637,10 +699,10 @@ body.dark-mode .img-box-custom {
   align-items: center; 
   justify-content: space-between; 
   aspect-ratio: 1 / 1; 
-  padding: 14px 10px 10px 10px; 
+  padding: 14px 6px 10px 6px; 
   border-radius: 16px; 
   font-weight: 700; 
-  font-size: 0.9rem; 
+  font-size: 0.8rem; 
   text-align: center; 
   border: none; 
   cursor: pointer; 
@@ -659,7 +721,7 @@ body.dark-mode .img-box-custom {
 }
 
 .btn-back-action i {
-  font-size: 2.2rem !important; 
+  font-size: 1.8rem !important; 
   margin-top: 4px;
   filter: none; 
 }
@@ -695,7 +757,19 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
   box-sizing: border-box; 
 }
 
-.swipe-container { width: 90%; margin: 15px auto; height: 55px; background: rgba(0, 0, 0, 0.05); border-radius: 30px; position: relative; display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
+.swipe-container { 
+  width: calc(100% - 30px); 
+  margin: 15px auto; 
+  height: 55px; 
+  background: rgba(0, 0, 0, 0.05); 
+  border-radius: 30px; 
+  position: relative; 
+  display: flex; 
+  align-items: center; 
+  overflow: hidden; 
+  flex-shrink: 0; 
+  box-sizing: border-box;
+}
 .swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
@@ -709,7 +783,7 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
   text-align: center; 
   font-weight: 700; 
   color: #8e8e93; 
-  font-size: 1rem; 
+  font-size: 0.9rem; 
   pointer-events: none;
   padding-left: 45px; 
   box-sizing: border-box;
@@ -749,6 +823,8 @@ h2 {
   display: flex;             
   justify-content: space-between; 
   align-items: center;       
+  box-sizing: border-box;
+  width: 100%;
 }
 
 #image-viewer-modal, #renovacion-modal {
@@ -763,6 +839,8 @@ h2 {
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
 }
 
 #image-viewer-modal.active, #renovacion-modal.active {
@@ -777,6 +855,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
 }
 
 #viewer-img {
@@ -859,6 +938,7 @@ h2 {
   opacity: 0.85;
   margin-bottom: 20px;
   text-align: left;
+  word-break: break-word;
 }
 
 .renovacion-btn-entendido {
@@ -873,6 +953,7 @@ h2 {
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
   transition: transform 0.2s, opacity 0.2s;
+  box-sizing: border-box;
 }
 
 .renovacion-btn-entendido:active {
@@ -906,27 +987,16 @@ h2 {
   text-align: center;
   background: rgba(0, 0, 0, 0.25); 
   border-radius: 18px;
+  box-sizing: border-box;
 }
 
 .texto-bloqueo {
   color: #fff;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
   text-transform: uppercase;
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   line-height: 1.4;
-}
-
-.campaña-info-card {
-  background: var(--card-bg);
-  border-bottom: 0.5px solid rgba(0,0,0,0.1);
-  padding: 15px 20px;
-  box-sizing: border-box;
-}
-
-body.dark-mode .campaña-info-card {
-  background: var(--card-bg);
-  border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
 
 .neon-verde { background-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
@@ -1113,7 +1183,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 </div>
 
 <!-- Modal de Territorios Trabajados de Campaña -->
-<div id="modal-trabajados-campaña" onclick="cerrarModalTrabajados(event)" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
+<div id="modal-trabajados-campaña" onclick="cerrarModalTrabajados(event)" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; width: 100vw; height: 100vh;">
     <div style="background: var(--card-bg); width: 100%; max-width: 480px; max-height: 85vh; border-radius: 24px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; box-sizing: border-box; animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div style="font-size: 1.1rem; font-weight: 800; text-transform: uppercase; color: var(--primary);">Territorios de Campaña Trabajados</div>
@@ -1192,11 +1262,9 @@ body.dark-mode .tarjeta-caducada .card-back {
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
 
-    // Actualizar datos del menú desplegable de usuario
     document.getElementById('menu-username-text').innerText = nombreH;
     document.getElementById('menu-avatar-initial').innerText = nombreH.charAt(0).toUpperCase();
 
-    // Inicializar la grilla de zonas del modal de preferencias inmediatamente
     poblarZonasModal();
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
@@ -1297,7 +1365,7 @@ body.dark-mode .tarjeta-caducada .card-back {
         
         let countTrabajados = (datos.campañaTrabajados || []).length;
         htmlCampaña += `
-          <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="margin: 15px 20px; background: var(--card-bg); padding: 14px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(0,0,0,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.05); box-sizing: border-box;">
               <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
                   Territorios Trabajados: <span id="contador-campaña-trabajados" style="color: var(--success); font-size: 1.1rem; margin-left: 5px;">${countTrabajados}</span>
               </div>
@@ -1325,7 +1393,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     } else {
         htmlPersonales = `
             <h2 class="h2-personales">Mis Territorios <i class="fa-solid fa-user-circle"></i></h2>
-            <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <div style="padding: 40px 20px; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.95rem; background: var(--card-bg); margin: 20px; border-radius: 18px; border: 0.5px solid rgba(0,0,0,0.1); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); box-sizing: border-box;">
                 <div style="font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;">NO TIENES NINGÚN TERRITORIO PERSONAL ASIGNADO.</div>
                 <div>CONTACTA CON EL DEPARTAMENTO DE TERRITORIOS PARA QUE TE ASIGNEN UNO. MUCHAS GRACIAS.</div>
             </div>` + botonQuieroTerritorioHTML;
@@ -1361,13 +1429,13 @@ body.dark-mode .tarjeta-caducada .card-back {
               let fechaEntrega = t.fechaEntrega || 'Sin fecha';
 
               htmlItems += `
-                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.03); padding: 12px 14px; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.06); gap: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.03); padding: 12px 14px; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.06); gap: 12px; box-sizing: border-box;">
                     <div style="width: 100px; height: 60px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.1); cursor: pointer;" onclick="abrirVisor('${imgMini}')">
                         <img src="${imgMini}" style="width: 100%; height: 100%; object-fit: contain;" alt="Miniatura">
                     </div>
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px;">
-                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary);">Nº ${numTerritorio}</div>
-                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: 600;">Fecha Entrega: ${fechaEntrega}</div>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; min-width: 0;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nº ${numTerritorio}</div>
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Fecha Entrega: ${fechaEntrega}</div>
                     </div>
                     <button onclick="reactivarTerritorioCampaña('${numTerritorio}', '${zonaTerritorio}')" style="background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; box-shadow: 0 3px 8px rgba(52,199,89,0.3);">
                         REACTIVAR
@@ -1708,16 +1776,16 @@ body.dark-mode .tarjeta-caducada .card-back {
                       <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona || ''}</span>
                     </div>
                     <div class="img-box-custom" onclick="abrirVisor('${t.imgMini || ''}')" style="cursor: pointer;"><img src="${t.imgMini || ''}" alt="Imagen"></div>
-                    ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05);"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
+                    ${tieneIncidencias ? `<div style="padding: 12px 16px; background-color: rgba(255, 59, 48, 0.12); font-size: 0.9rem; border-bottom: 0.5px solid rgba(0,0,0,0.05); box-sizing: border-box;"><i class="fa-solid fa-triangle-exclamation icono-latido"></i>${limpiarIncidencia(t.notes)}</div>` : ''}
                     
                     ${esCampana ? '' : `
-                      <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 25px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px;">
+                      <div class="tiempo-container ${esCaducado ? 'tiempo-caducado-container' : ''}" style="display: flex; flex-direction: column; padding: 15px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 10px; box-sizing: border-box;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                             <span class="anillo-label" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; max-width: 90px; color: #8e8e93;">TIEMPO RESTANTE</span>
-                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.5rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
+                            <div class="texto-tiempo-grande ${esCaducado ? 'texto-caducado-animacion' : ''}" style="font-size: 1.3rem; font-weight: 900; color: ${esCaducado ? '#ff3b30' : 'var(--primary)'}; white-space: nowrap;">${esCaducado ? '¡CADUCADO!' : textoTiempoMostrado}</div>
                         </div>
 
-                        <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden;">
+                        <div class="barra-container" style="width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden; box-sizing: border-box;">
                             <div class="barra-progreso" style="width: ${esCaducado ? '100%' : porcentaje}%; height: 100%; background-color: ${esCaducado ? '#ff3b30' : color}; transition: width 0.5s;"></div>
                         </div>
                     </div>`}
