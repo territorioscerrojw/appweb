@@ -320,13 +320,16 @@ body.dark-mode .apple-menu-divider {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.user-name { 
-  font-family: 'Whisper', cursive; 
-  font-size: clamp(2rem, 5vw, 3rem); /* Control estricto con clamp para evitar que crezca demasiado */
-  margin: 0; 
-  font-weight: 400; 
-  white-space: nowrap; 
-  text-align: center;
+.user-name {  
+  font-family: 'Whisper', cursive;  
+  font-size: 2.2rem; /* Tamaño fijo seguro que no se descontrola con el zoom */
+  max-width: 65%;    /* Evita que el nombre invada el espacio del icono de configuración */
+  margin: 0;  
+  font-weight: 400;  
+  white-space: nowrap;  
+  overflow: hidden;        /* Corta el texto si por un zoom extremo llega al límite */
+  text-overflow: ellipsis; /* Añade puntos suspensivos (...) si el nombre es muy largo */
+  text-align: left;        /* Alineado a la izquierda luce mejor junto al icono */
 }
 
 /* --- SOLUCIÓN ANCHO DE TARJETAS CON ZOOM --- */
