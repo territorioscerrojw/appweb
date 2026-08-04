@@ -83,7 +83,7 @@ html, body {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
-  font-size: 100%; /* Control base para el zoom */
+  font-size: 16px; /* Fijado de forma estricta para evitar saltos desproporcionados */
 }
 
 body { 
@@ -99,7 +99,7 @@ body {
     background: transparent !important;
     border-bottom: 0.5px solid rgba(0,0,0,0.1);
     box-shadow: none !important;
-    padding: 0.9375rem 1.25rem;
+    padding: 15px 20px;
     box-sizing: border-box;
     width: 100%;
 }
@@ -113,8 +113,8 @@ header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0.75rem 1.25rem; 
-  min-height: 4.375rem;    
+  padding: 12px 20px; 
+  min-height: 70px;    
   background: transparent; 
   backdrop-filter: blur(20px); 
   border-bottom: 0.5px solid rgba(0,0,0,0.1); 
@@ -132,8 +132,8 @@ body.dark-mode header {
 
 .user-name-container {
   position: absolute;
-  left: 1.25rem;
-  right: 5rem; 
+  left: 20px;
+  right: 80px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -150,8 +150,8 @@ body.dark-mode header {
 
 .btn-settings { 
   position: relative; 
-  width: 2.8125rem; 
-  height: 2.8125rem; 
+  width: 45px; 
+  height: 45px; 
   border-radius: 50%; 
   border: 0.5px solid rgba(0,0,0,0.1); 
   background: #ffffff; 
@@ -160,7 +160,7 @@ body.dark-mode header {
   align-items: center; 
   justify-content: center; 
   cursor: pointer; 
-  font-size: 1.3rem; 
+  font-size: 20px; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s;
   z-index: 10;
@@ -179,14 +179,14 @@ body.dark-mode .btn-settings {
 /* --- MENÚ ESTILO IOS MEJORADO --- */
 .apple-dropdown-menu {
   position: absolute;
-  top: 3.4375rem;
+  top: 55px;
   right: 0;
-  width: 14.375rem;
-  max-width: calc(100vw - 2.5rem);
+  width: 230px;
+  max-width: calc(100vw - 40px);
   background: rgba(248, 249, 250, 0.88);
   backdrop-filter: blur(40px) saturate(220%);
   -webkit-backdrop-filter: blur(40px) saturate(220%);
-  border-radius: 1.375rem;
+  border-radius: 22px;
   box-shadow: 
     0 30px 60px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.9),
@@ -194,8 +194,8 @@ body.dark-mode .btn-settings {
   border: 0.5px solid rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  padding: 0.625rem;
-  gap: 0.25rem;
+  padding: 10px;
+  gap: 4px;
   opacity: 0;
   transform: translateY(-8px);
   pointer-events: none;
@@ -222,12 +222,12 @@ body.dark-mode .apple-dropdown-menu {
 }
 
 .apple-menu-header {
-  padding: 0.625rem 0.75rem 0.75rem 0.75rem;
+  padding: 10px 12px 12px 12px;
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 10px;
 }
 
 body.dark-mode .apple-menu-header {
@@ -235,15 +235,15 @@ body.dark-mode .apple-menu-header {
 }
 
 .apple-menu-avatar {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 36px;
+  height: 36px;
   background: var(--azul-elegante);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -255,7 +255,7 @@ body.dark-mode .apple-menu-header {
 }
 
 .apple-menu-username {
-  font-size: 0.85rem;
+  font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -264,7 +264,7 @@ body.dark-mode .apple-menu-header {
 }
 
 .apple-menu-subtitle {
-  font-size: 0.7rem;
+  font-size: 11px;
   color: #8e8e93;
   text-transform: uppercase;
   font-weight: 600;
@@ -274,12 +274,12 @@ body.dark-mode .apple-menu-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6875rem 0.875rem;
-  border-radius: 0.75rem;
+  padding: 11px 14px;
+  border-radius: 12px;
   cursor: pointer;
   color: var(--primary);
   text-decoration: none;
-  font-size: 0.88rem;
+  font-size: 14px;
   font-weight: 600;
   transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
 }
@@ -287,7 +287,7 @@ body.dark-mode .apple-menu-header {
 .apple-menu-item-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .apple-menu-item:active {
@@ -305,15 +305,15 @@ body.dark-mode .apple-menu-item:hover {
 }
 
 .apple-menu-item i {
-  font-size: 1.05rem;
-  width: 1.25rem;
+  font-size: 16px;
+  width: 20px;
   text-align: center;
 }
 
 .apple-menu-divider {
   height: 0.5px;
   background: rgba(0, 0, 0, 0.08);
-  margin: 0.25rem 0.5rem;
+  margin: 4px 8px;
 }
 
 body.dark-mode .apple-menu-divider {
@@ -322,14 +322,14 @@ body.dark-mode .apple-menu-divider {
 
 .user-name {  
   font-family: 'Whisper', cursive;  
-  font-size: 2.2rem; /* Tamaño fijo seguro que no se descontrola con el zoom */
-  max-width: 65%;    /* Evita que el nombre invada el espacio del icono de configuración */
+  font-size: 35px; 
+  max-width: 65%;    
   margin: 0;  
   font-weight: 400;  
   white-space: nowrap;  
-  overflow: hidden;        /* Corta el texto si por un zoom extremo llega al límite */
-  text-overflow: ellipsis; /* Añade puntos suspensivos (...) si el nombre es muy largo */
-  text-align: left;        /* Alineado a la izquierda luce mejor junto al icono */
+  overflow: hidden;        
+  text-overflow: ellipsis; 
+  text-align: left;        
 }
 
 /* --- SOLUCIÓN ANCHO DE TARJETAS CON ZOOM --- */
@@ -342,9 +342,9 @@ body.dark-mode .apple-menu-divider {
 
 .grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.75rem), 1fr)); 
-  gap: 1.25rem; 
-  padding: 1.25rem; 
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); 
+  gap: 20px; 
+  padding: 20px; 
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
@@ -352,7 +352,7 @@ body.dark-mode .apple-menu-divider {
 
 /* --- BOTÓN QUIERO UN TERRITORIO --- */
 .quiero-territorio-container {
-  padding: 0 1.25rem 1.5625rem 1.25rem;
+  padding: 0 20px 25px 20px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -361,20 +361,20 @@ body.dark-mode .apple-menu-divider {
 
 .btn-quiero-territorio {
   width: 100%;
-  max-width: 25rem;
-  padding: 1rem 1.25rem;
+  max-width: 400px;
+  padding: 16px 20px;
   background: var(--azul-elegante);
   color: white;
   border: none;
-  border-radius: 1rem;
-  font-size: 1rem;
+  border-radius: 16px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
+  gap: 10px;
   box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
   transition: transform 0.2s ease, opacity 0.2s ease;
   box-sizing: border-box;
@@ -401,7 +401,7 @@ body.dark-mode .btn-quiero-territorio {
   -webkit-backdrop-filter: blur(8px);
   justify-content: center;
   align-items: center;
-  padding: 0.9375rem;
+  padding: 15px;
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
@@ -414,10 +414,10 @@ body.dark-mode .btn-quiero-territorio {
 .preferencias-content {
   background: var(--card-bg);
   width: 100%;
-  max-width: 28.75rem;
+  max-width: 460px;
   max-height: 90vh;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
+  border-radius: 24px;
+  padding: 24px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.3);
   border: 0.5px solid rgba(255,255,255,0.15);
   box-sizing: border-box;
@@ -433,20 +433,20 @@ body.dark-mode .preferencias-content {
 }
 
 .preferencias-title {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-align: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
   color: var(--primary);
   text-transform: uppercase;
 }
 
 .preferencias-section-label {
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
   color: #8e8e93;
-  margin-bottom: 0.625rem;
+  margin-bottom: 10px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -454,24 +454,24 @@ body.dark-mode .preferencias-content {
 .pref-grid-zonas {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .pref-grid-tipos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1.5625rem;
+  gap: 8px;
+  margin-bottom: 25px;
 }
 
 .pref-btn-opcion {
   background: rgba(0, 0, 0, 0.04);
   border: 0.5px solid rgba(0, 0, 0, 0.1);
   color: var(--primary);
-  padding: 0.75rem 0.5rem;
-  border-radius: 0.75rem;
-  font-size: 0.8rem;
+  padding: 12px 8px;
+  border-radius: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
   cursor: pointer;
@@ -499,16 +499,16 @@ body.dark-mode .pref-btn-opcion {
 
 .preferencias-buttons-row {
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   margin-top: auto;
 }
 
 .pref-btn-accion {
   flex: 1;
-  padding: 0.875rem;
-  border-radius: 0.875rem;
+  padding: 14px;
+  border-radius: 14px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 15px;
   cursor: pointer;
   border: none;
   transition: transform 0.2s, opacity 0.2s;
@@ -539,14 +539,14 @@ body.dark-mode .pref-btn-cancelar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.625rem;
-  margin: 0.9375rem 0.9375rem -0.3125rem 0.9375rem; 
-  padding: 0 0.3125rem;
+  gap: 10px;
+  margin: 15px 15px -5px 15px; 
+  padding: 0 5px;
   box-sizing: border-box;
 }
 
 .ordenar-label {
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 700;
   color: #8e8e93;
   letter-spacing: 0.5px;
@@ -555,9 +555,9 @@ body.dark-mode .pref-btn-cancelar {
 .ordenar-select {
   background-color: #f2f2f7;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #1c1c1e;
   outline: none;
@@ -605,7 +605,7 @@ body.dark-mode .pref-btn-cancelar {
   flex-direction: column;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 1.125rem;
+  border-radius: 18px;
   background: var(--card-bg);
   overflow: hidden;
   box-shadow: var(--borde-destello);
@@ -634,7 +634,7 @@ body.dark-mode .card-back {
 }
 
 .card-header { 
-  padding: 0.9375rem 1.25rem; 
+  padding: 15px 20px; 
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.08); 
   display: flex; 
   justify-content: space-between; 
@@ -650,12 +650,13 @@ body.dark-mode .card-header {
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); 
 }
 
-.card-num { font-size: 2.2rem; font-weight: 900; }
-.card-zona { font-size: 1.2rem; color: #8e8e93; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
+.card-num { font-size: 35px; font-weight: 900; }
+.card-zona { font-size: 19px; color: #8e8e93; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
+
 .img-box-custom { 
-  height: 12.5rem; 
-  margin: 0.75rem 0.875rem 0 0.875rem; 
-  border-radius: 0.875rem;      
+  height: 200px; /* Altura controlada fija en píxeles para evitar que se desconfigure al hacer zoom */
+  margin: 12px 14px 0 14px; 
+  border-radius: 14px;      
   overflow: hidden;         
   border: 0.5px solid rgba(0, 0, 0, 0.1); 
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -675,26 +676,26 @@ body.dark-mode .img-box-custom {
 }
 
 .etiqueta-calles {
-  padding: 0.75rem 1.25rem 0 1.25rem;
-  font-size: 0.9rem; 
+  padding: 12px 20px 0 20px;
+  font-size: 14px; 
   font-weight: 700;
   color: #8e8e93;
   letter-spacing: 0.5px;
   box-sizing: border-box;
 }
 
-.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 1.25rem 0.9375rem 1.25rem; margin-top: 0.3125rem; box-sizing: border-box; width: 100%; }
-.calles-texto { font-size: 1rem; white-space: pre-line; line-height: 1.4; word-break: break-word; }
+.calles-container { flex-grow: 1; overflow-y: auto; padding: 0 20px 15px 20px; margin-top: 5px; box-sizing: border-box; width: 100%; }
+.calles-texto { font-size: 16px; white-space: pre-line; line-height: 1.4; word-break: break-word; }
 
 .btns-back-row { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
-  gap: 0.5rem; 
-  margin: 0.75rem 0.625rem; 
+  gap: 8px; 
+  margin: 12px 10px; 
   padding: 0; 
   flex-shrink: 0; 
   box-sizing: border-box;
-  width: calc(100% - 1.25rem);
+  width: calc(100% - 20px);
 }
 
 .btn-back-action { 
@@ -703,10 +704,10 @@ body.dark-mode .img-box-custom {
   align-items: center; 
   justify-content: space-between; 
   aspect-ratio: 1 / 1; 
-  padding: 0.875rem 0.375rem 0.625rem 0.375rem; 
-  border-radius: 1rem; 
+  padding: 14px 6px 10px 6px; 
+  border-radius: 16px; 
   font-weight: 700; 
-  font-size: 0.8rem; 
+  font-size: 13px; 
   text-align: center; 
   border: none; 
   cursor: pointer; 
@@ -725,8 +726,8 @@ body.dark-mode .img-box-custom {
 }
 
 .btn-back-action i {
-  font-size: 1.8rem !important; 
-  margin-top: 0.25rem;
+  font-size: 28px !important; 
+  margin-top: 4px;
   filter: none; 
 }
 
@@ -746,12 +747,12 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
 
 .btn-more { 
   width: 100%; 
-  padding: 1rem 0; 
+  padding: 16px 0; 
   border: none; 
   background: rgba(0,0,0,0.03); 
   color: #8e8e93; 
   font-weight: 600; 
-  font-size: 0.75rem; 
+  font-size: 12px; 
   letter-spacing: 3px; 
   text-align: center;
   cursor: pointer; 
@@ -762,11 +763,11 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
 }
 
 .swipe-container { 
-  width: calc(100% - 1.875rem); 
-  margin: 0.9375rem auto; 
-  height: 3.4375rem; 
+  width: calc(100% - 30px); 
+  margin: 15px auto; 
+  height: 55px; 
   background: rgba(0, 0, 0, 0.05); 
-  border-radius: 1.875rem; 
+  border-radius: 30px; 
   position: relative; 
   display: flex; 
   align-items: center; 
@@ -774,7 +775,7 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
   flex-shrink: 0; 
   box-sizing: border-box;
 }
-.swipe-handle { width: 2.8125rem; height: 2.8125rem; background: #34c759; border-radius: 50%; position: absolute; left: 0.3125rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
+.swipe-handle { width: 45px; height: 45px; background: #34c759; border-radius: 50%; position: absolute; left: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: grab; z-index: 2; }
 .swipe-handle i { color: #fff !important; }
 
 .tarjeta-caducada .swipe-handle {
@@ -787,9 +788,9 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
   text-align: center; 
   font-weight: 700; 
   color: #8e8e93; 
-  font-size: 0.9rem; 
+  font-size: 14px; 
   pointer-events: none;
-  padding-left: 2.8125rem; 
+  padding-left: 45px; 
   box-sizing: border-box;
   background: linear-gradient(to right, #8e8e93 20%, #fff 50%, #8e8e93 80%);
   background-size: 200% auto;
@@ -806,7 +807,7 @@ body.dark-mode .btn-back-action:nth-child(3) { color: #34c759 !important; }
   40% { transform: scale(1); }
   100% { transform: scale(1); }
 }
-.icono-latido { display: inline-block; animation: heartbeat-intenso 1.5s infinite; font-size: 1.2rem !important; margin-right: 0.625rem; color: #ff3b30; }
+.icono-latido { display: inline-block; animation: heartbeat-intenso 1.5s infinite; font-size: 19px !important; margin-right: 10px; color: #ff3b30; }
 
 @keyframes shine { 
   0% { background-position: 200% 0; } 
@@ -818,10 +819,10 @@ h2 {
   top: 0; 
   z-index: 20; 
   color: white; 
-  font-size: 1.1rem; 
+  font-size: 18px; 
   text-transform: uppercase; 
   margin: 0; 
-  padding: 0.9375rem 1.25rem; 
+  padding: 15px 20px; 
   font-weight: 800; 
   backdrop-filter: blur(15px); 
   display: flex;             
@@ -841,7 +842,7 @@ h2 {
   -webkit-backdrop-filter: blur(8px);
   justify-content: center;
   align-items: center;
-  padding: 1.25rem;
+  padding: 20px;
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
@@ -866,7 +867,7 @@ h2 {
   max-width: 100%;
   max-height: 85vh;
   object-fit: contain;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   transition: transform 0.3s ease;
   cursor: zoom-in;
@@ -874,15 +875,15 @@ h2 {
 
 .viewer-close {
   position: absolute;
-  top: 1.5625rem;
-  right: 1.5625rem;
+  top: 25px;
+  right: 25px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: none;
-  width: 2.8125rem;
-  height: 2.8125rem;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  font-size: 1.3rem;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -898,9 +899,9 @@ h2 {
 .renovacion-card-modal {
   background: var(--card-bg);
   width: 100%;
-  max-width: 26.25rem;
-  border-radius: 1.5rem;
-  padding: 1.875rem 1.5rem;
+  max-width: 420px;
+  border-radius: 24px;
+  padding: 30px 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
   border: 0.5px solid rgba(255,255,255,0.15);
   text-align: center;
@@ -914,46 +915,46 @@ h2 {
 }
 
 .renovacion-icon-box {
-  width: 4rem;
-  height: 4rem;
+  width: 64px;
+  height: 64px;
   background: rgba(52, 199, 89, 0.15);
   color: var(--success);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  margin: 0 auto 1.25rem auto;
+  font-size: 28px;
+  margin: 0 auto 20px auto;
 }
 
 .renovacion-title {
-  font-size: 1.3rem;
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  margin-bottom: 0.9375rem;
+  margin-bottom: 15px;
   color: var(--primary);
   text-transform: uppercase;
 }
 
 .renovacion-text {
-  font-size: 0.95rem;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--primary);
   opacity: 0.85;
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
   text-align: left;
   word-break: break-word;
 }
 
 .renovacion-btn-entendido {
   width: 100%;
-  padding: 0.875rem;
+  padding: 14px;
   background: var(--success);
   color: white;
   border: none;
-  border-radius: 0.875rem;
+  border-radius: 14px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 16px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
   transition: transform 0.2s, opacity 0.2s;
@@ -987,16 +988,16 @@ h2 {
   align-items: center;
   justify-content: center;
   z-index: 50;
-  padding: 1.25rem;
+  padding: 20px;
   text-align: center;
   background: rgba(0, 0, 0, 0.25); 
-  border-radius: 1.125rem;
+  border-radius: 18px;
   box-sizing: border-box;
 }
 
 .texto-bloqueo {
   color: #fff;
-  font-size: 1.8rem;
+  font-size: 28px;
   font-weight: 800;
   text-transform: uppercase;
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
