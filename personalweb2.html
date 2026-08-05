@@ -1533,7 +1533,7 @@ body.dark-mode .tarjeta-caducada .card-back {
       if (modal) modal.style.display = 'none';
   }
 
- function poblarZonasModal(datosPortal) {
+function poblarZonasModal(datosPortalParam) {
     const listaZonas = [
       "CERRO DEL ÁGUILA",
       "GARCÍA LORCA",
@@ -1551,29 +1551,32 @@ body.dark-mode .tarjeta-caducada .card-back {
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
+    // Hacemos que el contenedor permita scroll vertical y tenga un límite de altura elegante
+    containerZonas.style.maxHeight = "60vh";
+    containerZonas.style.overflowY = "auto";
+    containerZonas.style.paddingRight = "5px"; // Espacio para la barra de scroll
+
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    // Función auxiliar para quitar tildes y comparar bien
-    const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    let portalObj = datosPortalParam || window.datosPortalActual || {};
+    const zonasValidas = portalObj && portalObj.zonasDisponibles ? portalObj.zonasDisponibles : [];
 
-    // Normalizamos también las zonas válidas que vienen del servidor
-    const zonasValidas = datosPortal && datosPortal.zonasDisponibles 
-        ? datosPortal.zonasDisponibles.map(z => normalizar(z)) 
-        : [];
+    const normalizar = (str) => String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    const zonasValidasNorm = zonasValidas.map(z => normalizar(z));
 
     listaZonas.forEach(z => {
         let zNorm = normalizar(z);
-        let estaDisponible = zonasValidas.includes(zNorm);
+        let estaDisponible = zonasValidasNorm.length === 0 || zonasValidasNorm.includes(zNorm);
 
         if (estaDisponible) {
-            // Si SÍ está disponible: botón interactivo normal
+            // Botón normal interactivo
             htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
         } else {
-            // Si NO está disponible: bloqueado con sello en diagonal
+            // Botón bloqueado: texto arriba visible y badge de NO DISPONIBLE abajo en la parte inferior
             htmlZonas += `
-                <div class="pref-btn-opcion" style="position: relative; opacity: 0.6; cursor: not-allowed; overflow: hidden; background-color: #f2f2f2;" data-val="${z}">
-                    <span style="opacity: 0.4;">${z}</span>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background-color: rgba(255, 59, 48, 0.9); color: white; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                <div class="pref-btn-opcion" style="position: relative; opacity: 0.8; cursor: not-allowed; background-color: #f8f9fa; border: 1px solid #e9ecef; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 18px;" data-val="${z}">
+                    <span style="color: #495057; font-weight: 500; margin-top: 4px;">${z}</span>
+                    <div style="position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); background-color: rgba(220, 53, 69, 0.85); color: white; font-size: 8px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.3px; white-space: nowrap; pointer-events: none;">
                         NO DISPONIBLE
                     </div>
                 </div>`;
@@ -1582,7 +1585,6 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     containerZonas.innerHTML = htmlZonas;
 }
-
   function togglePrefBoton(btn) {
     const valor = btn.getAttribute('data-val');
     const contenedorPadre = btn.parentElement;
