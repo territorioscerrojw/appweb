@@ -1206,8 +1206,8 @@ body.modal-abierto {
 </div>
 
 <!-- Modal de Preferencias: "QUIERO UN TERRITORIO" -->
-<div id="preferencias-modal" onclick="cerrarModalPreferencias(event)">
-    <div class="preferencias-content">
+<div id="preferencias-modal" onclick="if(event.target === this) cerrarModalPreferencias()">
+    <div class="preferencias-content" onclick="event.stopPropagation()">
         <div class="preferencias-title">PREFERENCIAS <span style="font-size: 0.75rem; font-weight: 600; text-transform: none; display: block; margin-top: 4px; opacity: 0.8;">(selecciona una o varias opciones)</span></div>
         
         <div class="preferencias-section-label">1. ZONA</div>
@@ -1217,10 +1217,11 @@ body.modal-abierto {
 
         <div class="preferencias-section-label">2. TIPO</div>
         <div class="pref-grid-tipos" id="pref-tipos-container">
-            <div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>
-            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="CASAS">CASAS</div>
-            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="BLOQUES">BLOQUES</div>
-            <div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="NEGOCIOS">NEGOCIOS</div>
+            <!-- ¡AQUÍ AÑADIMOS , event! -->
+            <div class="pref-btn-opcion selected" onclick="togglePrefBoton(this, event)" data-val="CUALQUIERA">CUALQUIERA</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this, event)" data-val="CASAS">CASAS</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this, event)" data-val="BLOQUES">BLOQUES</div>
+            <div class="pref-btn-opcion" onclick="togglePrefBoton(this, event)" data-val="NEGOCIOS">NEGOCIOS</div>
         </div>
 
         <div class="preferencias-buttons-row">
@@ -1229,6 +1230,7 @@ body.modal-abierto {
         </div>
     </div>
 </div>
+
 
 <!-- Modal de Territorios Trabajados de Campaña -->
 <div id="modal-trabajados-campaña" onclick="cerrarModalTrabajados(event)" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 0.9375rem; box-sizing: border-box; width: 100vw; height: 100vh;">
