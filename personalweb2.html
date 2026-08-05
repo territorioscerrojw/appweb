@@ -1551,10 +1551,12 @@ function poblarZonasModal(datosPortalParam) {
     let containerZonas = document.getElementById('pref-zonas-container');
     if (!containerZonas) return;
 
-    // Hacemos que el contenedor permita scroll vertical y tenga un límite de altura elegante
-    containerZonas.style.maxHeight = "60vh";
+    // ---> LO PONGO EXACTAMENTE AQUÍ <---
+    containerZonas.style.maxHeight = "55vh";
     containerZonas.style.overflowY = "auto";
-    containerZonas.style.paddingRight = "5px"; // Espacio para la barra de scroll
+    containerZonas.style.webkitOverflowScrolling = "touch";
+    containerZonas.style.touchAction = "pan-y";
+    // -----------------------------------
 
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
@@ -1569,10 +1571,8 @@ function poblarZonasModal(datosPortalParam) {
         let estaDisponible = zonasValidasNorm.length === 0 || zonasValidasNorm.includes(zNorm);
 
         if (estaDisponible) {
-            // Botón normal interactivo
             htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
         } else {
-            // Botón bloqueado: texto arriba visible y badge de NO DISPONIBLE abajo en la parte inferior
             htmlZonas += `
                 <div class="pref-btn-opcion" style="position: relative; opacity: 0.8; cursor: not-allowed; background-color: #f8f9fa; border: 1px solid #e9ecef; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 18px;" data-val="${z}">
                     <span style="color: #495057; font-weight: 500; margin-top: 4px;">${z}</span>
@@ -1608,16 +1608,23 @@ function poblarZonasModal(datosPortalParam) {
     }
   }
 
-  function abrirModalPreferencias() {
-    const modal = document.getElementById('preferencias-modal');
-    if (modal) modal.classList.add('active');
-  }
-
-  function cerrarModalPreferencias(event) {
-    if (event && event.target.id === 'preferencias-modal') {
-      document.getElementById('preferencias-modal').classList.remove('active');
+  // Función para abrir el modal (llámala cuando pulses el botón de preferencias)
+function abrirModalPreferencias() {
+    let modal = document.getElementById('id-de-tu-modal'); // Cambia por el ID real de tu modal
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // ¡Esto bloquea la pantalla de atrás!
     }
-  }
+}
+
+// Función para cerrar el modal
+function cerrarModalPreferencias() {
+    let modal = document.getElementById('id-de-tu-modal'); // Cambia por el ID real de tu modal
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // ¡Esto devuelve el scroll a la página!
+    }
+}
 
   function cerrarModalPreferenciasDirecto() {
     const modal = document.getElementById('preferencias-modal');
