@@ -1100,7 +1100,12 @@ body.dark-mode .tarjeta-caducada .card-back {
   animation: destelloCaducado 1s infinite ease-in-out;
   display: inline-block;
 }
-
+body.modal-abierto {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
 .card-num.azul-elegante-texto,
 .card-zona.azul-elegante-texto {
   color: var(--azul-elegante) !important;
@@ -1608,21 +1613,27 @@ function poblarZonasModal(datosPortalParam) {
     }
   }
 
-  // Función para abrir el modal (llámala cuando pulses el botón de preferencias)
-function abrirModalPreferencias() {
-    let modal = document.getElementById('preferencias-modal'); // Cambia por el ID real de tu modal
+ function abrirModalPreferencias() {
+    let modal = document.getElementById('preferencias-modal'); // Cambia por tu ID real
     if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // ¡Esto bloquea la pantalla de atrás!
+        modal.style.display = 'block'; 
+        
+        // ¡ESTO CONGELA EL BODY POR COMPLETO!
+        document.body.classList.add('modal-abierto'); 
+        
+        if (typeof window.datosPortalActual !== 'undefined') {
+            poblarZonasModal(window.datosPortalActual);
+        }
     }
 }
 
-// Función para cerrar el modal
 function cerrarModalPreferencias() {
-    let modal = document.getElementById('preferencias-modal'); // Cambia por el ID real de tu modal
+    let modal = document.getElementById('preferencias-modal'); // Cambia por tu ID real
     if (modal) {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // ¡Esto devuelve el scroll a la página!
+        
+        // ¡ESTO DEVUELVE EL MOVIMIENTO AL BODY!
+        document.body.classList.remove('modal-abierto'); 
     }
 }
 
