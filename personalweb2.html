@@ -476,24 +476,22 @@ body.dark-mode .preferencias-content {
 .pref-grid-zonas {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 6px; /* Reducido de 8px a 6px para que estén más juntos */
   margin-bottom: 20px;
-}
-
-.pref-grid-tipos {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-bottom: 25px;
+  max-height: 45vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding-right: 4px;
 }
 
 .pref-btn-opcion {
   background: rgba(0, 0, 0, 0.04);
   border: 0.5px solid rgba(0, 0, 0, 0.1);
   color: var(--primary);
-  padding: 12px 8px;
-  border-radius: 12px;
-  font-size: 13px;
+  padding: 8px 6px; /* Reducido de 12px 8px a 8px 6px para hacerlos más estrechos y compactos */
+  border-radius: 10px; /* Bordes un poco más compactos acorde al tamaño */
+  font-size: 12px; /* Letra ligeramente ajustada para que quepa mejor */
   font-weight: 700;
   text-align: center;
   cursor: pointer;
@@ -502,8 +500,16 @@ body.dark-mode .preferencias-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.2;
+  line-height: 1.1;
   box-sizing: border-box;
+  min-height: 38px; /* Forzamos una altura más estilizada y estrecha */
+}
+
+.pref-grid-tipos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 25px;
 }
 
 body.dark-mode .pref-btn-opcion {
