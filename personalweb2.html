@@ -1546,16 +1546,23 @@ body.dark-mode .tarjeta-caducada .card-back {
 
     let htmlZonas = `<div class="pref-btn-opcion selected" onclick="togglePrefBoton(this)" data-val="CUALQUIERA">CUALQUIERA</div>`;
     
-    const zonasValidas = datosPortal && datosPortal.zonasDisponibles ? datosPortal.zonasDisponibles : [];
+    // Función auxiliar para quitar tildes y comparar bien
+    const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+
+    // Normalizamos también las zonas válidas que vienen del servidor
+    const zonasValidas = datosPortal && datosPortal.zonasDisponibles 
+        ? datosPortal.zonasDisponibles.map(z => normalizar(z)) 
+        : [];
 
     listaZonas.forEach(z => {
-        let estaDisponible = zonasValidas.includes(z);
+        let zNorm = normalizar(z);
+        let estaDisponible = zonasValidas.includes(zNorm);
 
         if (estaDisponible) {
-            // Si SÍ está dentro del rango de los últimos 6 meses: botón interactivo normal
+            // Si SÍ está disponible: botón interactivo normal
             htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
         } else {
-            // Si su última vez fue ANTERIOR a hace 6 meses (o no tiene registro reciente): bloqueado con sello en diagonal
+            // Si NO está disponible: bloqueado con sello en diagonal
             htmlZonas += `
                 <div class="pref-btn-opcion" style="position: relative; opacity: 0.6; cursor: not-allowed; overflow: hidden; background-color: #f2f2f2;" data-val="${z}">
                     <span style="opacity: 0.4;">${z}</span>
@@ -1567,7 +1574,8 @@ body.dark-mode .tarjeta-caducada .card-back {
     });
 
     containerZonas.innerHTML = htmlZonas;
-  }
+}
+
   function togglePrefBoton(btn) {
     const valor = btn.getAttribute('data-val');
     const contenedorPadre = btn.parentElement;
