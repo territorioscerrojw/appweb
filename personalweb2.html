@@ -1587,7 +1587,7 @@ function poblarZonasModal(datosPortalParam) {
         let estaDisponible = zonasValidasNorm.length === 0 || zonasValidasNorm.includes(zNorm);
 
         if (estaDisponible) {
-            htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this)" data-val="${z}">${z}</div>`;
+            htmlZonas += `<div class="pref-btn-opcion" onclick="togglePrefBoton(this,event)" data-val="${z}">${z}</div>`;
         } else {
             htmlZonas += `
                 <div class="pref-btn-opcion" style="position: relative; opacity: 0.8; cursor: not-allowed; background-color: #f8f9fa; border: 1px solid #e9ecef; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 18px;" data-val="${z}">
