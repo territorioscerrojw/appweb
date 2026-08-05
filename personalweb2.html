@@ -1599,7 +1599,11 @@ function poblarZonasModal(datosPortalParam) {
 
     containerZonas.innerHTML = htmlZonas;
 }
-  function togglePrefBoton(btn) {
+  function togglePrefBoton(btn, event) {
+    if (event) {
+        event.stopPropagation(); // <-- ESTO EVITA QUE EL MODAL SE CIERRE AL CLICAR
+    }
+
     const valor = btn.getAttribute('data-val');
     const contenedorPadre = btn.parentElement;
 
@@ -1620,14 +1624,13 @@ function poblarZonasModal(datosPortalParam) {
             btnCualquiera.classList.add('selected');
         }
     }
-  }
+}
+
 
  function abrirModalPreferencias() {
-    let modal = document.getElementById('preferencias-modal'); // Cambia por tu ID real
+    let modal = document.getElementById('preferencias-modal');
     if (modal) {
-        modal.style.display = 'block'; 
-        
-        // ¡ESTO CONGELA EL BODY POR COMPLETO!
+        modal.classList.add('active'); // Usamos active como tienes en tu CSS
         document.body.classList.add('modal-abierto'); 
         
         if (typeof window.datosPortalActual !== 'undefined') {
@@ -1637,19 +1640,21 @@ function poblarZonasModal(datosPortalParam) {
 }
 
 function cerrarModalPreferencias() {
-    let modal = document.getElementById('preferencias-modal'); // Cambia por tu ID real
+    let modal = document.getElementById('preferencias-modal');
     if (modal) {
-        modal.style.display = 'none';
-        
-        // ¡ESTO DEVUELVE EL MOVIMIENTO AL BODY!
+        modal.classList.remove('active');
         document.body.classList.remove('modal-abierto'); 
     }
 }
 
   function cerrarModalPreferenciasDirecto() {
-    const modal = document.getElementById('preferencias-modal');
-    if (modal) modal.classList.remove('active');
+    let modal = document.getElementById('preferencias-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-abierto');
+    }
   }
+
 
   function enviarPreferenciasTerritorio() {
     const modal = document.getElementById('preferencias-modal');
