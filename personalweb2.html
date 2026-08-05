@@ -1288,7 +1288,7 @@ body.dark-mode .tarjeta-caducada .card-back {
 
   let campañaActivaGlobal = "";
 
-  function cargar() {
+ function cargar() {
     const params = new URLSearchParams(window.location.search);
     let nombreRaw = params.get('h') || params.get('id');
     if (!nombreRaw) { document.getElementById('user-display').innerText = "Usuario no identificado"; return; }
@@ -1299,7 +1299,7 @@ body.dark-mode .tarjeta-caducada .card-back {
     document.getElementById('menu-username-text').innerText = nombreH;
     document.getElementById('menu-avatar-initial').innerText = nombreH.charAt(0).toUpperCase();
 
-    poblarZonasModal();
+    // ❌ ELIMINAMOS EL `poblarZonasModal();` de aquí arriba porque aún no hay datos.
     
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
 
@@ -1307,6 +1307,10 @@ body.dark-mode .tarjeta-caducada .card-back {
     if (datosCache) {
       try {
         const datosParsed = JSON.parse(datosCache);
+        
+        window.datosPortalActual = datosParsed; // <-- GUARDAMOS AQUÍ LOS DATOS EN CACHÉ
+        poblarZonasModal(datosParsed);          // <-- PINTAMOS EL MODAL CON LA CACHÉ
+        
         procesarYRenderizarDatos(datosParsed); 
       } catch (e) {
         console.error("Error al leer caché", e);
@@ -1317,13 +1321,16 @@ body.dark-mode .tarjeta-caducada .card-back {
       .then(r => r.json())
       .then(datos => {
         sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
+        
+        window.datosPortalActual = datos;       // <-- GUARDAMOS AQUÍ LOS DATOS FRESCOS DE LA RED
+        poblarZonasModal(datos);                // <-- PINTAMOS EL MODAL CON LOS DATOS NUEVOS
+        
         procesarYRenderizarDatos(datos);
       })
       .catch(err => {
         console.error("Error de red, manteniendo datos en caché si existían", err);
       });
   }
-
   function procesarYRenderizarDatos(datos) {
     if (datos && datos.campaña && datos.campañaTrabajados) {
           let numerosTrabajados = new Set(datos.campañaTrabajados.map(t => String(t.num || t.numero).trim()));
