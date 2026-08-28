@@ -1952,27 +1952,10 @@ function cerrarModalPreferencias() {
   }
 
     function limpiarIncidencia(texto) {
-      if (!texto) return "";
-      let limpio = texto.replace(/📅/g, "").trim();
-      
+      let limpio = texto.replace(/📅/g, "");
       return limpio.split('|').map(item => {
           if (item.trim() === "") return "";
-          
-          // Busca patrones de fecha larga o fecha con hora (ej: 28/08/2026 11:36:31 o 2026-08-28...)
-          return item.replace(/(\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})(?:\s+\d{2}:\d{2}(?::\d{2})?)?:?/g, (match) => {
-              let fechaObj = new Date(match.includes('-') ? match.replace(/-/g, '/') : match);
-              
-              // Si logra interpretarla como fecha válida, la formatea a dd/mm/aa
-              if (!isNaN(fechaObj)) {
-                  let d = String(fechaObj.getDate()).padStart(2, '0');
-                  let m = String(fechaObj.getMonth() + 1).padStart(2, '0');
-                  let a = String(fechaObj.getFullYear()).slice(-2); // Cambia a .getFullYear() si prefieres 4 dígitos (aaaa)
-                  return `<b>${d}/${m}/${a}:</b>`;
-              }
-              
-              // Si no puede parsearla, devuelve el texto original limpio
-              return `<b>${match}</b>`;
-          });
+          return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
       }).filter(i => i !== "").join("<br>");
   }
 
