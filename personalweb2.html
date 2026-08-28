@@ -1952,12 +1952,13 @@ function cerrarModalPreferencias() {
   }
 
     function limpiarIncidencia(texto) {
-      let limpio = texto.replace(/📅/g, "");
-      return limpio.split('|').map(item => {
-          if (item.trim() === "") return "";
-          return item.replace(/(\d{2}\/\d{2}:)/, "<b>$1</b>");
-      }).filter(i => i !== "").join("<br>");
-  }
+    let limpio = texto.replace(/📅/g, "");
+    return limpio.split('|').map(item => {
+        if (item.trim() === "") return "";
+        return item.replace(/(\d{2}\/\d{2}(?:\/\d{2,4})?:)/, "<b>$1</b>");
+    }).filter(i => i !== "").join("<br>");
+}
+
 
 
 function enviarAlServidor(numT, zona, nombreCodificado, tipoReg, elementoTarjeta) {
