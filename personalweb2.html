@@ -139,8 +139,19 @@ body.dark-mode header {
   align-items: center;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 100%
 }
+.user-name {  
+  font-family: 'Whisper', cursive;  
 
+
+  margin: 0;  
+  font-weight: 400;  
+  white-space: nowrap;  
+  overflow: hidden;        
+  text-overflow: ellipsis; 
+  text-align: left;        
+}
 .settings-container {
   position: relative;
   display: inline-block;
@@ -338,17 +349,7 @@ body.dark-mode .apple-menu-item:hover {
 }
 
 
-.user-name {  
-  font-family: 'Whisper', cursive;  
-  font-size: 36px; 
-  max-width: 100%;    
-  margin: 0;  
-  font-weight: 400;  
-  white-space: nowrap;  
-  overflow: hidden;        
-  text-overflow: ellipsis; 
-  text-align: left;        
-}
+
 
 
 /* --- SOLUCIÓN ANCHO DE TARJETAS CON ZOOM --- */
@@ -1311,7 +1312,7 @@ body.modal-abierto {
     
     nombreH = decodeURIComponent(nombreRaw);
     document.getElementById('user-display').innerText = nombreH;
-
+ajustarTamanioNombreUsuario();
     document.getElementById('menu-username-text').innerText = nombreH;
     document.getElementById('menu-avatar-initial').innerText = nombreH.charAt(0).toUpperCase();
 
@@ -1347,6 +1348,33 @@ body.modal-abierto {
         console.error("Error de red, manteniendo datos en caché si existían", err);
       });
   }
+  
+  function ajustarTamanioNombreUsuario() {
+  const contenedor = document.querySelector('.user-name-container');
+  const elementoNombre = document.getElementById('user-display');
+  
+  if (!contenedor || !elementoNombre) return;
+
+  // Obtenemos el ancho disponible del contenedor de la cabecera
+  const anchoDisponible = contenedor.clientWidth;
+  if (anchoDisponible <= 0) return;
+
+  // Empezamos probando con un tamaño de fuente base grande (ej. 70px) y vamos reduciendo si es necesario
+  let fontSize = 70; 
+  elementoNombre.style.fontSize = fontSize + 'px';
+
+  // Reducimos el tamaño de forma iterativa hasta que el texto quepa perfectamente en el ancho disponible
+  while (elementoNombre.scrollWidth > anchoDisponible && fontSize > 15) {
+    fontSize -= 1;
+    elementoNombre.style.fontSize = fontSize + 'px';
+  }
+}
+
+// Ejecutar la función cuando cargue la página
+window.addEventListener('DOMContentLoaded', ajustarTamanioNombreUsuario);
+// Volver a recalcular si la pantalla cambia de tamaño (rotación de móvil, zoom, etc.)
+window.addEventListener('resize', ajustarTamanioNombreUsuario);
+
   function procesarYRenderizarDatos(datos) {
     if (datos && datos.campaña && datos.campañaTrabajados) {
           let numerosTrabajados = new Set(datos.campañaTrabajados.map(t => String(t.num || t.numero).trim()));
