@@ -1008,6 +1008,18 @@ h2 {
 .h2-campana { background: rgba(220, 53, 69, 0.85); } 
 .h2-personales { background: var(--azul-moderno); }
 .h2-grupo { background: var(--verde-moderno); }
+/* --- NUEVO: ADAPTACIÓN PARA EL MODO OSCURO --- */
+body.dark-mode .h2-campana {
+  background: rgba(239, 68, 68, 0.85); /* Un rojo un poco más vibrante y legible en oscuro */
+}
+
+body.dark-mode .h2-personales {
+  background: rgba(49, 130, 206, 0.85); /* Un azul más luminoso acorde al modo oscuro */
+}
+
+body.dark-mode .h2-grupo {
+  background: rgba(56, 161, 105, 0.85); /* Un verde más brillante que pegue con el tema oscuro */
+}
 
 .card-container.bloqueada .card-inner {
   filter: blur(1.5px); 
