@@ -1143,6 +1143,19 @@ body.modal-abierto {
 .card-zona.azul-elegante-texto {
   color: var(--azul-elegante) !important;
 }
+@keyframes girarLento {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icono-engranaje-animado {
+  animation: girarLento 10s linear infinite;
+}
+
 </style>
 </head>
 <body>
@@ -1152,10 +1165,11 @@ body.modal-abierto {
     <div class="user-name" id="user-display"></div>
   </div>
   
-  <div class="settings-container">
+<div class="settings-container">
     <button class="btn-settings" onclick="toggleSettingsMenu(event)" title="Ajustes">
-      <i class="fa-solid fa-gear"></i>
+      <i class="fa-solid fa-gear icono-engranaje-animado"></i>
     </button>
+
     
     <!-- MENÚ ESTILO IOS MEJORADO -->
     <div id="apple-menu" class="apple-dropdown-menu">
