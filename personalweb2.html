@@ -1923,20 +1923,6 @@ function cerrarModalPreferencias() {
                 <div class="card-front">
                     <div class="card-header ${esCaducado ? 'header-caducado' : ''}">
                      <span class="card-num ${!esCaducado ? claseAzulElegante : ''}">${numeroTerritorio}</span>
-  
-  
-  <div style="display: flex; flex-direction: column; align-items: flex-end;">
-      <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona || ''}</span>
-      
-      ${t.distancia ? `
-          <div style="font-size: 0.75rem; color: ${esCaducado ? '#ffcccc' : '#666'}; display: flex; align-items: center; gap: 3px; margin-top: 2px;">
-              <i class="fa-solid fa-location-dot" style="font-size: 0.65rem;"></i>
-              <span>${t.distancia}</span>
-          </div>
-      ` : ''}
-  </div>
-</div>
-
                       <span class="card-zona ${esCaducado ? 'texto-blanco-forzado' : claseAzulElegante}">${t.zona || ''}</span>
                     </div>
                     <div class="img-box-custom" onclick="abrirVisor('${t.imgMini || ''}')" style="cursor: pointer;"><img src="${t.imgMini || ''}" alt="Imagen"></div>
