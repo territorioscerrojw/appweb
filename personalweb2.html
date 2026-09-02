@@ -1349,26 +1349,29 @@ ajustarTamanioNombreUsuario();
       });
   }
   
-  function ajustarTamanioNombreUsuario() {
+ function ajustarTamanioNombreUsuario() {
   const contenedor = document.querySelector('.user-name-container');
   const elementoNombre = document.getElementById('user-display');
   
   if (!contenedor || !elementoNombre) return;
 
-  // Obtenemos el ancho disponible del contenedor de la cabecera
-  const anchoDisponible = contenedor.clientWidth;
-  if (anchoDisponible <= 0) return;
+  // Esperamos a que la fuente 'Whisper' esté 100% cargada antes de medir
+  document.fonts.ready.then(() => {
+    const anchoDisponible = contenedor.clientWidth;
+    if (anchoDisponible <= 0) return;
 
-  // Empezamos probando con un tamaño de fuente base grande (ej. 70px) y vamos reduciendo si es necesario
-  let fontSize = 70; 
-  elementoNombre.style.fontSize = fontSize + 'px';
-
-  // Reducimos el tamaño de forma iterativa hasta que el texto quepa perfectamente en el ancho disponible
-  while (elementoNombre.scrollWidth > anchoDisponible && fontSize > 15) {
-    fontSize -= 1;
+    // Empezamos con un tamaño grande y vamos reduciendo
+    let fontSize = 70; 
     elementoNombre.style.fontSize = fontSize + 'px';
-  }
+
+    // Reducimos hasta que quepa (añadimos un margen de seguridad de -4px para evitar que roce el borde)
+    while ((elementoNombre.scrollWidth + 4) > anchoDisponible && fontSize > 15) {
+      fontSize -= 1;
+      elementoNombre.style.fontSize = fontSize + 'px';
+    }
+  });
 }
+
 
 // Ejecutar la función cuando cargue la página
 window.addEventListener('DOMContentLoaded', ajustarTamanioNombreUsuario);
