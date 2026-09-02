@@ -1199,7 +1199,7 @@ body.modal-abierto {
             ¡Solicitud enviada con éxito! El departamento de territorios revisará tu petición de renovación.<br><br>
             Nota importante: La renovación requiere que el territorio se haya trabajado al menos una vez al año.<br><br>
             Si lleva más de un año sin trabajarse, no se podrá renovar.<br><br>
-            Si se ha trabajado dentro último año, recibirás un plazo extra de 1 a 4 meses.<br><br>
+            Si se ha trabajado dentro del último año, recibirás un plazo extra de 1 a 4 meses.<br><br>
              <em>Verás reflejada la actualización en la aplicación próximamente si la renovación es aprobada.</em>
         </div>
         <button class="renovacion-btn-entendido" onclick="cerrarModalRenovacionDirecto()">Entendido</button>
@@ -1703,7 +1703,7 @@ function cerrarModalPreferencias() {
 
     const correoDestino = "territorioscerro.jw@gmail.com";
     const asunto = "Solicitud de nuevo territorio (Preferencias)";
-    const cuerpo = `El/la hermano/a ${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
+    const cuerpo = `${nombreH} solicita un territorio con las siguientes preferencias:\n\n- Zonas: ${zonasSeleccionadas.join(', ')}\n- Tipos: ${tiposSeleccionados.join(', ')}`;
 
     const urlEmail = `${urlAppScript}?action=enviarCorreo&destinatario=${encodeURIComponent(correoDestino)}&asunto=${encodeURIComponent(asunto)}&cuerpo=${encodeURIComponent(cuerpo)}`;
 
