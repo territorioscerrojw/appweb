@@ -1161,14 +1161,13 @@ body.modal-abierto {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: transparent; /* Fondo completamente transparente para ver lo de atrás */
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
+  pointer-events: none; /* Permite hacer clicks a través del fondo si fuera necesario */
 }
 
 #banner-carga.active {
@@ -1176,11 +1175,14 @@ body.modal-abierto {
 }
 
 .banner-carga-card {
-  background: var(--card-bg, #ffffff);
+  /* Fondo sólido o translúcido muy elegante que asegura total legibilidad sobre cualquier fondo */
+  background: var(--card-bg, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 30px 40px;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1188,11 +1190,13 @@ body.modal-abierto {
   gap: 15px;
   max-width: 90%;
   box-sizing: border-box;
+  pointer-events: auto; /* Para que el banner sí reciba eventos si hace falta */
 }
 
 body.dark-mode .banner-carga-card {
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  background: var(--card-bg, rgba(30, 30, 30, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .banner-carga-spinner {
@@ -1275,13 +1279,13 @@ body.dark-mode .banner-carga-card {
     </div>
   </div>
 </header>
+<!-- BANNER DE CARGA -->
 <div id="banner-carga" class="active">
   <div class="banner-carga-card">
     <div class="banner-carga-spinner"></div>
     <p class="banner-carga-texto">CARGANDO DATOS...<br>ESPERA UNOS SEGUNDOS</p>
   </div>
 </div>
-<div id="grid-container"></div>
 
 <!-- Visor de imagen a pantalla completa -->
 <div id="image-viewer-modal" onclick="cerrarVisor(event)">
@@ -1420,18 +1424,21 @@ function ocultarBannerCarga() {
 
 function refrescarWeb() {
   cerrarMenuAjustes();
-  mostrarBannerCarga(); // Muestra el banner al pulsar actualizar
-  window.location.reload();
+  mostrarBannerCarga(); // Fuerza la aparición inmediata del banner
+  // Damos un pequeño respiro de 50ms para que el navegador pinte el banner antes de recargar
+  setTimeout(() => {
+    window.location.reload();
+  }, 50);
 }
 
 function cargar() {
-  mostrarBannerCarga(); // Muestra el banner al iniciar la carga
-
+  // Como el HTML ya arranca con la clase 'active', el banner se muestra al instante sin opacidad en el fondo.
+  
   const params = new URLSearchParams(window.location.search);
   let nombreRaw = params.get('h') || params.get('id');
   if (!nombreRaw) {
     document.getElementById('user-display').innerText = "Usuario no identificado";
-    ocultarBannerCarga(); // Oculta si hay error
+    ocultarBannerCarga();
     return;
   }
   nombreH = decodeURIComponent(nombreRaw);
@@ -1449,7 +1456,7 @@ function cargar() {
       window.datosPortalActual = datosParsed; 
       poblarZonasModal(datosParsed); 
       procesarYRenderizarDatos(datosParsed);
-      ocultarBannerCarga(); // Oculta el banner en cuanto cargan los datos de la caché
+      ocultarBannerCarga(); // Oculta el banner al pintar los datos de la caché
     } catch (e) {
       console.error("Error al leer caché", e);
     }
@@ -1462,11 +1469,11 @@ function cargar() {
       window.datosPortalActual = datos;
       poblarZonasModal(datos);
       procesarYRenderizarDatos(datos);
-      ocultarBannerCarga(); // Oculta el banner cuando la petición de red finaliza con éxito
+      ocultarBannerCarga(); // Oculta el banner cuando terminan de llegar los datos nuevos
     })
     .catch(err => {
       console.error("Error al cargar datos:", err);
-      ocultarBannerCarga(); // Oculta el banner también si ocurre algún error de conexión
+      ocultarBannerCarga();
     });
 }
   
