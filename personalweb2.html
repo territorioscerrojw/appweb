@@ -1438,78 +1438,80 @@ function cargar() {
   // 1. Mostrar el banner de carga de forma segura al iniciar
   mostrarBannerCarga();
 
-  try {
-    const params = new URLSearchParams(window.location.search);
-    let nombreRaw = params.get('h') || params.get('id');
-    
-    if (!nombreRaw) {
-      const userDisplay = document.getElementById('user-display');
-      if (userDisplay) userDisplay.innerText = "Usuario no identificado";
-      ocultarBannerCarga();
-      return;
-    }
-    
-    nombreH = decodeURIComponent(nombreRaw);
-    
+  const params = new URLSearchParams(window.location.search);
+  let nombreRaw = params.get('h') || params.get('id');
+  
+  if (!nombreRaw) {
     const userDisplay = document.getElementById('user-display');
-    if (userDisplay) userDisplay.innerText = nombreH;
-    
-    if (typeof ajustarTamanioNombreUsuario === 'function') ajustarTamanioNombreUsuario();
-    
-    const menuUsername = document.getElementById('menu-username-text');
-    if (menuUsername) menuUsername.innerText = nombreH;
-    
-    const menuAvatar = document.getElementById('menu-avatar-initial');
-    if (menuAvatar) menuAvatar.innerText = nombreH.charAt(0).toUpperCase(); 
-
-    // Verificamos si existe la variable urlAppScript
-    if (typeof urlAppScript === 'undefined') {
-      console.error("La variable urlAppScript no está definida.");
-      ocultarBannerCarga();
-      return;
-    }
-
-    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
-    
-    const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
-    if (datosCache) {
-      try {
-        const datosParsed = JSON.parse(datosCache);
-        window.datosPortalActual = datosParsed; 
-        if (typeof poblarZonasModal === 'function') poblarZonasModal(datosParsed); 
-        if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datosParsed);
-        
-        ocultarBannerCarga();
-        return;
-      } catch (e) {
-        console.error("Error al leer caché:", e);
-      }
-    }
-
-    fetch(url)
-      .then(r => {
-        if (!r.ok) throw new Error('Error en la red');
-        return r.json();
-      })
-      .then(datos => {
-        sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
-        window.datosPortalActual = datos;
-        if (typeof poblarZonasModal === 'function') poblarZonasModal(datos);
-        if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datos);
-        
-        ocultarBannerCarga();
-      })
-      .catch(err => {
-        console.error("Error al cargar datos remotos:", err);
-        ocultarBannerCarga();
-      });
-
-  } catch (error) {
-    // Si ocurre cualquier error inesperado, capturamos el fallo, 
-    // lo mostramos en consola y ocultamos el banner para que no se quede la pantalla en blanco.
-    console.error("Error crítico en la función cargar():", error);
+    if (userDisplay) userDisplay.innerText = "Usuario no identificado";
     ocultarBannerCarga();
+    return;
   }
+  
+  nombreH = decodeURIComponent(nombreRaw);
+  
+  const userDisplay = document.getElementById('user-display');
+  if (userDisplay) userDisplay.innerText = nombreH;
+  if (typeof ajustarTamanioNombreUsuario === 'function') ajustarTamanioNombreUsuario();
+  
+  const menuUsername = document.getElementById('menu-username-text');
+  if (menuUsername) menuUsername.innerText = nombreH;
+  
+  const menuAvatar = document.getElementById('menu-avatar-initial');
+  if (menuAvatar) menuAvatar.innerText = nombreH.charAt(0).toUpperCase(); 
+
+  if (typeof urlAppScript === 'undefined') {
+    console.error("La variable urlAppScript no está definida.");
+    ocultarBannerCarga();
+    return;
+  }
+
+  const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
+  
+  // Revisamos si hay datos en caché
+  const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
+  if (datosCache) {
+    try {
+      const datosParsed = JSON.parse(datosCache);
+      window.datosPortalActual = datosParsed; 
+      
+      if (typeof poblarZonasModal === 'function') poblarZonasModal(datosParsed); 
+      if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datosParsed);
+      
+      // Damos un pequeño respiro de 50 milisegundos para que el DOM pinte bien antes de quitar el banner
+      setTimeout(() => {
+        ocultarBannerCarga();
+      }, 50);
+      return;
+    } catch (e) {
+      console.error("Error al leer caché:", e);
+      // Si falla la caché, borramos la caché corrupta y continuamos hacia el fetch
+      sessionStorage.removeItem('territorios_cache_' + nombreH);
+    }
+  }
+
+  // Si no hay caché (o falló), ejecutamos el fetch con su respectivo .finally()
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('Error en la red');
+      return r.json();
+    })
+    .then(datos => {
+      sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
+      window.datosPortalActual = datos;
+      
+      if (typeof poblarZonasModal === 'function') poblarZonasModal(datos);
+      if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datos);
+    })
+    .catch(err => {
+      console.error("Error al cargar datos remotos:", err);
+    })
+    .finally(() => {
+      // .finally() asegura que el banner se oculte pase lo que pase al terminar el fetch
+      setTimeout(() => {
+        ocultarBannerCarga();
+      }, 50);
+    });
 }
   
  function ajustarTamanioNombreUsuario() {
