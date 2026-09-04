@@ -1525,23 +1525,24 @@ function cargar() {
       }
     };
 
-   // Revisar caché
-   // const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
-    //if (datosCache) {
-      //try {
-        //const datosParsed = JSON.parse(datosCache);
-        // Validamos que los datos tengan contenido real
-        //if (datosParsed && Object.keys(datosParsed).length > 0) {
-          //renderizarSeguro(datosParsed);
-          //return;
-        //} else {
-          //throw new Error("Caché vacía o corrupta");
-        //}
-      //} catch (e) {
-       // console.warn("Aviso al leer caché, descargando de nuevo:", e);
-       // sessionStorage.removeItem('territorios_cache_' + nombreH);
-     // }
-   // }
+    // Detectar si el usuario recargó la página mediante F5 o el botón del navegador
+    const navEntries = performance.getEntriesByType("navigation");
+    if (navEntries.length > 0 && navEntries[0].type === "reload") {
+      sessionStorage.removeItem('territorios_cache_' + nombreH);
+    }
+
+    // Revisar caché
+    const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
+    if (datosCache) {
+      try {
+        const datosParsed = JSON.parse(datosCache);
+        renderizarSeguro(datosParsed);
+        return;
+      } catch (e) {
+        console.error("Error al leer caché:", e);
+        sessionStorage.removeItem('territorios_cache_' + nombreH);
+      }
+    }
 
     // Petición Fetch
     fetch(url)
