@@ -1426,8 +1426,11 @@ function ocultarBannerCarga() {
 function refrescarWeb() {
   cerrarMenuAjustes();
   mostrarBannerCarga(); 
-  // Limpiamos la caché si quieres forzar datos frescos al actualizar manualmente (opcional pero recomendado)
-  // sessionStorage.removeItem('territorios_cache_' + nombreH); 
+  
+  // Borramos la caché del usuario actual para obligar a descargar datos nuevos de la API
+  if (typeof nombreH !== 'undefined' && nombreH) {
+    sessionStorage.removeItem('territorios_cache_' + nombreH);
+  }
   
   setTimeout(() => {
     window.location.reload();
