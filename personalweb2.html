@@ -1435,56 +1435,81 @@ function refrescarWeb() {
 }
 
 function cargar() {
-  // 1. Mostramos el banner de inmediato al entrar a la función
+  // 1. Mostrar el banner de carga de forma segura al iniciar
   mostrarBannerCarga();
 
-  const params = new URLSearchParams(window.location.search);
-  let nombreRaw = params.get('h') || params.get('id');
-  if (!nombreRaw) {
-    document.getElementById('user-display').innerText = "Usuario no identificado";
-    ocultarBannerCarga();
-    return;
-  }
-  
-  nombreH = decodeURIComponent(nombreRaw);
-  document.getElementById('user-display').innerText = nombreH;
-  ajustarTamanioNombreUsuario();
-  document.getElementById('menu-username-text').innerText = nombreH;
-  document.getElementById('menu-avatar-initial').innerText = nombreH.charAt(0).toUpperCase(); 
-
-  const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
-  
-  const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
-  if (datosCache) {
-    try {
-      const datosParsed = JSON.parse(datosCache);
-      window.datosPortalActual = datosParsed; 
-      poblarZonasModal(datosParsed); 
-      procesarYRenderizarDatos(datosParsed);
-      
-      // Ocultamos el banner una vez pintado lo de la caché
+  try {
+    const params = new URLSearchParams(window.location.search);
+    let nombreRaw = params.get('h') || params.get('id');
+    
+    if (!nombreRaw) {
+      const userDisplay = document.getElementById('user-display');
+      if (userDisplay) userDisplay.innerText = "Usuario no identificado";
       ocultarBannerCarga();
-      return; // Si ya cargó de caché, no hace falta saturar con otro fetch inmediato si prefieres, o déjalo correr en segundo plano.
-    } catch (e) {
-      console.error("Error al leer caché", e);
+      return;
     }
-  }
+    
+    nombreH = decodeURIComponent(nombreRaw);
+    
+    const userDisplay = document.getElementById('user-display');
+    if (userDisplay) userDisplay.innerText = nombreH;
+    
+    if (typeof ajustarTamanioNombreUsuario === 'function') ajustarTamanioNombreUsuario();
+    
+    const menuUsername = document.getElementById('menu-username-text');
+    if (menuUsername) menuUsername.innerText = nombreH;
+    
+    const menuAvatar = document.getElementById('menu-avatar-initial');
+    if (menuAvatar) menuAvatar.innerText = nombreH.charAt(0).toUpperCase(); 
 
-  fetch(url)
-    .then(r => r.json())
-    .then(datos => {
-      sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
-      window.datosPortalActual = datos;
-      poblarZonasModal(datos);
-      procesarYRenderizarDatos(datos);
-      
-      // 2. Ocultamos el banner SOLO cuando los datos remotos ya llegaron y se renderizaron
+    // Verificamos si existe la variable urlAppScript
+    if (typeof urlAppScript === 'undefined') {
+      console.error("La variable urlAppScript no está definida.");
       ocultarBannerCarga();
-    })
-    .catch(err => {
-      console.error("Error al cargar datos:", err);
-      ocultarBannerCarga(); // Ocultar también si falla para que no se quede bloqueado
-    });
+      return;
+    }
+
+    const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
+    
+    const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
+    if (datosCache) {
+      try {
+        const datosParsed = JSON.parse(datosCache);
+        window.datosPortalActual = datosParsed; 
+        if (typeof poblarZonasModal === 'function') poblarZonasModal(datosParsed); 
+        if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datosParsed);
+        
+        ocultarBannerCarga();
+        return;
+      } catch (e) {
+        console.error("Error al leer caché:", e);
+      }
+    }
+
+    fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error('Error en la red');
+        return r.json();
+      })
+      .then(datos => {
+        sessionStorage.setItem('territorios_cache_' + nombreH, JSON.stringify(datos));
+        window.datosPortalActual = datos;
+        if (typeof poblarZonasModal === 'function') poblarZonasModal(datos);
+        if (typeof procesarYRenderizarDatos === 'function') procesarYRenderizarDatos(datos);
+        
+        ocultarBannerCarga();
+      })
+      .catch(err => {
+        console.error("Error al cargar datos remotos:", err);
+        ocultarBannerCarga();
+      });
+
+  } catch (error) {
+    // Si ocurre cualquier error inesperado, capturamos el fallo, 
+    // lo mostramos en consola y ocultamos el banner para que no se quede la pantalla en blanco.
+    console.error("Error crítico en la función cargar():", error);
+    ocultarBannerCarga();
+  }
 }
   
  function ajustarTamanioNombreUsuario() {
