@@ -1438,12 +1438,11 @@ function cargar() {
   // 1. Mostrar el banner de carga de inmediato
   mostrarBannerCarga();
 
-  // Red de seguridad absoluta: Si por cualquier motivo extremo pasan 6 segundos 
-  // y el banner sigue activo, lo ocultamos a la fuerza para que nunca se quede colgado.
+  // Red de seguridad de 8 segundos por si la red o la API se congelan
   const safetyTimeout = setTimeout(() => {
-    console.warn("Aviso: Tiempo de espera agotado, forzando cierre de banner.");
+    console.warn("Aviso: Tiempo de espera agotado.");
     ocultarBannerCarga();
-  }, 6000);
+  }, 8000);
 
   try {
     const params = new URLSearchParams(window.location.search);
@@ -1478,30 +1477,43 @@ function cargar() {
 
     const url = urlAppScript + "?h=" + encodeURIComponent(nombreH) + "&t=" + new Date().getTime();
     
-    // Función auxiliar ultra-segura para pintar los datos sin que rompan la app
-    const renderizarSeguro = (datos) => {
+    // Función de renderizado ultra-protegida y sincronizada visualmente
+    const renderizarSeguro = async (datos) => {
       try {
         window.datosPortalActual = datos; 
         if (typeof poblarZonasModal === 'function') {
           poblarZonasModal(datos);
         }
         if (typeof procesarYRenderizarDatos === 'function') {
-          procesarYRenderizarDatos(datos);
+          // Usamos await por si procesa datos de forma asíncrona
+          await procesarYRenderizarDatos(datos);
         } else {
-          console.error("¡Atención! La función procesarYRenderizarDatos no está definida en tu script.");
+          console.error("¡Atención! La función procesarYRenderizarDatos no existe.");
         }
       } catch (errRender) {
-        console.error("Error interno dentro de la función de renderizado:", errRender);
+        console.error("Error crítico dentro de procesarYRenderizarDatos:", errRender);
+        let errorBox = document.getElementById('error-chivato');
+        if (!errorBox) {
+          errorBox = document.createElement('div');
+          errorBox.id = 'error-chivato';
+          errorBox.style.cssText = "position:fixed; bottom:10px; left:10px; right:10px; background:#ff3b30; color:white; padding:15px; border-radius:10px; z-index:999999; font-family:sans-serif; font-size:14px; box-shadow:0 5px 15px rgba(0,0,0,0.3);";
+          document.body.appendChild(errorBox);
+        }
+        errorBox.innerHTML = "<b>Error al pintar la página:</b> " + errRender.message;
       } finally {
         clearTimeout(safetyTimeout);
-        // Pequeño respiro para que el navegador pinte el DOM
-        setTimeout(() => {
-          ocultarBannerCarga();
-        }, 100);
+        
+        // DOBLE requestAnimationFrame: Obliga al navegador a esperar a que el DOM 
+        // esté completamente pintado en pantalla antes de retirar el banner.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            ocultarBannerCarga();
+          });
+        });
       }
     };
 
-    // Verificamos si hay caché
+    // Revisar caché
     const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
     if (datosCache) {
       try {
@@ -1509,12 +1521,12 @@ function cargar() {
         renderizarSeguro(datosParsed);
         return;
       } catch (e) {
-        console.error("Error al leer caché, procediendo a descargar de la red:", e);
+        console.error("Error al leer caché:", e);
         sessionStorage.removeItem('territorios_cache_' + nombreH);
       }
     }
 
-    // Petición Fetch si no hay caché válida
+    // Petición Fetch
     fetch(url)
       .then(r => {
         if (!r.ok) throw new Error('Error en la red: ' + r.status);
@@ -1525,13 +1537,13 @@ function cargar() {
         renderizarSeguro(datos);
       })
       .catch(err => {
-        console.error("Error al cargar datos remotos:", err);
+        console.error("Error en la petición fetch:", err);
         clearTimeout(safetyTimeout);
         ocultarBannerCarga();
       });
 
   } catch (error) {
-    console.error("Error crítico general en cargar():", error);
+    console.error("Error general en cargar():", error);
     clearTimeout(safetyTimeout);
     ocultarBannerCarga();
   }
