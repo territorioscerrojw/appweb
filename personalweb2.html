@@ -1280,7 +1280,7 @@ body.dark-mode .banner-carga-card {
   </div>
 </header>
 <!-- BANNER DE CARGA -->
-<div id="banner-carga" class="active">
+<div id="banner-carga">
   <div class="banner-carga-card">
     <div class="banner-carga-spinner"></div>
     <p class="banner-carga-texto">CARGANDO DATOS...<br>ESPERA UNOS SEGUNDOS</p>
@@ -1392,11 +1392,7 @@ body.dark-mode .banner-carga-card {
   window.addEventListener('click', manejarCierreFuera);
   window.addEventListener('touchstart', manejarCierreFuera);
 
-  function refrescarWeb() {
-    cerrarMenuAjustes();
-    window.location.reload();
-  }
-
+ 
   function irAGrupo() {
     cerrarMenuAjustes();
     if (grupoUsuarioGlobal) {
@@ -1419,21 +1415,29 @@ function mostrarBannerCarga() {
 
 function ocultarBannerCarga() {
   const banner = document.getElementById('banner-carga');
-  if (banner) banner.classList.remove('active');
+  if (banner) {
+    // Añadimos un micro-retraso para asegurar que el DOM se pintó por completo
+    setTimeout(() => {
+      banner.classList.remove('active');
+    }, 150);
+  }
 }
 
 function refrescarWeb() {
   cerrarMenuAjustes();
-  mostrarBannerCarga(); // Fuerza la aparición inmediata del banner
-  // Damos un pequeño respiro de 50ms para que el navegador pinte el banner antes de recargar
+  mostrarBannerCarga(); 
+  // Limpiamos la caché si quieres forzar datos frescos al actualizar manualmente (opcional pero recomendado)
+  // sessionStorage.removeItem('territorios_cache_' + nombreH); 
+  
   setTimeout(() => {
     window.location.reload();
-  }, 50);
+  }, 100);
 }
 
 function cargar() {
-  // Como el HTML ya arranca con la clase 'active', el banner se muestra al instante sin opacidad en el fondo.
-  
+  // 1. Mostramos el banner de inmediato al entrar a la función
+  mostrarBannerCarga();
+
   const params = new URLSearchParams(window.location.search);
   let nombreRaw = params.get('h') || params.get('id');
   if (!nombreRaw) {
@@ -1441,6 +1445,7 @@ function cargar() {
     ocultarBannerCarga();
     return;
   }
+  
   nombreH = decodeURIComponent(nombreRaw);
   document.getElementById('user-display').innerText = nombreH;
   ajustarTamanioNombreUsuario();
@@ -1456,7 +1461,10 @@ function cargar() {
       window.datosPortalActual = datosParsed; 
       poblarZonasModal(datosParsed); 
       procesarYRenderizarDatos(datosParsed);
-      ocultarBannerCarga(); // Oculta el banner al pintar los datos de la caché
+      
+      // Ocultamos el banner una vez pintado lo de la caché
+      ocultarBannerCarga();
+      return; // Si ya cargó de caché, no hace falta saturar con otro fetch inmediato si prefieres, o déjalo correr en segundo plano.
     } catch (e) {
       console.error("Error al leer caché", e);
     }
@@ -1469,11 +1477,13 @@ function cargar() {
       window.datosPortalActual = datos;
       poblarZonasModal(datos);
       procesarYRenderizarDatos(datos);
-      ocultarBannerCarga(); // Oculta el banner cuando terminan de llegar los datos nuevos
+      
+      // 2. Ocultamos el banner SOLO cuando los datos remotos ya llegaron y se renderizaron
+      ocultarBannerCarga();
     })
     .catch(err => {
       console.error("Error al cargar datos:", err);
-      ocultarBannerCarga();
+      ocultarBannerCarga(); // Ocultar también si falla para que no se quede bloqueado
     });
 }
   
