@@ -1425,15 +1425,24 @@ function ocultarBannerCarga() {
 
 function refrescarWeb() {
   cerrarMenuAjustes();
-  mostrarBannerCarga(); 
+  mostrarBannerCarga();  
   
-  // Borramos la caché del usuario actual para obligar a descargar datos nuevos de la API
-  if (typeof nombreH !== 'undefined' && nombreH) {
-    sessionStorage.removeItem('territorios_cache_' + nombreH);
-  }
+  // Borramos cualquier caché relacionada con territorios en sessionStorage
+  Object.keys(sessionStorage).forEach(key => {
+    if (key.startsWith('territorios_cache_')) {
+      sessionStorage.removeItem(key);
+    }
+  });
   
+  // Forzamos la recarga limpia manteniendo el parámetro 'h' actual pero quitando taras
   setTimeout(() => {
-    window.location.reload();
+    const urlParams = new URLSearchParams(window.location.search);
+    const hVal = urlParams.get('h') || urlParams.get('id');
+    if (hVal) {
+      window.location.href = window.location.pathname + "?h=" + encodeURIComponent(hVal) + "&t=" + new Date().getTime();
+    } else {
+      window.location.reload();
+    }
   }, 100);
 }
 
@@ -1516,15 +1525,20 @@ function cargar() {
       }
     };
 
-    // Revisar caché
+   // Revisar caché
     const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
     if (datosCache) {
       try {
         const datosParsed = JSON.parse(datosCache);
-        renderizarSeguro(datosParsed);
-        return;
+        // Validamos que los datos tengan contenido real
+        if (datosParsed && Object.keys(datosParsed).length > 0) {
+          renderizarSeguro(datosParsed);
+          return;
+        } else {
+          throw new Error("Caché vacía o corrupta");
+        }
       } catch (e) {
-        console.error("Error al leer caché:", e);
+        console.warn("Aviso al leer caché, descargando de nuevo:", e);
         sessionStorage.removeItem('territorios_cache_' + nombreH);
       }
     }
