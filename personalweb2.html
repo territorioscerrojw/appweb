@@ -1526,22 +1526,22 @@ function cargar() {
     };
 
    // Revisar caché
-    const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
-    if (datosCache) {
-      try {
-        const datosParsed = JSON.parse(datosCache);
+   // const datosCache = sessionStorage.getItem('territorios_cache_' + nombreH);
+    //if (datosCache) {
+      //try {
+        //const datosParsed = JSON.parse(datosCache);
         // Validamos que los datos tengan contenido real
-        if (datosParsed && Object.keys(datosParsed).length > 0) {
-          renderizarSeguro(datosParsed);
-          return;
-        } else {
-          throw new Error("Caché vacía o corrupta");
-        }
-      } catch (e) {
-        console.warn("Aviso al leer caché, descargando de nuevo:", e);
-        sessionStorage.removeItem('territorios_cache_' + nombreH);
-      }
-    }
+        //if (datosParsed && Object.keys(datosParsed).length > 0) {
+          //renderizarSeguro(datosParsed);
+          //return;
+        //} else {
+          //throw new Error("Caché vacía o corrupta");
+        //}
+      //} catch (e) {
+       // console.warn("Aviso al leer caché, descargando de nuevo:", e);
+       // sessionStorage.removeItem('territorios_cache_' + nombreH);
+     // }
+   // }
 
     // Petición Fetch
     fetch(url)
